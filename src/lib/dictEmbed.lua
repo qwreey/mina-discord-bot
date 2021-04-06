@@ -36,7 +36,8 @@ function module.meanEmbed(Items)
     local this = "";
     local ShortDesc = "";
     local LastTitles = {};
-    for Index,Item in pairs(Items.items) do
+    local ItemArray = Items.items;
+    for Index,Item in pairs(ItemArray) do
         local Title = Item.title or "";
         if Index >= 4 then
             local Link = Item.link or "";
@@ -47,6 +48,10 @@ function module.meanEmbed(Items)
             ShortDesc = ShortDesc .. (#ShortDesc ~= 0 and "," or "") .. Title;
         end
         LastTitles[Title] = true;
+    end
+    -- 하나도 안나오면
+    if #ItemArray == 0 then
+        ShortDesc = "<b>그딴게 어디있겠냐?</b>";
     end
     return this,DecsMD(ShortDesc);
 end
