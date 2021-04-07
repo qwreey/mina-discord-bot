@@ -100,6 +100,7 @@ local unknownReply = {
 	lol 도
 	젤다 드립
 	ㄱㄷ
+	착해, 이뻐, 귀여워 같은 칭찬단어 만들고 그거 호감도 늘리는거 만들기
 ]]
 local commands = commandHandle.encodeCommands({
 	["꺼져"] = {
@@ -437,11 +438,24 @@ client:on('messageCreate', function(message)
 	if User.bot --[[or (channel.type ~= enums.channelType.text)]] then
 		return;
 	end
-	-- 다시시작 (하드코딩된 관리 명령어)
-	if Admins[User.id] and (Text == "!restart" or Text == "!reload" or Text == "미나야 리로드") then
-		print("restarting ...");
-		message:reply('> restarting . . .');
-		os.exit();
+	-- 하드코딩된 관리 명령어)
+	if Admins[User.id] then
+		if (Text == "!restart" or Text == "!reload" or Text == "미나야 리로드") then
+			--다시시작
+			print("restarting ...");
+			message:reply('> 재시작중 . . . (15초 내로 완료됩니다)');
+			os.exit();
+		elseif (Text == "!pull" or Text == "!download" or Text == "미나야 변경적용") then
+			-- PULL (github 로 부터 코드를 다운받아옴)
+			local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . .');
+			os.execute("cd src"); -- src 루트로 이동
+			--os.execute("git fetch"); -- git 에서 변동사항 가져오기
+			os.execute("git pull"); -- git 에서 변동사항 가져와 적용하기
+			os.execute("cd ..") -- 상위 루트로 이동
+			os.execute("timeout /t 3"); -- 너무 갑자기 활동이 일어나는걸 막기 위해 쉬어줌
+			msg:setContent('> 적용중 . . . (15초 내로 완료됩니다)');
+			os.exit(); -- 리스타팅
+		end
 	end
 	-- 사전
 	if dirtChannels[Channel.id] then
