@@ -1,2 +1,2 @@
-# DiscordNaverDictLUA
+# MINA_DiscordBot
 네이버 사전에서 정보 긁어와서 디스코드로 넘기는 봇, 그냥 내가 기록용으로 만든겁니다, 어떻게 쓰는지는 묻지 마세요 알겠죠?
