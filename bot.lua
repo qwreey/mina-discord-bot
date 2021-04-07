@@ -410,7 +410,8 @@ local commands = commandHandle.encodeCommands({
 			"단어검색","단어찾기","영어검색",
 			"영단어검색","영단어찾기","dictionary",
 			"단어찾아","영단어찾아","단어찾아줘",
-			"영단어찾아줘"
+			"영단어찾아줘","영단어","사전찾기",
+			"사전검색"
 		};
 		func = function(replyMsg,message,args,Content)
 			local body,url = naverDict.searchFromNaverDirt(Content.rawArgs,ACCOUNTData);
@@ -448,13 +449,17 @@ client:on('messageCreate', function(message)
 		elseif (Text == "!pull" or Text == "!download" or Text == "미나야 변경적용") then
 			-- PULL (github 로 부터 코드를 다운받아옴)
 			local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . .');
-			os.execute("cd src"); -- src 루트로 이동
 			--os.execute("git fetch"); -- git 에서 변동사항 가져오기
-			os.execute("git pull"); -- git 에서 변동사항 가져와 적용하기
-			os.execute("cd ..") -- 상위 루트로 이동
+			os.execute("git -C src pull"); -- git 에서 변동사항 가져와 적용하기
 			os.execute("timeout /t 3"); -- 너무 갑자기 활동이 일어나는걸 막기 위해 쉬어줌
 			msg:setContent('> 적용중 . . . (15초 내로 완료됩니다)');
 			os.exit(); -- 리스타팅
+		elseif (Text == "!push" or Text == "!upload" or Text == "미나야 깃헙업로드") then
+			local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 코드를 업로드중 . . .');
+			os.execute("git -C src add .");
+			os.execute("git -C src commit -m 'update'");
+			os.execute("git -C src push");
+			msg:setContent('> 완료!');
 		end
 	end
 	-- 사전
@@ -465,9 +470,8 @@ client:on('messageCreate', function(message)
 		Text = string.sub(Text,2,-1);
 		local newMsg = message:reply('> 찾는중 . . .');
 		local body,url = naverDict.searchFromNaverDirt(Text,ACCOUNTData);
-		local embed = json.decode(dictEmbed:Embed(Text,url,body));
-		newMsg:setEmbed(embed.embed);
-		newMsg:setContent(embed.content);
+		local data = json.decode(dictEmbed:Embed(Text,url,body));
+		newMsg:update(data);
 	end
 
 	-- 명령어
