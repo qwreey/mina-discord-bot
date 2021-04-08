@@ -1,4 +1,15 @@
+local iLogger = require "src/lib/log";
+iLogger = {
+	["trace"] = iLogger.trace;
+	["debug"] = iLogger.debug;
+	["info"] = iLogger.info;
+	["warn"] = iLogger.warn;
+	["error"] = iLogger.error;
+	["fatal"] = iLogger.fatal;
+};
 
+local function main()
+sdf:sdf()
 --#region : 설명글/TODO 헤더
 --[[
 
@@ -18,20 +29,11 @@ TODO: coro http 손절치기 (luasocket 쓰자)
 TODO: EXTEND 고치기...
 TODO: 지우기 명령,강퇴 명령 같은거 만들기
 ]]
-local iLogger = require "src/lib/log";
-iLogger = {
-	["trace"] = iLogger.trace;
-	["debug"] = iLogger.debug;
-	["info"] = iLogger.info;
-	["warn"] = iLogger.warn;
-	["error"] = iLogger.error;
-	["fatal"] = iLogger.fatal;
-};
 --#endregion : 설명글/TODO
 --#region : 디코 모듈 임포트
 iLogger.info("Wait for discordia");
-local json = require "json";
 local corohttp = require "coro-http";
+local json = require "json";
 local discordia = require "discordia";
 local enums = discordia.enums;
 local client = discordia.Client();
@@ -595,7 +597,7 @@ client:on('messageCreate', function(message)
 			msg:setContent('> 완료!');
 			return;
 		elseif (Text == "!!!stop" or Text == "!!!kill" or Text == "미나야 코드셧다운") then
-			msg:setContent('> Killing...');
+			message:setContent('> Killing...');
 			os.exit(100);
 		end
 	end
@@ -663,3 +665,20 @@ end);
 -- Start bot
 StartBot(ACCOUNTData.botToken);
 --#endregion : 메인 파트
+end
+
+xpcall(main,function (err)
+	iLogger.fatal(err);
+	local err = (tostring(err) .. "\n");
+	local dat = os.date("*t"); 
+	local fnm = ("src/err/%dY_%dM_%dD"):format(dat.year,dat.month,dat.day);
+
+	iLogger.debug(("Error log was saved in err folder (%s)"):format(fnm));
+	local fil = io.open(fnm,"a");
+	fil:write(err);
+	fil:close();
+
+	os.execute("git add err");
+	os.execute("git commit -n 'ERROR!'");
+	os.execute("git push");
+end);

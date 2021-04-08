@@ -10,6 +10,5 @@ luvit src/bot
 set stopcode=%ERRORLEVEL%
 
 rem WHEN CLOSED
-if %stopcode% equ -1 luvit errorReport
 if %stopcode% neq 101 timeout /t 18
 if %stopcode% neq 100 goto whenstart
