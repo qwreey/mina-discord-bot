@@ -110,8 +110,25 @@ local unknownReply = {
 	젤다 드립
 	ㄱㄷ
 	착해, 이뻐, 귀여워 같은 칭찬단어 만들고 그거 호감도 늘리는거 만들기
+	맛있지 먹었다
+	ㅇ0ㅇ
+	oOo
+	ㅇOㅇ
+	알파카 : 옆에서 커피마신넘 학원간넘
+	깔끔하네
+	어머
+	ㅁㅇㅁㅇ
+	머야
+	머야머야
+	사람 크시는 사람이 아니지만요...
+	살려줘 무, 무슨 일 있어요?!
+	힘들어 언젠가 이 힘든 날조차 잊히는 행복이 진성트수님께 오리라고 믿어 의심치 않을 게요! 파이팅! 
 ]]
 local commands = commandHandle.encodeCommands({
+	["미나"] = {
+		alias = {"미나야"};
+		reply = prefixReply;
+	};
 	["꺼져"] = {
 		alias = "ㄲㅈ";
 		reply = {
@@ -263,8 +280,8 @@ local commands = commandHandle.encodeCommands({
 		};
 	};
 	["안녕"] = {
-		alias = {"ㅎㅇ","hi","Hello","헬루","헬로","안뇽","ㅎㅇㅎㅇ",};
-		reply = {"안녕하세요 미나에요","안뇽","ㅎㅇㅎㅇ"};
+		alias = {"할로","ㅎㅇ","hi","Hello","헬루","헬로","안뇽","ㅎㅇㅎㅇ",};
+		reply = {"안녕하세요 {%:UserName:%} 님!","안녕하세요 미나에요","안뇽","ㅎㅇㅎㅇ",""};
 	};
 	["안녕하살법"] = {
 		reply = "받아치기!";
@@ -429,6 +446,10 @@ local commands = commandHandle.encodeCommands({
 			replyMsg:setContent(embed.content);
 			return;
 		end;
+	};
+	["몸무계"] = {
+		alias = {"무계","얼마나무거워"};
+		reply = "95.2KB";
 	};
 
 	--["노래좀"] = {

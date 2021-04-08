@@ -45,7 +45,7 @@ end
 function module.formatReply(Text,Data)
     local Text = Text or "";
 
-    Text = string.gsub(Text,"{%:UserName:%}",Data.User.name);
+    Text = string.gsub(Text,"{%%:UserName:%%}",Data.User.name);
 
     return Text;
 end
