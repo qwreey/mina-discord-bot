@@ -1,7 +1,7 @@
 @echo off
 rem RETURNCODE 101 | restart
 rem RETURNCODE 100 | stop
-rem RETURNCODE -4  | ERROR
+rem RETURNCODE -1  | ERROR
 
 rem START UP
 cd ..
