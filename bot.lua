@@ -1,5 +1,5 @@
 
---#region : 설명글/TODO
+--#region : 설명글/TODO 헤더
 --[[
 
 작성 : qwreey
@@ -18,9 +18,18 @@ TODO: coro http 손절치기 (luasocket 쓰자)
 TODO: EXTEND 고치기...
 TODO: 지우기 명령,강퇴 명령 같은거 만들기
 ]]
+local iLogger = require "src/lib/log";
+iLogger = {
+	["trace"] = iLogger.trace;
+	["debug"] = iLogger.debug;
+	["info"] = iLogger.info;
+	["warn"] = iLogger.warn;
+	["error"] = iLogger.error;
+	["fatal"] = iLogger.fatal;
+};
 --#endregion : 설명글/TODO
 --#region : 디코 모듈 임포트
-print("Wait for discordia")
+iLogger.info("Wait for discordia");
 local json = require "json";
 local corohttp = require "coro-http";
 local discordia = require "discordia";
@@ -28,13 +37,13 @@ local enums = discordia.enums;
 local client = discordia.Client();
 local function StartBot(botToken)
 	-- 토큰주고 시작
+	iLogger.info("Starting bot ...");
 	client:run(("Bot %s"):format(botToken));
-	print(("Bot : started as %s"):format(botToken));
 	client:setGame("'미나야 도움말' 을 이용해 도움말을 얻거나 '미나야 <할말>' 을 이용해 미나와 대화하세요!");
 	return;
 end
 local function reloadBot()
-	print("try reloading...")
+	iLogger.info("Try restarting ...");
 	client:setGame("재시작중...");
 	os.exit(101);
 end
@@ -567,7 +576,7 @@ client:on('messageCreate', function(message)
 	if Admins[User.id] then
 		if (Text == "!!!restart" or Text == "!!!reload" or Text == "미나야 리로드") then
 			--다시시작
-			print("restarting ...");
+			iLogger.info("Restarting ...");
 			message:reply('> 재시작중 . . . (2초 내로 완료됩니다)');
 			reloadBot();
 		elseif (Text == "!!!pull" or Text == "!!!download" or Text == "미나야 변경적용") then
