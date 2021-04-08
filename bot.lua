@@ -128,10 +128,6 @@ local unknownReply = {
 	힘들어 언젠가 이 힘든 날조차 잊히는 행복이 진성트수님께 오리라고 믿어 의심치 않을 게요! 파이팅! 
 ]]
 local commands = commandHandle.encodeCommands({
-	["미나"] = {
-		alias = {"미나야"};
-		reply = prefixReply;
-	};
 	["꺼져"] = {
 		alias = "ㄲㅈ";
 		reply = {
@@ -310,11 +306,20 @@ local commands = commandHandle.encodeCommands({
 		};
 	};
 	["눈송이"] = {
+		alias = "눈꽃";
 		reply = {
 			"아 그 미친놈 (본인 요청입니다 오해하지 마세요)",
 			"주인에게 들었는데 친구라고 하더라구요",
 			"주인이 말하길 저의 이름을 정해주신 분이라고 해요!",
-			"눈송이는 꽃송이처럼 되어 있는 눈이다 ... (From google)"
+			"눈송이는 꽃송이처럼 되어 있는 눈이다 ... (From google)",
+			{
+				content = "크시를 이긴 무시무시한 사람";
+				embed = {
+					image = {
+						url = "https://cdn.discordapp.com/attachments/819764250766999563/829556398701936650/20210408_122046.png";
+					};
+				};
+			}
 		};
 	};
 	["크시"] = {
@@ -453,6 +458,10 @@ local commands = commandHandle.encodeCommands({
 	["몸무계"] = {
 		alias = {"무계","얼마나무거워"};
 		reply = "95.2KB";
+	};
+	["미나"] = {
+		alias = {"미나야"};
+		reply = prefixReply;
 	};
 
 	--["노래좀"] = {

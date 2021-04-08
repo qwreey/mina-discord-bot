@@ -42,12 +42,21 @@ function module.findCommandFrom(encodedTable,commandName)
     return encodedTable[commandName];
 end
 
-function module.formatReply(Text,Data)
+local function formatRreplyText(Text,Data)
     local Text = Text or "";
-
     Text = string.gsub(Text,"{%%:UserName:%%}",Data.User.name);
-
     return Text;
+end
+function module.formatReply(RawContent,Data)
+    if type(RawContent) == "table" then
+        RawContent.content = formatRreplyText(RawContent.content,Data);
+        if type(RawContent.embed) == "string" then
+            RawContent.embed = formatRreplyText(RawContent.embed,Data);
+        end
+        return RawContent;
+    elseif type(RawContent) == "string" then
+        return formatRreplyText(RawContent,Data);
+    end
 end
 
 return module;
