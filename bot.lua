@@ -15,6 +15,7 @@ TODO: 사전 Json 인코딩을 없에고 그냥 바로 테이블 넘기기
 TODO: coro http 손절치기 (luasocket 쓰자)
 
 TODO: EXTEND 고치기...
+TODO: 지우기 명령,강퇴 명령 같은거 만들기
 ]]
 --#endregion : 설명글/TODO
 --#region : 디코 모듈 임포트
@@ -25,9 +26,16 @@ local discordia = require "discordia";
 local enums = discordia.enums;
 local client = discordia.Client();
 local function StartBot(botToken)
+	-- 토큰주고 시작
 	client:run(("Bot %s"):format(botToken));
 	print(("Bot : started as %s"):format(botToken));
+	client:setGame("'미나야 도움말' 을 이용해 도움말을 얻거나 '미나야 <할말>' 을 이용해 미나와 대화하세요!");
 	return;
+end
+local function reloadBot()
+	print("try reloading...")
+	client:setGame("재시작중...");
+	os.exit();
 end
 --#endregion : Discord Module
 --#region : 나눠진 모듈 합치기
@@ -43,13 +51,13 @@ naverDict:setCoroHttp(corohttp):setJson(json); -- 네이버 사전 셋업
 --#region : 설정파일 불러오기
 local json = require("json");
 local LoadData = function (Pos)
-	local File = io.open(Pos,"r+");
+	local File = io.open(Pos,"r");
 	local Raw = File:read("a");
 	File:close();
 	return json.decode(Raw);
 end
 local SaveData = function (Pos,Data)
-	local File = io.open(Pos,"r+");
+	local File = io.open(Pos,"w");
 	File:write(json.encoding(Data));
 	File:close();
 	return;
@@ -58,6 +66,7 @@ end
 local ACCOUNTData = LoadData("data/ACCOUNT.json");
 local History = LoadData("data/history.json");
 local dirtChannels = LoadData("data/dirtChannels.json");
+local loveLeaderstats = LoadData("data/loveLeaderstats.json");
 --#endregion : load settings from data file
 --#region : 반응, 프리픽스, 설정
 local Admins = { -- 관리 명령어 권한
@@ -394,8 +403,8 @@ local commands = commandHandle.encodeCommands({
 
 	-- 특수기능
 	["제작진"] = {
-		alias = {"만든이들","크래딧","크레딧","누가만듬?","작자"};
-		reply = "**총괄**/코드 : 쿼리\n프로필/아이디어 : **상아리**\n작명 : 눈송이\n\n테스팅/아이디어 : 팥죽\n\n\n"
+		alias = {"만든이들","크래딧","크레딧","누가만듬?","작자","제작자"};
+		reply = "**총괄**/코드 : 쿼리\n프로필/아이디어 : **상아리**,별이(블스상)\n작명 : 눈송이\n\n테스팅/아이디어 : 팥죽";
 	};
 	["나이"] = {
 		func = function (_,message)
@@ -420,7 +429,7 @@ local commands = commandHandle.encodeCommands({
 			replyMsg:setContent(embed.content);
 			return;
 		end;
-	}
+	};
 
 	--["노래좀"] = {
 	--	alias = {"노래추천좀","노래추천"};
@@ -445,7 +454,7 @@ client:on('messageCreate', function(message)
 			--다시시작
 			print("restarting ...");
 			message:reply('> 재시작중 . . . (15초 내로 완료됩니다)');
-			os.exit();
+			reloadBot();
 		elseif (Text == "!pull" or Text == "!download" or Text == "미나야 변경적용") then
 			-- PULL (github 로 부터 코드를 다운받아옴)
 			local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . .');
@@ -453,13 +462,14 @@ client:on('messageCreate', function(message)
 			os.execute("git -C src pull"); -- git 에서 변동사항 가져와 적용하기
 			os.execute("timeout /t 3"); -- 너무 갑자기 활동이 일어나는걸 막기 위해 쉬어줌
 			msg:setContent('> 적용중 . . . (15초 내로 완료됩니다)');
-			os.exit(); -- 리스타팅
+			reloadBot(); -- 리스타팅
 		elseif (Text == "!push" or Text == "!upload" or Text == "미나야 깃헙업로드") then
 			local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 코드를 업로드중 . . .');
 			os.execute("git -C src add .");
 			os.execute("git -C src commit -m 'update'");
 			os.execute("git -C src push");
 			msg:setContent('> 완료!');
+			return;
 		end
 	end
 	-- 사전
