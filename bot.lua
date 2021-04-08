@@ -120,6 +120,9 @@ local unknownReply = {
 	ㅁㅇㅁㅇ
 	머야
 	머야머야
+	시끄러
+	대통령마다 반응
+	롤, 게임
 	사람 크시는 사람이 아니지만요...
 	살려줘 무, 무슨 일 있어요?!
 	힘들어 언젠가 이 힘든 날조차 잊히는 행복이 진성트수님께 오리라고 믿어 의심치 않을 게요! 파이팅! 
@@ -494,10 +497,7 @@ client:on('messageCreate', function(message)
 		end
 	end
 	-- 사전
-	if dirtChannels[Channel.id] then
-		if string.sub(Text,1,1) ~= "!" then
-			return;
-		end
+	if dirtChannels[Channel.id] and string.sub(Text,1,1) == "!" then
 		Text = string.sub(Text,2,-1);
 		local newMsg = message:reply('> 찾는중 . . .');
 		local body,url = naverDict.searchFromNaverDirt(Text,ACCOUNTData);
