@@ -595,7 +595,7 @@ client:on('messageCreate', function(message)
 			msg:setContent('> 완료!');
 			return;
 		elseif (Text == "!!!stop" or Text == "!!!kill" or Text == "미나야 코드셧다운") then
-			message:setContent('> Killing...');
+			message:reply('> 프로그램 죽이는중 . . .');
 			os.exit(100);
 		end
 	end
