@@ -474,12 +474,12 @@ client:on('messageCreate', function(message)
 	end
 	-- 하드코딩된 관리 명령어)
 	if Admins[User.id] then
-		if (Text == "!restart" or Text == "!reload" or Text == "미나야 리로드") then
+		if (Text == "!!!restart" or Text == "!!!reload" or Text == "미나야 리로드") then
 			--다시시작
 			print("restarting ...");
 			message:reply('> 재시작중 . . . (15초 내로 완료됩니다)');
 			reloadBot();
-		elseif (Text == "!pull" or Text == "!download" or Text == "미나야 변경적용") then
+		elseif (Text == "!!!pull" or Text == "!!!download" or Text == "미나야 변경적용") then
 			-- PULL (github 로 부터 코드를 다운받아옴)
 			local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . .');
 			--os.execute("git fetch"); -- git 에서 변동사항 가져오기
@@ -487,7 +487,7 @@ client:on('messageCreate', function(message)
 			os.execute("timeout /t 3"); -- 너무 갑자기 활동이 일어나는걸 막기 위해 쉬어줌
 			msg:setContent('> 적용중 . . . (15초 내로 완료됩니다)');
 			reloadBot(); -- 리스타팅
-		elseif (Text == "!push" or Text == "!upload" or Text == "미나야 깃헙업로드") then
+		elseif (Text == "!!!push" or Text == "!!!upload" or Text == "미나야 깃헙업로드") then
 			local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 코드를 업로드중 . . .');
 			os.execute("git -C src add .");
 			os.execute("git -C src commit -m 'update'");
