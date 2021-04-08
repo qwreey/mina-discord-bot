@@ -166,6 +166,16 @@ local unknownReply = {
 	ㅇㅅㅇ
 ]]
 local commands = commandHandle.encodeCommands({
+	["ㅗ"] = {
+		alias = {
+			"ㅗㅗ","ㅗㅗㅗ","ㅗㅗㅗㅗ",
+			"ㅗㅗㅗㅗㅗ","법규","빡규",
+			"빡유","퍽큐","빡큐","빡뀨"
+		};
+		reply = {
+		    "ㅗㅗ","너나머겅","법규!!"
+		};
+	};
 	["영상편집"] = {
 		reply = {"세계관 최강 노동","너무나 힘든거"};
 	};
