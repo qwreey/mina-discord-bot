@@ -7,9 +7,7 @@ iLogger = {
 	["error"] = iLogger.error;
 	["fatal"] = iLogger.fatal;
 };
-
 local function main()
-sdf:sdf()
 --#region : 설명글/TODO 헤더
 --[[
 
@@ -88,7 +86,7 @@ local dirtChannels = LoadData("data/dirtChannels.json");
 local loveLeaderstats = LoadData("data/loveLeaderstats.json");
 
 local EULA do -- 사용 약관
-	local File = io.open("data/EULA.txt","r");
+	local File = io.open("data/EULA","r");
 	EULA = File:read("a");
 	File:close();
 end
@@ -666,7 +664,6 @@ end);
 StartBot(ACCOUNTData.botToken);
 --#endregion : 메인 파트
 end
-
 xpcall(main,function (err)
 	iLogger.fatal(err);
 	local err = (tostring(err) .. "\n");
@@ -677,8 +674,4 @@ xpcall(main,function (err)
 	local fil = io.open(fnm,"a");
 	fil:write(err);
 	fil:close();
-
-	os.execute("git add err");
-	os.execute("git commit -n 'ERROR!'");
-	os.execute("git push");
 end);
