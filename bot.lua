@@ -595,6 +595,7 @@ client:on('messageCreate', function(message)
 			msg:setContent('> 완료!');
 			return;
 		elseif (Text == "!!!stop" or Text == "!!!kill" or Text == "미나야 코드셧다운") then
+			msg:setContent('> Killing...');
 			os.exit(100);
 		end
 	end
