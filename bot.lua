@@ -9,6 +9,7 @@
 네이버 사전 검색 봇
 https://discord.com/oauth2/authorize?client_id=828894481289969665&permissions=2147871808&scope=bot
 
+TODO: DM 에다가 명령어 쓰기 막기
 TODO: 미나야 사전 <단어> 만들기
 TODO: 도움말 만들기
 TODO: 사전 Json 인코딩을 없에고 그냥 바로 테이블 넘기기
@@ -35,18 +36,25 @@ end
 local function reloadBot()
 	print("try reloading...")
 	client:setGame("재시작중...");
-	os.exit();
+	os.exit(101);
 end
 --#endregion : Discord Module
 --#region : 나눠진 모듈 합치기
-local cRandom   = require "src/lib/cRandom"; -- LUA 렌덤 핸들러
-local strSplit  = require "src/lib/stringSplit"; -- 글자 분해기
-local dictEmbed = require "src/lib/dictEmbed"; -- 사전 임배드 렌더러
-local naverDict = require "src/lib/naverDict"; -- 네이버 사전 API 핸들러
-local urlCode   = require "src/lib/urlCode"; -- 한글 URL 인코더/디코더
 local commandHandle = require "src/lib/commandHandle"; -- 커맨드 구조 처리기
+local cRandom = require "src/lib/cRandom"; -- LUA 렌덤 핸들러
+local strSplit = require "src/lib/stringSplit"; -- 글자 분해기
+local urlCode = require "src/lib/urlCode"; -- 한글 URL 인코더/디코더
+local makeId = require "src/lib/makeId"; -- ID 만드는거
 
-naverDict:setCoroHttp(corohttp):setJson(json); -- 네이버 사전 셋업
+-- 네이버 사전
+local naverDictEmbed = require "src/lib/naverDict/embed"; -- 네이버 사전 임배드 렌더러
+local naverDictSearch = require "src/lib/naverDict/naverDictSearch"; -- 네이버 사전 API 핸들러
+naverDictSearch:setCoroHttp(corohttp):setJson(json); -- 네이버 사전 셋업
+
+-- 유튜브 검색
+local youtubeEmbed = require "src/lib/youtube/embed"
+local youtubeSearch = require "src/lib/youtube/youtubeSearch"; -- 유튜브 검색
+youtubeSearch:setCoroHttp(corohttp):setJson(json); -- 유튜브 검색 셋업
 --#endregion : 나눠진 모듈 합치기
 --#region : 설정파일 불러오기
 local json = require("json");
@@ -144,6 +152,9 @@ local unknownReply = {
 	힘들어 언젠가 이 힘든 날조차 잊히는 행복이 진성트수님께 오리라고 믿어 의심치 않을 게요! 파이팅! 
 	영상편집
 	에펙 (에이펙스 ㄹㅈㄷ)
+	검열
+	구글,네이버,유튜브,위키피디아,나무위키 검색명령어
+	ㅇㅅㅇ
 ]]
 local commands = commandHandle.encodeCommands({
 	["영상편집"] = {
@@ -478,7 +489,8 @@ local commands = commandHandle.encodeCommands({
 		alias = {"유튜브검색","유튜브찾기","유튜브탐색","유튭찾기","유튭","유튭검색"};
 		reply = "잠시만 기다려주세요... (검색중)";
 		func = function(replyMsg,message,args,Content)
-
+			local Body,KeywordURL = youtubeSearch.searchFromYoutube(Content.rawArgs);
+			
 		end;
 	};
 	["사전"] = {
@@ -497,10 +509,31 @@ local commands = commandHandle.encodeCommands({
 				replyMsg:setContent("잘못된 명령어 사용법이에요!\n\n**올바른 사용 방법**\n> 미나야 사전 <검색할 단어>");
 			end
 
-			local body,url = naverDict.searchFromNaverDirt(Content.rawArgs,ACCOUNTData);
-			local embed = json.decode(dictEmbed:Embed(Content.rawArgs,url,body));
+			local body,url = naverDictSearch.searchFromNaverDirt(Content.rawArgs,ACCOUNTData);
+			local embed = json.decode(naverDictEmbed:Embed(Content.rawArgs,url,body));
 			replyMsg:setEmbed(embed.embed);
 			replyMsg:setContent(embed.content);
+			return;
+		end;
+	};
+	["지워"] = {
+		alias = {"지우개","지워봐","지워라","지우기"};
+		func = function(replyMsg,message,args,Content)
+			local RemoveNum = tonumber(Content.rawArgs);
+			if (not RemoveNum) or type(RemoveNum) ~= "number" then
+				message:reply("잘못된 명령어 사용법이에요!\n\n**올바른 사용 방법**\n> 미나야 지워 <지울 수>\n지울수 : 2 에서 100 까지의 숫자 (정수)");
+				return;
+			elseif (RemoveNum > 100) or (RemoveNum < 2) then -- 
+				message:reply("잘못된 명령어 사용법이에요!\n\n<지울 수>는 2에서 100까지의 숫자이어야 합니다");
+				return;
+			elseif (RemoveNum % 1) ~= 0 then -- 정수인지 유리수(또는 실수) 인지 확인
+				message:reply("잘못된 명령어 사용법이에요!\n\n<지울 수> 는 정수이어야 합니다 (소숫점 X)");
+				return;
+			end
+
+			message.channel:bulkDelete(message.channel:getMessagesBefore(message.id,RemoveNum));
+			message:reply(("최근 메시지 %s개를 지웠어요!"):format(RemoveNum));
+			message:delete();
 			return;
 		end;
 	};
@@ -535,7 +568,7 @@ client:on('messageCreate', function(message)
 		if (Text == "!!!restart" or Text == "!!!reload" or Text == "미나야 리로드") then
 			--다시시작
 			print("restarting ...");
-			message:reply('> 재시작중 . . . (15초 내로 완료됩니다)');
+			message:reply('> 재시작중 . . . (2초 내로 완료됩니다)');
 			reloadBot();
 		elseif (Text == "!!!pull" or Text == "!!!download" or Text == "미나야 변경적용") then
 			-- PULL (github 로 부터 코드를 다운받아옴)
@@ -543,7 +576,7 @@ client:on('messageCreate', function(message)
 			--os.execute("git fetch"); -- git 에서 변동사항 가져오기
 			os.execute("git -C src pull"); -- git 에서 변동사항 가져와 적용하기
 			os.execute("timeout /t 3"); -- 너무 갑자기 활동이 일어나는걸 막기 위해 쉬어줌
-			msg:setContent('> 적용중 . . . (15초 내로 완료됩니다)');
+			msg:setContent('> 적용중 . . . (2초 내로 완료됩니다)');
 			reloadBot(); -- 리스타팅
 		elseif (Text == "!!!push" or Text == "!!!upload" or Text == "미나야 깃헙업로드") then
 			local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 코드를 업로드중 . . .');
@@ -552,14 +585,16 @@ client:on('messageCreate', function(message)
 			os.execute("git -C src push");
 			msg:setContent('> 완료!');
 			return;
+		elseif (Text == "!!!stop" or Text == "!!!kill" or Text == "미나야 코드셧다운") then
+			os.exit(100);
 		end
 	end
 	-- 사전
 	if dirtChannels[Channel.id] and string.sub(Text,1,1) == "!" then
 		Text = string.sub(Text,2,-1);
 		local newMsg = message:reply('> 찾는중 . . .');
-		local body,url = naverDict.searchFromNaverDirt(Text,ACCOUNTData);
-		local data = json.decode(dictEmbed:Embed(Text,url,body));
+		local body,url = naverDictSearch.searchFromNaverDirt(Text,ACCOUNTData);
+		local data = json.decode(naverDictEmbed:Embed(Text,url,body));
 		newMsg:update(data);
 	end
 
@@ -606,6 +641,7 @@ client:on('messageCreate', function(message)
 						rawCommandText = rawCommandText; -- 접두사를 지운 커맨드 스트링
 						prefix = prefix; -- 접두사(확인된)
 						rawArgs = string.sub(rawCommandText,#CommandName+2,-1); -- args 를 str 로 받기 (직접 분석용)
+						self = Command;
 					});
 				end
 			end
