@@ -67,6 +67,12 @@ local ACCOUNTData = LoadData("data/ACCOUNT.json");
 local History = LoadData("data/history.json");
 local dirtChannels = LoadData("data/dirtChannels.json");
 local loveLeaderstats = LoadData("data/loveLeaderstats.json");
+
+local EULA do -- 사용 약관
+	local File = io.open("data/EULA.txt","r");
+	EULA = File:read("a");
+	File:close();
+end
 --#endregion : load settings from data file
 --#region : 반응, 프리픽스, 설정
 local Admins = { -- 관리 명령어 권한
@@ -75,6 +81,12 @@ local Admins = { -- 관리 명령어 권한
 local prefixs = { -- 명령어 맨앞 글자 (접두사)
 	[1] = "미나야";
 	[2] = "미나";
+	[3] = "미나야.";
+	[4] = "미나!";
+	[5] = "미나야!";
+	[6] = "미나야...";
+	[7] = "미나야..",
+	[8] = "미나..."
 };
 local prefixReply = { -- 그냥 미나야 하면 답
 	"미나는 여기 있어요!","부르셨나요?","넹?",
@@ -97,6 +109,9 @@ local unknownReply = {
 	변수들
 	{%:UserName:%} : 유저 이름으로 대채
 
+	...
+	유튜브검색
+	트위터/유튜브/인스타 같은거 바로가기
 	살려줘, 잠안와, 학원, 학교, 야자, ㅈ까, 바보, 공부 추가 예정
 	ㅄ,ㅂㅅ,병신
 	욕은 나빠요!
@@ -108,6 +123,7 @@ local unknownReply = {
 	L 하면 L (+ /lobby, /leave)
 	lol 도
 	젤다 드립
+	삼성.LG 기업들 말하면 피드백
 	ㄱㄷ
 	착해, 이뻐, 귀여워 같은 칭찬단어 만들고 그거 호감도 늘리는거 만들기
 	맛있지 먹었다
@@ -126,8 +142,29 @@ local unknownReply = {
 	사람 크시는 사람이 아니지만요...
 	살려줘 무, 무슨 일 있어요?!
 	힘들어 언젠가 이 힘든 날조차 잊히는 행복이 진성트수님께 오리라고 믿어 의심치 않을 게요! 파이팅! 
+	영상편집
+	에펙 (에이펙스 ㄹㅈㄷ)
 ]]
 local commands = commandHandle.encodeCommands({
+	["영상편집"] = {
+		reply = {"세계관 최강 노동","너무나 힘든거"};
+	};
+	["알파카"] = {
+		alias = "파카";
+		reply = {
+			"내가 봇만들때 학원간 ~~휴먼~~알파카",
+			"파카파카알파카",
+			"봇 만들때 커피 마시고 있던넘"
+		};
+	};
+	["python"] = {
+		alias = {"PY","py",".py","Python","파이썬","파이떤"};
+		reply = {
+			"파이썬도 좋다고 들었어요",
+			"저는 파이썬으로 만들어지지 않았어요!",
+			"다른 로봇 친구들은 다 이거 쓴다더라구요?"
+		};
+	};
 	["꺼져"] = {
 		alias = "ㄲㅈ";
 		reply = {
@@ -437,6 +474,13 @@ local commands = commandHandle.encodeCommands({
 			message:reply(("미나는 %s 살이에요"):format(tostring(Year)));
 		end;
 	};
+	["유튜브"] = {
+		alias = {"유튜브검색","유튜브찾기","유튜브탐색","유튭찾기","유튭","유튭검색"};
+		reply = "잠시만 기다려주세요... (검색중)";
+		func = function(replyMsg,message,args,Content)
+
+		end;
+	};
 	["사전"] = {
 		reply = "잠시만 기다려주세요... (검색중)";
 		alias = {
@@ -448,6 +492,11 @@ local commands = commandHandle.encodeCommands({
 			"사전검색"
 		};
 		func = function(replyMsg,message,args,Content)
+			local searchKey = Content.rawArgs;
+			if (not searchKey) or (searchKey == "") or (searchKey == " ") then
+				replyMsg:setContent("잘못된 명령어 사용법이에요!\n\n**올바른 사용 방법**\n> 미나야 사전 <검색할 단어>");
+			end
+
 			local body,url = naverDict.searchFromNaverDirt(Content.rawArgs,ACCOUNTData);
 			local embed = json.decode(dictEmbed:Embed(Content.rawArgs,url,body));
 			replyMsg:setEmbed(embed.embed);
@@ -460,7 +509,7 @@ local commands = commandHandle.encodeCommands({
 		reply = "95.2KB";
 	};
 	["미나"] = {
-		alias = {"미나야"};
+		alias = {"미나야","미나!","미나...","미나야...","미나..","미나야..","미나.","미나야.","미나야!"};
 		reply = prefixReply;
 	};
 

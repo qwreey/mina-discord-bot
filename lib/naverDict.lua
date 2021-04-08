@@ -25,14 +25,14 @@ function module:setJson(NewJson)
 end
 
 function module.searchFromNaverDirt(Keyword,ClientData)
-    local Url = urlCode.urlEncode(Keyword);
-    local Header,Result = corohttp.request("GET",
-        ("https://openapi.naver.com/v1/search/encyc.json?query=%s&display=8"):format(Url),{
+    local KeywordUrl = urlCode.urlEncode(Keyword);
+    local Header,Body = corohttp.request("GET",
+        ("https://openapi.naver.com/v1/search/encyc.json?query=%s&display=8"):format(KeywordUrl),{
             {"X-Naver-Client-Id",ClientData.naverClientId},
             {"X-Naver-Client-Secret",ClientData.naverClientSecret}
         }
     );
-    return json.decode(Result),Url;
+    return json.decode(Body),KeywordUrl;
 end
 
 return module;
