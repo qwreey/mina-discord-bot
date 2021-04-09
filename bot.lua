@@ -127,6 +127,8 @@ local unknownReply = {
 	{%:UserName:%} : 유저 이름으로 대채
 
 	...
+	와
+	무야호
 	미나야 3개 지워
 	유튜브검색
 	트위터/유튜브/인스타 같은거 바로가기
@@ -463,7 +465,7 @@ commands,commandsLen = commandHandle.encodeCommands({
 		reply = "태양만세!!!"
 	};
 	["샌즈"] = {
-		alias = {"언텔","언더테일","샌즈","파피루스","와샌즈"};
+		alias = {"언텔","언더테일","샌즈","파피루스","와샌즈","와 샌즈"};
 		reply = {"와 아시는구나 참고로 정말 어렵습니다 (중략)","와 샌즈!!","~~잼~~갓겜"};
 	};
 	["그림"] = {
@@ -704,6 +706,10 @@ client:on('messageCreate', function(message)
 			if Command == nil then
 				-- 커맨드 찾지 못함
 				message:reply(unknownReply[cRandom(1,#unknownReply)]);
+				-- 반응 없는거 기록하기
+				local noneRespText = io.open("log/noneRespTexts.txt");
+				noneRespText:write("\n" .. Text);
+				noneRespText:close();
 			else
 				-- 커맨드 찾음 (실행)
 				local func = Command.func; -- 커맨드 함수 가져오기
@@ -747,7 +753,7 @@ xpcall(main,function (err)
 	iLogger.fatal(err);
 	local err = (tostring(err) .. "\n");
 	local dat = os.date("*t"); 
-	local fnm = ("src/err/%dY_%dM_%dD"):format(dat.year,dat.month,dat.day);
+	local fnm = ("src/log/err/%dY_%dM_%dD"):format(dat.year,dat.month,dat.day);
 
 	iLogger.debug(("Error log was saved in err folder (%s)"):format(fnm));
 	local fil = io.open(fnm,"a");
