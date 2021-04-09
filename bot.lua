@@ -94,6 +94,8 @@ end
 --#region : 반응, 프리픽스, 설정
 local Admins = { -- 관리 명령어 권한
 	["367946917197381644"] = "쿼리";
+	["647101613047152640"] = "눈송이";
+	["415804982764371969"] = "상어";
 };
 local prefixs = { -- 명령어 맨앞 글자 (접두사)
 	[1] = "미나야";
@@ -588,18 +590,20 @@ commands,commandsLen = commandHandle.encodeCommands({
 		reply = {"사회악 노가다","노가다 망겜","하지 마세요... 젭발","주인이 그거 많이 하던데"};
 	};
 	["끝말잇기"] = {
-	         reply={"크시랑 하세요"};
+		alias = "끝말 잇기";
+	    reply = "크시랑 하세요";
 	};
 	["아"] = {
 		alias = {
 			"아아","아아아","아아아아","아아아아아","아아아아아아","아아아아아아아",
 			"아아아아아아아아","아아아아아아아아아","아아아아아아아아아아"
 		};
-		reply = function (message,args,Content)
-			message:reply(
-				Content.Command
-			);
-		end;
+		reply = "아";
+		--reply = function (message,args,Content)
+			--message:reply(
+				--Content.Command
+			--);
+		--end;
 	};
 	--["노래좀"] = {
 	--	alias = {"노래추천좀","노래추천"};
