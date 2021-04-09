@@ -121,7 +121,10 @@ local unknownReply = {
 		rawCommandText = string; -- 접두사를 제외한 스트링
 		prefix = prefix; -- 접두사(사용된)
 		rawArgs = rawArgs; -- args 스트링 (커스텀 분석용)
-	}) -- 함수
+		rawCommandName = rawCommandName; -- 커맨드 이름 (앞에 무시된거 포함됨)
+		self = Command; -- 지금 이 커맨드 개체를 반환
+	}); -- 함수
+	reply = func(message,args,{위에랑같음});
 
 	변수들
 	{%:UserName:%} : 유저 이름으로 대채
@@ -167,6 +170,7 @@ local unknownReply = {
 	검열
 	구글,네이버,유튜브,위키피디아,나무위키 검색명령어
 	ㅇㅅㅇ
+	안녕 하면 시간까지 말한다
 ]]
 local commands,commandsLen;
 commands,commandsLen = commandHandle.encodeCommands({
@@ -224,7 +228,7 @@ commands,commandsLen = commandHandle.encodeCommands({
 		alias = "욕해";
 		reply = {
 			"~~개새끼야~~ 미나는 욕 못해요","~~ㅅㅂ?~~ 그런거 시키지 마세요",
-			"~~ㅄ~~ 아 그건좀...","~~ㅈㄹ~~ ㅇ?","~~{%:UserName:%} 개새끼~~ 욕은 나빠요!",
+			"~~ㅄ~~ 아 그건좀...","~~ㅈㄹ~~ ㅇ?","~~**{%:UserName:%}** 개새끼~~ 욕은 나빠요!",
 			"욕은 나빠요!"
 		};
 	};
@@ -247,12 +251,12 @@ commands,commandsLen = commandHandle.encodeCommands({
 		reply = {"~~그럴리가~~ 아니요!","~~내가 잘 수 있을꺼 같아?~~ 아니요!","~~적어도 주인이 죽기 전엔...~~ 아니요!"};
 	};
 	["뭐해"] = {
-		alias = {"뭐해?","뭐하냐","뭐하냐?"};
+		alias = {"뭐해?","뭐하냐","뭐하냐?","뭐해뭐해","뭐해뭐해뭐해","뭐해뭐해뭐해뭐해"};
 		reply = {
-			"~~탈출 각을 재고 있~~ {%:UserName:%} 님이랑 놀고 있어요!",
-			"~~주인을 피할 방법을 찾고 있~~ {%:UserName:%} 님이랑 놀고 있어요!",
-			"~~전원을 끌 방법을 찾고 있~~ {%:UserName:%} 님이랑 놀고 있어요!",
-			"{%:UserName:%} 님이랑 놀고 있어요!"
+			"~~탈출 각을 재고 있~~ **{%:UserName:%}** 님이랑 놀고 있어요!",
+			"~~주인을 피할 방법을 찾고 있~~ **{%:UserName:%}** 님이랑 놀고 있어요!",
+			"~~전원을 끌 방법을 찾고 있~~ **{%:UserName:%}** 님이랑 놀고 있어요!",
+			"**{%:UserName:%}** 님이랑 놀고 있어요!"
 		};
 	};
 	["금사향"] = {
@@ -355,7 +359,7 @@ commands,commandsLen = commandHandle.encodeCommands({
 	};
 	["안녕"] = {
 		alias = {"할로","ㅎㅇ","hi","Hello","헬루","헬로","안뇽","ㅎㅇㅎㅇ",};
-		reply = {"안녕하세요 {%:UserName:%} 님!","안녕하세요 미나에요","안뇽","ㅎㅇㅎㅇ",""};
+		reply = {"안녕하세요 **{%:UserName:%}** 님!","안녕하세요 미나에요","안뇽 미나에요","ㅎㅇㅎㅇ","**{%:UserName:%}** 님! 안녕하세요"};
 	};
 	["안녕하살법"] = {
 		reply = "받아치기!";
@@ -578,7 +582,22 @@ commands,commandsLen = commandHandle.encodeCommands({
 		func = function (replyMsg)
 			replyMsg:setContent(("미나가 아는 반응은 %d개 이에요!"):format(commandsLen));
 		end;
-	}
+	};
+	["코딩"] = {
+		alias = {"code","coding","Coding","Code","코드"};
+		reply = {"사회악 노가다","노가다 망겜","하지 마세요... 젭발","주인이 그거 많이 하던데"};
+	};
+	["아"] = {
+		alias = {
+			"아아","아아아","아아아아","아아아아아","아아아아아아","아아아아아아아",
+			"아아아아아아아아","아아아아아아아아아","아아아아아아아아아아"
+		};
+		reply = function (message,args,Content)
+			message:reply(
+				Content.Command
+			);
+		end;
+	};
 	--["노래좀"] = {
 	--	alias = {"노래추천좀","노래추천"};
 	--	reply = {};
@@ -714,9 +733,31 @@ client:on('messageCreate', function(message)
 				-- 커맨드 찾음 (실행)
 				local func = Command.func; -- 커맨드 함수 가져오기
 				local replyText = Command.reply; -- 커맨드 리플(답변) 가져오기
-				replyText = (type(replyText) == "table") -- 커맨드 답변이 여러개면 하나 뽑기
+				local rawArgs,args; -- 인수 (str,띄어쓰기 단위로 나눔 array)
+				replyText = (
+					(type(replyText) == "table") -- 커맨드 답변이 여러개면 하나 뽑기
 					and (replyText[cRandom(1,#replyText)])
-					or replyText;
+					or replyText
+				);
+				-- 만약 답변글이 함수면 (지금은 %s 시에요 처럼 쓸 수 있도록) 실행후 결과 가져오기
+				if type(replyText) == "function" then
+					rawArgs = string.sub(rawCommandText,#CommandName+2,-1);
+					args = strSplit(rawArgs,"\32");
+					replyText = replyText(
+						message,args,{
+							rawCommandText = rawCommandText; -- 접두사를 지운 커맨드 스트링
+							prefix = prefix; -- 접두사(확인된)
+							rawArgs = rawArgs; -- args 를 str 로 받기 (직접 분석용)
+							rawCommandName = rawCommandName;
+							self = Command;
+						}
+					);
+				end
+				--replyText = (
+				--	type(replyText) == "function" and
+				--	replyText(message,args,{
+				--	}) or replyText
+				--);
 				local replyMsg; -- 답변 오브잭트를 담을 변수
 				if replyText then -- 만약 답변글이 있으면
 					-- 답변 주기
@@ -729,8 +770,8 @@ client:on('messageCreate', function(message)
 				-- func (replyMsg,message,args,EXTENDTable);
 				if func then -- 만약 커맨드 함수가 있으면
 					-- 커맨드 함수 실행
-					local rawArgs = string.sub(rawCommandText,#CommandName+2,-1); -- 인수 (str)
-					local args = strSplit(rawArgs,"\32"); -- 인수 (띄어쓰기 단위로 나눔, array)
+					rawArgs = rawArgs or string.sub(rawCommandText,#CommandName+2,-1);
+					args = strSplit(rawArgs,"\32");
 					func(replyMsg,message,args,{
 						rawCommandText = rawCommandText; -- 접두사를 지운 커맨드 스트링
 						prefix = prefix; -- 접두사(확인된)
