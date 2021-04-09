@@ -587,6 +587,9 @@ commands,commandsLen = commandHandle.encodeCommands({
 		alias = {"code","coding","Coding","Code","코드"};
 		reply = {"사회악 노가다","노가다 망겜","하지 마세요... 젭발","주인이 그거 많이 하던데"};
 	};
+	["끝말잇기"] = {
+	         reply={"크시랑 하세요"};
+	};
 	["아"] = {
 		alias = {
 			"아아","아아아","아아아아","아아아아아","아아아아아아","아아아아아아아",
