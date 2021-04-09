@@ -707,7 +707,7 @@ client:on('messageCreate', function(message)
 				-- 커맨드 찾지 못함
 				message:reply(unknownReply[cRandom(1,#unknownReply)]);
 				-- 반응 없는거 기록하기
-				local noneRespText = io.open("log/noneRespTexts.txt");
+				local noneRespText = io.open("log/noneRespTexts.txt","a");
 				noneRespText:write("\n" .. Text);
 				noneRespText:close();
 			else
