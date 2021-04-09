@@ -631,15 +631,14 @@ client:on('messageCreate', function(message)
 
 	-- 모든 접두사로 작동하도록 루프
 	for _,prefix in pairs(prefixs) do
-
 		-- 만약 접두사와 글자가 일치하는경우 반응 달기
 		if prefix == Text then
 			message:reply(prefixReply[cRandom(1,#prefixReply)]);
 			break;
 		end
+		local prefix = prefix .. "\32"; -- 맨 앞 실행 접두사
 
 		-- 커맨드 분석
-		local prefix = prefix .. "\32"; -- 맨 앞 실행 접두사
 		if string.sub(Text,1,#prefix) == prefix then -- 접두사가 일치함을 확인함
 
 			-- 알고리즘 작성
@@ -647,13 +646,16 @@ client:on('messageCreate', function(message)
 			-- 단어 분해 후 COMMAND DICT 에 색인시도
 			-- 못찾으면 다시 넘겨서 뒷단어로 넘김
 			-- 찾으면 넘겨서 COMMAND RUN 에 TRY 던짐
-			-- 커맨드 분석 시작
 
 			local rawCommandText = string.sub(Text,#prefix+1,-1); -- 접두사 뺀 글자
-
-			-- (커맨드 색인 1 차시도) 띄어쓰기를 포함한 명령어를 검사할 수 있도록 for 루프 실행
 			local splitCommandText = strSplit(rawCommandText,"\32");
 			local CommandName,Command,rawCommandName;
+
+			-- (커맨드 색인 1 차시도) 띄어쓰기를 포함한 명령어를 검사할 수 있도록 for 루프 실행
+			-- 찾기 찾기 찾기
+			-- 찾기 찾기
+			-- 찾기
+			-- 이런식으로 계단식 찾기를 수행
 			for Len = #splitCommandText,1,-1 do
 				local Text = "";
 				for Index = 1,Len do
@@ -669,16 +671,18 @@ client:on('messageCreate', function(message)
 			end
 
 			-- (커맨드 색인 2 차시도) 커맨드 못찾으면 단어별로 나눠서 찾기 시도
+			-- 찾기 찾기 찾기
+			-- 부분부분 다 나눠서 찾기
 			if not Command then
 				for FindPos,Text in pairs(splitCommandText) do
-					local TempCommand = commandHandle.findCommandFrom(commands,Text);
-					if TempCommand then
-						Command = TempCommand;
+					Command = commandHandle.findCommandFrom(commands,Text);
+					if Command then
 						CommandName = "";
-						rawCommandText = Text;
+						rawCommandName = Text;
 						for Index = 1,FindPos do
 							CommandName = CommandName .. splitCommandText[Index];
 						end
+						break;
 					end
 				end
 			end
@@ -708,12 +712,12 @@ client:on('messageCreate', function(message)
 				-- func (replyMsg,message,args,EXTENDTable);
 				if func then -- 만약 커맨드 함수가 있으면
 					-- 커맨드 함수 실행
-					local args = strSplit(rawCommandText); -- 명령어 분석 (띄어쓰기 단위)
-					table.remove(args,1); -- 맨앞에 있는 명령어 이름 지우기 (args 만 담기 위함)
+					local rawArgs = string.sub(rawCommandText,#CommandName+2,-1); -- 인수 (str)
+					local args = strSplit(rawArgs,"\32"); -- 인수 (띄어쓰기 단위로 나눔, array)
 					func(replyMsg,message,args,{
 						rawCommandText = rawCommandText; -- 접두사를 지운 커맨드 스트링
 						prefix = prefix; -- 접두사(확인된)
-						rawArgs = string.sub(rawCommandText,#CommandName+2,-1); -- args 를 str 로 받기 (직접 분석용)
+						rawArgs = rawArgs; -- args 를 str 로 받기 (직접 분석용)
 						rawCommandName = rawCommandName;
 						self = Command;
 					});
