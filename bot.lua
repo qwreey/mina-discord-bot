@@ -171,11 +171,14 @@ local unknownReply = {
 	에펙 (에이펙스 ㄹㅈㄷ)
 	검열
 	구글,네이버,유튜브,위키피디아,나무위키 검색명령어
-	ㅇㅅㅇ
 	안녕 하면 시간까지 말한다
 ]]
 local commands,commandsLen;
 commands,commandsLen = commandHandle.encodeCommands({
+	["ㅁㅇㅁㅇ"] = {
+		alias = {"머야머야","ㅁㅇ","ㅁㅇㅁㅇㅁㅇ"};
+		reply = {string.rep("머야",12),"뭐야뭐야~"};
+	};
 	["ㅇㅅㅇ"] = {
 		alias = "ㅇ ㅅ ㅇ";
 		reply = string.rep("ㅇㅅㅇ ",15);
