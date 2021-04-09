@@ -521,7 +521,7 @@ local commands = commandHandle.encodeCommands({
 			"영단어검색","영단어찾기","dictionary",
 			"단어찾아","영단어찾아","단어찾아줘",
 			"영단어찾아줘","영단어","사전찾기",
-			"사전검색"
+			"사전검색","사전찾기"
 		};
 		func = function(replyMsg,message,args,Content)
 			local searchKey = Content.rawArgs;
