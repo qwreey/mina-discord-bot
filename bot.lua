@@ -176,6 +176,10 @@ local unknownReply = {
 ]]
 local commands,commandsLen;
 commands,commandsLen = commandHandle.encodeCommands({
+	["ㅇㅅㅇ"] = {
+		alias = "ㅇ ㅅ ㅇ";
+		reply = string.rep("ㅇㅅㅇ ",15);
+	};
 	["ㅗ"] = {
 		alias = {
 			"ㅗㅗ","ㅗㅗㅗ","ㅗㅗㅗㅗ",
