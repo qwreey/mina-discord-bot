@@ -622,8 +622,11 @@ client:on('messageCreate', function(message)
 	-- 명령어
 
 	-- prefix : 접두사
-	-- rawCommandText : 접두사 뺀 커맨드
+	-- rawCommandText : 접두사 뺀 커맨드 전채
+	-- splitCommandText : rawCommandText 를 \32 로 분해한 array
+	-- rawCommandText : 커맨드 이름 (앞부분 다 자르고)
 	-- CommandName : 커맨드 이름
+	-- | 찾은 후 (for 루프 뒤)
 	-- Command : 커맨드 개체 (찾은경우)
 
 	-- 모든 접두사로 작동하도록 루프
@@ -639,12 +642,18 @@ client:on('messageCreate', function(message)
 		local prefix = prefix .. "\32"; -- 맨 앞 실행 접두사
 		if string.sub(Text,1,#prefix) == prefix then -- 접두사가 일치함을 확인함
 
+			-- 알고리즘 작성
+			-- 커맨드 찾기
+			-- 단어 분해 후 COMMAND DICT 에 색인시도
+			-- 못찾으면 다시 넘겨서 뒷단어로 넘김
+			-- 찾으면 넘겨서 COMMAND RUN 에 TRY 던짐
 			-- 커맨드 분석 시작
+
 			local rawCommandText = string.sub(Text,#prefix+1,-1); -- 접두사 뺀 글자
 
-			-- 띄어쓰기를 포함한 명령어를 검사할 수 있도록 for 루프 실행
+			-- (커맨드 색인 1 차시도) 띄어쓰기를 포함한 명령어를 검사할 수 있도록 for 루프 실행
 			local splitCommandText = strSplit(rawCommandText,"\32");
-			local CommandName,Command;
+			local CommandName,Command,rawCommandName;
 			for Len = #splitCommandText,1,-1 do
 				local Text = "";
 				for Index = 1,Len do
@@ -653,29 +662,26 @@ client:on('messageCreate', function(message)
 				local TempCommand = commandHandle.findCommandFrom(commands,Text);
 				if TempCommand then
 					CommandName = Text;
+					rawCommandName = Text;
 					Command = TempCommand;
 					break;
 				end
 			end
 
-			-- 알고리즘 작성
-			-- 커맨드 찾기
-			-- 단어 분해 후 COMMAND DICT 에 색인시도
-			-- 못찾으면 다시 넘겨서 뒷단어로 넘김
-			-- 찾으면 넘겨서 COMMAND RUN 에 TRY 던짐
-
-			-- TODO: 귀찮은짓은 미래의 내가 해줄꺼임
-			-- 커맨드를 못찾은경우 아무거나 찾음
-			--if not Command then
-			--	for FindPos,Text in pairs(splitCommandText) do
-			--		local TempCommand = commandHandle.findCommandFrom(commands,Text);
-			--		if TempCommand then
-			--			Command = TempCommand;
-			--			CommandName = "";
-			--			for FindPos = #splitCommandText do
-			--		end
-			--	end
-			--end
+			-- (커맨드 색인 2 차시도) 커맨드 못찾으면 단어별로 나눠서 찾기 시도
+			if not Command then
+				for FindPos,Text in pairs(splitCommandText) do
+					local TempCommand = commandHandle.findCommandFrom(commands,Text);
+					if TempCommand then
+						Command = TempCommand;
+						CommandName = "";
+						rawCommandText = Text;
+						for Index = 1,FindPos do
+							CommandName = CommandName .. splitCommandText[Index];
+						end
+					end
+				end
+			end
 
 			--local CommandName = string.match(rawCommandText,"(.-)\32") or rawCommandText; -- 커맨드 이름
 			--local Command = commandHandle.findCommandFrom(commands,CommandName); -- 커맨드 검색
@@ -708,6 +714,7 @@ client:on('messageCreate', function(message)
 						rawCommandText = rawCommandText; -- 접두사를 지운 커맨드 스트링
 						prefix = prefix; -- 접두사(확인된)
 						rawArgs = string.sub(rawCommandText,#CommandName+2,-1); -- args 를 str 로 받기 (직접 분석용)
+						rawCommandName = rawCommandName;
 						self = Command;
 					});
 				end
