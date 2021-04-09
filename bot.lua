@@ -166,7 +166,8 @@ local unknownReply = {
 	구글,네이버,유튜브,위키피디아,나무위키 검색명령어
 	ㅇㅅㅇ
 ]]
-local commands = commandHandle.encodeCommands({
+local commands,commandsLen;
+commands,commandsLen = commandHandle.encodeCommands({
 	["ㅗ"] = {
 		alias = {
 			"ㅗㅗ","ㅗㅗㅗ","ㅗㅗㅗㅗ",
@@ -569,7 +570,13 @@ local commands = commandHandle.encodeCommands({
 		alias = {"미나야","미나!","미나...","미나야...","미나..","미나야..","미나.","미나야.","미나야!"};
 		reply = prefixReply;
 	};
-
+	["반응"] = {
+		alias = {"반응수","반응 수","반응 갯수"};
+		reply = "새어보고 있어요...";
+		func = function (replyMsg)
+			replyMsg:setContent(("미나가 아는 반응은 %d개 이에요!"):format(commandsLen));
+		end;
+	}
 	--["노래좀"] = {
 	--	alias = {"노래추천좀","노래추천"};
 	--	reply = {};

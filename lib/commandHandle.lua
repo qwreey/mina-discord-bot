@@ -22,20 +22,24 @@ local module = {};
 
 function module.encodeCommands(TableOfCommand)
     local this = {};
+    local len = 0;
     for Index,CommandInfo in pairs(TableOfCommand) do
         local alias = CommandInfo.alias;
 
         this[Index] = CommandInfo;
+        len = len + 1;
         if type(alias) == "table" then
             for _,Name in pairs(alias) do
                 this[Name] = CommandInfo;
+                len = len + 1;
             end
         elseif type(alias) == "string" then
             this[alias] = CommandInfo;
+            len = len + 1;
         end
     end
 
-    return this;
+    return this,len;
 end
 
 function module.findCommandFrom(encodedTable,commandName)
