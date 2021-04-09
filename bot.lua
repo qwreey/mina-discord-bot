@@ -256,6 +256,10 @@ local commands = commandHandle.encodeCommands({
 		alias = {"사향","은애","유은애","유으내","으내"};
 		reply = {string.rep("트최단미! ",30),string.rep("으내! ",30),string.rep("유으내! ",30)};
 	};
+	["꽃감이"] = {
+		alias = {"꽃감이!","꽃감","꽃감이!!"};
+		reply = {string.rep("꽃감이는 천재야! ",18),string.rep("꽃감이! ",25)};
+	};
 	["어녹"] = {
 		reply = "바보  - 팟죽의 요청 -";
 	};
