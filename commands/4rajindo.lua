@@ -86,5 +86,8 @@ return function (o)
             alias = {"심심하다","심심함"};
             reply = "놀아줄까?";
         };
+        ["레고"] = {
+            reply = "밟았어!";
+        };
     };
 end;
