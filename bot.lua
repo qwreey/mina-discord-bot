@@ -54,6 +54,7 @@ local cRandom = require "src/lib/cRandom"; -- LUA 렌덤 핸들러
 local strSplit = require "src/lib/stringSplit"; -- 글자 분해기
 local urlCode = require "src/lib/urlCode"; -- 한글 URL 인코더/디코더
 local makeId = require "src/lib/makeId"; -- ID 만드는거
+local qFilesystem = require "src/lib/qFilesystem";
 
 -- 네이버 사전
 local naverDictEmbed = require "src/lib/naverDict/embed"; -- 네이버 사전 임배드 렌더러
@@ -113,7 +114,7 @@ local prefixReply = { -- 그냥 미나야 하면 답
 	"~~어쩌라고~~","Zzz... 아! 안졸았어요",
 	"Zzz... 아! 안졸았어요 ~~아 나도 좀 잠좀 자자 인간아~~","네!"
 };
-local unknownReply = {
+local unknownReply = { -- 반응 없을때 띄움
 	"(갸우뚱?)","무슨 말이에요?","네?",":thinking:"
 };
 --[[
@@ -169,14 +170,30 @@ local unknownReply = {
 	구글,네이버,유튜브,위키피디아,나무위키 검색명령어
 	안녕 하면 시간까지 말한다
 ]]
-local function loadCommandFiles()
-	
-end
-local otherCommands = {
-	loadCommandFiles("commands/4rajindo.lua");
-	loadCommandFiles("qwreey.lua");
+local CommandEnv = { -- 커맨드 사전에 환경을 제공
+	["cRandom"] = cRandom;
+	["json"] = json;
+	["client"] = client;
+	["discordia"] = discordia;
+	["enums"] = enums;
+	["iLogger"] = iLogger;
+	["makeId"] = makeId;
+	["urlCode"] = urlCode;
+	["strSplit"] = strSplit;
+	["ACCOUNTData"] = ACCOUNTData;
+	["qFilesystem"] = qFilesystem;
 };
-
+local function loadCommandFiles(FileRoot) -- 커맨드 사전 불러오기
+	local SetEnv,CommandsRawFile = require(FileRoot);
+	SetEnv(CommandEnv);
+	return CommandsRawFile;
+end
+-- commands 폴더에서 커맨드 불러오기
+local otherCommands = {};
+for CmdDict in qFilesystem:GetFiles("commands",true) do
+	table.insert(otherCommands,loadCommandFiles("commands/" .. CmdDict));
+end
+-- 커맨드 색인파일 만들기
 local commands,commandsLen;
 commands,commandsLen = commandHandle.encodeCommands({
 	-- 특수기능
