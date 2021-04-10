@@ -91,7 +91,7 @@ local EULA do -- 사용 약관
 	File:close();
 end
 --#endregion : load settings from data file
---#region : 반응, 프리픽스, 설정
+--#region : 반응, 프리픽스, 설정, 커맨드 등등
 local Admins = { -- 관리 명령어 권한
 	["367946917197381644"] = "쿼리";
 	["647101613047152640"] = "눈송이";
@@ -169,6 +169,10 @@ local unknownReply = {
 	구글,네이버,유튜브,위키피디아,나무위키 검색명령어
 	안녕 하면 시간까지 말한다
 ]]
+local function loadCommandFiles()
+	
+end
+
 local commands,commandsLen;
 commands,commandsLen = commandHandle.encodeCommands({
 	-- 특수기능
@@ -436,11 +440,12 @@ client:on('messageCreate', function(message)
 		end
 	end
 end);
-
 -- Start bot
 StartBot(ACCOUNTData.botToken);
 --#endregion : 메인 파트
 end
+
+-- 버그 핸들링 (충돌시 발생하므로 이 내부에서는 discordia 가 응답하지 않을 수 있음)
 xpcall(main,function (err)
 	iLogger.fatal(err);
 	local err = (tostring(err) .. "\n");
