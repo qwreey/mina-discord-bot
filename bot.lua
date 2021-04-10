@@ -310,8 +310,8 @@ client:on('messageCreate', function(message)
 			local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . .');
 			--os.execute("git fetch"); -- git 에서 변동사항 가져오기
 			os.execute("git -C src pull"); -- git 에서 변동사항 가져와 적용하기
-			os.execute("timeout /t 3"); -- 너무 갑자기 활동이 일어나는걸 막기 위해 쉬어줌
-			msg:setContent('> 적용중 . . . (2초 내로 완료됩니다)');
+			os.execute("timeout /t 2"); -- 너무 갑자기 활동이 일어나는걸 막기 위해 쉬어줌
+			msg:setContent('> 적용중 . . . (3초 내로 완료됩니다)');
 			reloadBot(); -- 리스타팅
 		elseif (Text == "!!!push" or Text == "!!!upload" or Text == "미나야 깃헙업로드") then
 			local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 코드를 업로드중 . . .');
@@ -320,6 +320,9 @@ client:on('messageCreate', function(message)
 			os.execute("git -C src push");
 			msg:setContent('> 완료!');
 			return;
+		elseif (Text == "미나야 깃헙동기화" or Text == "!!!sync") then
+			message:reply('> 동기화!');
+			os.exit(104); -- 동기화 (올리고 내려받고)
 		elseif (Text == "!!!stop" or Text == "!!!kill" or Text == "미나야 코드셧다운") then
 			message:reply('> 프로그램 죽이는중 . . .');
 			os.exit(100);
