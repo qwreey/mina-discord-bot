@@ -191,9 +191,12 @@ end
 -- commands 폴더에서 커맨드 불러오기
 local otherCommands = {};
 for CmdDict in qFilesystem:GetFiles("src/commands",true) do
+	local CmdDict = string.sub(CmdDict,1,-5);
+	iLogger.info("Load command dict from : src/commands/" .. CmdDict);
 	table.insert(otherCommands,loadCommandFiles("src/commands/" .. CmdDict));
 end
 -- 커맨드 색인파일 만들기
+iLogger.info("encoding commands...");
 local commands,commandsLen;
 commands,commandsLen = commandHandle.encodeCommands({
 	-- 특수기능
@@ -279,6 +282,7 @@ commands,commandsLen = commandHandle.encodeCommands({
 	--	reply = {};
 	--};
 },otherCommands);
+iLogger.info("command encode end!");
 --#endregion : 반응, 프리픽스, 설정
 --#region : 메인 파트
 local dirtChannels = dirtChannels.channels;
