@@ -45,7 +45,62 @@ end
 local function reloadBot()
 	iLogger.info("Try restarting ...");
 	client:setGame("재시작중...");
-	os.exit(101);
+end
+local function adminCmd(Text,message)
+	if (Text == "!!!stop" or Text == "!!!kill") then
+		message:reply('> 프로그램 죽이는중 . . .');
+		os.exit(100); -- 프로그램 킬
+	elseif (Text == "!!!restart" or Text == "!!!reload") then
+		iLogger.info("Restarting ...");
+		message:reply('> 재시작중 . . . (2초 내로 완료됩니다)');
+		reloadBot();
+		os.exit(101); -- 프로그램 다시시작
+	elseif (Text == "!!!restart safe" or Text == "!!!reload safe") then
+		iLogger.info("Restarting ... (safe mode)");
+		message:reply('> 안전모드로 재시작중 . . . (20초 내로 완료됩니다)');
+		reloadBot();
+		os.exit(102); -- 프로그램 다시시작 (안전모드)
+	elseif (Text == "!!!pull safe" or Text == "!!!download safe") then
+		iLogger.info("Download codes ... (safe mode)");
+		message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . . (15 초 내로 완료됩니다)');
+		reloadBot();
+		os.exit(103); -- 다운로드 (안전모드)
+	elseif (Text == "!!!pull safe" or Text == "!!!download safe") then
+		iLogger.info("Upload codes ... (safe mode)");
+		message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 코드를 업로드중 . . . (15 초 내로 완료됩니다)');
+		reloadBot();
+		os.exit(104); -- 업로드 (안전모드)
+	elseif (Text == "!!!sync safe") then
+		iLogger.info("Sync codes ... (safe mode)");
+		message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 코드를 동기화중 . . . (15 초 내로 완료됩니다)');
+		reloadBot();
+		os.exit(105); -- 동기화 (안전모드)
+	elseif (Text == "!!!pull" or Text == "!!!download") then
+		iLogger.info("Download codes ...");
+		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . .');
+		os.execute("git -C src pull"); -- git 에서 변동사항 가져와 적용하기
+		os.execute("timeout /t 1"); -- 너무 갑자기 활동이 일어나는걸 막기 위해 쉬어줌
+		msg:setContent('> 적용중 . . . (3초 내로 완료됩니다)');
+		reloadBot(); -- 리스타팅
+		os.exit(106); -- 다운로드 (리로드)
+	elseif (Text == "!!!push" or Text == "!!!upload") then
+		iLogger.info("Upload codes ...");
+		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 코드를 업로드중 . . .');
+		os.execute("git -C src add .");
+		os.execute("git -C src commit -m 'MINA : Upload in main code (bot.lua)'");
+		os.execute("git -C src push");
+		msg:setContent('> 완료!');
+		return; -- 업로드
+	elseif (Text == "!!!sync") then
+		iLogger.info("Sync codes ...");
+		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 동기화중 . . . (8초 내로 완료됩니다)');
+		os.execute("git -C src add .");
+		os.execute('git -C src commit -m "MINA : Sync in main code (Bot.lua)"');
+		os.execute("git -C src pull");
+		os.execute("git -C src push");
+		msg:setContent('> 적용중 . . . (3초 내로 완료됩니다)');
+		os.exit(107); -- 동기화 (리로드)
+	end
 end
 --#endregion : Discord Module
 --#region : 나눠진 모듈 합치기
@@ -300,45 +355,10 @@ client:on('messageCreate', function(message)
 	end
 	-- 하드코딩된 관리 명령어)
 	if Admins[User.id] then
-		if (Text == "!!!restart" or Text == "!!!reload" or Text == "미나야 리로드") then
-			--다시시작
-			iLogger.info("Restarting ...");
-			message:reply('> 재시작중 . . . (2초 내로 완료됩니다)');
-			reloadBot();
-		elseif (Text == "!!!pull" or Text == "!!!download" or Text == "미나야 변경적용") then
-			-- PULL (github 로 부터 코드를 다운받아옴)
-			local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . .');
-			--os.execute("git fetch"); -- git 에서 변동사항 가져오기
-			os.execute("git -C src pull"); -- git 에서 변동사항 가져와 적용하기
-			os.execute("timeout /t 2"); -- 너무 갑자기 활동이 일어나는걸 막기 위해 쉬어줌
-			msg:setContent('> 적용중 . . . (3초 내로 완료됩니다)');
-			reloadBot(); -- 리스타팅
-		elseif (Text == "!!!push" or Text == "!!!upload" or Text == "미나야 깃헙업로드") then
-			local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 코드를 업로드중 . . .');
-			os.execute("git -C src add .");
-			os.execute("git -C src commit -m 'update'");
-			os.execute("git -C src push");
-			msg:setContent('> 완료!');
-			return;
-		elseif (Text == "미나야 깃헙동기화" or Text == "!!!sync") then
-			message:reply('> 동기화!');
-			os.exit(104); -- 동기화 (올리고 내려받고)
-		elseif (Text == "!!!stop" or Text == "!!!kill" or Text == "미나야 코드셧다운") then
-			message:reply('> 프로그램 죽이는중 . . .');
-			os.exit(100);
-		end
-	end
-	-- 사전
-	if dirtChannels[Channel.id] and string.sub(Text,1,1) == "!" then
-		Text = string.sub(Text,2,-1);
-		local newMsg = message:reply('> 찾는중 . . .');
-		local body,url = naverDictSearch.searchFromNaverDirt(Text,ACCOUNTData);
-		local data = json.decode(naverDictEmbed:Embed(Text,url,body));
-		newMsg:update(data);
+		adminCmd(Text,message);
 	end
 
 	-- 명령어
-
 	-- prefix : 접두사
 	-- rawCommandText : 접두사 뺀 커맨드 전채
 	-- splitCommandText : rawCommandText 를 \32 로 분해한 array
