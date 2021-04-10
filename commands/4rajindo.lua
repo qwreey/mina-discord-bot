@@ -43,7 +43,7 @@ reply = {"학교폭력 멈춰!",string.rep("멈춰! ",20)};
 단독으로도 사용 가능
 reply = string.rep("멈춰! ",20);
 
-
+!!!sync
 ]]
 
 local cRandom,json,client,discordia,enums,iLogger,makeId,urlCode,strSplit,ACCOUNTData;
@@ -128,7 +128,7 @@ return function (o)
                      "이런 단순한 호기심에 도박을 하지요"};
         };
         ["바보"] = {
-            reply = {"바보는 크시 선배님이죠^^","미나 바부 아니라구!(울먹)",":깨진하트: -1"};
+            reply = {"바보는 크시 선배님이죠^^","미나 바부 아니라구!(울먹)",":broken_heart: - 5"};
         };
     };
 end;
