@@ -138,8 +138,8 @@ return function (o)
             reply = {"우리는 한다 번역을"};
         };
         ["왜"] = {
-            alias = "왱";
-            reply = "나도 몰라";
+            alias = {"왱","왜?","왱?"};
+            reply = {"나도 몰라"};
         };
     };
 end;
