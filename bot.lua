@@ -172,6 +172,10 @@ local unknownReply = {
 local function loadCommandFiles()
 	
 end
+local otherCommands = {
+	loadCommandFiles("commands/4rajindo.lua");
+	loadCommandFiles("qwreey.lua");
+};
 
 local commands,commandsLen;
 commands,commandsLen = commandHandle.encodeCommands({
@@ -257,7 +261,7 @@ commands,commandsLen = commandHandle.encodeCommands({
 	--	alias = {"노래추천좀","노래추천"};
 	--	reply = {};
 	--};
-});
+},otherCommands);
 --#endregion : 반응, 프리픽스, 설정
 --#region : 메인 파트
 local dirtChannels = dirtChannels.channels;

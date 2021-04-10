@@ -20,22 +20,35 @@ Cpu 에 더 좋다 그래서 이렇게 나눠놓는거
 
 local module = {};
 
-function module.encodeCommands(TableOfCommand)
+local function indexingCommand(IndexTable,CommandName,CommandInfo)
+    local alias = CommandInfo.alias;
+    local len = 1;
+
+    IndexTable[CommandName] = CommandInfo;
+    if type(alias) == "table" then
+        for _,Name in pairs(alias) do
+            IndexTable[Name] = CommandInfo;
+            len = len + 1;
+        end
+    elseif type(alias) == "string" then
+        IndexTable[alias] = CommandInfo;
+        len = len + 1;
+    end
+
+    return len;
+end
+
+function module.encodeCommands(TableOfCommand,otherCommands)
     local this = {};
     local len = 0;
-    for Index,CommandInfo in pairs(TableOfCommand) do
-        local alias = CommandInfo.alias;
+    for CommandName,CommandInfo in pairs(TableOfCommand) do
+        len = len + indexingCommand(this,CommandName,CommandInfo);
+    end
 
-        this[Index] = CommandInfo;
-        len = len + 1;
-        if type(alias) == "table" then
-            for _,Name in pairs(alias) do
-                this[Name] = CommandInfo;
-                len = len + 1;
-            end
-        elseif type(alias) == "string" then
-            this[alias] = CommandInfo;
-            len = len + 1;
+    local otherCommands = otherCommands or {};
+    for _,CmdTable in pairs(otherCommands) do
+        for CommandName,CommandInfo in pairs(CmdTable) do
+            len = len + indexingCommand(this,CommandName,CommandInfo);
         end
     end
 
