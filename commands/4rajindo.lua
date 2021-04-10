@@ -89,5 +89,8 @@ return function (o)
         ["레고"] = {
             reply = "밟았어!";
         };
+        ["뭫"] ={
+            reply = "묑?"
+        };
     };
 end;
