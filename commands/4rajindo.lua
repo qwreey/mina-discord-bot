@@ -4,9 +4,9 @@
 여러개가 필요한경우 {} 로 감싸서 , 로 하나하나 분리함
 예 : {"안녕","안뇽","ㅎㅇ"}
 
-[주석쓰기]
+주석쓰기]
 그냥 노트가 필요한경우 -- 를 붇여서 노트를 사용 가능함
-예 : -- 노트하기
+예 : -- 노트하기[
 
  말한사람 언급하기
 만약 말한사람 언급이 필요한경우 {%:UserName:%} 을 사용할 수 있음
@@ -43,6 +43,7 @@ reply = {"학교폭력 멈춰!",string.rep("멈춰! ",20)};
 단독으로도 사용 가능
 reply = string.rep("멈춰! ",20);
 
+
 ]]
 
 local cRandom,json,client,discordia,enums,iLogger,makeId,urlCode,strSplit,ACCOUNTData
@@ -69,7 +70,8 @@ end,{
         alias = "울프럼 알파";
         reply = "우린 답을 찾을것이다, 늘 그랬듯이";
     };
-    ["이재건"] ={
-        
-    }
+    ["수소"] ={
+        alias = "Hydrogen";
+        reply = "우주에서 가장 처음으로 만들어진 원소예요";
+    };
 };
