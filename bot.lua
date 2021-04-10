@@ -272,6 +272,10 @@ end
 local commands,commandsLen;
 commands,commandsLen = commandHandle.encodeCommands({
 	-- 특수기능
+	["약관"] = {
+		alias = {"EULA"};
+		reply = EULA;
+	};
 	["제작진"] = {
 		alias = {"만든이들","크래딧","크레딧","누가만듬?","작자","제작자"};
 		reply = "**총괄**/코드 : 쿼리\n프로필/아이디어 : **상아리**,별이(블스상)\n작명 : 눈송이\n\n테스팅/아이디어 : 팥죽";
