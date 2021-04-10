@@ -174,7 +174,8 @@ return function (o)
                      "Leagueof Legends",
                      "LeagueofLegends"};
             reply = {"정웅왈 ㅅㅂ게임",
-                     "부모님 안부 묻는 겜"};
+                     "부모님 안부 묻는 겜",
+                     "팀운 ㅈ망겜"};
         };
     };
 end;
