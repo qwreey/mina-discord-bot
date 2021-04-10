@@ -113,5 +113,9 @@ return function (o)
             };
             reply = "봇은 술을 못 마셔요";
         };
+        ["젤다"] = {
+            alias = "젤다의 전설";
+            reply = "초록색 옷 입은 애가 젤다죠";
+        };
     };
 end;
