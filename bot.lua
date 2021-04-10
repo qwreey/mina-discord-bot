@@ -190,8 +190,8 @@ local function loadCommandFiles(FileRoot) -- 커맨드 사전 불러오기
 end
 -- commands 폴더에서 커맨드 불러오기
 local otherCommands = {};
-for CmdDict in qFilesystem:GetFiles("commands",true) do
-	table.insert(otherCommands,loadCommandFiles("commands/" .. CmdDict));
+for CmdDict in qFilesystem:GetFiles("src/commands",true) do
+	table.insert(otherCommands,loadCommandFiles("src/commands/" .. CmdDict));
 end
 -- 커맨드 색인파일 만들기
 local commands,commandsLen;
