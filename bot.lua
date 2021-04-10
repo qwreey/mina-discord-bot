@@ -184,9 +184,8 @@ local CommandEnv = { -- 커맨드 사전에 환경을 제공
 	["qFilesystem"] = qFilesystem;
 };
 local function loadCommandFiles(FileRoot) -- 커맨드 사전 불러오기
-	local SetEnv,CommandsRawFile = require(FileRoot);
-	SetEnv(CommandEnv);
-	return CommandsRawFile;
+	local SetEnv = require(FileRoot);
+	return SetEnv(CommandEnv);
 end
 -- commands 폴더에서 커맨드 불러오기
 local otherCommands = {};
