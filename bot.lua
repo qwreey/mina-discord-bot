@@ -193,10 +193,14 @@ local otherCommands = {};
 for CmdDict in qFilesystem:GetFiles("src/commands",true) do
 	local CmdDict = string.sub(CmdDict,1,-5);
 	iLogger.info("Load command dict from : src/commands/" .. CmdDict);
-	table.insert(otherCommands,loadCommandFiles("src/commands/" .. CmdDict));
+	otherCommands[#otherCommands+1] = loadCommandFiles("src/commands/" .. CmdDict);
 end
 -- 커맨드 색인파일 만들기
 iLogger.info("encoding commands...");
+for _,v in pairs(otherCommands) do
+	iLogger.info("Loaded cmdDict " .. tostring(v));
+end
+
 local commands,commandsLen;
 commands,commandsLen = commandHandle.encodeCommands({
 	-- 특수기능

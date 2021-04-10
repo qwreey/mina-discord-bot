@@ -46,43 +46,45 @@ reply = string.rep("멈춰! ",20);
 
 ]]
 
-local cRandom,json,client,discordia,enums,iLogger,makeId,urlCode,strSplit,ACCOUNTData
-return function(o)
-    cRandom,json,client,discordia,enums,iLogger,makeId,urlCode,strSplit,ACCOUNTData =
+local cRandom,json,client,discordia,enums,iLogger,makeId,urlCode,strSplit,ACCOUNTData;
+return function (o)
+    cRandom,json,client,discordia,enums,iLogger,makeId,urlCode,strSplit,ACCOUNTData = 
     o.cRandom,o.json,o.client,o.discordia,o.enums,o.iLogger,o.makeId,o.urlCode,o.strSplit
     ,o.ACCOUNTData;
     -- 여기에는 쓰지 맙쇼
     -- 기능을 임포트 하는 용도로 있는곳
-end,{
-    ["끝말잇기"] = { -- 나중에 기능 추가하면 이전 예정
-		alias = "끝말 잇기";
-	    reply = "크시랑 하세요";
-	};
-	["멈춰"] = {
-        alias = {"학교폭력","학교폭력"};
-	    reply = {"학교폭력멈춰!","멈춰어어!!",string.rep("멈춰! ",20)};
-	};
-    ["장비를 정지합니다"] = {
-        alias = {"장비를정지합니다","정지합니다"};
-        reply = "어, 정..정지가 앙 돼. 정지시킬 수가 없어";
+
+    return {
+        ["끝말잇기"] = { -- 나중에 기능 추가하면 이전 예정
+            alias = "끝말 잇기";
+            reply = "크시랑 하세요";
+        };
+        ["멈춰"] = {
+            alias = {"학교폭력","학교폭력"};
+            reply = {"학교폭력멈춰!","멈춰어어!!",string.rep("멈춰! ",20)};
+        };
+        ["장비를 정지합니다"] = {
+            alias = {"장비를정지합니다","정지합니다"};
+            reply = "어, 정..정지가 앙 돼. 정지시킬 수가 없어";
+        };
+        ["울프럼알파"] = {
+            alias = "울프럼 알파";
+            reply = "우린 답을 찾을것이다, 늘 그랬듯이";
+        };
+        ["수소"] ={
+            alias = "Hydrogen";
+            reply = "우주에서 가장 처음으로 만들어진 원소예요";
+        };
+        ["백만볼트"] ={
+            reply = "피카 츄!!?";
+        };
+        ["헬륨"] ={
+            alias = "Helium";
+            reply = "세상에서 가장 유명한 비활성 기체예요";
+        };
+        ["심심해"] = {
+            alias = {"심심하다","심심함"};
+            reply = "놀아줄까?";
+        };
     };
-    ["울프럼알파"] = {
-        alias = "울프럼 알파";
-        reply = "우린 답을 찾을것이다, 늘 그랬듯이";
-    };
-    ["수소"] ={
-        alias = "Hydrogen";
-        reply = "우주에서 가장 처음으로 만들어진 원소예요";
-    };
-    ["백만볼트"] ={
-        reply = "피카 츄!!?";
-    };
-    ["헬륨"] ={
-        alias = "Helium";
-        reply = "세상에서 가장 유명한 비활성 기체예요";
-    };
-    ["심심해"] = {
-        alias = {"심심하다","심심함"};
-        reply = "놀아줄까?";
-    };
-};
+end;

@@ -47,6 +47,7 @@ function module.encodeCommands(TableOfCommand,otherCommands)
 
     local otherCommands = otherCommands or {};
     for _,CmdTable in pairs(otherCommands) do
+        print("CmdTable : " .. tostring(CmdTable));
         for CommandName,CommandInfo in pairs(CmdTable) do
             len = len + indexingCommand(this,CommandName,CommandInfo);
         end
