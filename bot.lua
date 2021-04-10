@@ -65,7 +65,7 @@ local function adminCmd(Text,message)
 		message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . . (15 초 내로 완료됩니다)');
 		reloadBot();
 		os.exit(103); -- 다운로드 (안전모드)
-	elseif (Text == "!!!pull safe" or Text == "!!!download safe") then
+	elseif (Text == "!!!pull safe" or Text == "!!!upload safe") then
 		iLogger.info("Upload codes ... (safe mode)");
 		message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 코드를 업로드중 . . . (15 초 내로 완료됩니다)');
 		reloadBot();
@@ -100,6 +100,19 @@ local function adminCmd(Text,message)
 		os.execute("git -C src push");
 		msg:setContent('> 적용중 . . . (3초 내로 완료됩니다)');
 		os.exit(107); -- 동기화 (리로드)
+	elseif (Text == "!!!help" or Text == "!!!cmds") then
+		message:reply(
+			'!!!help 또는 !!!cmds : 이 창을 띄웁니다\n' ..
+			'!!!stop 또는 !!!kill : 봇을 멈춥니다\n' ..
+			'!!!restart 또는 !!!reload : 봇을 다시로드 시킵니다 (빠름)\n' ..
+			'!!!restart safe 또는 !!!reload safe : 봇을 안전모드로 다시로드 시킵니다 (오랜 시간을 요구합니다)\n' ..
+			'!!!pull safe 또는 !!!download safe : 안전모드를 이용해 클라우드로 부터 코드를 내려받고 다시 시작합니다 (오랜 시간을 요구합니다)\n' ..
+			'!!!push safe 또는 !!!upload safe : 안전모드를 이용해 클라우드로 코드를 올리고 다시 시작합니다 (오랜 시간을 요구합니다)\n' ..
+			'!!!sync safe : 안전모드를 이용해 클라우드와 코드를 동기화합니다 (차이 비교후 병합, 오랜 시간을 요구합니다)\n' ..
+			'!!!pull 또는 !!!download : 클라우드로부터 코드를 내려받고 다시 시작합니다 (빠름)' ..
+			'!!!push 또는 !!!upload : 클라우드로 코드를 올립니다 (빠름)' ..
+			'!!!sync : 클라우드와 코드를 동기화 시킵니다 (차이 비교후 병합, 빠름)'
+		);
 	end
 end
 --#endregion : Discord Module
