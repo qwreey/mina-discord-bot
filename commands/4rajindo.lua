@@ -164,5 +164,18 @@ return function (o)
         ["과제"] = {
             reply = {"과제 갯수 제한 쫌;;"};
         };
+        ["롤"] = {
+            alias = {"리그오브레전드",
+                     "리그 오브 레전드",
+                     "리그 오브레전드",
+                     "리그오브 레전드",
+                     "League of Legends",
+                     "League ofLegends",
+                     "Leagueof Legends",
+                     "LeagueofLegends"};
+            reply = {"정웅왈 ㅅㅂ게임",
+                     "부모님 안부 묻는 겜",
+                     "팀운 ㅈ망겜"};
+        };
     };
 end;
