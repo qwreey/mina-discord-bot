@@ -184,5 +184,9 @@ return function (o)
             alias = {"없냐고"};
             reply = {"없어!?"};
         };
+        ["뭐가"] = {
+            alias = {"뭐가?"};
+            reply = {"뭐?"};
+        };
     };
 end;
