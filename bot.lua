@@ -157,10 +157,6 @@ local unknownReply = {
 	ㅇOㅇ
 	알파카 : 옆에서 커피마신넘 학원간넘
 	깔끔하네
-	어머
-	ㅁㅇㅁㅇ
-	머야
-	머야머야
 	시끄러
 	대통령마다 반응
 	롤, 게임
@@ -175,8 +171,12 @@ local unknownReply = {
 ]]
 local commands,commandsLen;
 commands,commandsLen = commandHandle.encodeCommands({
+	["냥"] = {
+		alias = {"냥냥","냥냥냥","냥냥냥","고양이 소리 내봐"};
+		reply = {"~~귀척?~~ 냥냥","~~ㅈㄹ하네~~ 냥냥"};
+	};
 	["ㅁㅇㅁㅇ"] = {
-		alias = {"머야머야","ㅁㅇ","ㅁㅇㅁㅇㅁㅇ"};
+		alias = {"머야","어머","머야머야","ㅁㅇ","ㅁㅇㅁㅇㅁㅇ"};
 		reply = {string.rep("머야",12),"뭐야뭐야~"};
 	};
 	["ㅇㅅㅇ"] = {
@@ -599,6 +599,9 @@ commands,commandsLen = commandHandle.encodeCommands({
 	["끝말잇기"] = {
 		alias = "끝말 잇기";
 	    reply = "크시랑 하세요";
+	};
+	["멈춰"] = {
+	     reply = "학교폭력멈춰!";
 	};
 	["아"] = {
 		alias = {
