@@ -1,3 +1,4 @@
+--#region : CODE 파트
 local iLogger = require "src/lib/log";
 iLogger = {
 	["trace"] = iLogger.trace;
@@ -508,7 +509,8 @@ end);
 StartBot(ACCOUNTData.botToken);
 --#endregion : 메인 파트
 end
-
+--#endregion : CODE 파트
+--#region : 디버깅 파트
 -- 버그 핸들링 (충돌시 발생하므로 이 내부에서는 discordia 가 응답하지 않을 수 있음)
 xpcall(main,function (err)
 	iLogger.fatal(err);
@@ -521,3 +523,4 @@ xpcall(main,function (err)
 	fil:write(err);
 	fil:close();
 end);
+--#endregion : 디버깅 파트
