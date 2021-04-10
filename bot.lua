@@ -272,8 +272,18 @@ end
 local commands,commandsLen;
 commands,commandsLen = commandHandle.encodeCommands({
 	-- 특수기능
+	["약관동의"] = {
+		alias = {"EULA동의","약관 동의","사용계약 동의"};
+		reply = function (message)
+			return "ERROR!";
+			--local UserId = tostring(message.author.id);
+			--local File = io.open("r");
+
+			--"안녕하세요 {%:UserName:%} 님!\n사용 약관에 동의해주셔서 감사합니다!\n사용 약관을 동의하였기 때문에 다음 기능을 사용 할 수 있게 되었습니다!\n\n> 미나야 배워 (미출시 기능)\n"
+		end;
+	};
 	["약관"] = {
-		alias = {"EULA"};
+		alias = {"EULA","사용계약"};
 		reply = EULA;
 	};
 	["제작진"] = {
@@ -287,7 +297,7 @@ commands,commandsLen = commandHandle.encodeCommands({
 		end;
 	};
 	["유튜브"] = {
-		alias = {"유튜브검색","유튜브찾기","유튜브탐색","유튭찾기","유튭","유튭검색"};
+		alias = {"유튜브검색","유튜브찾기","유튜브탐색","유튭찾기","유튭","유튭검색","유튜브 검색","유튜브 찾기","youtube 찾기","Youtube 찾기"};
 		reply = "잠시만 기다려주세요... (검색중)";
 		func = function(replyMsg,message,args,Content)
 			local Body,KeywordURL = youtubeSearch.searchFromYoutube(Content.rawArgs);
@@ -340,7 +350,7 @@ commands,commandsLen = commandHandle.encodeCommands({
 	};
 	["몸무계"] = {
 		alias = {"무계","얼마나무거워"};
-		reply = "95.2KB";
+		reply = "131KB";
 	};
 	["미나"] = {
 		alias = {"미나야","미나!","미나...","미나야...","미나..","미나야..","미나.","미나야.","미나야!"};
