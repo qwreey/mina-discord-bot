@@ -236,5 +236,9 @@ return function (o)
             alias = "승호";
             reply = "개쎆기";
         };
+        ["마냥"] = {
+            alias = {"마냥이"};
+            reply = {"그냥 살아가는 봇 고양이"};
+        };
     };
 end;
