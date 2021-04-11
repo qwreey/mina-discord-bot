@@ -226,5 +226,9 @@ return function (o)
             alias = "IQ";
             reply = "Infinite";
         };
+        ["논란"] = {
+            reply = {"크시 선배님 말을 뺏겼어요","쉿!"};
+        };
+
     };
 end;
