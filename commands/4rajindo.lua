@@ -252,5 +252,10 @@ return function (o)
         ["수류탄"] = {
             reply = {"쾅!!"};
         };
+        ["Entry Denial Device"] = {
+            alias = {"진입 방지 폭약","edd","EDD"};
+            reply = {"EDD Mounted, Let them come.",
+                     "EDD를 설치했다. 놈들을 유인해라."};
+        };
     };
 end;
