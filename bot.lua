@@ -363,6 +363,17 @@ commands,commandsLen = commandHandle.encodeCommands({
 			replyMsg:setContent(("미나가 아는 반응은 %d개 이에요!"):format(commandsLen));
 		end;
 	};
+	["동전뒤집기"] = {
+		alias = {"동전 뒤집기","동전놀이","동전 놀이"};
+		reply = function ()
+			local pF = cRandom(1,11);
+			return pF == 11 and "옆면????" or (pF <= 5 and "앞면!" or "뒷면!");
+		end;
+	};
+	["가위"] = {
+		alias = {"바위","보"};
+		reply = {"**{%:UserName:%}** 님이 이겼어요!","이번판은 미나 승리!","무승부! 똑같아요"};
+	};
 	--["노래좀"] = {
 	--	alias = {"노래추천좀","노래추천"};
 	--	reply = {};

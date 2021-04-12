@@ -9,6 +9,6 @@ LUA 렌덤을 핸들링
 ]]
 
 return function (min,max)
-    math.randomseed(os.time());
+    math.randomseed(math.floor(os.time()*(1000*(min+max))));
     return math.random(min,max);
 end;
