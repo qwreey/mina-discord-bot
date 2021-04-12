@@ -9,6 +9,8 @@ LUA 렌덤을 핸들링
 ]]
 
 return function (min,max)
-    math.randomseed(math.floor(os.time()*(1000*(min+max))));
+    local seed = math.floor((os.clock()*(min^2+max^2))*1000);
+    print(seed);
+    math.randomseed(seed);
     return math.random(min,max);
 end;
