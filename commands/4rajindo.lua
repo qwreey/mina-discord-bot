@@ -257,5 +257,8 @@ return function (o)
             reply = {"EDD Mounted, Let them come.",
                      "EDD를 설치했다. 놈들을 유인해라."};
         };
+        ["힘내는말"] = {
+            reply = {"미완성"};
+        };
     };
 end;
