@@ -31,6 +31,7 @@ TODO: 지우기 명령,강퇴 명령 같은거 만들기
 --#endregion : 설명글/TODO
 --#region : 디코 모듈 임포트
 iLogger.info("Wait for discordia");
+local timer = require "timer";
 local corohttp = require "coro-http";
 local json = require "json";
 local discordia = require "discordia";
@@ -364,7 +365,7 @@ commands,commandsLen = commandHandle.encodeCommands({
 		end;
 	};
 	["동전뒤집기"] = {
-		alias = {"동전 뒤집기","동전놀이","동전 놀이"};
+		alias = {"동전 뒤집기","동전놀이","동전 놀이","동전던지기","동전 던지기","동전뒤집기","동전게임","동전 게임"};
 		reply = function ()
 			local pF = cRandom(1,11);
 			return pF == 11 and "옆면????" or (pF <= 5 and "앞면!" or "뒷면!");
@@ -373,6 +374,14 @@ commands,commandsLen = commandHandle.encodeCommands({
 	["가위"] = {
 		alias = {"바위","보"};
 		reply = {"**{%:UserName:%}** 님이 이겼어요!","이번판은 미나 승리!","무승부! 똑같아요"};
+	};
+	["검열"] = {
+		reply = "검-열";
+		func = function (message)
+			timer.setTimeout(5,function ()
+				message:delete();
+			end)
+		end;
 	};
 	--["노래좀"] = {
 	--	alias = {"노래추천좀","노래추천"};
