@@ -334,11 +334,6 @@ commands,commandsLen = commandHandle.encodeCommands({
 	["지워"] = {
 		alias = {"지우개","지워봐","지워라","지우기"};
 		func = function(replyMsg,message,args,Content)
-			if not message.member:hasPermission(message.channel,enums.manageMessages) then
-				message:reply("권한이 부족해요! 메시지 관리 권한이 있는 유저만 이 명령어를 사용 할 수 있어요");
-				return;
-			end
-
 			local RemoveNum = tonumber(Content.rawArgs);
 			if (not RemoveNum) or type(RemoveNum) ~= "number" then
 				message:reply("잘못된 명령어 사용법이에요!\n\n**올바른 사용 방법**\n> 미나야 지워 <지울 수>\n지울수 : 2 에서 100 까지의 숫자 (정수)");
@@ -349,15 +344,18 @@ commands,commandsLen = commandHandle.encodeCommands({
 			elseif (RemoveNum % 1) ~= 0 then -- 정수인지 유리수(또는 실수) 인지 확인
 				message:reply("잘못된 명령어 사용법이에요!\n\n<지울 수> 는 정수이어야 합니다 (소숫점 X)");
 				return;
+			elseif not message.member:hasPermission(message.channel,enums.permission.manageMessages) then
+				message:reply("권한이 부족해요! 메시지 관리 권한이 있는 유저만 이 명령어를 사용 할 수 있어요");
+				return;
 			end
 
 			message.channel:bulkDelete(message.channel:getMessagesBefore(message.id,RemoveNum));
 			local infoMsg = message:reply(("최근 메시지 %s개를 지웠어요!"):format(RemoveNum));
 			message:delete();
 
-			runSchedule(50,function ()
+			runSchedule(1200,function ()
 				infoMsg:delete();
-			end)''
+			end);
 			return;
 		end;
 	};
