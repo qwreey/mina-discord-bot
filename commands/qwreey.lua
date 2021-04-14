@@ -1,8 +1,8 @@
 
-local cRandom,json,client,discordia,enums,iLogger,makeId,urlCode,strSplit,ACCOUNTData;
+local runSchedule,cRandom,json,client,discordia,enums,iLogger,makeId,urlCode,strSplit,ACCOUNTData;
 return function(o)
-	cRandom,json,client,discordia,enums,iLogger,makeId,urlCode,strSplit,ACCOUNTData = 
-    o.cRandom,o.json,o.client,o.discordia,o.enums,o.iLogger,o.makeId,o.urlCode,o.strSplit
+	runSchedule,cRandom,json,client,discordia,enums,iLogger,makeId,urlCode,strSplit,ACCOUNTData = 
+    o.runSchedule,o.cRandom,o.json,o.client,o.discordia,o.enums,o.iLogger,o.makeId,o.urlCode,o.strSplit
     ,o.ACCOUNTData;
     -- 여기에는 쓰지 맙쇼
     -- 기능을 임포트 하는 용도로 있는곳
@@ -377,12 +377,63 @@ return function(o)
 				"아아","아아아","아아아아","아아아아아","아아아아아아","아아아아아아아",
 				"아아아아아아아아","아아아아아아아아아","아아아아아아아아아아"
 			};
-			reply = "아";
-			--reply = function (message,args,Content)
-				--message:reply(
-					--Content.Command
-				--);
-			--end;
+			reply = function (message,args,Content)
+				message:reply(
+					string.rep(Content.commandName,2)
+				);
+			end;
+		};
+		["RIP"] = {
+			alias = {
+				"Rip","rip","rIp","riP","RIp","rIP","R I P","R.I.P","r.i.p",
+				"rip","rip...","rip....","rip.....","rip..","rip."
+			};
+			reply = "Rest In Peace\n.........................";
+		};
+		["군침"] = {
+			alias = {"군침이 싹","군싹돌","군침이 싸아악","군침 싹","군침싹"};
+			reply = "https://tenor.com/view/%ea%b5%b0%ec%b9%a8-gif-18856033";
+		};
+		["아이고"] = {
+			reply = "에? 무슨일 있어요?";
+		};
+		["글쓰기"] = {
+			reply = {"넘나 어려운거","그거 인간도 못한데요"};
+		};
+		["엌"] = {
+			alias = {"엌ㅋ","엌ㅋㅋ","엌ㅋㅋㅋ","엌ㅋㅋㅋㅋ"};
+			reply = "엌ㅋㅋㅋㅋ";
+		};
+		["개새끼"] = {
+			alias = {"ㄱㅅㄲ","ㄳㄲ","개쉨끼","개새키","개샠키","개샠끼"};
+			reply = "나 개새끼 아닌뎅 봇인뎅";
+		};
+		["없에"] = {
+			reply = {"머?","미나야 지워 하려던거 아니양?"};
+		};
+		["ㅄ"] = {
+			alias = {"ㅂㅅ","병신","병신새끼","병신 새끼","병쉰","병틴"};
+			reply = {"ㅠㅠ","나 병신 아니야!"};
+		};
+		["주사위 던지기"] = {
+			alias = {
+				"주사위","주사위던지기","주사위던져","주사위 던져",
+				"주사위 굴리기","주사위굴려","주사위 굴려","주사위굴리기"
+			};
+			reply = {
+				"대굴 대굴... **1** 이 나왔넹?";
+				"대굴 대굴... **2** 나왔다!";
+				"대굴 대굴... **3** 나왔어!";
+				"대굴 대굴... **4** !";
+				"대굴 대굴... **5** 가 나왔네!";
+				"대굴 대굴... **6** 나왔당!";
+				function (msg)
+					local newMsg = msg:reply("대굴 대굴... 어? 0? 이게 왜 나왔지?");
+					runSchedule(1900,function ()
+						newMsg:delete();
+					end);
+				end;
+			};
 		};
 	};
 end;

@@ -198,7 +198,7 @@ local prefixReply = { -- 그냥 미나야 하면 답
 	"Zzz... 아! 안졸았어요 ~~아 나도 좀 잠좀 자자 인간아~~","네!"
 };
 local unknownReply = { -- 반응 없을때 띄움
-	"(갸우뚱?)","무슨 말이에요?","네?",":thinking:"
+	"(갸우뚱?)","무슨 말이에요?","네?",":thinking: 먀?","으에?","먕?"
 };
 --[[
 	alias = table[array]/str; -- 다른 명령어로도 똑같은 기능 내도록
@@ -265,6 +265,7 @@ local CommandEnv = { -- 커맨드 사전에 환경을 제공
 	["strSplit"] = strSplit;
 	["ACCOUNTData"] = ACCOUNTData;
 	["qFilesystem"] = qFilesystem;
+	["runSchedule"] = runSchedule;
 };
 local function loadCommandFiles(FileRoot) -- 커맨드 사전 불러오기
 	local SetEnv = require(FileRoot);
@@ -398,7 +399,7 @@ commands,commandsLen = commandHandle.encodeCommands({
 	["검열"] = {
 		reply = "검-열";
 		func = function (message)
-			runSchedule(50,function ()
+			runSchedule(100,function ()
 				message:delete();
 			end);
 		end;
@@ -524,6 +525,7 @@ client:on('messageCreate', function(message)
 							rawArgs = rawArgs; -- args 를 str 로 받기 (직접 분석용)
 							rawCommandName = rawCommandName;
 							self = Command;
+							commandName = CommandName;
 						}
 					);
 				end
