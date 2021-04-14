@@ -20,12 +20,8 @@ local function main()
 https://discord.com/oauth2/authorize?client_id=828894481289969665&permissions=2147871808&scope=bot
 
 TODO: DM 에다가 명령어 쓰기 막기
-TODO: 미나야 사전 <단어> 만들기
 TODO: 도움말 만들기
 TODO: 사전 Json 인코딩을 없에고 그냥 바로 테이블 넘기기
-TODO: coro http 손절치기 (luasocket 쓰자)
-
-TODO: EXTEND 고치기...
 TODO: 지우기 명령,강퇴 명령 같은거 만들기
 ]]
 --#endregion : 설명글/TODO
