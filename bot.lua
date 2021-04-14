@@ -111,11 +111,14 @@ local function adminCmd(Text,message)
 			'!!!pull safe 또는 !!!download safe : 안전모드를 이용해 클라우드로 부터 코드를 내려받고 다시 시작합니다 (오랜 시간을 요구합니다)\n' ..
 			'!!!push safe 또는 !!!upload safe : 안전모드를 이용해 클라우드로 코드를 올리고 다시 시작합니다 (오랜 시간을 요구합니다)\n' ..
 			'!!!sync safe : 안전모드를 이용해 클라우드와 코드를 동기화합니다 (차이 비교후 병합, 오랜 시간을 요구합니다)\n' ..
-			'!!!pull 또는 !!!download : 클라우드로부터 코드를 내려받고 다시 시작합니다 (빠름)' ..
-			'!!!push 또는 !!!upload : 클라우드로 코드를 올립니다 (빠름)' ..
-			'!!!sync : 클라우드와 코드를 동기화 시킵니다 (차이 비교후 병합, 빠름)'
+			'!!!pull 또는 !!!download : 클라우드로부터 코드를 내려받고 다시 시작합니다 (빠름)\n' ..
+			'!!!push 또는 !!!upload : 클라우드로 코드를 올립니다 (빠름)\n' ..
+			'!!!sync : 클라우드와 코드를 동기화 시킵니다 (차이 비교후 병합, 빠름)\n'
 		);
 	end
+end
+local function runSchedule(time,func)
+	timer.setTimeout(time,coroutine.wrap(func));
 end
 --#endregion : Discord Module
 --#region : 나눠진 모듈 합치기
@@ -331,6 +334,11 @@ commands,commandsLen = commandHandle.encodeCommands({
 	["지워"] = {
 		alias = {"지우개","지워봐","지워라","지우기"};
 		func = function(replyMsg,message,args,Content)
+			if not message.member:hasPermission(message.channel,enums.manageMessages) then
+				message:reply("권한이 부족해요! 메시지 관리 권한이 있는 유저만 이 명령어를 사용 할 수 있어요");
+				return;
+			end
+
 			local RemoveNum = tonumber(Content.rawArgs);
 			if (not RemoveNum) or type(RemoveNum) ~= "number" then
 				message:reply("잘못된 명령어 사용법이에요!\n\n**올바른 사용 방법**\n> 미나야 지워 <지울 수>\n지울수 : 2 에서 100 까지의 숫자 (정수)");
@@ -344,8 +352,12 @@ commands,commandsLen = commandHandle.encodeCommands({
 			end
 
 			message.channel:bulkDelete(message.channel:getMessagesBefore(message.id,RemoveNum));
-			message:reply(("최근 메시지 %s개를 지웠어요!"):format(RemoveNum));
+			local infoMsg = message:reply(("최근 메시지 %s개를 지웠어요!"):format(RemoveNum));
 			message:delete();
+
+			runSchedule(50,function ()
+				infoMsg:delete();
+			end)''
 			return;
 		end;
 	};
@@ -378,9 +390,9 @@ commands,commandsLen = commandHandle.encodeCommands({
 	["검열"] = {
 		reply = "검-열";
 		func = function (message)
-			timer.setTimeout(5,function ()
+			runSchedule(50,function ()
 				message:delete();
-			end)
+			end);
 		end;
 	};
 	--["노래좀"] = {
