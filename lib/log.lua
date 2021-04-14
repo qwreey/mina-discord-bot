@@ -9,6 +9,7 @@
 
 local log = {_version = "0.1.0"};
 
+log.root = io.popen("cd"):read("*l")
 log.usecolor = true;
 log.outfile = nil;
 log.level = "trace";
@@ -57,9 +58,13 @@ for i, x in ipairs(modes) do
 
 		local msg = tostring(...);
 		local info = debug.getinfo(2, "Sl");
+		if string.sub(info.short_src,1,#log.root) == log.root then
+			info.short_src = string.sub(info.short_src,#log.root+2,-1)
+		end
 		local lineinfo = info.short_src .. ":" .. info.currentline;
 
 		-- Output to console
+
 		print(string.format("%s[%-6s%s]%s %s: %s",
 			log.usecolor and x.color or "",
 			nameupper,

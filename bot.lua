@@ -35,6 +35,8 @@ local timer = require "timer";
 local corohttp = require "coro-http";
 local json = require "json";
 local discordia = require "discordia";
+local discordia_class = require "discordia/libs/class";
+local discordia_Logger = discordia_class.classes.Logger;
 local enums = discordia.enums;
 local client = discordia.Client();
 local function StartBot(botToken)
@@ -120,6 +122,17 @@ end
 local function runSchedule(time,func)
 	timer.setTimeout(time,coroutine.wrap(func));
 end
+function discordia_Logger:log(level, msg, ...)
+	if self._level < level then return end
+	msg = string.format(msg, ...);
+    local logFn =
+        (level == 3 and iLogger.debug) or
+        (level == 2 and iLogger.info) or
+        (level == 1 and iLogger.warn) or
+        (level == 0 and iLogger.error);
+    logFn(msg);
+	return msg;
+end
 --#endregion : Discord Module
 --#region : 나눠진 모듈 합치기
 local commandHandle = require "src/lib/commandHandle"; -- 커맨드 구조 처리기
@@ -140,7 +153,6 @@ local youtubeSearch = require "src/lib/youtube/youtubeSearch"; -- 유튜브 검�
 youtubeSearch:setCoroHttp(corohttp):setJson(json); -- 유튜브 검색 셋업
 --#endregion : 나눠진 모듈 합치기
 --#region : 설정파일 불러오기
-local json = require("json");
 local LoadData = function (Pos)
 	local File = io.open(Pos,"r");
 	local Raw = File:read("a");
@@ -170,6 +182,8 @@ local Admins = { -- 관리 명령어 권한
 	["367946917197381644"] = "쿼리";
 	["647101613047152640"] = "눈송이";
 	["415804982764371969"] = "상어";
+	["754620012450414682"] = "팥죽";
+	["756035861250048031"] = "내부계";
 };
 local prefixs = { -- 명령어 맨앞 글자 (접두사)
 	[1] = "미나야";
