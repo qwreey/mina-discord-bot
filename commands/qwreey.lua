@@ -429,7 +429,7 @@ return function(o)
 				"대굴 대굴... **6** 나왔당!";
 				function (msg)
 					local newMsg = msg:reply("대굴 대굴... 어? 0? 이게 왜 나왔지?");
-					runSchedule(1900,function ()
+					runSchedule(500,function ()
 						newMsg:delete();
 					end);
 				end;
