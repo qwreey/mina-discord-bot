@@ -1,15 +1,3 @@
---#region : CODE 파트
-local iLogger = require "src/lib/log";
-iLogger = {
-	["trace"] = iLogger.trace;
-	["debug"] = iLogger.debug;
-	["info"] = iLogger.info;
-	["warn"] = iLogger.warn;
-	["error"] = iLogger.error;
-	["fatal"] = iLogger.fatal;
-};
-local function main()
---#region : 설명글/TODO 헤더
 --[[
 
 작성 : qwreey
@@ -24,12 +12,30 @@ TODO: 도움말 만들기
 TODO: 사전 Json 인코딩을 없에고 그냥 바로 테이블 넘기기
 TODO: 지우기 명령,강퇴 명령 같은거 만들기
 ]]
---#endregion : 설명글/TODO
+
+--#region : Luvit 모듈 / 주요 모듈 임포트
+local iLogger = require "src/lib/log";
+local json = require "json";
+local corohttp = require "coro-http";
+local timer = require "timer";
+local fs = require "fs";
+
+iLogger = {
+	["trace"] = iLogger.trace;
+	["debug"] = iLogger.debug;
+	["info"] = iLogger.info;
+	["warn"] = iLogger.warn;
+	["error"] = iLogger.error;
+	["fatal"] = iLogger.fatal;
+};
+local function runSchedule(time,func)
+	timer.setTimeout(time,coroutine.wrap(func));
+end
+--#endregion : Luvit 모듈 / 주요 모듈 임포트
+
+local function main()
 --#region : 디코 모듈 임포트
 iLogger.info("Wait for discordia");
-local timer = require "timer";
-local corohttp = require "coro-http";
-local json = require "json";
 local discordia = require "discordia";
 local discordia_class = require "discordia/libs/class";
 local discordia_Logger = discordia_class.classes.Logger;
@@ -115,9 +121,6 @@ local function adminCmd(Text,message)
 		);
 	end
 end
-local function runSchedule(time,func)
-	timer.setTimeout(time,coroutine.wrap(func));
-end
 function discordia_Logger:log(level, msg, ...)
 	if self._level < level then return end
 	msg = string.format(msg, ...);
@@ -130,13 +133,17 @@ function discordia_Logger:log(level, msg, ...)
 	return msg;
 end
 --#endregion : Discord Module
---#region : 나눠진 모듈 합치기
+--#region : 부분 모듈 임포팅
 local commandHandle = require "src/lib/commandHandle"; -- 커맨드 구조 처리기
 local cRandom = require "src/lib/cRandom"; -- LUA 렌덤 핸들러
 local strSplit = require "src/lib/stringSplit"; -- 글자 분해기
 local urlCode = require "src/lib/urlCode"; -- 한글 URL 인코더/디코더
 local makeId = require "src/lib/makeId"; -- ID 만드는거
-local qFilesystem = require "src/lib/qFilesystem";
+local qFilesystem = require "src/lib/qFilesystem"; -- nt 파일 시스템
+
+-- 데이터
+local data = require "src/lib/data";
+data:setJson(json);
 
 -- 네이버 사전
 local naverDictEmbed = require "src/lib/naverDict/embed"; -- 네이버 사전 임배드 렌더러
@@ -147,25 +154,12 @@ naverDictSearch:setCoroHttp(corohttp):setJson(json); -- 네이버 사전 셋업
 local youtubeEmbed = require "src/lib/youtube/embed"
 local youtubeSearch = require "src/lib/youtube/youtubeSearch"; -- 유튜브 검색
 youtubeSearch:setCoroHttp(corohttp):setJson(json); -- 유튜브 검색 셋업
---#endregion : 나눠진 모듈 합치기
+--#endregion : 부분 모듈 임포팅
 --#region : 설정파일 불러오기
-local LoadData = function (Pos)
-	local File = io.open(Pos,"r");
-	local Raw = File:read("a");
-	File:close();
-	return json.decode(Raw);
-end
-local SaveData = function (Pos,Data)
-	local File = io.open(Pos,"w");
-	File:write(json.encoding(Data));
-	File:close();
-	return;
-end
-
-local ACCOUNTData = LoadData("data/ACCOUNT.json");
-local History = LoadData("data/history.json");
-local dirtChannels = LoadData("data/dirtChannels.json");
-local loveLeaderstats = LoadData("data/loveLeaderstats.json");
+local ACCOUNTData = data.load("data/ACCOUNT.json");
+local History = data.load("data/history.json");
+local dirtChannels = data.load("data/dirtChannels.json");
+local loveLeaderstats = data.load("data/loveLeaderstats.json");
 
 local EULA do -- 사용 약관
 	local File = io.open("data/EULA","r");
@@ -200,60 +194,7 @@ local prefixReply = { -- 그냥 미나야 하면 답
 local unknownReply = { -- 반응 없을때 띄움
 	"(갸우뚱?)","무슨 말이에요?","네?",":thinking: 먀?","으에?","먕?"
 };
---[[
-	alias = table[array]/str; -- 다른 명령어로도 똑같은 기능 내도록
-	reply = table[array]/str; -- 콜백
-	func  = function(replyMsg,message,args,{
-		rawCommandText = string; -- 접두사를 제외한 스트링
-		prefix = prefix; -- 접두사(사용된)
-		rawArgs = rawArgs; -- args 스트링 (커스텀 분석용)
-		rawCommandName = rawCommandName; -- 커맨드 이름 (앞에 무시된거 포함됨)
-		self = Command; -- 지금 이 커맨드 개체를 반환
-	}); -- 함수
-	reply = func(message,args,{위에랑같음});
-
-	변수들
-	{%:UserName:%} : 유저 이름으로 대채
-
-	...
-	와
-	무야호
-	미나야 3개 지워
-	유튜브검색
-	트위터/유튜브/인스타 같은거 바로가기
-	살려줘, 잠안와, 학원, 학교, 야자, ㅈ까, 바보, 공부 추가 예정
-	ㅄ,ㅂㅅ,병신
-	욕은 나빠요!
-	ㅗ 랑 ㅋ 반복 추가할 예정
-	무계,키,성별,나이,생일 이런거
-	묻는거, 스파게티,토스트 같은 음식류도
-	학과별로 오지 마세요 쓰기
-	스트리머마다 추가
-	L 하면 L (+ /lobby, /leave)
-	lol 도
-	젤다 드립
-	삼성.LG 기업들 말하면 피드백
-	ㄱㄷ
-	착해, 이뻐, 귀여워 같은 칭찬단어 만들고 그거 호감도 늘리는거 만들기
-	맛있지 먹었다
-	ㅇ0ㅇ
-	oOo
-	ㅇOㅇ
-	알파카 : 옆에서 커피마신넘 학원간넘
-	깔끔하네
-	시끄러
-	대통령마다 반응
-	롤, 게임
-	사람 크시는 사람이 아니지만요...
-	살려줘 무, 무슨 일 있어요?!
-	힘들어 언젠가 이 힘든 날조차 잊히는 행복이 진성트수님께 오리라고 믿어 의심치 않을 게요! 파이팅! 
-	영상편집
-	에펙 (에이펙스 ㄹㅈㄷ)
-	검열
-	구글,네이버,유튜브,위키피디아,나무위키 검색명령어
-	안녕 하면 시간까지 말한다
-]]
-local CommandEnv = { -- 커맨드 사전에 환경을 제공
+local CommandEnv = { -- 커맨드 사전에 환경을 제공하기 위한 테이블
 	["cRandom"] = cRandom;
 	["json"] = json;
 	["client"] = client;
@@ -266,6 +207,9 @@ local CommandEnv = { -- 커맨드 사전에 환경을 제공
 	["ACCOUNTData"] = ACCOUNTData;
 	["qFilesystem"] = qFilesystem;
 	["runSchedule"] = runSchedule;
+	["ffi"] = ffi;
+	["timer"] = timer;
+	["fs"] = fs;
 };
 local function loadCommandFiles(FileRoot) -- 커맨드 사전 불러오기
 	local SetEnv = require(FileRoot);
@@ -563,7 +507,7 @@ client:on('messageCreate', function(message)
 end);
 -- Start bot
 StartBot(ACCOUNTData.botToken);
---#endregion : 메인 파트
+
 end
 --#endregion : CODE 파트
 --#region : 디버깅 파트
