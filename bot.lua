@@ -159,7 +159,6 @@ youtubeSearch:setCoroHttp(corohttp):setJson(json); -- 유튜브 검색 셋업
 --#endregion : 부분 모듈 임포팅
 --#region : 설정파일 불러오기
 local ACCOUNTData = data.load("data/ACCOUNT.json");
-local History = data.load("data/history.json");
 local dirtChannels = data.load("data/dirtChannels.json");
 local loveLeaderstats = data.load("data/loveLeaderstats.json");
 
@@ -213,6 +212,8 @@ local CommandEnv = { -- 커맨드 사전에 환경을 제공하기 위한 테이
 	["timer"] = timer;
 	["fs"] = fs;
 	["thread"] = thread;
+	["EULA"] = EULA;
+	["corohttp"] = corohttp;
 };
 local function loadCommandFiles(FileRoot) -- 커맨드 사전 불러오기
 	local SetEnv = require(FileRoot);
@@ -227,10 +228,6 @@ for CmdDict in qFilesystem:GetFiles("src/commands",true) do
 end
 -- 커맨드 색인파일 만들기
 iLogger.info("encoding commands...");
-for _,v in pairs(otherCommands) do
-	iLogger.info("Loaded cmdDict " .. tostring(v));
-end
-
 local commands,commandsLen;
 commands,commandsLen = commandHandle.encodeCommands({
 	-- 특수기능

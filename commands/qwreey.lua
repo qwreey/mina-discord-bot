@@ -7,7 +7,11 @@
 		rawArgs = rawArgs; -- args 스트링 (커스텀 분석용)
 		rawCommandName = rawCommandName; -- 커맨드 이름 (앞에 무시된거 포함됨)
 		self = Command; -- 지금 이 커맨드 개체를 반환
+		getUserData = fnc; -- 유저 데이터 테이블 가져오기
+		saveUserData = fnc; 유저 데이터 저장하기 (넘겨 받은 테이블 고치고 수행)
 	}); -- 함수
+	love = 1; -- love 주는 정도 (1시간 쿨탐 가짐, 선택사항)
+	repLove = -1; -- 5번 반복할 때 love 깍이는 정도 (10 분 뒤 초기화, 선택사항)
 	reply = func(message,args,{위에랑같음});
 
 	변수들
@@ -51,17 +55,18 @@
 	구글,네이버,유튜브,위키피디아,나무위키 검색명령어
 	안녕 하면 시간까지 말한다
 ]]
-
-local runSchedule,cRandom,json,client,discordia,enums,iLogger,makeId,urlCode,strSplit,ACCOUNTData;
 return function(o)
-	runSchedule,cRandom,json,client,discordia,enums,iLogger,makeId,urlCode,strSplit,ACCOUNTData = 
-    o.runSchedule,o.cRandom,o.json,o.client,o.discordia,o.enums,o.iLogger,o.makeId,o.urlCode,o.strSplit
-    ,o.ACCOUNTData;
-    -- 여기에는 쓰지 맙쇼
-    -- 기능을 임포트 하는 용도로 있는곳
+	-- ! Automatically generated !
+	local cRandom,json,client,discordia,enums,iLogger,makeId,
+	urlCode,strSplit,ACCOUNTData,qFilesystem,runSchedule
+	,ffi,timer,fs,thread,EULA,corohttp = 
+		o.cRandom,o.json,o.client,o.discordia,o.enums,
+		o.iLogger,o.makeId,o.urlCode,o.strSplit,o.ACCOUNTData,
+		o.qFilesystem,o.runSchedule,o.ffi,o.timer,o.fs
+		,o.thread,o.EULA,o.corohttp;
+    -- ! Automatically generated !
 
 	return {
-		
 		-------------------------------------------------
 		-- 특수 반응 (함수를 쓰거나 여러 의도가 담긴 반응)
 		-------------------------------------------------

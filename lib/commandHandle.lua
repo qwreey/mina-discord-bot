@@ -62,6 +62,7 @@ end
 local function formatRreplyText(Text,Data)
     local Text = Text or "";
     Text = string.gsub(Text,"{%%:UserName:%%}",Data.User.name);
+    Text = string.gsub(Text,"{%%:U%+():%%}")
     return Text;
 end
 function module.formatReply(RawContent,Data)

@@ -5,8 +5,8 @@ local WORD = {
 };
 return function ()
 	local ID = "";
-	for i = 1,8 do
-        math.randomseed((os.time()*1000) + ((i^2)*2));
+	for i = 1,18 do
+        math.randomseed(math.floor(((os.clock()+os.time())*1111) + ((i^2)*math.pi*10000)));
 		ID = ID .. WORD[math.random(1,#WORD)];
 	end
 	return ID;
