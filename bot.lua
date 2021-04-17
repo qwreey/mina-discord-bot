@@ -248,10 +248,6 @@ commands,commandsLen = commandHandle.encodeCommands({
 		alias = {"EULA","사용계약"};
 		reply = EULA;
 	};
-	["제작진"] = {
-		alias = {"만든이들","크래딧","크레딧","누가만듬?","작자","제작자"};
-		reply = "**총괄**/코드 : 쿼리\n프로필/아이디어 : **상아리**,별이(블스상)\n작명 : 눈송이\n\n테스팅/아이디어 : 팥죽";
-	};
 	["나이"] = {
 		func = function (_,message)
 			local Year = tostring(math.floor((10000*(os.time() - ACCOUNTData.BirthdayDay) / 31536000))/10000);
@@ -332,17 +328,7 @@ commands,commandsLen = commandHandle.encodeCommands({
 			replyMsg:setContent(("미나가 아는 반응은 %d개 이에요!"):format(commandsLen));
 		end;
 	};
-	["동전뒤집기"] = {
-		alias = {"동전 뒤집기","동전놀이","동전 놀이","동전던지기","동전 던지기","동전뒤집기","동전게임","동전 게임"};
-		reply = function ()
-			local pF = cRandom(1,11);
-			return pF == 11 and "옆면????" or (pF <= 5 and "앞면!" or "뒷면!");
-		end;
-	};
-	["가위"] = {
-		alias = {"바위","보"};
-		reply = {"**{%:UserName:%}** 님이 이겼어요!","이번판은 미나 승리!","무승부! 똑같아요"};
-	};
+	
 	["검열"] = {
 		reply = "검-열";
 		func = function (message)
