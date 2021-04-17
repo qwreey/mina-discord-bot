@@ -1,1 +1,1 @@
-int MessageBoxA (void * w, const char * txt, const char * cap, int type);
+int messageBox (void * w, const char * txt, const char * cap, int type);
