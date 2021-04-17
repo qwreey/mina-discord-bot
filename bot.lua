@@ -14,11 +14,13 @@ TODO: 지우기 명령,강퇴 명령 같은거 만들기
 ]]
 
 --#region : Luvit 모듈 / 주요 모듈 임포트
-local iLogger = require "src/lib/log";
-local json = require "json";
-local corohttp = require "coro-http";
-local timer = require "timer";
-local fs = require "fs";
+local iLogger = require "src/lib/log"; -- log 핸들링
+local json = require "json"; -- json 핸들링
+local corohttp = require "coro-http"; -- http 핸들링
+local timer = require "timer"; -- 타임아웃 핸들링
+local thread = require "thread"; -- 스레드 조정
+local fs = require "fs"; -- 파일 시스템
+local ffi = require "ffi"; -- C 동적 상호작용
 
 iLogger = {
 	["trace"] = iLogger.trace;
@@ -210,6 +212,7 @@ local CommandEnv = { -- 커맨드 사전에 환경을 제공하기 위한 테이
 	["ffi"] = ffi;
 	["timer"] = timer;
 	["fs"] = fs;
+	["thread"] = thread;
 };
 local function loadCommandFiles(FileRoot) -- 커맨드 사전 불러오기
 	local SetEnv = require(FileRoot);
