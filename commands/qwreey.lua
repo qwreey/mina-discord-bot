@@ -1,3 +1,56 @@
+--[[
+	alias = table[array]/str; -- 다른 명령어로도 똑같은 기능 내도록
+	reply = table[array]/str; -- 콜백
+	func  = function(replyMsg,message,args,{
+		rawCommandText = string; -- 접두사를 제외한 스트링
+		prefix = prefix; -- 접두사(사용된)
+		rawArgs = rawArgs; -- args 스트링 (커스텀 분석용)
+		rawCommandName = rawCommandName; -- 커맨드 이름 (앞에 무시된거 포함됨)
+		self = Command; -- 지금 이 커맨드 개체를 반환
+	}); -- 함수
+	reply = func(message,args,{위에랑같음});
+
+	변수들
+	{%:UserName:%} : 유저 이름으로 대채
+
+	...
+	와
+	무야호
+	미나야 3개 지워
+	유튜브검색
+	트위터/유튜브/인스타 같은거 바로가기
+	살려줘, 잠안와, 학원, 학교, 야자, ㅈ까, 바보, 공부 추가 예정
+	ㅄ,ㅂㅅ,병신
+	욕은 나빠요!
+	ㅗ 랑 ㅋ 반복 추가할 예정
+	무계,키,성별,나이,생일 이런거
+	묻는거, 스파게티,토스트 같은 음식류도
+	학과별로 오지 마세요 쓰기
+	스트리머마다 추가
+	L 하면 L (+ /lobby, /leave)
+	lol 도
+	젤다 드립
+	삼성.LG 기업들 말하면 피드백
+	ㄱㄷ
+	착해, 이뻐, 귀여워 같은 칭찬단어 만들고 그거 호감도 늘리는거 만들기
+	맛있지 먹었다
+	ㅇ0ㅇ
+	oOo
+	ㅇOㅇ
+	알파카 : 옆에서 커피마신넘 학원간넘
+	깔끔하네
+	시끄러
+	대통령마다 반응
+	롤, 게임
+	사람 크시는 사람이 아니지만요...
+	살려줘 무, 무슨 일 있어요?!
+	힘들어 언젠가 이 힘든 날조차 잊히는 행복이 진성트수님께 오리라고 믿어 의심치 않을 게요! 파이팅! 
+	영상편집
+	에펙 (에이펙스 ㄹㅈㄷ)
+	검열
+	구글,네이버,유튜브,위키피디아,나무위키 검색명령어
+	안녕 하면 시간까지 말한다
+]]
 
 local runSchedule,cRandom,json,client,discordia,enums,iLogger,makeId,urlCode,strSplit,ACCOUNTData;
 return function(o)
