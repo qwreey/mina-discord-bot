@@ -24,6 +24,7 @@ local function indexingCommand(IndexTable,CommandName,CommandInfo)
     local alias = CommandInfo.alias;
     local len = 1;
 
+    CommandInfo.name = CommandName;
     IndexTable[CommandName] = CommandInfo;
     if type(alias) == "table" then
         for _,Name in pairs(alias) do

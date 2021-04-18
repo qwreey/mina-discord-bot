@@ -181,6 +181,10 @@ local debugfn xpcall(function ()
 	iLogger.info("---------------------- [LOAD SETTINGS] ----------------------");
 	iLogger.info("load settings ...");
 	iLogger.info(" |- admins, prefixs, prefix reply, unknown reply, command env");
+	local eulaComment = "\n" ..
+		"\n> 호감도 기능을 사용할 수 없어요!" ..
+		"\n> 호감도 기능을 사용하려면 '미나야 약관 동의' 를 입력해주세요!" ..
+		"\n> (약관의 세부정보를 보려면 '미나야 약관' 을 입력해주세요)";
 	local Admins = { -- 관리 명령어 권한
 		["367946917197381644"] = "쿼리";
 		["647101613047152640"] = "눈송이";
@@ -248,10 +252,17 @@ local debugfn xpcall(function ()
 		["약관동의"] = {
 			alias = {"EULA동의","약관 동의","사용계약 동의"};
 			reply = function (message)
-				return "ERROR!";
-				--local UserId = tostring(message.author.id);
-				--local File = io.open("r");
-
+				local userId = tostring(message.author.id);
+				local file = io.open(("data/userData/%s.json"):format(userId),"w");
+				file:write(
+					("{" ..
+						('"latestName":"%s",'):format(message.author.name) ..
+						'"love":0,' ..
+						('"lastName":["%s"],'):format(message.author.name) ..
+						'"lastCommand":{}' ..
+					"}")
+				);
+				file:close();
 				--"안녕하세요 {%:UserName:%} 님!\n사용 약관에 동의해주셔서 감사합니다!\n사용 약관을 동의하였기 때문에 다음 기능을 사용 할 수 있게 되었습니다!\n\n> 미나야 배워 (미출시 기능)\n"
 			end;
 		};
@@ -425,7 +436,7 @@ local debugfn xpcall(function ()
 					-- 커맨드 찾음 (실행)
 					local love = Command.love; -- 호감도
 					love = (type(love) == "function") and love() or love;
-					local loveText = love and ("` ❤ + %d `"):format(love) or "";
+					local loveText = love and ("\n` ❤ + %d `"):format(love) or "";
 					local func = Command.func; -- 커맨드 함수 가져오기
 					local replyText = Command.reply; -- 커맨드 리플(답변) 가져오기
 					local rawArgs,args; -- 인수 (str,띄어쓰기 단위로 나눔 array)
@@ -434,6 +445,16 @@ local debugfn xpcall(function ()
 						and (replyText[cRandom(1,#replyText)])
 						or replyText
 					);
+					-- 만약 호감도가 있으면 올려주기
+					if love then
+						local thisUserDat = userData:loadData(User.id);
+						if thisUserDat then
+							thisUserDat.love = thisUserDat.love + love;
+							userData:saveData(User.id);
+						else
+							loveText = eulaComment;
+						end
+					end
 					-- 만약 답변글이 함수면 (지금은 %s 시에요 처럼 쓸 수 있도록) 실행후 결과 가져오기
 					if type(replyText) == "function" then
 						rawArgs = string.sub(rawCommandText,#CommandName+2,-1);

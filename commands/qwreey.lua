@@ -109,6 +109,7 @@ return function(o)
 				local pF = cRandom(1,11);
 				return pF == 11 and "옆면????" or (pF <= 5 and "앞면!" or "뒷면!");
 			end;
+			love = loveRang(2,5);
 		};
 		["제작진"] = {
 			alias = {"만든이들","크래딧","크레딧","누가만듬?","작자","제작자"};
