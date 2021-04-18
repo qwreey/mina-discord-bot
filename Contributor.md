@@ -88,6 +88,15 @@ reply = string.rep("멈춰! ",20);
     love = -2; -- 호감도 2 하락
 };
 ```
+렌덤하게 호감도가 주어지는 반응  
+```lua
+["안녕"] = {
+    reply = "안녕하세요! {%%:UserName:%%} 님!";
+    love = function()
+
+    end
+};
+```  
   
 ## [반복시 호감도가 내리는 반응 (선택적 사항)]  
 ```lua
@@ -159,7 +168,12 @@ msg (메시지 개체) 받아서 편집도 가능함,
     }); -- 함수
     love = 1; -- love 주는 정도 (1시간 쿨탐 가짐, 선택사항)
     repLove = -1; -- 5번 반복할 때 love 깍이는 정도 (10 분 뒤 초기화, 선택사항)
+
+    -- 함수를 이용한 가변적인 결과
     reply = func(message,args,{위와(func 의 가장 뒤 인자) 동일한 테이블});
+    love = function(userId) -- 렌덤적인 값을 반환 할 수 있음
+        return cRandom(1,3);
+    end;
 };
 ```
   

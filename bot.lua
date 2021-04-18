@@ -164,6 +164,10 @@ local debugfn xpcall(function ()
 	local youtubeSearch = require "src/lib/youtube/youtubeSearch"; -- 유튜브 검색
 	youtubeSearch:setCoroHttp(corohttp):setJson(json); -- 유튜브 검색 셋업
 
+	-- 유저 데이터 핸들링
+	local userData = require "src/lib/userData";
+	userData:setJson(json):setILogger(iLogger):setMakeId(makeId);
+
 	-- C 라이브러리 : 메시징
 	ffi.cdef(data.loadRaw("src/clib/msgBox.c"));
 	--#endregion : 부분 모듈 임포팅
