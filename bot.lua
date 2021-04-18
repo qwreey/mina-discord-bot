@@ -181,7 +181,7 @@ local debugfn xpcall(function ()
 	iLogger.info("---------------------- [LOAD SETTINGS] ----------------------");
 	iLogger.info("load settings ...");
 	iLogger.info(" |- admins, prefixs, prefix reply, unknown reply, command env");
-	local eulaComment = "\n" ..
+	local eulaComment_love = "\n" ..
 		"\n> 호감도 기능을 사용할 수 없어요!" ..
 		"\n> 호감도 기능을 사용하려면 '미나야 약관 동의' 를 입력해주세요!" ..
 		"\n> (약관의 세부정보를 보려면 '미나야 약관' 을 입력해주세요)";
@@ -249,6 +249,19 @@ local debugfn xpcall(function ()
 	local commands,commandsLen;
 	commands,commandsLen = commandHandle.encodeCommands({
 		-- 특수기능
+		["호감도"] = {
+			reply = function (message,args,c)
+				if c.rawArgs == "" then -- 내 호감도 불러오기
+					local muserData = c.getUserData();
+					if muserData == nil then -- 약관 동의하지 않았으면 리턴
+						message:reply(eulaComment_love);
+						return;
+					end
+					local love = tostring(muserData.love or "NULL (nil)");
+					message:reply(("미나는 **%s** 님을 %s 만금 좋아해요!"):format(message.author.name,love));
+				end
+			end
+		};
 		["약관동의"] = {
 			alias = {"EULA동의","약관 동의","사용계약 동의"};
 			reply = function (message)
@@ -452,7 +465,7 @@ local debugfn xpcall(function ()
 							thisUserDat.love = thisUserDat.love + love;
 							userData:saveData(User.id);
 						else
-							loveText = eulaComment;
+							loveText = eulaComment_love;
 						end
 					end
 					-- 만약 답변글이 함수면 (지금은 %s 시에요 처럼 쓸 수 있도록) 실행후 결과 가져오기
@@ -467,6 +480,12 @@ local debugfn xpcall(function ()
 								rawCommandName = rawCommandName;
 								self = Command;
 								commandName = CommandName;
+								saveUserData = function ()
+									return userData:saveData(User.id);
+								end;
+								getUserData = function ()
+									return userData:loadData(User.id);
+								end;
 							}
 						);
 					end

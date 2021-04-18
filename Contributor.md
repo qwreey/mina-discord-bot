@@ -41,19 +41,19 @@ js 랑 가까움 (그래서 js 모듈 이식작이 많음)
 -- 주사위 굴리기  
 ```lua
 reply = function(message,args,Content)
-    returns ("나온 수는 %d 이에요!"):format(cRandom(1,6));
+    return ("나온 수는 %d 이에요!"):format(cRandom(1,6));
 end;
 ```
 당연히 여러 반응과 묶을수도 있음  
 ```lua
 reply = {  
     function(message,args,Content)
-        returns ("나온 수는 %d 이에요!"):format(cRandom(1,6));
+        return ("나온 수는 %d 이에요!"):format(cRandom(1,6));
     end,
     "주사위를 찾지 못했어요",
     "어이쿠! 주사위를 떨어트렸어요",
     function(message,args,Content)
-        returns ("(대구르르르...) 나온 수는 %d 이에요!"):format(cRandom(1,6));
+        return ("(대구르르르...) 나온 수는 %d 이에요!"):format(cRandom(1,6));
     end
 };
 ```
@@ -158,16 +158,17 @@ msg (메시지 개체) 받아서 편집도 가능함,
     alias = table[array]/str; -- 다른 명령어로도 똑같은 기능 내도록
     reply = table[array]/str; -- 콜백
     func  = function(replyMsg,message,args,{
+        commandName = string; -- 이 커맨드 이름
         rawCommandText = string; -- 접두사를 제외한 스트링
-        prefix = prefix; -- 접두사(사용된)
-        rawArgs = rawArgs; -- args 스트링 (커스텀 분석용)
-        rawCommandName = rawCommandName; -- 커맨드 이름 (앞에 무시된거 포함됨)
-        self = Command; -- 지금 이 커맨드 개체를 반환
+        prefix = string; -- 접두사(사용된)
+        rawArgs = string; -- args 스트링 (커스텀 분석용)
+        rawCommandName = string; -- 커맨드 이름 (앞에 무시된거 포함됨)
+        self = Command:table; -- 지금 이 커맨드 개체를 반환
         getUserData = fnc; -- 유저 데이터 테이블 가져오기
-        saveUserData = fnc; 유저 데이터 저장하기 (넘겨 받은 테이블 고치고 수행)
+        saveUserData = fnc; -- 유저 데이터 저장하기 (넘겨 받은 테이블 고치고 수행)
     }); -- 함수
     love = 1; -- love 주는 정도 (1시간 쿨탐 가짐, 선택사항)
-    repLove = -1; -- 5번 반복할 때 love 깍이는 정도 (10 분 뒤 초기화, 선택사항)
+    canRep = false; -- 반복해도 love 가 깍이지 않음 (아에 love 가 없으면 이거에 소용 없이 안줄어듬)
 
     -- 함수를 이용한 가변적인 결과
     reply = func(message,args,{위와(func 의 가장 뒤 인자) 동일한 테이블});
@@ -176,6 +177,7 @@ msg (메시지 개체) 받아서 편집도 가능함,
     end;
 };
 ```
+<!-- repLove = -1; -- 5번 반복할 때 love 깍이는 정도 (10 분 뒤 초기화, 선택사항) -->
   
 ## [다른 모듈 설명]  
 json : 루아 테이블을 json 으로 인코딩/디코딩 => https://luvit.io/api/json.html  
