@@ -20,6 +20,9 @@ rem [OTHER CODE]
 rem RETURNCODE 200 | ssh host open
 rem RETURNCODE 400 | error (?)
 
+if %stopcode% equ 100 (
+    goto end
+)
 if %stopcode% equ 102 (
     timeout /t 5
     goto whenstart
@@ -43,5 +46,7 @@ if %stopcode% equ 105 (
 )
 if %stopcode% equ 106 goto whenstart
 if %stopcode% equ 107 goto whenstart
-if %stopcode% neq 101 timeout /t 18
+if %stopcode% neq 101 timeout /NOBREAK /t 18
 if %stopcode% neq 100 goto whenstart
+
+:end

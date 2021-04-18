@@ -54,6 +54,7 @@ end
 
 -- 모드들
 local modes = {
+	[-2] = {name = "cmd",color = "\27[95m"};
 	[-1] = {name = "exit",color = "\27[95m"};
 	[0] = {name = "setup",color = "\27[93m"};
 	[1] = {name = "trace",color = "\27[34m"};
@@ -75,6 +76,8 @@ for i,v in pairs(modes) do
 	end;
 end
 
+log.cmd    = log.cmd;
+log.cmdf   = log.cmdf;
 log.exit   = log.exit;
 log.exitf  = log.exitf;
 log.setup  = log.setup;

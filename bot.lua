@@ -21,47 +21,46 @@ local debugfn xpcall(function ()
 	local thread = require "thread"; -- 스레드 조정
 	local fs = require "fs"; -- 파일 시스템
 	local ffi = require "ffi"; -- C 동적 상호작용
+	local readline = require "readline"; -- 터미널 라인 읽기
+	local prettyPrint = require "pretty-print"; -- 터미널에 여러 자료형 프린팅
 
-	iLogger = {
-		["trace"] = iLogger.trace;
-		["debug"] = iLogger.debug;
-		["info"] = iLogger.info;
-		["warn"] = iLogger.warn;
-		["error"] = iLogger.error;
-		["fatal"] = iLogger.fatal;
-	};
 	local function runSchedule(time,func)
 		timer.setTimeout(time,coroutine.wrap(func));
 	end
+
+	iLogger.info(" ");
+	iLogger.info("------------------------ [CLEAN  UP] ------------------------");
+	iLogger.info("luvit loaded");
 	--#endregion : Luvit 모듈 / 주요 모듈 임포트
 	--#region : 커맨드 라인 인자 받아오기
-	local RunOption = {};
+	local RunOption = {}; -- 인자 옵션 받는곳
+	iLogger.info("find command line args . . .");
 	for i,v in pairs(args) do ---@diagnostic disable-line
 		if i > 1 then
-			iLogger.info(("Args[%d] : %s"):format(i-1,v));
+			iLogger.info((" |- args[%d] : %s"):format(i-1,v));
 			RunOption[v] = true;
 		end
 	end
 	--#endregion : 커맨드 라인 인자 받아오기
 	--#region : 디코 모듈 임포트
-	iLogger.info("Wait for discordia");
-	local discordia = require "discordia";
-	local discordia_class = require "discordia/libs/class";
-	local discordia_Logger = discordia_class.classes.Logger;
-	local enums = discordia.enums;
-	local client = discordia.Client();
-	local function StartBot(botToken)
+	iLogger.info("wait for discordia . . .");
+	local discordia = require "discordia"; -- 디스코드 lua 봇 모듈 불러오기
+	local discordia_class = require "discordia/libs/class"; -- 디스코드 클레스 가져오기
+	local discordia_Logger = discordia_class.classes.Logger; -- 로거부분 가져오기 (통합을 위해 수정)
+	local enums = discordia.enums; -- 디스코드 enums 가져오기
+	local client = discordia.Client(); -- 디스코드 클라이언트 만들기
+	local function startBot(botToken) -- 봇 시작시키는 함수
 		-- 토큰주고 시작
-		iLogger.info("Starting bot ...");
+		iLogger.debug("starting bot ...");
 		client:run(("Bot %s"):format(botToken));
 		client:setGame("'미나야 도움말' 을 이용해 도움말을 얻거나 '미나야 <할말>' 을 이용해 미나와 대화하세요!");
 		return;
 	end
-	local function reloadBot()
+	local function reloadBot() -- 봇 종료 함수
 		iLogger.info("Try restarting ...");
 		client:setGame("재시작중...");
 	end
-	local function adminCmd(Text,message)
+	local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		if (Text == "!!!stop" or Text == "!!!kill") then
 			message:reply('> 프로그램 죽이는중 . . .');
 			os.exit(100); -- 프로그램 킬
@@ -130,7 +129,7 @@ local debugfn xpcall(function ()
 			);
 		end
 	end
-	function discordia_Logger:log(level, msg, ...)
+	function discordia_Logger:log(level, msg, ...) -- 디스코드 모듈 로거부분 편집
 		if self._level < level then return end
 		msg = string.format(msg, ...);
 		local logFn =
@@ -143,6 +142,7 @@ local debugfn xpcall(function ()
 	end
 	--#endregion : Discord Module
 	--#region : 부분 모듈 임포팅
+	iLogger.info("load modules . . .");
 	local commandHandle = require "src/lib/commandHandle"; -- 커맨드 구조 처리기
 	local cRandom = require "src/lib/cRandom"; -- LUA 렌덤 핸들러
 	local strSplit = require "src/lib/stringSplit"; -- 글자 분해기
@@ -165,6 +165,7 @@ local debugfn xpcall(function ()
 	youtubeSearch:setCoroHttp(corohttp):setJson(json); -- 유튜브 검색 셋업
 	--#endregion : 부분 모듈 임포팅
 	--#region : 설정파일 불러오기
+	iLogger.info("load files . . .");
 	local ACCOUNTData = data.load("data/ACCOUNT.json");
 	local loveLeaderstats = data.load("data/loveLeaderstats.json");
 	local EULA = data.loadRaw("data/EULA.txt")
@@ -219,7 +220,7 @@ local debugfn xpcall(function ()
 		["EULA"] = EULA;
 		["corohttp"] = corohttp;
 	};
-	iLogger.info(" |- Load commands from ./commands");
+	iLogger.info(" |- load commands from ./commands");
 	local otherCommands = {} do -- commands 폴더에서 커맨드 불러오기
 		local function loadCommandFiles(FileRoot)
 			local SetEnv = require(FileRoot);
@@ -227,7 +228,7 @@ local debugfn xpcall(function ()
 		end
 		for CmdDict in qFilesystem:GetFiles("src/commands",true) do
 			local CmdDict = string.sub(CmdDict,1,-5);
-			iLogger.info(" |  |- Load command dict from : src/commands/" .. CmdDict);
+			iLogger.info(" |  |- load command dict from : src/commands/" .. CmdDict);
 			otherCommands[#otherCommands+1] = loadCommandFiles("src/commands/" .. CmdDict);
 		end
 	end
@@ -321,6 +322,7 @@ local debugfn xpcall(function ()
 	iLogger.info("command encode end!");
 	--#endregion : 반응, 프리픽스, 설정
 	--#region : 메인 파트
+	iLogger.info("----------------------- [SET UP BOT ] -----------------------");
 	client:on('messageCreate', function(message) -- 메시지 생성됨
 		local User = message.author;
 		local Text = message.content;
@@ -469,11 +471,55 @@ local debugfn xpcall(function ()
 			end
 		end
 	end);
-	StartBot(ACCOUNTData.botToken); -- 봇 켜기
+	startBot(ACCOUNTData.botToken); -- 봇 켜기
 	--#endregion : 메인 파트
-	--#region : cmd input
+	--#region : 커맨드 창 인풋 읽기
+	if not RunOption.Background then -- 백그라운드이면 불러오지 말기
+		local history = readline.History.new();
+		---@diagnostic disable-next-line
+		local editor = readline.Editor.new({stdin = process.stdin.handle, stdout = process.stdout.handle, history = history});
+		
+		local runEnv = {
+			runSchedule = runSchedule;
+		};
+		runEnv.iLogger,runEnv.json,runEnv.corohttp,runEnv.timer,
+		runEnv.thread,runEnv.fs,runEnv.ffi,runEnv.readline,runEnv.prettyPrint =
+			iLogger,json,corohttp,timer,thread,fs,ffi,readline,prettyPrint;
+		function runEnv.clear()
+			os.execute("cls");
+		end
+		function runEnv.exit()
+			os.exit(100);
+		end
+		function runEnv.reload()
+			os.exit(101);
+		end
+		function runEnv.help()
+			return {
+				clear = "clear screen";
+				exit = "kill luvit/cmd";
+				reload = "reload code";
+				restart = "same with reload";
+				help = "show this msg";
+			};
+		end
+		runEnv.restart = runEnv.reload;
+		setmetatable(runEnv,{
+			__index = _G;
+			__newindex = _G;
+		});
 
-	--#endregion
+		local function onLine(err, line, ...)
+			if line then
+				editor:readLine("", onLine);
+				prettyPrint.prettyPrint(setfenv(loadstring("return " .. line),runEnv)());
+			else
+				process:exit(); ---@diagnostic disable-line
+			end
+		end
+		editor:readLine("", onLine);
+	end
+	--#endregion : 커맨드 창 인풋 읽기
 	--#region : 디버깅용 로컬서버
 
 	--#endregion
