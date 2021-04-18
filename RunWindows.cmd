@@ -1,7 +1,7 @@
 @echo off
 cd ..
 :whenstart
-luvit src/bot
+luvit src/bot %*
 set stopcode=%ERRORLEVEL%
 
 rem WHEN CLOSED

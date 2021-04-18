@@ -8,82 +8,88 @@
 --
 
 local log = {_version = "0.1.0"};
-
 log.root = io.popen("cd"):read("*l")
 log.usecolor = true;
 log.outfile = nil;
-log.level = "trace";
+log.minLevel = 1;
 
+-- 베이스 함수
+local function runLog(thisName,thisLevel,color,debugInfo,...)
+	local msg = tostring(...);
+	
+	-- 최소 래밸에 도달하지 못한 경우 호출을 묵인
+	if thisLevel < log.minLevel then
+		return;
+	end
+	
+	-- 파일명 : 라인 번호 를 가져옴
+	if string.sub(debugInfo.short_src,1,#log.root) == log.root then
+		debugInfo.short_src = string.sub(debugInfo.short_src,#log.root+2,-1)
+	end
+	local lineinfo = debugInfo.short_src .. ":" .. debugInfo.currentline;
+
+	-- 프린트
+	local text = string.format("%s[%-6s%s]%s %s: %s ",
+		log.usecolor and color or "",
+		thisName,
+		os.date("%H:%M:%S"),
+		log.usecolor and "\27[0m" or "",
+		lineinfo,
+		msg
+	);
+	print(text);
+
+	-- 아웃풋 파일에 집어넣기
+	if log.outfile then
+		local fp = io.open(log.outfile, "a");
+		local str = string.format("[%-6s%s] %s: %s\n",
+			thisName, os.date(), lineinfo, msg
+		);
+		fp:write(str);
+		fp:close();
+	end
+
+	return text;
+end
+
+-- 모드들
 local modes = {
-	{name = "trace",color = "\27[34m"};
-	{name = "debug",color = "\27[36m"};
-	{name = "info", color = "\27[32m"};
-	{name = "warn", color = "\27[33m"};
-	{name = "error",color = "\27[31m"};
-	{name = "fatal",color = "\27[35m"};
+	[-1] = {name = "exit",color = "\27[95m"};
+	[0] = {name = "setup",color = "\27[93m"};
+	[1] = {name = "trace",color = "\27[34m"};
+	[2] = {name = "debug",color = "\27[36m"};
+	[3] = {name = "info", color = "\27[32m"};
+	[4] = {name = "warn", color = "\27[33m"};
+	[5] = {name = "error",color = "\27[31m"};
+	[6] = {name = "fatal",color = "\27[35m"};
 };
+for i,v in pairs(modes) do
+	v.level = i;
+	v.upName = string.upper(v.name);
 
-
-local levels = {};
-for i, v in ipairs(modes) do
-	levels[v.name] = i;
+	log[v.name] = function (...)
+		return runLog(v.upName,v.level,v.color,debug.getinfo(2, "Sl"),...);
+	end;
+	log[v.name .. "f"] = function (...)
+		return runLog(v.upName,v.level,v.color,debug.getinfo(2, "Sl"),string.format(...));
+	end;
 end
 
-local round = function(x, increment)
-	increment = increment or 1;
-	x = x / increment;
-	return (x > 0 and math.floor(x + .5) or math.ceil(x - .5)) * increment;
-end
-
-local _tostring = tostring;
-local tostring = function(...)
-	local t = {};
-	for i = 1, select('#', ...) do
-		local x = select(i, ...);
-		if type(x) == "number" then
-			x = round(x, .01);
-		end
-		t[#t + 1] = _tostring(x);
-	end
-	return table.concat(t, " ");
-end
-
-for i, x in ipairs(modes) do
-	local nameupper = x.name:upper();
-	log[x.name] = function(...)
-		-- Return early if we're below the log level
-		if i < levels[log.level] then
-			return;
-		end
-
-		local msg = tostring(...);
-		local info = debug.getinfo(2, "Sl");
-		if string.sub(info.short_src,1,#log.root) == log.root then
-			info.short_src = string.sub(info.short_src,#log.root+2,-1)
-		end
-		local lineinfo = info.short_src .. ":" .. info.currentline;
-
-		-- Output to console
-
-		print(string.format("%s[%-6s%s]%s %s: %s",
-			log.usecolor and x.color or "",
-			nameupper,
-			os.date("%H:%M:%S"),
-			log.usecolor and "\27[0m" or "",
-			lineinfo,
-			msg
-		));
-
-		-- Output to log file
-		if log.outfile then
-			local fp = io.open(log.outfile, "a");
-			local str = string.format("[%-6s%s] %s: %s\n",
-				nameupper, os.date(), lineinfo, msg
-			);
-			fp:write(str);
-			fp:close();
-		end
-	end
-end
+log.exit   = log.exit;
+log.exitf  = log.exitf;
+log.setup  = log.setup;
+log.setupf = log.setupf;
+log.trace  = log.trace;
+log.tracef = log.trace;
+log.debug  = log.debug;
+log.debugf = log.debugf;
+log.info   = log.info;
+log.infof  = log.infof;
+log.warn   = log.warn;
+log.warnf  = log.warnf;
+log.error  = log.error;
+log.errorf = log.errorf;
+log.fatal  = log.fatal;
+log.fatalf = log.fatalf;
 
 return log;

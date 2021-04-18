@@ -1,16 +1,15 @@
 --[[
+	작성 : qwreey
+	2021y 04m 06d
+	7:07 (PM)
 
-작성 : qwreey
-2021y 04m 06d
-7:07 (PM)
+	MINA Discord bot
+	https://github.com/qwreey75/MINA_DiscordBot/blob/faf29242b29302341d631513617810d9fe102587/bot.lua
 
-MINA Discord bot
-https://github.com/qwreey75/MINA_DiscordBot/blob/faf29242b29302341d631513617810d9fe102587/bot.lua
-
-TODO: DM 에다가 명령어 쓰기 막기
-TODO: 도움말 만들기
-TODO: 사전 Json 인코딩을 없에고 그냥 바로 테이블 넘기기
-TODO: 지우기 명령,강퇴,채널잠금,밴 같은거 만들기
+	TODO: DM 에다가 명령어 쓰기 막기
+	TODO: 도움말 만들기
+	TODO: 사전 Json 인코딩을 없에고 그냥 바로 테이블 넘기기
+	TODO: 지우기 명령,강퇴,채널잠금,밴 같은거 만들기
 ]]
 
 local debugfn xpcall(function ()
@@ -171,6 +170,9 @@ local debugfn xpcall(function ()
 	local EULA = data.loadRaw("data/EULA.txt")
 	--#endregion : load settings from data file
 	--#region : 반응, 프리픽스, 설정, 커맨드 등등
+	iLogger.info("---------------------- [LOAD SETTINGS] ----------------------");
+	iLogger.info("load settings ...");
+	iLogger.info(" |- admins, prefixs, prefix reply, unknown reply, command env");
 	local Admins = { -- 관리 명령어 권한
 		["367946917197381644"] = "쿼리";
 		["647101613047152640"] = "눈송이";
@@ -217,6 +219,7 @@ local debugfn xpcall(function ()
 		["EULA"] = EULA;
 		["corohttp"] = corohttp;
 	};
+	iLogger.info(" |- Load commands from ./commands");
 	local otherCommands = {} do -- commands 폴더에서 커맨드 불러오기
 		local function loadCommandFiles(FileRoot)
 			local SetEnv = require(FileRoot);
@@ -224,10 +227,11 @@ local debugfn xpcall(function ()
 		end
 		for CmdDict in qFilesystem:GetFiles("src/commands",true) do
 			local CmdDict = string.sub(CmdDict,1,-5);
-			iLogger.info("Load command dict from : src/commands/" .. CmdDict);
+			iLogger.info(" |  |- Load command dict from : src/commands/" .. CmdDict);
 			otherCommands[#otherCommands+1] = loadCommandFiles("src/commands/" .. CmdDict);
 		end
 	end
+	iLogger.info("settings loaded!");
 	-- 커맨드 색인파일 만들기
 	iLogger.info("encoding commands...");
 	local commands,commandsLen;
@@ -467,6 +471,12 @@ local debugfn xpcall(function ()
 	end);
 	StartBot(ACCOUNTData.botToken); -- 봇 켜기
 	--#endregion : 메인 파트
+	--#region : cmd input
+
+	--#endregion
+	--#region : 디버깅용 로컬서버
+
+	--#endregion
 end,function (err)
 	--#region : 디버깅
 	local iLogger = require "src/lib/log";
