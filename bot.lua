@@ -423,6 +423,9 @@ local debugfn xpcall(function ()
 					noneRespText:close();
 				else
 					-- 커맨드 찾음 (실행)
+					local love = Command.love; -- 호감도
+					love = (type(love) == "function") and love() or love;
+					local loveText = love and ("` ❤ + %d `"):format(love) or "";
 					local func = Command.func; -- 커맨드 함수 가져오기
 					local replyText = Command.reply; -- 커맨드 리플(답변) 가져오기
 					local rawArgs,args; -- 인수 (str,띄어쓰기 단위로 나눔 array)
@@ -454,7 +457,7 @@ local debugfn xpcall(function ()
 					local replyMsg; -- 답변 오브잭트를 담을 변수
 					if replyText then -- 만약 답변글이 있으면
 						-- 답변 주기
-						replyMsg = message:reply(commandHandle.formatReply(replyText,{
+						replyMsg = message:reply(commandHandle.formatReply(replyText .. loveText,{
 							Msg = message;
 							User = User;
 							Channel = Channel;
@@ -471,6 +474,7 @@ local debugfn xpcall(function ()
 							rawArgs = rawArgs; -- args 를 str 로 받기 (직접 분석용)
 							rawCommandName = rawCommandName;
 							self = Command;
+							loveText = loveText;
 						});
 					end
 				end
