@@ -81,7 +81,7 @@ return function(o)
 				local Year = tostring(math.floor((10000*(os.time() - ACCOUNTData.BirthdayDay) / 31536000))/10000);
 				message:reply(("미나는 %s 살이에요"):format(tostring(Year)));
 			end;
-			love = 2;
+			love = loveRang(2,5);
 		};
 		["약관"] = {
 			alias = {"EULA","사용계약"};

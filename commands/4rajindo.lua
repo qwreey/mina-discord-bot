@@ -26,6 +26,7 @@ return function (o)
 		["끝말잇기"] = { -- 나중에 기능 추가하면 이전 예정
 			alias = "끝말 잇기";
 			reply = "크시랑 하세요";
+			love = loveRang(1,2);
 		};
 		["멈춰"] = {
 			alias = {"학교폭력","학교폭력"};
