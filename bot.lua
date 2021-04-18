@@ -521,6 +521,9 @@ local debugfn xpcall(function ()
 		function runEnv.pause() -- 모든 스레드를 일시 정지
 			ffi.C.MessageBoxA(nil,"Code paused","PAUSE",0);
 		end
+		function runEnv.commit(arg)
+			os.execute("commit.bat " .. arg);
+		end
 		setmetatable(runEnv,{ -- _G (글로벌) 과 연결
 			__index = _G;
 			__newindex = _G;
