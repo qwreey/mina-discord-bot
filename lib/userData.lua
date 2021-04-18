@@ -4,76 +4,88 @@ local module = {};
 local userDatas = {};
 module.userDatas = userDatas;
 
--- 열린 파일들 (빠른 색인을 위해서 사용됨)
-local files = {};
-module.files = files;
-
--- get json module from main module
+-- JSON 가져오기
 local json;
 function module:setJson(newJson)
     json = newJson;
+    return self;
 end
 
--- get logger module from main module
+-- 로거 가져오기
 local iLogger;
 function module:setILogger(newILogger)
     iLogger = newILogger;
+    return self;
 end
 
-local function openFile(userId)
-    local userId = tostring(userId);
-    if userId == "" then
-        iLogger.error("userId '' is not not available!");
-    end
-
+-- MakeId 를 가져오기
+local makeId;
+function module:setMakeId(newMakeId)
+    makeId = newMakeId;
+    return self;
 end
 
-function module:getValue(userId,valueName)
-    
+local function formatFileRoot(userId)
+    return ("data/userData/%s.json"):format(userId);
 end
 
-function module:setValue(userId,valueName,value)
-    userId = tostring(userId);
-    local userData = userDatas[userId]
-    if not userData then
-        userData = self:loadData(userId);
-    end
-
-
-end
-
+-- 데이터 저장하기 (로드를 먼저 해야 작동함)
 function module:saveData(userId)
     userId = tostring(userId);
-    local file = files[userId];
-    local userData = userDatas[userId];
 
-    if (not file) or (not userData) then
+    -- userData 가져오기
+    local userData = userDatas[userId];
+    if not userData then
         iLogger.warn("something want wrong... (load user data first and save data!)");
         iLogger.errorf("un error occur on save user data (file or userData was not found), UserId : %s",tostring(userId));
         return;
     end
-
     local raw = json.encode(userData);
-    file:write(raw);
-    file:close();
-    files[userId] = io.open(("data/userData/%s.json"):format(userId),"r+");
+
+    -- 파일 열고 쓰고 닫기
+    local isPass,err = pcall(function ()
+        local file = io.open(formatFileRoot(userId),"w");
+        file:write(raw);
+        file:close();
+    end)
+
+    -- 오류 처리 (백업 시키기)
+    if not isPass then
+        iLogger.errorf("un error occur on save data! (%s) : data = %s",userId,raw);
+        local now = os.date("*t");
+        local errFile = io.open("data/crash/" .. ("er%s.uid%s.tm%dm%dd%dh%dm%ds"):format(
+            makeId(),userId,now.month,now.day,now.hour,now.min,now.sec
+        ));
+    end
 end
 
+-- 데이터 읽어들이기
 function module:loadData(userId)
     userId = tostring(userId);
-    local file = io.open(("data/userData/%s.json"):format(userId),"r+");
-    if not file then
-        return nil;
+    local data = userDatas[userId];
+    if data then -- 이미 데이터가 존재하면 반환
+        return data;
     end
-    local raw = file:read("a");
-    local data = json.decode(raw);
-    files[userId] = file;
-    userDatas[userId] = data;
-    return data;
+
+    -- 파일 열기
+    local file = io.open(formatFileRoot(userId),"r+");
+    if not file then
+        return; -- 파일이 없으면 (아에 약관 동의를 안했으면) 리턴
+    end
+
+    local raw = file:read("a"); -- 파일 읽기
+    file:close(); -- 파일 닫기
+    data = json.decode(raw); -- json 디코딩
+    userDatas[userId] = data; -- 유저 데이터 풀에 던짐
+    return data; -- 유저 데이터 리턴
 end
 
-function module:resetData()
-
+-- 데이터 파일 지우고 데이터 초기화
+function module:resetData(userId)
+    userDatas[userId] = nil;
+    return pcall(function ()
+        os.remove(formatFileRoot(userId));
+    end);
 end
 
 return module;
