@@ -56,12 +56,15 @@ function module:saveData(userId)
     local raw = json.encode(userData);
     file:write(raw);
     file:close();
-    files[userId] = io.open("data/userData/" .. userId,"r+");
+    files[userId] = io.open(("data/userData/%s.json"):format(userId),"r+");
 end
 
 function module:loadData(userId)
     userId = tostring(userId);
-    local file = io.open("data/userData/" .. userId,"r+");
+    local file = io.open(("data/userData/%s.json"):format(userId),"r+");
+    if not file then
+        return nil;
+    end
     local raw = file:read("a");
     local data = json.decode(raw);
     files[userId] = file;

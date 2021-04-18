@@ -163,6 +163,9 @@ local debugfn xpcall(function ()
 	local youtubeEmbed = require "src/lib/youtube/embed"
 	local youtubeSearch = require "src/lib/youtube/youtubeSearch"; -- 유튜브 검색
 	youtubeSearch:setCoroHttp(corohttp):setJson(json); -- 유튜브 검색 셋업
+
+	-- C 라이브러리 : 메시징
+	ffi.cdef(data.loadRaw("src/clib/msgBox.c"));
 	--#endregion : 부분 모듈 임포팅
 	--#region : 설정파일 불러오기
 	iLogger.info("load files . . .");
@@ -479,51 +482,62 @@ local debugfn xpcall(function ()
 		---@diagnostic disable-next-line
 		local editor = readline.Editor.new({stdin = process.stdin.handle, stdout = process.stdout.handle, history = history});
 		-- 리드 라인 에디터 만들기
-		
+		prettyPrint.print = iLogger.cmd; -- 프리티 프린터에 로거 함수 넘기기
 		local runEnv = { -- 명령어 실행 환경 만들기
 			runSchedule = runSchedule;
 		};
 		runEnv.iLogger,runEnv.json,runEnv.corohttp,runEnv.timer,
 		runEnv.thread,runEnv.fs,runEnv.ffi,runEnv.readline,runEnv.prettyPrint =
 			iLogger,json,corohttp,timer,thread,fs,ffi,readline,prettyPrint;
-		function runEnv.clear()
+		function runEnv.clear() -- 화면 지우기 명령어
 			os.execute("cls");
+			return "screen clear!";
 		end
-		function runEnv.exit()
+		function runEnv.exit() -- 봇 끄기
 			os.exit(100);
 		end
-		function runEnv.reload()
+		function runEnv.reload() -- 다시 로드
 			os.exit(101);
 		end
-		function runEnv.help()
+		runEnv.restart = runEnv.reload;
+		function runEnv.help() -- 도움말
 			return {
 				clear = "clear screen";
 				exit = "kill luvit/cmd";
 				reload = "reload code";
 				restart = "same with reload";
 				help = "show this msg";
+				pause = "stop all threads";
 			};
 		end
-		runEnv.restart = runEnv.reload;
-		setmetatable(runEnv,{
+		function runEnv.pause() -- 모든 스레드를 일시 정지
+			ffi.C.MessageBoxA(nil,"Code paused","PAUSE",0);
+		end
+		setmetatable(runEnv,{ -- _G (글로벌) 과 연결
 			__index = _G;
 			__newindex = _G;
 		});
-
+		-- 라인 읽기 함수
 		local function onLine(err, line, ...)
 			if line then
-				editor:readLine("", onLine);
-				prettyPrint.prettyPrint(setfenv((loadstring("return " .. line) or loadstring(line)),runEnv)());
+				editor:readLine("", onLine); -- 에디터가 개속 읽게 하기
+				local func = (loadstring("return " .. line) or loadstring(line))
+				local envfunc = setfenv(func or function ()
+					error("Un error occur on loadstring");
+				end,runEnv) -- 명령어 분석
+				local pass,dat = pcall(envfunc); -- 보호 모드로 명령어를 실행
+				if not pass then -- 오류 나면
+					iLogger.error("LUA | error : " .. dat);
+				else
+					prettyPrint.prettyPrint(dat);
+				end
 			else
 				process:exit(); ---@diagnostic disable-line
 			end
 		end
-		editor:readLine("", onLine);
+		editor:readLine("", onLine); -- 라인 읽기 시작
 	end
 	--#endregion : 커맨드 창 인풋 읽기
-	--#region : 디버깅용 로컬서버
-
-	--#endregion
 end,function (err)
 	--#region : 디버깅
 	local iLogger = require "src/lib/log";
