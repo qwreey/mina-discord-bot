@@ -36,8 +36,9 @@ local debugfn xpcall(function ()
 	end
 	--#endregion : Luvit 모듈 / 주요 모듈 임포트
 	--#region : 커맨드 라인 인자 받아오기
+	
 	local RunOption = {};
-	for i,v in pairs(args) do
+	for i,v in pairs(args) do ---@diagnostic disable-line
 		if i > 1 then
 			iLogger.info(("Args[%d] : %s"):format(i-1,v));
 			RunOption[v] = true;
@@ -321,7 +322,7 @@ local debugfn xpcall(function ()
 		local User = message.author;
 		local Text = message.content;
 		local Channel = message.channel;
-
+	
 		-- 유저가 봇인경우
 		if User.bot --[[or (channel.type ~= enums.channelType.text)]] then
 			return;
@@ -330,7 +331,7 @@ local debugfn xpcall(function ()
 		if Admins[User.id] then
 			adminCmd(Text,message);
 		end
-
+	
 		-- 명령어
 		-- prefix : 접두사
 		-- rawCommandText : 접두사 뺀 커맨드 전채
@@ -339,7 +340,7 @@ local debugfn xpcall(function ()
 		-- CommandName : 커맨드 이름
 		-- | 찾은 후 (for 루프 뒤)
 		-- Command : 커맨드 개체 (찾은경우)
-
+	
 		-- 모든 접두사로 작동하도록 루프
 		for _,prefix in pairs(prefixs) do
 			-- 만약 접두사와 글자가 일치하는경우 반응 달기
@@ -348,20 +349,20 @@ local debugfn xpcall(function ()
 				break;
 			end
 			local prefix = prefix .. "\32"; -- 맨 앞 실행 접두사
-
+	
 			-- 커맨드 분석
 			if string.sub(Text,1,#prefix) == prefix then -- 접두사가 일치함을 확인함
-
+	
 				-- 알고리즘 작성
 				-- 커맨드 찾기
 				-- 단어 분해 후 COMMAND DICT 에 색인시도
 				-- 못찾으면 다시 넘겨서 뒷단어로 넘김
 				-- 찾으면 넘겨서 COMMAND RUN 에 TRY 던짐
-
+	
 				local rawCommandText = string.sub(Text,#prefix+1,-1); -- 접두사 뺀 글자
 				local splitCommandText = strSplit(rawCommandText,"\32");
 				local CommandName,Command,rawCommandName;
-
+	
 				-- (커맨드 색인 1 차시도) 띄어쓰기를 포함한 명령어를 검사할 수 있도록 for 루프 실행
 				-- 찾기 찾기 찾기
 				-- 찾기 찾기
@@ -380,7 +381,7 @@ local debugfn xpcall(function ()
 						break;
 					end
 				end
-
+	
 				-- (커맨드 색인 2 차시도) 커맨드 못찾으면 단어별로 나눠서 찾기 시도
 				-- 찾기 찾기 찾기
 				-- 부분부분 다 나눠서 찾기
@@ -397,10 +398,10 @@ local debugfn xpcall(function ()
 						end
 					end
 				end
-
+	
 				--local CommandName = string.match(rawCommandText,"(.-)\32") or rawCommandText; -- 커맨드 이름
 				--local Command = commandHandle.findCommandFrom(commands,CommandName); -- 커맨드 검색
-
+	
 				if Command == nil then
 					-- 커맨드 찾지 못함
 					message:reply(unknownReply[cRandom(1,#unknownReply)]);
@@ -467,8 +468,8 @@ local debugfn xpcall(function ()
 	end);
 	StartBot(ACCOUNTData.botToken); -- 봇 켜기
 	--#endregion : 메인 파트
-	--#region : 디버깅 파트
-debugfn = function (err)
+end,function (err)
+	--#region : 디버깅
 	local iLogger = require "src/lib/log";
 	iLogger.fatal(err);
 	local err = (tostring(err) .. "\n");
@@ -479,6 +480,5 @@ debugfn = function (err)
 	local fil = io.open(fnm,"a");
 	fil:write(err);
 	fil:close();
-end
---#endregion : 디버깅 파트
-end,debugfn)
+	--#endregion : 디버깅
+end)
