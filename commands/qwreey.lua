@@ -70,6 +70,28 @@ return function(o)
 		-------------------------------------------------
 		-- 특수 반응 (함수를 쓰거나 여러 의도가 담긴 반응)
 		-------------------------------------------------
+		["나이"] = {
+			func = function (_,message)
+				local Year = tostring(math.floor((10000*(os.time() - ACCOUNTData.BirthdayDay) / 31536000))/10000);
+				message:reply(("미나는 %s 살이에요"):format(tostring(Year)));
+			end;
+		};
+		["약관"] = {
+			alias = {"EULA","사용계약"};
+			reply = EULA;
+		};
+		["몸무계"] = {
+			alias = {"무계","얼마나무거워"};
+			reply = "11MB";
+		};
+		["검열"] = {
+			reply = "검-열";
+			func = function (message)
+				runSchedule(100,function ()
+					message:delete();
+				end);
+			end;
+		};
 		["가위"] = {
 			alias = {"바위","보"};
 			reply = {"**{%:UserName:%}** 님이 이겼어요!","이번판은 미나 승리!","무승부! 똑같아요"};
@@ -537,6 +559,9 @@ return function(o)
 		["4망"] = {
 			reply = "444444망";
 		};
+		["별"] = {
+			reply = "{%%:U+2605:%%}";
+		};
 
         -- 언제 추가해
         --아퍼 + 배
@@ -546,6 +571,10 @@ return function(o)
 		--};
 		--["답이 없네"] = {
 
+		--};
+		--["노래좀"] = {
+		--	alias = {"노래추천좀","노래추천"};
+		--	reply = {};
 		--};
 	};
 end;

@@ -27,7 +27,7 @@ function module.loadRaw(fileName)
 end
 
 function module.saveRaw(fileName,data)
-	local file = io.open("r+");
+	local file = io.open(fileName,"r+");
 	file:write(data);
 	file:close();
 	return true;
