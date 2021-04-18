@@ -475,11 +475,12 @@ local debugfn xpcall(function ()
 	--#endregion : 메인 파트
 	--#region : 커맨드 창 인풋 읽기
 	if not RunOption.Background then -- 백그라운드이면 불러오지 말기
-		local history = readline.History.new();
+		local history = readline.History.new(); -- 히스토리 홀더 만들기
 		---@diagnostic disable-next-line
 		local editor = readline.Editor.new({stdin = process.stdin.handle, stdout = process.stdout.handle, history = history});
+		-- 리드 라인 에디터 만들기
 		
-		local runEnv = {
+		local runEnv = { -- 명령어 실행 환경 만들기
 			runSchedule = runSchedule;
 		};
 		runEnv.iLogger,runEnv.json,runEnv.corohttp,runEnv.timer,
@@ -512,7 +513,7 @@ local debugfn xpcall(function ()
 		local function onLine(err, line, ...)
 			if line then
 				editor:readLine("", onLine);
-				prettyPrint.prettyPrint(setfenv(loadstring("return " .. line),runEnv)());
+				prettyPrint.prettyPrint(setfenv((loadstring("return " .. line) or loadstring(line)),runEnv)());
 			else
 				process:exit(); ---@diagnostic disable-line
 			end
