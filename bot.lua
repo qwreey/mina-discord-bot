@@ -4,13 +4,13 @@
 2021y 04m 06d
 7:07 (PM)
 
-네이버 사전 검색 봇
-https://discord.com/oauth2/authorize?client_id=828894481289969665&permissions=2147871808&scope=bot
+MINA Discord bot
+https://github.com/qwreey75/MINA_DiscordBot/blob/faf29242b29302341d631513617810d9fe102587/bot.lua
 
 TODO: DM 에다가 명령어 쓰기 막기
 TODO: 도움말 만들기
 TODO: 사전 Json 인코딩을 없에고 그냥 바로 테이블 넘기기
-TODO: 지우기 명령,강퇴 명령 같은거 만들기
+TODO: 지우기 명령,강퇴,채널잠금,밴 같은거 만들기
 ]]
 
 local debugfn xpcall(function ()
