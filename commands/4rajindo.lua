@@ -16,6 +16,12 @@ return function (o)
 		,o.thread,o.EULA,o.corohttp;
     -- ! Automatically generated !
 
+	local loveRang = function (min,max)
+		return function ()
+			return cRandom(min,max);
+		end;
+	end;
+
 	return {
 		["끝말잇기"] = { -- 나중에 기능 추가하면 이전 예정
 			alias = "끝말 잇기";

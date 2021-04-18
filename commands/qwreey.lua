@@ -66,6 +66,12 @@ return function(o)
 		,o.thread,o.EULA,o.corohttp;
     -- ! Automatically generated !
 
+	local loveRang = function (min,max)
+		return function ()
+			return cRandom(min,max);
+		end;
+	end;
+
 	return {
 		-------------------------------------------------
 		-- 특수 반응 (함수를 쓰거나 여러 의도가 담긴 반응)
@@ -75,6 +81,7 @@ return function(o)
 				local Year = tostring(math.floor((10000*(os.time() - ACCOUNTData.BirthdayDay) / 31536000))/10000);
 				message:reply(("미나는 %s 살이에요"):format(tostring(Year)));
 			end;
+			love = 2;
 		};
 		["약관"] = {
 			alias = {"EULA","사용계약"};
