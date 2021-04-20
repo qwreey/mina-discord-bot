@@ -12074,3 +12074,9 @@ error loading module 'luapath' from file '.\luapath.lua':
 [string "bundle:deps/require.lua"]:279: No such module 'luapath' in 'C:/Users/Administrator/Desktop/MINABot/src/bot.lua'
 error loading module 'luapath' from file '.\luapath.lua':
 	.\luapath.lua:4: '<eof>' expected near ';'
+[string "bundle:deps/require.lua"]:279: No such module 'luapath' in 'C:/Users/Administrator/Desktop/MINABot/src/bot.lua'
+error loading module 'luapath' from file '.\luapath.lua':
+	.\luapath.lua:4: '<eof>' expected near ';'
+[string "bundle:deps/require.lua"]:279: No such module 'luapath' in 'C:/Users/Administrator/Desktop/MINABot/src/bot.lua'
+error loading module 'luapath' from file '.\luapath.lua':
+	.\luapath.lua:4: '<eof>' expected near ';'

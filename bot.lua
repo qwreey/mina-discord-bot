@@ -254,22 +254,31 @@ xpcall(function ()
 	local commands,commandsLen;
 	commands,commandsLen = commandHandle.encodeCommands({
 		-- 특수기능
+		["미나초대"] = {
+			alias = {"초대링크","미나 초대","초대 링크"};
+			reply = function ()
+				
+			end
+		};
 		["호감도"] = {
 			reply = function (message,args,c)
 				if c.rawArgs == "" then -- 내 호감도 불러오기
 					local muserData = c.getUserData();
 					if muserData == nil then -- 약관 동의하지 않았으면 리턴
-						message:reply(eulaComment_love);
-						return;
+						return eulaComment_love;
 					end
 					local love = tostring(muserData.love or "NULL (nil)");
-					message:reply(("미나는 **%s** 님을 %s 만금 좋아해요!"):format(message.author.name,love));
+					return ("미나는 **{#:UserName:#}** 님을 %s 만금 좋아해요!"):format(love);
 				end
 			end
 		};
 		["약관동의"] = {
 			alias = {"EULA동의","약관 동의","사용계약 동의"};
-			reply = function (message)
+			reply = function (message,args,c)
+				local muserData = c.getUserData(); -- 내 호감도 불러오기
+				if muserData then -- 약관 동의하지 않았으면 리턴
+					return "**{#:UserName:#}** 님은 이미 약관을 동의하셨어요!";
+				end
 				local userId = tostring(message.author.id);
 				local file = io.open(("data/userData/%s.json"):format(userId),"w");
 				file:write(
