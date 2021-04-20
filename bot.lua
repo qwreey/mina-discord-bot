@@ -261,10 +261,13 @@ xpcall(function ()
 			alias = {"초대링크","미나 초대","초대 링크"};
 			reply = function (msg)
 				return msg:reply({
-					content = "아래의 버튼을 누르면 미나를 다른 서버에 추가 할 수 있어요!";
+					content = utf8.char(0x200B);
 					embed = {
 						fields = {
-							value = ("[초대하기](%s)"):format(ACCOUNTData.InvLink);
+							{
+								name = "아래의 버튼을 누르면 미나를 다른 서버에 추가 할 수 있어요!";
+								value = ("[초대하기](%s)"):format(ACCOUNTData.InvLink);
+							};
 						};
 					};
 				});
