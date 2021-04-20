@@ -259,19 +259,15 @@ xpcall(function ()
 		-- 특수기능
 		["미나초대"] = {
 			alias = {"초대링크","미나 초대","초대 링크"};
-			reply = function (msg)
-				return msg:reply({
-					content = utf8.char(0x200B);
-					embed = {
-						fields = {
-							{
-								name = "아래의 버튼을 누르면 미나를 다른 서버에 추가 할 수 있어요!";
-								value = ("[초대하기](%s)"):format(ACCOUNTData.InvLink);
-							};
-						};
-					};
-				});
-			end;
+			reply = {{
+				content = utf8.char(0x200B);
+				embed = {
+					fields = {{
+						name = "아래의 버튼을 누르면 미나를 다른 서버에 추가 할 수 있어요!";
+						value = ("[초대하기](%s)"):format(ACCOUNTData.InvLink);
+					}};
+				};
+			}};
 		};
 		["호감도"] = {
 			reply = function (message,args,c)
@@ -539,7 +535,13 @@ xpcall(function ()
 		local replyMsg; -- 답변 오브잭트를 담을 변수
 		if replyText then -- 만약 답변글이 있으면
 			-- 답변 주기
-			replyMsg = message:reply(commandHandle.formatReply(replyText .. loveText,{
+			local replyTextType = type(replyText);
+			if replyTextType == "string" then
+				replyText = replyText .. loveText;
+			elseif replyTextType == "table" and replyText.content then
+				replyText.content = replyText.content .. loveText;
+			end
+			replyMsg = message:reply(commandHandle.formatReply(replyText,{
 				Msg = message;
 				User = User;
 				Channel = Channel;
