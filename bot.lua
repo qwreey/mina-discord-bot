@@ -406,6 +406,9 @@ xpcall(function ()
 				break;
 			end
 		end
+		if not prefix then
+		    return;
+		end
 
 		-- 알고리즘 작성
 		-- 커맨드 찾기
