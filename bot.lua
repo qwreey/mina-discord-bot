@@ -427,16 +427,25 @@ xpcall(function ()
 		-- 찾기 찾기
 		-- 찾기
 		-- 이런식으로 계단식 찾기를 수행
-		for Len = #splitCommandText,1,-1 do
-			local Text = "";
-			for Index = 1,Len do
-				Text = Text .. (Index ~= 1 and " " or "") .. splitCommandText[Index];
+		for len = #splitCommandText,1,-1 do
+			local spText,text = "",""; -- 띄어쓰기가 포함되도록 검색 / 띄어쓰기 없이 검색
+			for index = 1,len do
+				local thisText = splitCommandText[index];
+				spText = spText .. (index ~= 1 and " " or "") .. thisText;
+				text = text .. thisText;
 			end
-			local TempCommand = commandHandle.findCommandFrom(commands,Text);
-			if TempCommand then
-				CommandName = Text;
-				rawCommandName = Text;
-				Command = TempCommand;
+			local spTempCommand = commandHandle.findCommandFrom(commands,spText);
+			if spTempCommand then
+				CommandName = spText;
+				rawCommandName = spText;
+				Command = spTempCommand;
+				break;
+			end
+			local tempCommand = commandHandle.findCommandFrom(commands,spText);
+			if tempCommand then
+				CommandName = text;
+				rawCommandName = text;
+				Command = tempCommand;
 				break;
 			end
 		end
