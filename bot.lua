@@ -10,10 +10,16 @@
 	TODO: 도움말 만들기
 	TODO: 사전 Json 인코딩을 없에고 그냥 바로 테이블 넘기기
 	TODO: 지우기 명령,강퇴,채널잠금,밴 같은거 만들기
+	TODO: 다 못찾으면 !., 같은 기호 지우고 찾기
+	TODO: 그리고도 못찾으면 조사 다 지우고 찾기
 ]]
 
-local debugfn xpcall(function ()
+xpcall(function ()
 	--#region : Luvit 모듈 / 주요 모듈 임포트
+	local path = require "luapath"; -- path 불러오기
+	package.path = path.path; -- 루아 path 지정
+	package.cpath = path.cpath;	-- c path 지정
+
 	local iLogger = require "src/lib/log"; -- log 핸들링
 	local json = require "json"; -- json 핸들링
 	local corohttp = require "coro-http"; -- http 핸들링
@@ -28,7 +34,6 @@ local debugfn xpcall(function ()
 		timer.setTimeout(time,coroutine.wrap(func));
 	end
 
-	iLogger.info(" ");
 	iLogger.info("------------------------ [CLEAN  UP] ------------------------");
 	iLogger.info("luvit loaded");
 	--#endregion : Luvit 모듈 / 주요 모듈 임포트
