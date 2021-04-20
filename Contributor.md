@@ -124,10 +124,9 @@ msg (메시지 개체) 받아서 편집도 가능함,
             local newMsg = msg:reply("~~저저 꼰대 쉨~~");
             runSchedule(500,function ()
                 newMsg:setContent("아! 아무것도 아니야 ㅎㅎ");
-            end)
+            end);
             return newMsg;
         end,
-        "ㅉㅉ ?"
     };
 };
 ```
@@ -137,18 +136,10 @@ msg (메시지 개체) 받아서 편집도 가능함,
     alias = {"쯧...","쯧.","쯧..","쯔읏","ㅉ","쯧","쯧쯧"};
     reply = "~~저저 꼰대 쉨";
     func = function (msg)
-        msg:setContent("아! 아무것도 아니야 ㅎㅎ")
-    end
-    reply = {
-        function (msg)
-            local newMsg = msg:reply("~~저저 꼰대 쉨~~");
-            runSchedule(500,function ()
-                newMsg:setContent("아! 아무것도 아니야 ㅎㅎ");
-            end)
-            return newMsg;
-        end,
-        "ㅉㅉ ?"
-    };
+        runSchedule(500,function ()
+            msg:setContent("아! 아무것도 아니야 ㅎㅎ");
+        end);
+    end;
 };
 ```
   

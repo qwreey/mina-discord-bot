@@ -206,7 +206,9 @@ xpcall(function ()
 		[5] = "미나야!";
 		[6] = "미나야...";
 		[7] = "미나야..",
-		[8] = "미나..."
+		[8] = "미나...";
+		[9] = "미나는";
+		[10] = "미나의";
 	};
 	local prefixReply = { -- 그냥 미나야 하면 답
 		"미나는 여기 있어요!","부르셨나요?","넹?",
@@ -428,7 +430,7 @@ xpcall(function ()
 		for Len = #splitCommandText,1,-1 do
 			local Text = "";
 			for Index = 1,Len do
-				Text = Text .. splitCommandText[Index];
+				Text = Text .. (Index ~= 1 and " " or "") .. splitCommandText[Index];
 			end
 			local TempCommand = commandHandle.findCommandFrom(commands,Text);
 			if TempCommand then
@@ -469,7 +471,7 @@ xpcall(function ()
 		-- 커맨드 찾음 (실행)
 		local love = Command.love; -- 호감도
 		love = (type(love) == "function") and love() or love;
-		local loveText = love and ("\n` ❤ + %d `"):format(love) or "";
+		local loveText = love and ("\n` ❤ + %d `"):format(love) or ""; -- - 가 되면 달라지도록 만들기
 		local func = Command.func; -- 커맨드 함수 가져오기
 		local replyText = Command.reply; -- 커맨드 리플(답변) 가져오기
 		local rawArgs,args; -- 인수 (str,띄어쓰기 단위로 나눔 array)
