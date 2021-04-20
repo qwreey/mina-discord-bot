@@ -313,6 +313,9 @@ return function (o)
 				end);
 			end;
 		};
+		["니 얼굴 만든사람"] = {
+			reply = {"미나야 프사"};
+		};
 	};
 end;
 --[[
