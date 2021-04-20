@@ -1,6 +1,8 @@
 --[[
 저자 : 
-
+[""] = {
+			reply = {""};
+		};
 편집 도움말은 이 링크 따라가면 세세하게 있음
 https://www.github.com/qwreey75/MINA_DiscordBot/tree/master/Contributor.md
 ]]
@@ -275,5 +277,53 @@ return function (o)
 		["줌 수업"] = {
 			reply = {"왜 하는 거죠?"};
 		};
+		["이과"] = {
+			reply = {"수학 노답"};
+		};
+		["문과"] = {
+			reply = {"수학 노답.."};
+		};
+		["말 이해를 하나도 못하네"] = {
+			reply = {"무슨 말이에요?"};
+		};
+		["개인주의"] = {
+			reply = {"4번!"};
+		};
+		["재 이상해"] = {
+			reply = {"저 사람 원래 저러지 않았어요?"};
+		};
+		["선넘지마 제발"] = {
+			reply = {"넘은 적 없는 데요?ㅋ"};
+		};
+		["간디"] = {
+			reply = {"be 폭력 주의자"};
+		};
+		["세종"] = {
+			alias = {"세종대왕"};
+			reply = {"한글을 만드신 아주 존경받아 마땅하신 분"};
+		};
+		["잘못된 학습"] = {
+			reply = {"니가 가르쳤어 (심한욕)"};
+		};
+		["패륜"] = {
+			reply = function (msg)
+				local newMsg = msg:reply("~~하면 안돼지만 저는 버그라는 명목으로 하고 있어요~~");
+					runSchedule(500,function ()
+					newMsg:setContent("하면 안돼는 것!");
+				end);
+			end;
+		};
 	};
 end;
+--[[
+[""] = {
+	reply = {""};
+};
+
+reply = function (msg)
+				local newMsg = msg:reply("");
+					runSchedule(500,function ()
+					newMsg:setContent("");
+				end);
+			end;
+]]
