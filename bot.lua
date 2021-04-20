@@ -259,9 +259,16 @@ xpcall(function ()
 		-- 특수기능
 		["미나초대"] = {
 			alias = {"초대링크","미나 초대","초대 링크"};
-			reply = function ()
-				
-			end
+			reply = function (msg)
+				return msg:reply({
+					content = "아래의 버튼을 누르면 미나를 다른 서버에 추가 할 수 있어요!";
+					embed = {
+						fields = {
+							value = ("[초대하기](%s)"):format(ACCOUNTData.InvLink);
+						};
+					};
+				});
+			end;
 		};
 		["호감도"] = {
 			reply = function (message,args,c)
@@ -376,7 +383,8 @@ xpcall(function ()
 		local User = message.author;
 		local Text = message.content;
 		local Channel = message.channel;
-	
+		local IsDm = Channel.type == enums.channelType.private;
+
 		-- 유저가 봇인경우
 		if User.bot then
 			return;
