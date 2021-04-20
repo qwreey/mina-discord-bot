@@ -290,7 +290,7 @@ xpcall(function ()
 					"}")
 				);
 				file:close();
-				--"안녕하세요 {%:UserName:%} 님!\n사용 약관에 동의해주셔서 감사합니다!\n사용 약관을 동의하였기 때문에 다음 기능을 사용 할 수 있게 되었습니다!\n\n> 미나야 배워 (미출시 기능)\n"
+				--"안녕하세요 {#:UserName:#} 님!\n사용 약관에 동의해주셔서 감사합니다!\n사용 약관을 동의하였기 때문에 다음 기능을 사용 할 수 있게 되었습니다!\n\n> 미나야 배워 (미출시 기능)\n"
 			end;
 		};
 		["유튜브"] = {
@@ -325,6 +325,7 @@ xpcall(function ()
 			end;
 		};
 		["지워"] = {
+			disableDm = true;
 			alias = {"지우개","지워봐","지워라","지우기"};
 			func = function(replyMsg,message,args,Content)
 				local RemoveNum = tonumber(Content.rawArgs);
@@ -374,14 +375,14 @@ xpcall(function ()
 		local Channel = message.channel;
 	
 		-- 유저가 봇인경우
-		if User.bot --[[or (channel.type ~= enums.channelType.text)]] then
+		if User.bot then
 			return;
 		end
 		-- 하드코딩된 관리 명령어)
 		if Admins[User.id] then
 			adminCmd(Text,message);
 		end
-	
+
 		-- 명령어
 		-- prefix : 접두사
 		-- rawCommandText : 접두사 뺀 커맨드 전채
@@ -390,150 +391,147 @@ xpcall(function ()
 		-- CommandName : 커맨드 이름
 		-- | 찾은 후 (for 루프 뒤)
 		-- Command : 커맨드 개체 (찾은경우)
-	
-		-- 모든 접두사로 작동하도록 루프
-		for _,prefix in pairs(prefixs) do
+
+		-- 접두사 구문 분석하기
+		local prefix;
+		for _,nprefix in pairs(prefixs) do
 			-- 만약 접두사와 글자가 일치하는경우 반응 달기
-			if prefix == Text then
+			if nprefix == Text then
 				message:reply(prefixReply[cRandom(1,#prefixReply)]);
+				return;
+			end
+			local nprefix = nprefix .. "\32"; -- 맨 앞 실행 접두사
+			if string.sub(Text,1,#nprefix) == nprefix then -- 만약에 접두가사 일치하면
+				prefix = nprefix;
 				break;
 			end
-			local prefix = prefix .. "\32"; -- 맨 앞 실행 접두사
-	
-			-- 커맨드 분석
-			if string.sub(Text,1,#prefix) == prefix then -- 접두사가 일치함을 확인함
-	
-				-- 알고리즘 작성
-				-- 커맨드 찾기
-				-- 단어 분해 후 COMMAND DICT 에 색인시도
-				-- 못찾으면 다시 넘겨서 뒷단어로 넘김
-				-- 찾으면 넘겨서 COMMAND RUN 에 TRY 던짐
-	
-				local rawCommandText = string.sub(Text,#prefix+1,-1); -- 접두사 뺀 글자
-				local splitCommandText = strSplit(rawCommandText,"\32");
-				local CommandName,Command,rawCommandName;
-	
-				-- (커맨드 색인 1 차시도) 띄어쓰기를 포함한 명령어를 검사할 수 있도록 for 루프 실행
-				-- 찾기 찾기 찾기
-				-- 찾기 찾기
-				-- 찾기
-				-- 이런식으로 계단식 찾기를 수행
-				for Len = #splitCommandText,1,-1 do
-					local Text = "";
-					for Index = 1,Len do
-						Text = Text .. splitCommandText[Index];
-					end
-					local TempCommand = commandHandle.findCommandFrom(commands,Text);
-					if TempCommand then
-						CommandName = Text;
-						rawCommandName = Text;
-						Command = TempCommand;
-						break;
-					end
-				end
-	
-				-- (커맨드 색인 2 차시도) 커맨드 못찾으면 단어별로 나눠서 찾기 시도
-				-- 찾기 찾기 찾기
-				-- 부분부분 다 나눠서 찾기
-				if not Command then
-					for FindPos,Text in pairs(splitCommandText) do
-						Command = commandHandle.findCommandFrom(commands,Text);
-						if Command then
-							CommandName = "";
-							rawCommandName = Text;
-							for Index = 1,FindPos do
-								CommandName = CommandName .. splitCommandText[Index];
-							end
-							break;
-						end
-					end
-				end
-	
-				--local CommandName = string.match(rawCommandText,"(.-)\32") or rawCommandText; -- 커맨드 이름
-				--local Command = commandHandle.findCommandFrom(commands,CommandName); -- 커맨드 검색
-	
-				if Command == nil then
-					-- 커맨드 찾지 못함
-					message:reply(unknownReply[cRandom(1,#unknownReply)]);
-					-- 반응 없는거 기록하기
-					local noneRespText = io.open("src/log/noneRespTexts.txt","a");
-					noneRespText:write("\n" .. Text);
-					noneRespText:close();
-				else
-					-- 커맨드 찾음 (실행)
-					local love = Command.love; -- 호감도
-					love = (type(love) == "function") and love() or love;
-					local loveText = love and ("\n` ❤ + %d `"):format(love) or "";
-					local func = Command.func; -- 커맨드 함수 가져오기
-					local replyText = Command.reply; -- 커맨드 리플(답변) 가져오기
-					local rawArgs,args; -- 인수 (str,띄어쓰기 단위로 나눔 array)
-					replyText = (
-						(type(replyText) == "table") -- 커맨드 답변이 여러개면 하나 뽑기
-						and (replyText[cRandom(1,#replyText)])
-						or replyText
-					);
-					-- 만약 호감도가 있으면 올려주기
-					if love then
-						local thisUserDat = userData:loadData(User.id);
-						if thisUserDat then
-							thisUserDat.love = thisUserDat.love + love;
-							userData:saveData(User.id);
-						else
-							loveText = eulaComment_love;
-						end
-					end
-					-- 만약 답변글이 함수면 (지금은 %s 시에요 처럼 쓸 수 있도록) 실행후 결과 가져오기
-					if type(replyText) == "function" then
-						rawArgs = string.sub(rawCommandText,#CommandName+2,-1);
-						args = strSplit(rawArgs,"\32");
-						replyText = replyText(
-							message,args,{
-								rawCommandText = rawCommandText; -- 접두사를 지운 커맨드 스트링
-								prefix = prefix; -- 접두사(확인된)
-								rawArgs = rawArgs; -- args 를 str 로 받기 (직접 분석용)
-								rawCommandName = rawCommandName;
-								self = Command;
-								commandName = CommandName;
-								saveUserData = function ()
-									return userData:saveData(User.id);
-								end;
-								getUserData = function ()
-									return userData:loadData(User.id);
-								end;
-							}
-						);
-					end
-					--replyText = (
-					--	type(replyText) == "function" and
-					--	replyText(message,args,{
-					--	}) or replyText
-					--);
-					local replyMsg; -- 답변 오브잭트를 담을 변수
-					if replyText then -- 만약 답변글이 있으면
-						-- 답변 주기
-						replyMsg = message:reply(commandHandle.formatReply(replyText .. loveText,{
-							Msg = message;
-							User = User;
-							Channel = Channel;
-						}));
-					end
-					-- func (replyMsg,message,args,EXTENDTable);
-					if func then -- 만약 커맨드 함수가 있으면
-						-- 커맨드 함수 실행
-						rawArgs = rawArgs or string.sub(rawCommandText,#CommandName+2,-1);
-						args = strSplit(rawArgs,"\32");
-						func(replyMsg,message,args,{
-							rawCommandText = rawCommandText; -- 접두사를 지운 커맨드 스트링
-							prefix = prefix; -- 접두사(확인된)
-							rawArgs = rawArgs; -- args 를 str 로 받기 (직접 분석용)
-							rawCommandName = rawCommandName;
-							self = Command;
-							loveText = loveText;
-						});
-					end
-				end
+		end
+
+		-- 알고리즘 작성
+		-- 커맨드 찾기
+		-- 단어 분해 후 COMMAND DICT 에 색인시도
+		-- 못찾으면 다시 넘겨서 뒷단어로 넘김
+		-- 찾으면 넘겨서 COMMAND RUN 에 TRY 던짐
+		local rawCommandText = string.sub(Text,#prefix+1,-1); -- 접두사 뺀 글자
+		local splitCommandText = strSplit(rawCommandText,"\32");
+		local CommandName,Command,rawCommandName;
+
+		-- (커맨드 색인 1 차시도) 띄어쓰기를 포함한 명령어를 검사할 수 있도록 for 루프 실행
+		-- 찾기 찾기 찾기
+		-- 찾기 찾기
+		-- 찾기
+		-- 이런식으로 계단식 찾기를 수행
+		for Len = #splitCommandText,1,-1 do
+			local Text = "";
+			for Index = 1,Len do
+				Text = Text .. splitCommandText[Index];
+			end
+			local TempCommand = commandHandle.findCommandFrom(commands,Text);
+			if TempCommand then
+				CommandName = Text;
+				rawCommandName = Text;
+				Command = TempCommand;
 				break;
 			end
+		end
+
+		-- (커맨드 색인 2 차시도) 커맨드 못찾으면 단어별로 나눠서 찾기 시도
+		-- 찾기 찾기 찾기
+		-- 부분부분 다 나눠서 찾기
+		if not Command then
+			for FindPos,Text in pairs(splitCommandText) do
+				Command = commandHandle.findCommandFrom(commands,Text);
+				if Command then
+					CommandName = "";
+					rawCommandName = Text;
+					for Index = 1,FindPos do
+						CommandName = CommandName .. splitCommandText[Index];
+					end
+					break;
+				end
+			end
+		end
+
+		-- 커맨드 찾지 못함
+		if not Command then
+			message:reply(unknownReply[cRandom(1,#unknownReply)]);
+			-- 반응 없는거 기록하기
+			local noneRespText = io.open("src/log/noneRespTexts.txt","a");
+			noneRespText:write("\n" .. Text);
+			noneRespText:close();
+			return;
+		end
+		
+		-- 커맨드 찾음 (실행)
+		local love = Command.love; -- 호감도
+		love = (type(love) == "function") and love() or love;
+		local loveText = love and ("\n` ❤ + %d `"):format(love) or "";
+		local func = Command.func; -- 커맨드 함수 가져오기
+		local replyText = Command.reply; -- 커맨드 리플(답변) 가져오기
+		local rawArgs,args; -- 인수 (str,띄어쓰기 단위로 나눔 array)
+		replyText = (
+			(type(replyText) == "table") -- 커맨드 답변이 여러개면 하나 뽑기
+			and (replyText[cRandom(1,#replyText)])
+			or replyText
+		);
+		-- 만약 호감도가 있으면 올려주기
+		if love then
+			local thisUserDat = userData:loadData(User.id);
+			if thisUserDat then
+				thisUserDat.love = thisUserDat.love + love;
+				userData:saveData(User.id);
+			else
+				loveText = eulaComment_love;
+			end
+		end
+		-- 만약 답변글이 함수면 (지금은 %s 시에요 처럼 쓸 수 있도록) 실행후 결과 가져오기
+		if type(replyText) == "function" then
+			rawArgs = string.sub(rawCommandText,#CommandName+2,-1);
+			args = strSplit(rawArgs,"\32");
+			replyText = replyText(
+				message,args,{
+					rawCommandText = rawCommandText; -- 접두사를 지운 커맨드 스트링
+					prefix = prefix; -- 접두사(확인된)
+					rawArgs = rawArgs; -- args 를 str 로 받기 (직접 분석용)
+					rawCommandName = rawCommandName;
+					self = Command;
+					commandName = CommandName;
+					saveUserData = function ()
+						return userData:saveData(User.id);
+					end;
+					getUserData = function ()
+						return userData:loadData(User.id);
+					end;
+				}
+			);
+		end
+		--replyText = (
+		--	type(replyText) == "function" and
+		--	replyText(message,args,{
+		--	}) or replyText
+		--);
+		local replyMsg; -- 답변 오브잭트를 담을 변수
+		if replyText then -- 만약 답변글이 있으면
+			-- 답변 주기
+			replyMsg = message:reply(commandHandle.formatReply(replyText .. loveText,{
+				Msg = message;
+				User = User;
+				Channel = Channel;
+			}));
+		end
+		-- func (replyMsg,message,args,EXTENDTable);
+		if func then -- 만약 커맨드 함수가 있으면
+			-- 커맨드 함수 실행
+			rawArgs = rawArgs or string.sub(rawCommandText,#CommandName+2,-1);
+			args = strSplit(rawArgs,"\32");
+			func(replyMsg,message,args,{
+				rawCommandText = rawCommandText; -- 접두사를 지운 커맨드 스트링
+				prefix = prefix; -- 접두사(확인된)
+				rawArgs = rawArgs; -- args 를 str 로 받기 (직접 분석용)
+				rawCommandName = rawCommandName;
+				self = Command;
+				loveText = loveText;
+			});
 		end
 	end);
 	startBot(ACCOUNTData.botToken); -- 봇 켜기

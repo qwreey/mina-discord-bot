@@ -155,6 +155,7 @@ msg (메시지 개체) 받아서 편집도 가능함,
 ## [커맨드 세부사항]  
 ```lua
 {
+    disableDm = bool; -- DM 에서 이 명령어를 쓸 수 있는지 여부 (true = 불가능,false = 가능)
     alias = table[array]/str; -- 다른 명령어로도 똑같은 기능 내도록
     reply = table[array]/str; -- 콜백
     func  = function(replyMsg,message,args,{
