@@ -114,10 +114,7 @@ xpcall(function ()
 		elseif (Text == "!!!sync") then
 			iLogger.info("Sync codes ...");
 			local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 동기화중 . . . (8초 내로 완료됩니다)');
-			os.execute("git -C src add .");
-			os.execute('git -C src commit -m "MINA : Sync in main code (Bot.lua)"');
-			os.execute("git -C src pull");
-			os.execute("git -C src push");
+			os.execute('git -C src add .&&git -C src commit -m "MINA : Sync in main code (Bot.lua)"&&git -C src pull&&git -C src push');
 			msg:setContent('> 적용중 . . . (3초 내로 완료됩니다)');
 			os.exit(107); -- 동기화 (리로드)
 		elseif (Text == "!!!help" or Text == "!!!cmds") then
