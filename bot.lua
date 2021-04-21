@@ -99,16 +99,13 @@ xpcall(function ()
 			iLogger.info("Download codes ...");
 			local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . .');
 			os.execute("git -C src pull"); -- git 에서 변동사항 가져와 적용하기
-			os.execute("timeout /t 1"); -- 너무 갑자기 활동이 일어나는걸 막기 위해 쉬어줌
 			msg:setContent('> 적용중 . . . (3초 내로 완료됩니다)');
 			reloadBot(); -- 리스타팅
 			os.exit(106); -- 다운로드 (리로드)
 		elseif (Text == "!!!push" or Text == "!!!upload") then
 			iLogger.info("Upload codes ...");
 			local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 코드를 업로드중 . . .');
-			os.execute("git -C src add .");
-			os.execute("git -C src commit -m 'MINA : Upload in main code (bot.lua)'");
-			os.execute("git -C src push");
+			os.execute("git -C src add .&&git -C src commit -m 'MINA : Upload in main code (bot.lua)'&&git -C src push");
 			msg:setContent('> 완료!');
 			return; -- 업로드
 		elseif (Text == "!!!sync") then
