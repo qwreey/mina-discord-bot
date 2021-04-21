@@ -7,7 +7,7 @@ local makeSeed = require "src/lib/makeSeed";
 return function ()
 	local ID = "";
 	for i = 1,18 do
-        math.randomseed(makeSeed(math.pi^i,math.pi*i));
+		math.randomseed(makeSeed(math.pi^i,math.pi*i));
 		ID = ID .. WORD[math.random(1,#WORD)];
 	end
 	return ID;

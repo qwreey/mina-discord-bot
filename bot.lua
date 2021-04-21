@@ -155,6 +155,7 @@ xpcall(function ()
 	local urlCode = require "src/lib/urlCode"; -- 한글 URL 인코더/디코더
 	local makeId = require "src/lib/makeId"; -- ID 만드는거
 	local qFilesystem = require "src/lib/qFilesystem"; -- nt 파일 시스템
+	local makeSeed = require "src/lib/makeSeed";
 
 	-- 데이터
 	local data = require "src/lib/data";
@@ -238,6 +239,9 @@ xpcall(function ()
 		["thread"] = thread;
 		["EULA"] = EULA;
 		["corohttp"] = corohttp;
+		["data"] = data;
+		["userData"] = userData;
+		["makeSeed"] = makeSeed;
 	};
 	iLogger.info(" |- load commands from ./commands");
 	local otherCommands = {} do -- commands 폴더에서 커맨드 불러오기
@@ -280,7 +284,7 @@ xpcall(function ()
 						return eulaComment_love;
 					end
 					local love = tostring(muserData.love or "NULL (nil)");
-					return ("미나는 **{#:UserName:#}** 님을 %s 만금 좋아해요!"):format(love);
+					return ("미나는 **{#:UserName:#}** 님을 **%s** 만금 좋아해요!"):format(love);
 				end
 			end
 		};
@@ -486,11 +490,15 @@ xpcall(function ()
 			noneRespText:close();
 			return;
 		end
-		
+
 		-- 커맨드 찾음 (실행)
 		local love = Command.love; -- 호감도
-		love = (type(love) == "function") and love() or love;
-		local loveText = love and ("\n` ❤ + %d `"):format(love) or ""; -- - 가 되면 달라지도록 만들기
+		love = tonumber((type(love) == "function") and love() or love);
+		local loveText = (love ~= 0 and love) and ( -- love 가 0 이 아님을 확인
+			(love > 0 and ("\n` ❤ + %d `"):format(love)) or -- 만약 love 가 + 면
+			(love < 0 and ("\n` 💔 - %d `"):format(math.abs(love))) -- 만약 love 가 - 면
+		) or "";
+
 		local func = Command.func; -- 커맨드 함수 가져오기
 		local replyText = Command.reply; -- 커맨드 리플(답변) 가져오기
 		local rawArgs,args; -- 인수 (str,띄어쓰기 단위로 나눔 array)

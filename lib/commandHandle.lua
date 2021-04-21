@@ -21,66 +21,66 @@ Cpu 에 더 좋다 그래서 이렇게 나눠놓는거
 local module = {};
 
 local function indexingCommand(IndexTable,CommandName,CommandInfo)
-    local alias = CommandInfo.alias;
-    local len = 1;
+	local alias = CommandInfo.alias;
+	local len = 1;
 
-    CommandInfo.name = CommandName;
-    IndexTable[CommandName] = CommandInfo;
-    if type(alias) == "table" then
-        for _,Name in pairs(alias) do
-            IndexTable[Name] = CommandInfo;
-            len = len + 1;
-        end
-    elseif type(alias) == "string" then
-        IndexTable[alias] = CommandInfo;
-        len = len + 1;
-    end
+	CommandInfo.name = CommandName;
+	IndexTable[CommandName] = CommandInfo;
+	if type(alias) == "table" then
+		for _,Name in pairs(alias) do
+			IndexTable[Name] = CommandInfo;
+			len = len + 1;
+		end
+	elseif type(alias) == "string" then
+		IndexTable[alias] = CommandInfo;
+		len = len + 1;
+	end
 
-    return len;
+	return len;
 end
 
 function module.encodeCommands(TableOfCommand,otherCommands)
-    local this = {};
-    local len = 0;
-    for CommandName,CommandInfo in pairs(TableOfCommand) do
-        len = len + indexingCommand(this,CommandName,CommandInfo);
-    end
+	local this = {};
+	local len = 0;
+	for CommandName,CommandInfo in pairs(TableOfCommand) do
+		len = len + indexingCommand(this,CommandName,CommandInfo);
+	end
 
-    local otherCommands = otherCommands or {};
-    for _,CmdTable in pairs(otherCommands) do
-        for CommandName,CommandInfo in pairs(CmdTable) do
-            len = len + indexingCommand(this,CommandName,CommandInfo);
-        end
-    end
+	local otherCommands = otherCommands or {};
+	for _,CmdTable in pairs(otherCommands) do
+		for CommandName,CommandInfo in pairs(CmdTable) do
+			len = len + indexingCommand(this,CommandName,CommandInfo);
+		end
+	end
 
-    return this,len;
+	return this,len;
 end
 
 function module.findCommandFrom(encodedTable,commandName)
-    return encodedTable[commandName];
+	return encodedTable[commandName];
 end
 
 local function formatRreplyText(Text,Data)
-    local Text = Text or "";
-    Text = string.gsub(Text,"{#:UserName:#}",Data.User.name);
-    Text = string.gsub(Text,"{#:U%+(%x%x%x%x):#}",function (hex)
-        local pass,text = pcall(function ()
-            return utf8.char(tonumber(hex,"hex"))
-        end);
-        return pass and text or "?"
-    end);
-    return Text;
+	local Text = Text or "";
+	Text = string.gsub(Text,"{#:UserName:#}",Data.User.name);
+	Text = string.gsub(Text,"{#:U%+(%x%x%x%x):#}",function (hex)
+		local pass,text = pcall(function ()
+			return utf8.char(tonumber(hex,"hex"))
+		end);
+		return pass and text or "?"
+	end);
+	return Text;
 end
 function module.formatReply(RawContent,Data)
-    if type(RawContent) == "table" then
-        RawContent.content = formatRreplyText(RawContent.content,Data);
-        if type(RawContent.embed) == "string" then
-            RawContent.embed = formatRreplyText(RawContent.embed,Data);
-        end
-        return RawContent;
-    elseif type(RawContent) == "string" then
-        return formatRreplyText(RawContent,Data);
-    end
+	if type(RawContent) == "table" then
+		RawContent.content = formatRreplyText(RawContent.content,Data);
+		if type(RawContent.embed) == "string" then
+			RawContent.embed = formatRreplyText(RawContent.embed,Data);
+		end
+		return RawContent;
+	elseif type(RawContent) == "string" then
+		return formatRreplyText(RawContent,Data);
+	end
 end
 
 return module;

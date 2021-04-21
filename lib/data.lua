@@ -2,7 +2,7 @@ local module = {};
 local json;
 
 function module:setJson(newJson)
-    json = newJson;
+	json = newJson;
 end
 
 function module.load(fileName)

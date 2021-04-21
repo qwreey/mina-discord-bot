@@ -15,55 +15,55 @@ local module = {};
 
 -- 전체 임베딩
 function module.toDictEmbed(Keyword,UrlCode,ItemsJson,ShortDesc)
-    return dictEmbed:format(
-        Keyword,UrlCode,ShortDesc,ItemsJson,UrlCode,UrlCode
-    );
+	return dictEmbed:format(
+		Keyword,UrlCode,ShortDesc,ItemsJson,UrlCode,UrlCode
+	);
 end
 
 local function TitleMD(Title)
-    local Title = Title;
-    Title = string.gsub(Title,"|","\\|");
-    Title = string.gsub(Title,"<b>(.-)</b>",function(this)
-        return this;
-    end);
-    return Title;
+	local Title = Title;
+	Title = string.gsub(Title,"|","\\|");
+	Title = string.gsub(Title,"<b>(.-)</b>",function(this)
+		return this;
+	end);
+	return Title;
 end
 local function DecsMD(Text)
-    local Text = Text;
-    Text = string.gsub(Text,"|","\\|");
-    Text = string.gsub(Text,"<b>(.-)</b>",function(this)
-        return ("**%s**"):format(this);
-    end);
-    return Text;
+	local Text = Text;
+	Text = string.gsub(Text,"|","\\|");
+	Text = string.gsub(Text,"<b>(.-)</b>",function(this)
+		return ("**%s**"):format(this);
+	end);
+	return Text;
 end
 
 -- 의미 임베딩
 function module.meanEmbed(Items)
-    local this = "";
-    local ShortDesc = "";
-    local LastTitles = {};
-    local ItemArray = Items.items;
-    for Index,Item in pairs(ItemArray) do
-        local Title = Item.title or "";
-        if Index >= 4 then
-            local Link = Item.link or "";
-            local Desc = string.gsub((Item.description or ""),"\n","\\n");
-            this = this .. meanEmbed:format(TitleMD(Title),meanItem:format(DecsMD(Desc),Link));
-        end
-        if not LastTitles[Title] then
-            ShortDesc = ShortDesc .. (#ShortDesc ~= 0 and "," or "") .. Title;
-        end
-        LastTitles[Title] = true;
-    end
-    -- 하나도 안나오면
-    if #ItemArray == 0 then
-        ShortDesc = "<b>그딴게 어디있겠냐?</b>";
-    end
-    return this,DecsMD(ShortDesc);
+	local this = "";
+	local ShortDesc = "";
+	local LastTitles = {};
+	local ItemArray = Items.items;
+	for Index,Item in pairs(ItemArray) do
+		local Title = Item.title or "";
+		if Index >= 4 then
+			local Link = Item.link or "";
+			local Desc = string.gsub((Item.description or ""),"\n","\\n");
+			this = this .. meanEmbed:format(TitleMD(Title),meanItem:format(DecsMD(Desc),Link));
+		end
+		if not LastTitles[Title] then
+			ShortDesc = ShortDesc .. (#ShortDesc ~= 0 and "," or "") .. Title;
+		end
+		LastTitles[Title] = true;
+	end
+	-- 하나도 안나오면
+	if #ItemArray == 0 then
+		ShortDesc = "<b>그딴게 어디있겠냐?</b>";
+	end
+	return this,DecsMD(ShortDesc);
 end
 
 function module:Embed(Keyword,UrlCode,Items)
-    return self.toDictEmbed(Keyword,UrlCode,self.meanEmbed(Items));
+	return self.toDictEmbed(Keyword,UrlCode,self.meanEmbed(Items));
 end
 
 return module;

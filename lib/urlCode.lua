@@ -11,22 +11,22 @@
 ]]
 
 local char_to_hex = function(c)
-    return string.format("%%%02X", string.byte(c));
+	return string.format("%%%02X", string.byte(c));
 end
 local HexToChar = function(x)
-    return string.char(tonumber(x, 16));
+	return string.char(tonumber(x, 16));
 end
 
 local module = {};
 
 function module.urlEncode(url)
-    url = url or "";
-    return url:gsub("\n", "\r\n"):gsub("([^%w/?&%:=%.#])", char_to_hex):gsub(" ", "+");
+	url = url or "";
+	return url:gsub("\n", "\r\n"):gsub("([^%w/?&%:=%.#])", char_to_hex):gsub(" ", "+");
 end
 
 function module.urlDecode(url)
-    url = url or "";
-    return url:gsub("+", " "):gsub("%%(%x%x)", HexToChar);
+	url = url or "";
+	return url:gsub("+", " "):gsub("%%(%x%x)", HexToChar);
 end
 
 return module;

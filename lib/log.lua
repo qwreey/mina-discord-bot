@@ -16,12 +16,12 @@ log.minLevel = 1;
 -- 베이스 함수
 local function runLog(thisName,thisLevel,color,debugInfo,...)
 	local msg = tostring(...);
-	
+
 	-- 최소 래밸에 도달하지 못한 경우 호출을 묵인
 	if thisLevel < log.minLevel then
 		return;
 	end
-	
+
 	-- 파일명 : 라인 번호 를 가져옴
 	if string.sub(debugInfo.short_src,1,#log.root) == log.root then
 		debugInfo.short_src = string.sub(debugInfo.short_src,#log.root+2,-1)

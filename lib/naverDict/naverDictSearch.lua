@@ -16,23 +16,23 @@ local urlCode = require "src/lib/urlCode";
 local json;
 
 function module:setCoroHttp(NewCorohttp)
-    corohttp = NewCorohttp;
-    return self;
+	corohttp = NewCorohttp;
+	return self;
 end
 function module:setJson(NewJson)
-    json = NewJson;
-    return self;
+	json = NewJson;
+	return self;
 end
 
 function module.searchFromNaverDirt(Keyword,ClientData)
-    local KeywordUrl = urlCode.urlEncode(Keyword);
-    local Header,Body = corohttp.request("GET",
-        ("https://openapi.naver.com/v1/search/encyc.json?query=%s&display=8"):format(KeywordUrl),{
-            {"X-Naver-Client-Id",ClientData.naverClientId},
-            {"X-Naver-Client-Secret",ClientData.naverClientSecret}
-        }
-    );
-    return json.decode(Body),KeywordUrl;
+	local KeywordUrl = urlCode.urlEncode(Keyword);
+	local Header,Body = corohttp.request("GET",
+		("https://openapi.naver.com/v1/search/encyc.json?query=%s&display=8"):format(KeywordUrl),{
+			{"X-Naver-Client-Id",ClientData.naverClientId},
+			{"X-Naver-Client-Secret",ClientData.naverClientSecret}
+		}
+	);
+	return json.decode(Body),KeywordUrl;
 end
 
 return module;

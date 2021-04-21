@@ -15,20 +15,20 @@ local json;
 local searchURLTemp = "https://www.googleapis.com/youtube/v3/search?key=%s&part=snippet&maxResults=8&q=%s";
 
 function module:setCoroHttp(NewCorohttp)
-    corohttp = NewCorohttp;
-    return self;
+	corohttp = NewCorohttp;
+	return self;
 end
 function module:setJson(NewJson)
-    json = NewJson;
-    return self;
+	json = NewJson;
+	return self;
 end
 
 function module.searchFromYoutube(Keyword,ClientData)
-    local KeywordURL = urlCode.urlEncode(Keyword);
-    local Header,Body = corohttp.request("GET",
-        searchURLTemp:format(ClientData.GoogleAPIKey,KeywordURL)
-    );
-    return json.decode(Body),KeywordURL;
+	local KeywordURL = urlCode.urlEncode(Keyword);
+	local Header,Body = corohttp.request("GET",
+		searchURLTemp:format(ClientData.GoogleAPIKey,KeywordURL)
+	);
+	return json.decode(Body),KeywordURL;
 end
 
 return module;
