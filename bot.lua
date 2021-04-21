@@ -170,7 +170,7 @@ xpcall(function ()
 	userData:setJson(json):setILogger(iLogger):setMakeId(makeId);
 
 	-- C 라이브러리 : 메시징
-	ffi.cdef(data.loadRaw("src/clib/msgBox.c"));
+	ffi.cdef(data.loadRaw("src/lib/clib/msgBox.c"));
 	--#endregion : 부분 모듈 임포팅
 	--#region : 설정파일 불러오기
 	iLogger.info("load files . . .");
