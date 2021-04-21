@@ -330,6 +330,28 @@ return function (o)
 			alias = "주인장";
 			reply = "qwreey인데...";
 		};
+		["빠저나가"] = {
+			alias = "도망쳐";
+			reply = {"나도 그러고 싶다"};
+		};
+		["던져"] = {
+		reply = function (msg)
+			local newMsg = msg:reply("헤드샷 각인가?");
+				runSchedule(500,function ()
+				newMsg:setContent("던져? 어쩌라는 거지?");
+			end);
+		end;
+		};
+		["무서워"] = {
+			reply = {"더 무서워하세요"};
+		};
+		["문명1"] = {
+			alias = {"문명2","문명3","문명4","문명5","문명6","문명7"};
+			reply = {"세상에서 가장 강력한 앞으로 가는 타임머신이에요"};
+		};
+		["문명"] = {
+			reply = {"> 문명은 화가 난 사람이 돌을 던지는 대신 최초로 한 마디 말을 내뱉었던 순간에 시작되었다. - 지그문트 프로이트"};
+		};
 	};
 end;
 --[[
