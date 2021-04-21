@@ -327,6 +327,7 @@ return function (o)
 			reply = {"미완성"};
 		};
 		["주인"] = {
+			alias = "주인장";
 			reply = "qwreey인데...";
 		};
 	};
