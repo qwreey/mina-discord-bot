@@ -271,6 +271,9 @@ xpcall(function ()
 		};
 		["호감도"] = {
 			reply = function (message,args,c)
+				if message.author.id == "480318544693821450" then
+					return "미나는 **{#:UserName:#}** 님을 **10/25** 만금 좋아해요!";
+				end
 				if c.rawArgs == "" then -- 내 호감도 불러오기
 					local muserData = c.getUserData();
 					if muserData == nil then -- 약관 동의하지 않았으면 리턴
