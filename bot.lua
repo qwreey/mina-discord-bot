@@ -182,7 +182,8 @@ xpcall(function ()
 	iLogger.info("---------------------- [LOAD SETTINGS] ----------------------");
 	iLogger.info("load settings ...");
 	iLogger.info(" |- admins, prefixs, prefix reply, unknown reply, command env");
-	local eulaComment_love = "\n" ..
+	local disableDm = "이 반응은 DM 에서 사용 할 수 없어요! 서버에서 이용해 주세요";
+	local eulaComment_love = "\n" .. -- 약관 동의 안할때 호감도 표시
 		"\n> 호감도 기능을 사용할 수 없어요!" ..
 		"\n> 호감도 기능을 사용하려면 '미나야 약관 동의' 를 입력해주세요!" ..
 		"\n> (약관의 세부정보를 보려면 '미나야 약관' 을 입력해주세요)";
@@ -483,6 +484,8 @@ xpcall(function ()
 			noneRespText:write("\n" .. Text);
 			noneRespText:close();
 			return;
+		elseif IsDm and Command.disableDm then
+			message:reply(disableDm);
 		end
 
 		-- 커맨드 찾음 (실행)
@@ -590,6 +593,7 @@ xpcall(function ()
 			os.exit(100);
 		end
 		function runEnv.reload() -- 다시 로드
+			os.execute("cls");
 			os.exit(101);
 		end
 		runEnv.restart = runEnv.reload;
@@ -601,13 +605,22 @@ xpcall(function ()
 				restart = "same with reload";
 				help = "show this msg";
 				pause = "stop all threads";
+				commit = "commit and push, eng only";
+				getUserData = "get user data table";
+				saveUserData = "save user data table";
 			};
+		end
+		function runEnv.getUserData(id)
+			return userData:loadData(id);
+		end
+		function runEnv.saveUserData(id)
+			return userData:saveData(id);
 		end
 		function runEnv.pause() -- 모든 스레드를 일시 정지
 			ffi.C.MessageBoxA(nil,"Code paused","PAUSE",0);
 		end
 		function runEnv.commit(arg)
-			os.execute("commit.bat " .. arg);
+			os.execute("commit.cmd " .. arg);
 		end
 		setmetatable(runEnv,{ -- _G (글로벌) 과 연결
 			__index = _G;
