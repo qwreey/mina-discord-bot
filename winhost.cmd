@@ -26,7 +26,7 @@ if %1 equ VDESK (
 rem RUN CODE
 :whenstart
 echo CMD : luvit src/bot %*
-luvit src/bot.lua %*
+src\bin\luvit src/bot.lua %*
 set stopcode=%ERRORLEVEL%
 echo luvit RETURNCODE : %stopcode%
 
