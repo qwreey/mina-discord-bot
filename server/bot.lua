@@ -46,6 +46,10 @@ xpcall(function ()
 			RunOption[v] = true;
 		end
 	end
+	if RunOption["Background"] then
+		iLogger.info("Background mode Detected! turn off logging..");
+		iLogger.disable = true;
+	end
 	--#endregion : 커맨드 라인 인자 받아오기
 	--#region : 디코 모듈 임포트
 	iLogger.info("wait for discordia . . .");
@@ -99,7 +103,7 @@ xpcall(function ()
 			local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . .');
 			os.execute("git -C src pull"); -- git 에서 변동사항 가져와 적용하기
 			msg:setContent('> 적용중 . . . (3초 내로 완료됩니다)');
-			reloadBot(); -- 리스타팅
+			reloadBot();
 			os.exit(106); -- 다운로드 (리로드)
 		elseif (Text == "!!!push" or Text == "!!!upload") then
 			iLogger.info("Upload codes ...");
@@ -112,6 +116,7 @@ xpcall(function ()
 			local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 동기화중 . . . (8초 내로 완료됩니다)');
 			os.execute('git -C src add .&&git -C src commit -m "MINA : Sync in main code (Bot.lua)"&&git -C src pull&&git -C src push');
 			msg:setContent('> 적용중 . . . (3초 내로 완료됩니다)');
+			reloadBot();
 			os.exit(107); -- 동기화 (리로드)
 		elseif (Text == "!!!help" or Text == "!!!cmds") then
 			message:reply(

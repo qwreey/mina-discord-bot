@@ -12,10 +12,15 @@ log.root = io.popen("cd"):read("*l")
 log.usecolor = true;
 log.outfile = nil;
 log.minLevel = 1;
+log.disable = false;
 
 -- 베이스 함수
 local function runLog(thisName,thisLevel,color,debugInfo,...)
 	local msg = tostring(...);
+
+	if log.disable then
+		return;
+	end
 
 	-- 최소 래밸에 도달하지 못한 경우 호출을 묵인
 	if thisLevel < log.minLevel then
