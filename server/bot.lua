@@ -651,7 +651,7 @@ end,function (err)
 	local iLogger = require "src/lib/log";
 	iLogger.fatal(err);
 	local err = (tostring(err) .. "\n");
-	local dat = os.date("*t"); 
+	local dat = os.date("*t");
 	local fnm = ("src/log/err/%dY_%dM_%dD"):format(dat.year,dat.month,dat.day);
 
 	iLogger.debug(("Error log was saved in err folder (%s)"):format(fnm));
@@ -659,4 +659,4 @@ end,function (err)
 	fil:write(err);
 	fil:close();
 	--#endregion : 디버깅
-end)
+end);

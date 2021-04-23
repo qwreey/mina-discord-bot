@@ -1,0 +1,1 @@
+start winhost.cmd CMDMode
