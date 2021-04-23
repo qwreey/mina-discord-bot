@@ -14,7 +14,6 @@
 	TODO: 그리고도 못찾으면 조사 다 지우고 찾기
 	TODO: 욕설 멈춰!! 욕 = 떨어짐
 ]]
-
 xpcall(function ()
 	--#region : Luvit 모듈 / 주요 모듈 임포트
 	local path = require "luapath"; -- path 불러오기
