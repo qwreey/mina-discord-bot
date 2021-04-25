@@ -276,14 +276,24 @@ xpcall(function ()
 			reply = function (message,args,c)
 				if message.author.id == "480318544693821450" then
 					return "미나는 **{#:UserName:#}** 님을 **10/25** 만금 좋아해요!";
+				elseif message.author.id == "647101613047152640" then
+					return "니 약관동의 안할 거잔아";
 				end
 				if c.rawArgs == "" then -- 내 호감도 불러오기
 					local muserData = c.getUserData();
 					if muserData == nil then -- 약관 동의하지 않았으면 리턴
 						return eulaComment_love;
 					end
-					local love = tostring(muserData.love or "NULL (nil)");
-					return ("미나는 **{#:UserName:#}** 님을 **%s** 만금 좋아해요!"):format(love);
+					local numLove = tonumber(muserData.love);
+					if numLove == nil then
+						return ("미나는 **{#:UserName:#}** 님을 **NULL (nil)** 만큼 좋아해요!"):format(love);	
+					elseif numLove > 0 then
+						return ("미나는 **{#:UserName:#}** 님을 **%s** 만큼 좋아해요!"):format(love);
+					elseif numLove < 0 then
+						return ("미나는 **{#:UserName:#}** 님을 **%s** 만큼 싫어해요;"):format(love);
+					elseif numLove == 0 then
+						return ("미나는 아직 **{#:UserName:#}** 님을 몰라요!");
+					end
 				end
 			end
 		};
@@ -612,6 +622,7 @@ xpcall(function ()
 				commit = "commit and push, eng only";
 				getUserData = "get user data table";
 				saveUserData = "save user data table";
+				pull = "pull codes from github";
 			};
 		end
 		function runEnv.getUserData(id)
@@ -625,6 +636,9 @@ xpcall(function ()
 		end
 		function runEnv.commit(arg)
 			os.execute("commit.cmd " .. arg);
+		end
+		function runEnv.pull()
+			os.execute("pull.cmd");
 		end
 		setmetatable(runEnv,{ -- _G (글로벌) 과 연결
 			__index = _G;
