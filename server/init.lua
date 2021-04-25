@@ -286,13 +286,13 @@ xpcall(function ()
 					end
 					local numLove = tonumber(muserData.love);
 					if numLove == nil then
-						return ("미나는 **{#:UserName:#}** 님을 **NULL (nil)** 만큼 좋아해요!"):format(love);	
+						return "미나는 **{#:UserName:#}** 님을 **NULL (nil)** 만큼 좋아해요!\n\n오류가 발생하였습니다...\n```json : Userdata / love ? NULL```";	
 					elseif numLove > 0 then
-						return ("미나는 **{#:UserName:#}** 님을 **%s** 만큼 좋아해요!"):format(love);
+						return ("미나는 **{#:UserName:#}** 님을 **%d** 만큼 좋아해요!"):format(numLove);
 					elseif numLove < 0 then
-						return ("미나는 **{#:UserName:#}** 님을 **%s** 만큼 싫어해요;"):format(love);
+						return ("미나는 **{#:UserName:#}** 님을 **%d** 만큼 싫어해요;"):format(math.abs(numLove));
 					elseif numLove == 0 then
-						return ("미나는 아직 **{#:UserName:#}** 님을 몰라요!");
+						return "미나는 아직 **{#:UserName:#}** 님을 몰라요!";
 					end
 				end
 			end
@@ -612,8 +612,8 @@ xpcall(function ()
 		-- 리드 라인 에디터 만들기
 		prettyPrint.print = iLogger.cmd; -- 프리티 프린터에 로거 함수 넘기기
 		local runEnv = { -- 명령어 실행 환경 만들기
-			runSchedule = runSchedule;
-		};
+		runSchedule = runSchedule;
+	};
 		runEnv.iLogger,runEnv.json,runEnv.corohttp,runEnv.timer,
 		runEnv.thread,runEnv.fs,runEnv.ffi,runEnv.readline,runEnv.prettyPrint =
 			iLogger,json,corohttp,timer,thread,fs,ffi,readline,prettyPrint;
