@@ -612,8 +612,8 @@ xpcall(function ()
 		-- 리드 라인 에디터 만들기
 		prettyPrint.print = iLogger.cmd; -- 프리티 프린터에 로거 함수 넘기기
 		local runEnv = { -- 명령어 실행 환경 만들기
-		runSchedule = runSchedule;
-	};
+			runSchedule = runSchedule;
+		};
 		runEnv.iLogger,runEnv.json,runEnv.corohttp,runEnv.timer,
 		runEnv.thread,runEnv.fs,runEnv.ffi,runEnv.readline,runEnv.prettyPrint =
 			iLogger,json,corohttp,timer,thread,fs,ffi,readline,prettyPrint;
