@@ -8,7 +8,6 @@
 
 TODO: 나중에 더 CPU 친화적으로 방법을 바꾸자
 
-- 미레의 내가 읽을 글 -
 어차피 Table 은 숫자와 같은 자료형이 아니라 주소가 있는 (위치가 있는) 오브젝트이다
 그렇기에 그냥 막 복 떠도 쉐도우 카피 아니면 램 안먹는다 (그냥 하나 있는것 처럼)
 
@@ -65,9 +64,9 @@ local function formatRreplyText(Text,Data)
 	Text = string.gsub(Text,"{#:UserName:#}",Data.User.name);
 	Text = string.gsub(Text,"{#:U%+(%x%x%x%x):#}",function (hex)
 		local pass,text = pcall(function ()
-			return utf8.char(tonumber(hex,"hex"))
+			return utf8.char(tonumber(hex,16));
 		end);
-		return pass and text or "?"
+		return pass and text or "?";
 	end);
 	return Text;
 end

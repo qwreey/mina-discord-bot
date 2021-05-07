@@ -4,6 +4,7 @@ local WORD = {
 	"1","2","3","4","5","6","7","8","9","0"
 };
 local makeSeed = require "src/lib/makeSeed";
+
 return function ()
 	local ID = "";
 	for i = 1,18 do

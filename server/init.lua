@@ -276,14 +276,24 @@ xpcall(function ()
 			reply = function (message,args,c)
 				if message.author.id == "480318544693821450" then
 					return "미나는 **{#:UserName:#}** 님을 **10/25** 만금 좋아해요!";
+				elseif message.author.id == "647101613047152640" then
+					return "니 약관동의 안할 거잔아";
 				end
 				if c.rawArgs == "" then -- 내 호감도 불러오기
 					local muserData = c.getUserData();
 					if muserData == nil then -- 약관 동의하지 않았으면 리턴
 						return eulaComment_love;
 					end
-					local love = tostring(muserData.love or "NULL (nil)");
-					return ("미나는 **{#:UserName:#}** 님을 **%s** 만금 좋아해요!"):format(love);
+					local numLove = tonumber(muserData.love);
+					if numLove == nil then
+						return "미나는 **{#:UserName:#}** 님을 **NULL (nil)** 만큼 좋아해요!\n\n오류가 발생하였습니다...\n```json : Userdata / love ? NULL```";	
+					elseif numLove > 0 then
+						return ("미나는 **{#:UserName:#}** 님을 **%d** 만큼 좋아해요!"):format(numLove);
+					elseif numLove < 0 then
+						return ("미나는 **{#:UserName:#}** 님을 **%d** 만큼 싫어해요;"):format(math.abs(numLove));
+					elseif numLove == 0 then
+						return "미나는 아직 **{#:UserName:#}** 님을 몰라요!";
+					end
 				end
 			end
 		};
@@ -344,14 +354,32 @@ xpcall(function ()
 			alias = {"지우개","지워봐","지워라","지우기"};
 			func = function(replyMsg,message,args,Content)
 				local RemoveNum = tonumber(Content.rawArgs);
-				if (not RemoveNum) or type(RemoveNum) ~= "number" then
+				if (not RemoveNum) or type(RemoveNum) ~= "number" then -- 숫자가 아닌 다른걸 입력함
 					message:reply("잘못된 명령어 사용법이에요!\n\n**올바른 사용 방법**\n> 미나야 지워 <지울 수>\n지울수 : 2 에서 100 까지의 숫자 (정수)");
 					return;
-				elseif (RemoveNum > 100) or (RemoveNum < 2) then -- 
-					message:reply("잘못된 명령어 사용법이에요!\n\n<지울 수>는 2에서 100까지의 숫자이어야 합니다");
+				elseif (RemoveNum % 1) ~= 0 then -- 소숫점을 입력함
+					local Remsg = message:reply("~~메시지를 반으로 쪼개서 지우라는거야? ㅋㅋㅋ~~");
+					runSchedule(800,function()
+						Remsg:setContent("<지울 수> 는 정수만 사용 가능해요!");
+					end);
 					return;
-				elseif (RemoveNum % 1) ~= 0 then -- 정수인지 유리수(또는 실수) 인지 확인
-					message:reply("잘못된 명령어 사용법이에요!\n\n<지울 수> 는 정수이어야 합니다 (소숫점 X)");
+				elseif RemoveNum < 0 then -- 마이너스를 입력함
+					local Remsg = message:reply("~~메시지를 더 늘려달라는거야? ㅋㅋㅋ~~");
+					runSchedule(800,function()
+						Remsg:setContent("적어도 2개 이상부터 지울 수 있어요!");
+					end);
+					return;
+				elseif RemoveNum > 100 then -- 너무 많음
+					local Remsg = message:reply("~~미쳤나봐... 작작 일 시켜~~");
+					runSchedule(800,function()
+						Remsg:setContent("100 개 이상의 메시지는 지울 수 없어요!");
+					end);
+					return;
+				elseif RemoveNum < 2 then -- 범위를 넘어감
+					local Remsg = message:reply("~~그정도는 니 손으로 좀 지워라~~");
+					runSchedule(800,function()
+						Remsg:setContent("너무 적어요! 2개 이상부터 지울 수 있어요!");
+					end);
 					return;
 				elseif not message.member:hasPermission(message.channel,enums.permission.manageMessages) then
 					message:reply("권한이 부족해요! 메시지 관리 권한이 있는 유저만 이 명령어를 사용 할 수 있어요");
@@ -612,6 +640,7 @@ xpcall(function ()
 				commit = "commit and push, eng only";
 				getUserData = "get user data table";
 				saveUserData = "save user data table";
+				pull = "pull codes from github";
 			};
 		end
 		function runEnv.getUserData(id)
@@ -625,6 +654,9 @@ xpcall(function ()
 		end
 		function runEnv.commit(arg)
 			os.execute("commit.cmd " .. arg);
+		end
+		function runEnv.pull()
+			os.execute("pull.cmd");
 		end
 		setmetatable(runEnv,{ -- _G (글로벌) 과 연결
 			__index = _G;
