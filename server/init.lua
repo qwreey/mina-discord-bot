@@ -581,11 +581,14 @@ xpcall(function ()
 			elseif replyTextType == "table" and replyText.content then
 				replyText.content = replyText.content .. loveText;
 			end
-			replyMsg = message:reply(commandHandle.formatReply(replyText,{
-				Msg = message;
-				User = User;
-				Channel = Channel;
-			}));
+			replyMsg = message:reply{
+				content = commandHandle.formatReply(replyText,{
+				    Msg = message;
+				    User = User;
+				    Channel = Channel;
+			    });
+			    reference = {message = message, mention = false};
+			};
 		end
 		-- func (replyMsg,message,args,EXTENDTable);
 		if func then -- 만약 커맨드 함수가 있으면
