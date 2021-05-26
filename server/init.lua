@@ -518,6 +518,7 @@ xpcall(function ()
 			return;
 		elseif IsDm and Command.disableDm then
 			message:reply(disableDm);
+			return;
 		end
 
 		-- 커맨드 찾음 (실행)
