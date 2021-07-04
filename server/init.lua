@@ -29,6 +29,7 @@ xpcall(function ()
 	local ffi = require "ffi"; -- C 동적 상호작용
 	local readline = require "readline"; -- 터미널 라인 읽기
 	local prettyPrint = require "pretty-print"; -- 터미널에 여러 자료형 프린팅
+	local utf8 = utf8 or require "utf8";
 
 	local function runSchedule(time,func)
 		timer.setTimeout(time,coroutine.wrap(func));
@@ -165,7 +166,7 @@ xpcall(function ()
 	naverDictSearch:setCoroHttp(corohttp):setJson(json); -- 네이버 사전 셋업
 
 	-- 유튜브 검색
-	local youtubeEmbed = require "src/lib/youtube/embed"
+	local youtubeEmbed = require "src/lib/youtube/embed";
 	local youtubeSearch = require "src/lib/youtube/youtubeSearch"; -- 유튜브 검색
 	youtubeSearch:setCoroHttp(corohttp):setJson(json); -- 유튜브 검색 셋업
 
@@ -209,6 +210,8 @@ xpcall(function ()
 		[8] = "미나...";
 		[9] = "미나는";
 		[10] = "미나의";
+		[11] = "mina";
+		[12] = "hey mina";
 	};
 	local prefixReply = { -- 그냥 미나야 하면 답
 		"미나는 여기 있어요!","부르셨나요?","넹?",
@@ -319,11 +322,21 @@ xpcall(function ()
 			end;
 		};
 		["유튜브"] = {
-			alias = {"유튜브검색","유튜브찾기","유튜브탐색","유튭찾기","유튭","유튭검색","유튜브 검색","유튜브 찾기","youtube 찾기","Youtube 찾기"};
+			alias = {"유튜브검색","유튜브찾기","유튜브탐색","유튭찾기","유튭","유튭검색","유튜브 검색","유튜브 찾기","youtube 찾기","youtube","youtube search","유튜브에서 찾기","search from youtube"};
 			reply = "잠시만 기다려주세요... (검색중)";
 			func = function(replyMsg,message,args,Content)
-				local Body,KeywordURL = youtubeSearch.searchFromYoutube(Content.rawArgs);
-				
+				local rawArgs = Content.rawArgs;
+				if rawArgs == "" then
+					replyMsg:setContent(("검색하려는 키워드가 없습니다!\n\n**올바른 사용 방법**\n> 미나야 유튜브 검색 <검색 할 키워드>\n검색 할 키워드 : 유튜브가 허용하는 검색 할 수 있는 문자"):format(rawArgs));
+					return;
+				end
+				replyMsg:setContent(("유튜브에서 '%s' 를 검색한 결과입니다"):format(rawArgs));
+				replyMsg:setEmbed(
+					youtubeEmbed:embed(
+						rawArgs,
+						youtubeSearch.searchFromYoutube(rawArgs,ACCOUNTData)
+					)
+				);
 			end;
 		};
 		["사전"] = {
@@ -351,9 +364,9 @@ xpcall(function ()
 		};
 		["지워"] = {
 			disableDm = true;
-			alias = {"지우개","지워봐","지워라","지우기","삭제해"};
+			alias = {"지우개","지워봐","지워라","지우기","삭제해","청소","삭제","청소해","clear"};
 			func = function(replyMsg,message,args,Content)
-				local RemoveNum = tonumber(Content.rawArgs);
+				local RemoveNum = Content.rawArgs == "" and 5 or tonumber(Content.rawArgs);
 				if (not RemoveNum) or type(RemoveNum) ~= "number" then -- 숫자가 아닌 다른걸 입력함
 					message:reply("잘못된 명령어 사용법이에요!\n\n**올바른 사용 방법**\n> 미나야 지워 <지울 수>\n지울수 : 2 에서 100 까지의 숫자 (정수)");
 					return;
@@ -441,6 +454,8 @@ xpcall(function ()
 		-- CommandName : 커맨드 이름
 		-- | 찾은 후 (for 루프 뒤)
 		-- Command : 커맨드 개체 (찾은경우)
+
+		Text = string.lower(Text);
 
 		-- 접두사 구문 분석하기
 		local prefix;
