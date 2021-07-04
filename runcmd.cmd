@@ -1,1 +1,1 @@
-start winhost.cmd CMDMode
+winhost.cmd CMDMode

@@ -351,7 +351,7 @@ xpcall(function ()
 		};
 		["지워"] = {
 			disableDm = true;
-			alias = {"지우개","지워봐","지워라","지우기"};
+			alias = {"지우개","지워봐","지워라","지우기","삭제해"};
 			func = function(replyMsg,message,args,Content)
 				local RemoveNum = tonumber(Content.rawArgs);
 				if (not RemoveNum) or type(RemoveNum) ~= "number" then -- 숫자가 아닌 다른걸 입력함
@@ -403,8 +403,14 @@ xpcall(function ()
 		["반응"] = {
 			alias = {"반응수","반응 수","반응 갯수"};
 			reply = "새어보고 있어요...";
-			func = function (replyMsg)
+			func = function (replyMsg,message,args,Content)
 				replyMsg:setContent(("미나가 아는 반응은 %d개 이에요!"):format(commandsLen));
+			end;
+		};
+		["배워"] = {
+			alias = {"배워봐","배워라","배우세요"};
+			func = function (replyMsg,message,args,Content)
+				
 			end;
 		};
 	},otherCommands);
@@ -701,3 +707,12 @@ end,function (err)
 	fil:close();
 	--#endregion : 디버깅
 end);
+
+local http = require('http');
+
+http.createServer(function (req, res)
+  local body = "Hello world\n";
+  res:setHeader("Content-Type", "text/plain");
+  res:setHeader("Content-Length", #body);
+  res:finish(body);
+end):listen(8282, '127.0.0.1');
