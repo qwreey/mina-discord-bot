@@ -155,6 +155,7 @@ xpcall(function ()
 	local makeId = require "src/lib/makeId"; -- ID 만드는거
 	local qFilesystem = require "src/lib/qFilesystem"; -- nt 파일 시스템
 	local makeSeed = require "src/lib/makeSeed";
+	local myXMl = require "src/lib/myXML";
 
 	-- 데이터
 	local data = require "src/lib/data";
@@ -162,13 +163,19 @@ xpcall(function ()
 
 	-- 네이버 사전
 	local naverDictEmbed = require "src/lib/naverDict/embed"; -- 네이버 사전 임배드 렌더러
-	local naverDictSearch = require "src/lib/naverDict/naverDictSearch"; -- 네이버 사전 API 핸들러
+	local naverDictSearch = require "src/lib/naverDict/request"; -- 네이버 사전 API 핸들러
 	naverDictSearch:setCoroHttp(corohttp):setJson(json); -- 네이버 사전 셋업
 
 	-- 유튜브 검색
 	local youtubeEmbed = require "src/lib/youtube/embed";
-	local youtubeSearch = require "src/lib/youtube/youtubeSearch"; -- 유튜브 검색
+	local youtubeSearch = require "src/lib/youtube/request"; -- 유튜브 검색
 	youtubeSearch:setCoroHttp(corohttp):setJson(json); -- 유튜브 검색 셋업
+
+	-- 코로나 현황
+	--local covid19Embed = require "src/lib/covid19/embed";
+	local covid19Request = require "src/lib/covid19/request";
+	local covid19Embed = require "src/lib/covid19/embed";
+	covid19Request:setCoroHttp(corohttp):setMyXML(myXMl);
 
 	-- 유저 데이터 핸들링
 	local userData = require "src/lib/userData";
@@ -337,6 +344,18 @@ xpcall(function ()
 						youtubeSearch.searchFromYoutube(rawArgs,ACCOUNTData)
 					)
 				);
+			end;
+		};
+		["코로나"] = {
+			alias = {"코로나 현황","코로나 상황","코로나 확진자","코로나 통계","오늘자 코로나","코로나 정보"};
+			reply = "잠시만 기달려주세요... (확인중)";
+			func = function(replyMsg,message,args,Content)
+				local body = covid19Request.get(ACCOUNTData)[2]
+				local dat = body:getFirstChildByTag("body"):getFirstChildByTag("items");
+				local today = dat[1];
+				local yesterday = dat[2];
+				replyMsg:setContent("오늘 기준의 코로나 현황입니다");
+				replyMsg:setEmbed(covid19Embed:embed(today,yesterday))
 			end;
 		};
 		["사전"] = {
