@@ -481,7 +481,10 @@ xpcall(function ()
 		for _,nprefix in pairs(prefixs) do
 			-- 만약 접두사와 글자가 일치하는경우 반응 달기
 			if nprefix == Text then
-				message:reply(prefixReply[cRandom(1,#prefixReply)]);
+				message:reply {
+					content = prefixReply[cRandom(1,#prefixReply)];
+					reference = {message = message, mention = false};
+				};
 				return;
 			end
 			local nprefix = nprefix .. "\32"; -- 맨 앞 실행 접두사
