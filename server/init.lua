@@ -181,6 +181,11 @@ xpcall(function ()
 	local engquoteEmbed = require "src/lib/engquote/embed";
 	engquoteRequest:setCoroHttp(corohttp):setJson(json);
 
+	-- 한글 명언
+	local korquoteRequest = require "src/lib/korquote/request";
+	local korquoteEmbed = require "src/lib/korquote/embed";
+	korquoteRequest:setCRandom(cRandom):setJson(json);
+
 	-- 유저 데이터 핸들링
 	local userData = require "src/lib/userData";
 	userData:setJson(json):setILogger(iLogger):setMakeId(makeId);
@@ -363,11 +368,19 @@ xpcall(function ()
 			end;
 		};
 		["영어명언"] = {
-			alias = {"명언","영문명언","영문 명언","영어 명언","quote","english quote","eng quote","englishquote","engquote"};
+			alias = {"영문명언","영문 명언","영어 명언","quote","english quote","eng quote","englishquote","engquote"};
 			reply = "잠시만 기달려주세요... (확인중)";
 			func = function(replyMsg,message,args,Content)
 				replyMsg:setEmbed(engquoteEmbed:embed(engquoteRequest.fetch()));
 				replyMsg:setContent("영어 명언을 가져왔습니다");
+			end;
+		};
+		["한글명언"] = {
+			alias = {"한국어명언","한글 명언","한국어 명언","명언","korean quote","kor quote","koreanquote","korquote"};
+			reply = "잠시만 기달려주세요... (확인중)";
+			func = function(replyMsg,message,args,Content)
+				replyMsg:setEmbed(korquoteEmbed:embed(korquoteRequest.fetch()));
+				replyMsg:setContent("한글 명언을 가져왔습니다");
 			end;
 		};
 		["사전"] = {
