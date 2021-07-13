@@ -208,6 +208,8 @@ local function toLuaStr(str)
     str = sgsub(str,"&gt;",">")
     str = sgsub(str,"&lt;","<")
     str = sgsub(str,"&amp;","&")
+    str = sgsub(str,"\\n","\n")
+    str = sgsub(str,"\\t","\t")
     return str
 end
 module.toLuaStr = toLuaStr
@@ -222,6 +224,8 @@ local function toXmlStr(str)
    	str = sgsub(str,"([^%w%&%;%p%\t%\32])",function (c)
         return sformat("&#x%X;", sbyte(c))
     end)
+    str = sgsub(str,"\n","\\n")
+    str = sgsub(str,"\t","\\t")
 	return str
 end
 module.toXmlStr = toXmlStr

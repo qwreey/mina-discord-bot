@@ -4,9 +4,7 @@
 2021y 04m 06d
 7:07 (PM)
 
-네이버 사전에 검색하기 API
-자세한 사항은 네이버 공식 API 문서 참조 바람
-https://developers.naver.com/docs/serviceapi/search/encyclopedia/encyclopedia.md#%EB%B0%B1%EA%B3%BC%EC%82%AC%EC%A0%84
+코로나 19 데이터 fetching (http://openapi.data.go.kr)
 
 ]]
 

@@ -172,10 +172,14 @@ xpcall(function ()
 	youtubeSearch:setCoroHttp(corohttp):setJson(json); -- 유튜브 검색 셋업
 
 	-- 코로나 현황
-	--local covid19Embed = require "src/lib/covid19/embed";
 	local covid19Request = require "src/lib/covid19/request";
 	local covid19Embed = require "src/lib/covid19/embed";
 	covid19Request:setCoroHttp(corohttp):setMyXML(myXMl);
+
+	-- 영문 명언
+	local engquoteRequest = require "src/lib/engquote/request";
+	local engquoteEmbed = require "src/lib/engquote/embed";
+	engquoteRequest:setCoroHttp(corohttp):setJson(json);
 
 	-- 유저 데이터 핸들링
 	local userData = require "src/lib/userData";
@@ -356,6 +360,14 @@ xpcall(function ()
 				local yesterday = dat[2];
 				replyMsg:setContent("오늘 기준의 코로나 현황입니다");
 				replyMsg:setEmbed(covid19Embed:embed(today,yesterday))
+			end;
+		};
+		["영어명언"] = {
+			alias = {"명언","영문명언","영문 명언","영어 명언","quote","english quote","eng quote","englishquote","engquote"};
+			reply = "잠시만 기달려주세요... (확인중)";
+			func = function(replyMsg,message,args,Content)
+				replyMsg:setEmbed(engquoteEmbed:embed(engquoteRequest.fetch()));
+				replyMsg:setContent("영어 명언을 가져왔습니다");
 			end;
 		};
 		["사전"] = {
