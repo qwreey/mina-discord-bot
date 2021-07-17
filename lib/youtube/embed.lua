@@ -7,6 +7,12 @@ local youtubeEmbed = {};
 -- written by qwreey all right of this code had owned by qwreey;
 -- 2021 / 07 / 04
 
+local myXML;
+function youtubeEmbed:setMyXML(nMyXML)
+    myXML = nMyXML;
+    return self;
+end
+
 function youtubeEmbed:embed(searchKeyword,body,queryStr)
     local fields = {};
 
@@ -25,9 +31,9 @@ function youtubeEmbed:embed(searchKeyword,body,queryStr)
         url = kind == "youtube#channel" and (("https://www.youtube.com/channel/%s"):format(id.channelId));
         url = url or (kind == "youtube#video" and (("https://www.youtube.com/watch?v=%s"):format(id.videoId)));
 
-        this.name = ("%s / %s"):format(nameHeader,snippet.title);
+        this.name = ("%s / %s"):format(nameHeader,myXML.toLuaStr(snippet.title));
         this.inline = true;
-        this.value = ("[해당 %s으로 이동하기](%s)\n"):format(nameHeader,url) .. tostring(snippet.description);
+        this.value = ("[해당 %s으로 이동하기](%s)\n"):format(nameHeader,url) .. myXML.toLuaStr(tostring(snippet.description));
 
         table.insert(fields,this);
 

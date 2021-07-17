@@ -170,6 +170,7 @@ xpcall(function ()
 	local youtubeEmbed = require "src/lib/youtube/embed";
 	local youtubeSearch = require "src/lib/youtube/request"; -- 유튜브 검색
 	youtubeSearch:setCoroHttp(corohttp):setJson(json); -- 유튜브 검색 셋업
+	youtubeEmbed:setMyXML(myXMl);
 
 	-- 코로나 현황
 	local covid19Request = require "src/lib/covid19/request";
