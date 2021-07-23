@@ -187,12 +187,18 @@ xpcall(function ()
 	local korquoteEmbed = require "src/lib/korquote/embed";
 	korquoteRequest:setCRandom(cRandom):setJson(json);
 
+	-- 에이펙수
+	local apexLegendsRequest = require "src/lib/apexLegends/request";
+	local apexLegendsEmbed = require "src/lib/apexLegends/embed";
+	apexLegendsRequest:setCoroHttp(corohttp):setJson(json);
+
 	-- 유저 데이터 핸들링
 	local userData = require "src/lib/userData";
 	userData:setJson(json):setILogger(iLogger):setMakeId(makeId);
 
 	-- C 라이브러리 : 메시징
-	ffi.cdef(data.loadRaw("src/lib/clib/msgBox.c"));
+	--ffi.cdef(data.loadRaw("src/lib/clib/msgBox.c"));
+
 	--#endregion : 부분 모듈 임포팅
 	--#region : 설정파일 불러오기
 	iLogger.info("load files . . .");
@@ -241,6 +247,7 @@ xpcall(function ()
 	};
 	local CommandEnv = { -- 커맨드 사전에 환경을 제공하기 위한 테이블
 		["cRandom"] = cRandom;
+		["myXML"] = myXMl;
 		["json"] = json;
 		["client"] = client;
 		["discordia"] = discordia;
@@ -382,6 +389,16 @@ xpcall(function ()
 			func = function(replyMsg,message,args,Content)
 				replyMsg:setEmbed(korquoteEmbed:embed(korquoteRequest.fetch()));
 				replyMsg:setContent("한글 명언을 가져왔습니다");
+			end;
+		};
+		["에이펙스 스텟"] = {
+			alias = {"apex legends 스텟","apex legends stats","apex stats","apex 스텟","에이펙스 레전드 스텟","에펙 스텟"};
+			reply = "잠시만 기달려주세요... (확인중)";
+			func = function(replyMsg,message,args,Content)
+				local rawArgs = Content.rawArgs;
+				message:delete();
+				replyMsg:setEmbed(apexLegendsEmbed:embed(apexLegendsRequest.fetch(rawArgs,ACCOUNTData)));
+				replyMsg:setContent("Apex Legends Api 로 부터 가져온 결과입니다 (사용자 아이디는 개인정보 보호를 위해 제거되었습니다)");
 			end;
 		};
 		["사전"] = {
