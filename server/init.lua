@@ -289,15 +289,16 @@ xpcall(function ()
 		-- 특수기능
 		["미나초대"] = {
 			alias = {"초대링크","미나 초대","초대 링크"};
-			reply = {{
-				content = utf8.char(0x200B);
-				embed = {
+			reply = {"쨘!"};
+			func = function(replyMsg,message,args,Content)
+				replyMsg:setEmbed {
+					color = 10026831;
 					fields = {{
 						name = "아래의 버튼을 누르면 미나를 다른 서버에 추가 할 수 있어요!";
 						value = ("[초대하기](%s)"):format(ACCOUNTData.InvLink);
 					}};
 				};
-			}};
+			end;
 		};
 		["호감도"] = {
 			reply = function (message,args,c)
@@ -488,6 +489,14 @@ xpcall(function ()
 				
 			end;
 		};
+		-- ["잊어"] = {
+		-- 	alias = {"지워","까먹어"};
+		-- 	func = function (replyMsg,message,args,Content)
+		-- 		Content.rawArgs
+				
+		-- 		return replyMsg:setContent()
+		-- 	end;
+		-- };
 	},otherCommands);
 	iLogger.info("command encode end!");
 	--#endregion : 반응, 프리픽스, 설정
