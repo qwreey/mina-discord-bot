@@ -43,6 +43,7 @@ local function runLog(thisName,thisLevel,color,debugInfo,...)
 		msg
 	);
 	print(text);
+	--io.write("\27[2K\r",text,"\n","\27[44;30m TEST \27[0m\27[34m\27[0m");
 
 	-- 아웃풋 파일에 집어넣기
 	if log.outfile then
