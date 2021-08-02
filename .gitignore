@@ -4,3 +4,4 @@ lit-temp
 
 # 데이터 파일
 data/*
+deps/*
