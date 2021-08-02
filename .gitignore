@@ -1,3 +1,6 @@
 # 테스팅 파일
 test.lua
 lit-temp
+
+# 데이터 파일
+data/*
