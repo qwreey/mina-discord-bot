@@ -8,11 +8,6 @@
 
 ]]
 
-local dictEmbed = [[{"content":"네이버 어학사전 검색 결과입니다","embed":{"title":"%s","url":"https://dict.naver.com/search.dict?dicQuery=%s","description":"%s","color":65230,"footer":{"icon_url":"https://ssl.pstatic.net/dicimg/favicons/dict/v1/home/favicon.ico","text":"Powered by naver dict / ㅋㅂㄹㅂ 개발"},"fields":[%s{"name":"구글에 검색하기","value":"*[구글로 이동합니다](https://www.google.co.kr/search?q=%s&safe=active)*","inline":true},{"name":"위키피디아에 검색하기","value":"*[위키피디아로 이동합니다](https://ko.wikipedia.org/wiki/%s)*","inline":true}]}}]];
-local meanEmbed = [[{"name": "%s","value": "%s"},]];
-local meanItem = "%s\\n[더보기](%s)";
-local module = {};
-
 -- }
 -- 	name = "구글에 검색하기";
 -- 	value = "*[구글로 이동합니다](https://www.google.co.kr/search?q=%s&safe=active)*";
@@ -40,7 +35,12 @@ local module = {};
 -- 		};
 -- 	};
 -- }
-	
+
+local dictEmbed = [[{"content":"네이버 어학사전 검색 결과입니다","embed":{"title":"%s","url":"https://dict.naver.com/search.dict?dicQuery=%s","description":"%s","color":65230,"footer":{"icon_url":"https://ssl.pstatic.net/dicimg/favicons/dict/v1/home/favicon.ico","text":"Powered by naver dict / ㅋㅂㄹㅂ 개발"},"fields":[%s{"name":"구글에 검색하기","value":"*[구글로 이동합니다](https://www.google.co.kr/search?q=%s&safe=active)*","inline":true},{"name":"위키피디아에 검색하기","value":"*[위키피디아로 이동합니다](https://ko.wikipedia.org/wiki/%s)*","inline":true}]}}]];
+local meanEmbed = [[{"name": "%s","value": "%s"},]];
+local meanItem = "%s\\n[더보기](%s)";
+local module = {};
+
 -- 전체 임베딩
 function module.toDictEmbed(Keyword,UrlCode,ItemsJson,ShortDesc)
 	return dictEmbed:format(
@@ -49,16 +49,18 @@ function module.toDictEmbed(Keyword,UrlCode,ItemsJson,ShortDesc)
 end
 
 local function TitleMD(Title)
-	local Title = Title;
-	Title = string.gsub(Title,"|","\\|");
+	Title = string.gsub(Title,"|","\\\\|");
+	Title = string.gsub(Title,"\n","\\n");
+	Title = string.gsub(Title,"\"","\\\"");
 	Title = string.gsub(Title,"<b>(.-)</b>",function(this)
 		return this;
 	end);
 	return Title;
 end
 local function DecsMD(Text)
-	local Text = Text;
-	Text = string.gsub(Text,"|","\\|");
+	Text = string.gsub(Text,"|","\\\\|");
+	Text = string.gsub(Text,"\n","\\n");
+	Text = string.gsub(Text,"\"","\\\"");
 	Text = string.gsub(Text,"<b>(.-)</b>",function(this)
 		return ("**%s**"):format(this);
 	end);
