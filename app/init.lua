@@ -169,27 +169,11 @@ xpcall(function ()
 	local userData = require "userData"; _G.userData = userData;
 	userData:setJson(json):setILogger(iLogger):setMakeId(makeId);
 
-	-- 네이버 사전
-	local naverDictEmbed = require "naverDict.embed"; -- 네이버 사전 임배드 렌더러
-	local naverDictSearch = require "naverDict.request"; -- 네이버 사전 API 핸들러
-	naverDictSearch:setCoroHttp(corohttp):setJson(json):setUrlCode(urlCode); -- 네이버 사전 셋업
-
 	-- 유튜브 검색
 	local youtubeEmbed = require "youtube.embed";
 	local youtubeSearch = require "youtube.request"; -- 유튜브 검색
 	youtubeSearch:setCoroHttp(corohttp):setJson(json):setUrlCode(urlCode); -- 유튜브 검색 셋업
 	youtubeEmbed:setMyXML(myXMl);
-
-	-- 코로나 현황
-	local covid19Request = require "covid19.request";
-	local covid19Embed = require "covid19.embed";
-	covid19Request:setCoroHttp(corohttp):setMyXML(myXMl);
-
-	-- 영문 명언
-	local engquoteRequest = require "engquote.request";
-	local engquoteEmbed = require "engquote.embed";
-	engquoteRequest:setCoroHttp(corohttp):setJson(json);
-	engquoteEmbed:setUrlCode(urlCode);
 
 	-- 한글 명언
 	local korquoteRequest = require "korquote.request";
@@ -205,7 +189,7 @@ xpcall(function ()
 	--#endregion : 부분 모듈 임포팅
 	--#region : 설정파일 불러오기
 	iLogger.info("load files . . .");
-	local ACCOUNTData = data.load("data/ACCOUNT.json");
+	local ACCOUNTData = data.load("data/ACCOUNT.json"); _G.ACCOUNTData = ACCOUNTData;
 	local loveLeaderstats = data.load("data/loveLeaderstats.json");
 	local EULA = data.loadRaw("data/EULA.txt")
 	--#endregion : load settings from data file
@@ -246,12 +230,12 @@ xpcall(function ()
 		"Zzz... 아! 안졸았어요 ~~아 나도 좀 잠좀 자자 인간아~~","네!"
 	};
 	local unknownReply = { -- 반응 없을때 띄움
-		"(갸우뚱?)","무슨 말이에요?","네?",":thinking: 먀?","으에?","먕?"
+		"(갸우뚱?)","무슨 말이에요?","네?","으에?"--,"먕?",":thinking: 먀?"
 	};
 	iLogger.info(" |- load commands from ./commands");
 	local otherCommands = {} -- commands 폴더에서 커맨드 불러오기
 	for dir in fs.scandirSync("commands") do
-		dir = string.sub(dir,1,-5);
+		dir = string.gsub(dir,"%.lua$","");
 		iLogger.info(" |  |- load command dict from : commands/" .. dir .. ".lua");
 		otherCommands[#otherCommands+1] = require("commands." .. dir);
 	end
@@ -338,26 +322,6 @@ xpcall(function ()
 				);
 			end;
 		};
-		["코로나"] = {
-			alias = {"코로나 현황","코로나 상황","코로나 확진자","코로나 통계","오늘자 코로나","코로나 정보"};
-			reply = "잠시만 기달려주세요... (확인중)";
-			func = function(replyMsg,message,args,Content)
-				local body = covid19Request.get(ACCOUNTData)[2]
-				local dat = body:getFirstChildByTag("body"):getFirstChildByTag("items");
-				local today = dat[1];
-				local yesterday = dat[2];
-				replyMsg:setContent("오늘 기준의 코로나 현황입니다");
-				replyMsg:setEmbed(covid19Embed:embed(today,yesterday))
-			end;
-		};
-		["영어명언"] = {
-			alias = {"영문명언","영문 명언","영어 명언","quote","english quote","eng quote","englishquote","engquote"};
-			reply = "잠시만 기달려주세요... (확인중)";
-			func = function(replyMsg,message,args,Content)
-				replyMsg:setEmbed(engquoteEmbed:embed(engquoteRequest.fetch()));
-				replyMsg:setContent("영어 명언을 가져왔습니다");
-			end;
-		};
 		["한글명언"] = {
 			alias = {"한국어명언","한글 명언","한국어 명언","명언","korean quote","kor quote","koreanquote","korquote"};
 			reply = "잠시만 기달려주세요... (확인중)";
@@ -374,29 +338,6 @@ xpcall(function ()
 				message:delete();
 				replyMsg:setEmbed(apexLegendsEmbed:embed(apexLegendsRequest.fetch(rawArgs,ACCOUNTData)));
 				replyMsg:setContent("Apex Legends Api 로 부터 가져온 결과입니다 (사용자 아이디는 개인정보 보호를 위해 제거되었습니다)");
-			end;
-		};
-		["사전"] = {
-			reply = "잠시만 기다려주세요... (검색중)";
-			alias = {
-				"dict","Dict","Dictionary","영어찾기",
-				"단어검색","단어찾기","영어검색",
-				"영단어검색","영단어찾기","dictionary",
-				"단어찾아","영단어찾아","단어찾아줘",
-				"영단어찾아줘","영단어","사전찾기",
-				"사전검색","사전찾기"
-			};
-			func = function(replyMsg,message,args,Content)
-				local searchKey = Content.rawArgs;
-				if (not searchKey) or (searchKey == "") or (searchKey == " ") then
-					replyMsg:setContent("잘못된 명령어 사용법이에요!\n\n**올바른 사용 방법**\n> 미나야 사전 <검색할 단어>");
-				end
-
-				local body,url = naverDictSearch.searchFromNaverDirt(Content.rawArgs,ACCOUNTData);
-				local embed = json.decode(naverDictEmbed:Embed(Content.rawArgs,url,body));
-				replyMsg:setEmbed(embed.embed);
-				replyMsg:setContent(embed.content);
-				return;
 			end;
 		};
 		["지워"] = {

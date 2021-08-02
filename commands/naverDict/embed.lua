@@ -40,7 +40,7 @@ local module = {};
 -- 		};
 -- 	};
 -- }
-			
+	
 -- 전체 임베딩
 function module.toDictEmbed(Keyword,UrlCode,ItemsJson,ShortDesc)
 	return dictEmbed:format(
@@ -90,7 +90,7 @@ function module.meanEmbed(Items)
 	return this,DecsMD(ShortDesc);
 end
 
-function module:Embed(Keyword,UrlCode,Items)
+function module:embed(Keyword,UrlCode,Items)
 	return self.toDictEmbed(Keyword,UrlCode,self.meanEmbed(Items));
 end
 
