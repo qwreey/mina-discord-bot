@@ -13,7 +13,7 @@ end
 
 function module.fetch()
     if not dat then
-        local file = io.open("src/lib/korquote/dat.json");
+        local file = io.open("commands/korquote/base.json");
         local raw = file:read("a");
         dat = json.decode(raw);
         raw = nil;

@@ -21,7 +21,6 @@ return {
             end
 
             local body,url = naverDictSearch.searchFromNaverDirt(Content.rawArgs,ACCOUNTData);
-            print(naverDictEmbed:embed(Content.rawArgs,url,body))
             local embed = json.decode(naverDictEmbed:embed(Content.rawArgs,url,body));
             replyMsg:setEmbed(embed.embed);
             replyMsg:setContent(embed.content);

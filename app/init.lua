@@ -169,29 +169,12 @@ xpcall(function ()
 	local userData = require "userData"; _G.userData = userData;
 	userData:setJson(json):setILogger(iLogger):setMakeId(makeId);
 
-	-- 유튜브 검색
-	local youtubeEmbed = require "youtube.embed";
-	local youtubeSearch = require "youtube.request"; -- 유튜브 검색
-	youtubeSearch:setCoroHttp(corohttp):setJson(json):setUrlCode(urlCode); -- 유튜브 검색 셋업
-	youtubeEmbed:setMyXML(myXMl);
-
-	-- 한글 명언
-	local korquoteRequest = require "korquote.request";
-	local korquoteEmbed = require "korquote.embed";
-	korquoteRequest:setCRandom(cRandom):setJson(json);
-	korquoteEmbed:setUrlCode(urlCode);
-
-	-- 에이펙수
-	local apexLegendsRequest = require "apexLegends.request";
-	local apexLegendsEmbed = require "apexLegends.embed";
-	apexLegendsRequest:setCoroHttp(corohttp):setJson(json):setUrlCode(urlCode);
-
 	--#endregion : 부분 모듈 임포팅
 	--#region : 설정파일 불러오기
 	iLogger.info("load files . . .");
 	local ACCOUNTData = data.load("data/ACCOUNT.json"); _G.ACCOUNTData = ACCOUNTData;
 	local loveLeaderstats = data.load("data/loveLeaderstats.json");
-	local EULA = data.loadRaw("data/EULA.txt")
+	local EULA = data.loadRaw("data/EULA.txt"); _G.EULA = EULA;
 	--#endregion : load settings from data file
 	--#region : 반응, 프리픽스, 설정, 커맨드 등등
 	iLogger.info("---------------------- [LOAD SETTINGS] ----------------------");
@@ -302,42 +285,6 @@ xpcall(function ()
 				);
 				file:close();
 				--"안녕하세요 {#:UserName:#} 님!\n사용 약관에 동의해주셔서 감사합니다!\n사용 약관을 동의하였기 때문에 다음 기능을 사용 할 수 있게 되었습니다!\n\n> 미나야 배워 (미출시 기능)\n"
-			end;
-		};
-		["유튜브"] = {
-			alias = {"유튜브검색","유튜브찾기","유튜브탐색","유튭찾기","유튭","유튭검색","유튜브 검색","유튜브 찾기","youtube 찾기","youtube","youtube search","유튜브에서 찾기","search from youtube"};
-			reply = "잠시만 기다려주세요... (검색중)";
-			func = function(replyMsg,message,args,Content)
-				local rawArgs = Content.rawArgs;
-				if rawArgs == "" then
-					replyMsg:setContent(("검색하려는 키워드가 없습니다!\n\n**올바른 사용 방법**\n> 미나야 유튜브 검색 <검색 할 키워드>\n검색 할 키워드 : 유튜브가 허용하는 검색 할 수 있는 문자"):format(rawArgs));
-					return;
-				end
-				replyMsg:setContent(("유튜브에서 '%s' 를 검색한 결과입니다"):format(rawArgs));
-				replyMsg:setEmbed(
-					youtubeEmbed:embed(
-						rawArgs,
-						youtubeSearch.searchFromYoutube(rawArgs,ACCOUNTData)
-					)
-				);
-			end;
-		};
-		["한글명언"] = {
-			alias = {"한국어명언","한글 명언","한국어 명언","명언","korean quote","kor quote","koreanquote","korquote"};
-			reply = "잠시만 기달려주세요... (확인중)";
-			func = function(replyMsg,message,args,Content)
-				replyMsg:setEmbed(korquoteEmbed:embed(korquoteRequest.fetch()));
-				replyMsg:setContent("한글 명언을 가져왔습니다");
-			end;
-		};
-		["에이펙스 스텟"] = {
-			alias = {"apex legends 스텟","apex legends stats","apex stats","apex 스텟","에이펙스 레전드 스텟","에펙 스텟"};
-			reply = "잠시만 기달려주세요... (확인중)";
-			func = function(replyMsg,message,args,Content)
-				local rawArgs = Content.rawArgs;
-				message:delete();
-				replyMsg:setEmbed(apexLegendsEmbed:embed(apexLegendsRequest.fetch(rawArgs,ACCOUNTData)));
-				replyMsg:setContent("Apex Legends Api 로 부터 가져온 결과입니다 (사용자 아이디는 개인정보 보호를 위해 제거되었습니다)");
 			end;
 		};
 		["지워"] = {
@@ -522,9 +469,7 @@ xpcall(function ()
 		if not Command then
 			message:reply(unknownReply[cRandom(1,#unknownReply)]);
 			-- 반응 없는거 기록하기
-			local noneRespText = io.open("src/log/noneRespTexts.txt","a");
-			noneRespText:write("\n" .. Text);
-			noneRespText:close();
+			fs.appendFile("log/unknownTexts/raw.txt","\n" .. Text);
 			return;
 		elseif IsDm and Command.disableDm then
 			message:reply(disableDm);

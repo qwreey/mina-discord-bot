@@ -6,31 +6,19 @@ function module:setJson(newJson)
 end
 
 function module.load(fileName)
-	local file = io.open(fileName,"r");
-	local raw = file:read("a");
-	file:close();
-	return json.decode(raw);
+	return json.decode(fs.readFileSync(fileName));
 end
 
 function module.save(fileName,data)
-	local file = io.open(fileName,"r+");
-	file:write(json.encoding(data));
-	file:close();
-	return true;
+ 	return fs.writeFile(fileName,json.encoding(data));
 end
 
 function module.loadRaw(fileName)
-	local file = io.open(fileName,"r");
-	local raw = file:read("a");
-	file:close();
-	return raw;
+	return fs.readFileSync(fileName);
 end
 
 function module.saveRaw(fileName,data)
-	local file = io.open(fileName,"r+");
-	file:write(data);
-	file:close();
-	return true;
+	return fs.writeFile(fileName,data);
 end
 
 return module;

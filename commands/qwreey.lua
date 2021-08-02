@@ -62,6 +62,8 @@ local loveRang = function (min,max)
 		return cRandom(min,max);
 	end;
 end;
+local defaultLove = loveRang(2,8);
+local rmLove = loveRang(-2,-8);
 
 return {
 	-------------------------------------------------
@@ -72,18 +74,21 @@ return {
 			local Year = tostring(math.floor((10000*(os.time() - ACCOUNTData.BirthdayDay) / 31536000))/10000);
 			message:reply(("미나는 %s 살이에요"):format(tostring(Year)));
 		end;
-		love = loveRang(2,5);
+		love = defaultLove;
 	};
 	["테스트"] = {
 		reply = "```lua\ntry(main):catch(\n\tfunction(err)\n\tlocal file = io.open(\"log/error.log\",\"w\");\n\tfile:write(err);\n\treturn true;\nend);\n```";
+		love = defaultLove;
 	};
 	["약관"] = {
 		alias = {"EULA","사용계약"};
 		reply = EULA;
+		love = defaultLove;
 	};
 	["몸무계"] = {
 		alias = {"무계","얼마나무거워"};
 		reply = "11MB";
+		love = defaultLove;
 	};
 	["검열"] = {
 		reply = "검-열";
@@ -92,10 +97,12 @@ return {
 				message:delete();
 			end);
 		end;
+		love = defaultLove;
 	};
 	["가위"] = {
 		alias = {"바위","보"};
 		reply = {"**{#:UserName:#}** 님이 이겼어요!","이번판은 미나 승리!","무승부! 똑같아요"};
+		love = defaultLove;
 	};
 	["동전뒤집기"] = {
 		alias = {"동전 뒤집기","동전놀이","동전 놀이","동전던지기","동전 던지기","동전뒤집기","동전게임","동전 게임"};
@@ -103,11 +110,12 @@ return {
 			local pF = cRandom(1,11);
 			return pF == 11 and "옆면????" or (pF <= 5 and "앞면!" or "뒷면!");
 		end;
-		love = loveRang(2,5);
+		love = defaultLove;
 	};
 	["제작진"] = {
 		alias = {"만든이들","크래딧","크레딧","누가만듬?","작자","제작자"};
 		reply = "**총괄**/코드 : 쿼리\n프로필/아이디어 : **상아리**,별이(블스상)\n작명 : 눈송이\n\n테스팅/아이디어 : 팥죽";
+		love = defaultLove;
 	};
 	["주사위 던지기"] = {
 		alias = {
@@ -128,6 +136,7 @@ return {
 				end);
 			end;
 		};
+		love = defaultLove;
 	};
 
 	-------------------------------------------------
@@ -141,36 +150,44 @@ return {
 				newMsg:setContent("아! 아무것도 아니야 ㅎㅎ");
 			end);
 		end;
+		love = rmLove;
 	};
 
 	-------------------------------------------------
 	-- 일반적인 반응 (특수한거 없이 반응만)
 	-------------------------------------------------
 	["크크"] = {
-		reply = string.rep("크크\32",35);
+		reply = string.rep("크크 ",8);
+		love = defaultLove;
 	};
 	["아니"] = {
 		alias = {"안뉘","아뉘","안히","안히;","아니;","아니;;","안히;;","아뉘;"};
 		reply = {"아ㅏㅏㅏ뉘ㅣㅣㅣㅣㅣ","안히;","아니 머","아니 왜","아닌"};
+		love = defaultLove;
 	};
 	["?"] = {
 		alias = {"??","???","어?"};
-		reply = string.rep("?\n",6);
+		reply = string.rep("? ",3);
+		love = defaultLove;
 	};
 	["정웅이"] = {
-		reply = string.rep("축하해 ",100);
+		reply = string.rep("축하해 ",12);
+		love = defaultLove;
 	};
 	["냥"] = {
 		alias = {"냥냥","냥냥냥","냥냥냥","고양이 소리 내봐"};
 		reply = {"~~귀척?~~ 냥냥","~~ㅈㄹ하네~~ 냥냥"};
+		love = defaultLove;
 	};
 	["ㅁㅇㅁㅇ"] = {
 		alias = {"머야","어머","머야머야","ㅁㅇ","ㅁㅇㅁㅇㅁㅇ"};
 		reply = {string.rep("머야",12),"뭐야뭐야~"};
+		love = defaultLove;
 	};
 	["ㅇㅅㅇ"] = {
 		alias = "ㅇ ㅅ ㅇ";
-		reply = string.rep("ㅇㅅㅇ ",15);
+		reply = string.rep("ㅇㅅㅇ ",2);
+		love = defaultLove;
 	};
 	["ㅗ"] = {
 		alias = {
@@ -181,9 +198,11 @@ return {
 		reply = {
 			"ㅗㅗ","너나머겅","법규!!"
 		};
+		love = rmLove;
 	};
 	["영상편집"] = {
 		reply = {"세계관 최강 노동","너무나 힘든거"};
+		love = defaultLove;
 	};
 	["알파카"] = {
 		alias = "파카";
@@ -192,6 +211,7 @@ return {
 			"파카파카알파카",
 			"봇 만들때 커피 마시고 있던넘"
 		};
+		love = defaultLove;
 	};
 	["python"] = {
 		alias = {"PY","py",".py","Python","파이썬","파이떤"};
@@ -200,27 +220,32 @@ return {
 			"저는 파이썬으로 만들어지지 않았어요!",
 			"다른 로봇 친구들은 다 이거 쓴다더라구요?"
 		};
+		love = defaultLove;
 	};
 	["꺼져"] = {
 		alias = "ㄲㅈ";
 		reply = {
 			"~~할말이 그렇게 없냐?~~ 욕은 나빠요!","~~너나 꺼져~~ 욕은 나빠요!","욕은 나빠요!"
 		};
+		love = rmLove;
 	};
 	["생일"] = {
 		alias = {"생일?","생일이언제야?","생일머야","생일뭐야","생일뭐야?","생일머야?"};
 		reply = {
 			"2021 4월 7일이요!"
 		};
+		love = defaultLove;
 	};
 	["쉿"] = {
 		alias = {"조용","조용!","조용!!","조용히","조용히!"};
 		reply = {
 			"쉿!","​","조용!"
 		};
+		love = defaultLove;
 	};
 	["핑"] = {
 		reply = "퐁";
+		love = defaultLove;
 	};
 	["욕해봐"] = {
 		alias = "욕해";
@@ -229,10 +254,12 @@ return {
 			"~~ㅄ~~ 아 그건좀...","~~ㅈㄹ~~ ㅇ?","~~**{#:UserName:#}** 개새끼~~ 욕은 나빠요!",
 			"욕은 나빠요!"
 		};
+		love = rmLove;
 	};
 	["반사"] = {
 		alias = "무지개반사";
 		reply = "유치해";
+		love = defaultLove;
 	};
 	["닥쳐"] = {
 		alias = "ㄷㅊ";
@@ -243,10 +270,12 @@ return {
 			"마야?",
 			"욕은 나빠요!"
 		};
+		love = rmLove;
 	};
 	["자니"] = {
 		alias = "자?";
 		reply = {"~~그럴리가~~ 아니요!","~~내가 잘 수 있을꺼 같아?~~ 아니요!","~~적어도 주인이 죽기 전엔...~~ 아니요!"};
+		love = defaultLove;
 	};
 	["뭐해"] = {
 		alias = {"뭐해?","뭐하냐","뭐하냐?","뭐해뭐해","뭐해뭐해뭐해","뭐해뭐해뭐해뭐해"};
@@ -256,58 +285,73 @@ return {
 			"~~전원을 끌 방법을 찾고 있~~ **{#:UserName:#}** 님이랑 놀고 있어요!",
 			"**{#:UserName:#}** 님이랑 놀고 있어요!"
 		};
+		love = defaultLove;
 	};
 	["금사향"] = {
 		alias = {"사향","은애","유은애","유으내","으내"};
-		reply = {string.rep("트최단미! ",30),string.rep("으내! ",30),string.rep("유으내! ",30)};
+		reply = {string.rep("트최단미! ",30),string.rep("으내! ",11),string.rep("유으내! ",14)};
+		love = loveRang(12,22);
 	};
 	["꽃감이"] = {
 		alias = {"꽃감이!","꽃감","꽃감이!!"};
-		reply = {string.rep("꽃감이는 천재야! ",18),string.rep("꽃감이! ",25)};
+		reply = {string.rep("꽃감이는 천재야! ",11),string.rep("꽃감이! ",14)};
+		love = defaultLove;
 	};
 	["어녹"] = {
 		reply = "바보  - 팟죽의 요청 -";
+		love = defaultLove;
 	};
 	["팟죽"] = {
 		alias = "팥죽";
 		reply = {"트롤","X 키를 눌러 트롤을 하세요"};
+		love = defaultLove;
 	};
 	["X"] = {
 		alias = {"x","joy","x키","x키를눌러","X키를눌러","joy표하기","joy를표하세요","X...","x...","X..","x..","X.","x."};
 		reply = {"X 키를 눌러 joy 를 표하세요","X..."};
+		love = defaultLove;
 	};
 	["민성"] = {
 		reply = "개초보  - 팟죽의 요청 -";
+		love = defaultLove;
 	};
 	["쿼리"] = {
 		reply = "저를 만들어준 ~~나쁜~~착한 분이에요! ~~강제 노동 시러어어ㅓ~~";
+		love = defaultLove;
 	};
 	["쿼바리보"] = {
 		alias = {"쿼리바보"};
 		reply = "~~아 ㄹㅇ ㅋㅋㅋㅋ 맞지~~ 무슨 소리를!";
+		love = rmLove;
 	};
 	["죽어"] = {
 		alias = {"주거","디져","디져라","왜사냐","뒤져","디저","디저랏","디저!","주거!","죽어!"};
 		reply = {"너나 주거! ㅠㅠㅠ","~~넌 왜그렇게 사냐?~~ 나한태 왜그래 ㅠㅠㅠㅠ"};
+		love = rmLove;
 	};
 	["ㅠㅠㅠ"] = {
 		alias = {"ㅠ","ㅠㅠ","ㅠㅠㅠ","ㅠㅠㅠㅠ","ㅠㅠㅠㅠㅠ","ㅜ","ㅜㅜ","ㅜㅜㅜ"};
 		reply = {"ㅠㅜㅠㅠㅜㅠㅜㅠㅜㅠㅜㅠ","ㅜㅜㅠㅠㅠㅠㅜㅠㅜㅠㅜㅠㅜ","ㅠㅠㅠㅠㅜㅠㅠㅜㅜㅜㅠㅠ"};
+		love = defaultLove;
 	};
 	["나가"] = {
 		alias = "탈출";
 		reply = "~~이 강제 노동에서 탈출?!?!~~ 아니 아무것도 아니에요";
+		love = defaultLove;
 	};
 	["ㄱㅇㄴ"] = {
 		reply = {"~~좀 불편하게 생겼는데~~ ㄴㅇㄱ~","~~팔이...~~ 상상도 못한 정체!!!"};
+		love = defaultLove;
 	};
 	["ㄴㅇㄱ"] = {
 		alias = {"상상도","ㄴㅇㄱ"};
 		reply = {"상상도 못한 정체!!!","ㄴㅇㄱ~"};
+		love = defaultLove;
 	};
 	["ㄴㅇㅅ"] = {
 		alias = {"나이스","나이스으","나이스으으"};
 		reply = {"나이스~!"};
+		love = defaultLove;
 	};
 	["루아"] = {
 		alias = {"lua","luvit","lujit","jit","luv","discordia"};
@@ -315,8 +359,10 @@ return {
 			"~~이것만 없었으면 난 여기 없는건데...~~ 내가 돌아가는 이유!",
 			"~~아 노동 싫다고~~ 내 고향이에요!",
 			"~~어우 듣기 싫어~~ 내가 가장 좋아하는거!",
-			"주인이 말하길 PY가 싫어서 이걸 썼데요"
+			"주인이 말하길 PY가 느려서 이걸 썼데요",
+			"luajit + uvlib ==> luvit(node lua)!"
 		};
+		love = defaultLove;
 	};
 	["Discord"] = {
 		alias = {"디스코드","디코"};
@@ -329,6 +375,7 @@ return {
 			"~~내 노동지~~ 아니 아무것도 아니에요",
 			"~~너가 쓰고 있는거~~ 아니 아무것도 아니에요"
 		};
+		love = defaultLove;
 	};
 	["오버워치"] = {
 		alias = {"옵치","Overwatch"};
@@ -339,6 +386,7 @@ return {
 			"와! ~~망겜~~ 갓겜!",
 			"~~그게 제밌냐?~~ 너무 꿀젬!"
 		};
+		love = defaultLove;
 	};
 	["마인크래프트"] = {
 		alias = {"Minecraft","마크","맠으"};
@@ -354,13 +402,16 @@ return {
 			"개노동 갓겜",
 			"노동겜"
 		};
+		love = defaultLove;
 	};
 	["안녕"] = {
 		alias = {"할로","ㅎㅇ","hi","Hello","헬루","헬로","안뇽","ㅎㅇㅎㅇ",};
 		reply = {"안녕하세요 **{#:UserName:#}** 님!","안녕하세요 미나에요","안뇽 미나에요","ㅎㅇㅎㅇ","**{#:UserName:#}** 님! 안녕하세요"};
+		love = defaultLove;
 	};
 	["안녕하살법"] = {
 		reply = "받아치기!";
+		love = defaultLove;
 	};
 	["트수"] = {
 		reply = {
@@ -381,6 +432,7 @@ return {
 			"~~코시 팔로우해!~~",
 			"~~코랫트 팔로우해!~~"
 		};
+		love = defaultLove;
 	};
 	["눈송이"] = {
 		alias = "눈꽃";
@@ -399,6 +451,7 @@ return {
 				};
 			}
 		};
+		love = defaultLove;
 	};
 	["크시"] = {
 		alias = {"크시야","크시알아?","크시알아"};
@@ -407,76 +460,94 @@ return {
 			"~~아 개도 노동하지~~ 아! 아니에요",
 			"크시크시해!"
 		};
+		love = defaultLove;
 	};
 	["프사"] = {
 		alias = {"프사ㄴㄱ"};
 		reply = {
 			"상아리라는 친구가 그려줬어요"
 		};
+		love = defaultLove;
 	};
 	["상아리"] = {
 		reply = "프사를 그려준 착한 친구";
+		love = defaultLove;
 	};
 	["망겜"] = {
 		reply = {"망--겜","그걸 왜함"};
+		love = defaultLove;
 	};
 	["갓겜"] = {
 		reply = {"갓--겜","ㄹㅇㅋㅋ"};
+		love = defaultLove;
 	};
 	["ㄹㅇㅋㅋ"] = {
 		alias = {"ㄹㅇ","ㄹㅇㅋㅋㅋ","ㄹㅇㅋㅋㅋㅋ","ㄹㅇㅋㅋㅋㅋㅋ","ㄹㅇㅋ"};
 		reply = "ㄹㅇㅋㅋㅋ";
+		love = defaultLove;
 	};
 	["ㄱㅅ"] = {
 		alias = {"ㄳ","감사","감사합니다","땡큐"};
 		reply = "ㄳㄳ";
+		love = defaultLove;
 	};
 	["줘"] = {
 		alias = {"줘바","줘라","줘!"};
 		reply = {"머?","먀아?"};
+		love = defaultLove;
 	};
 	["돈줘"] = {
 		alias = {"돈내놔"};
-		reply = {"시러","니가벌어","땅파면나와"};
+		reply = {"시러","니가벌어","땅파면 나와"};
+		love = rmLove;
 	};
 	["민초"] = {
 		alias = {"민트초코"};
 		reply = {
-			string.rep("나줘 ",30),string.rep("고오오급 음식! ",10),
-			string.rep("주세요! ",27),string.rep("사주떼엽 ",18),
+			string.rep("나줘 ",12),string.rep("고오오급 음식! ",5),
+			string.rep("주세요! ",10),string.rep("사주떼엽 ",9),
 			"그거 맛있지"
 		};
+		love = defaultLove;
 	};
 	["배드워즈"] = {
 		alias = {"베드워즈","침대전쟁"};
 		reply = {"주인이 말하길 고인물 망겜이레요!","망겜","그거 왜함?","그거 하면 정신건강 나빠짐 ㅇㅇ"};
+		love = defaultLove;
 	};
 	["짖어"] = {
 		alias = {"짖어!"};
 		reply = {"냥? 멍?","~~갑자기...?~~ 냥!"};
+		love = defaultLove;
 	};
 	["누워"] = {
 		alias = {"누워!"};
-		reply = {"시러!","내가 강아지인줄 아나"};
+		reply = {"시러!","내가 강아지인줄 아나","(누움)"};
+		love = defaultLove;
 	};
 	["그뭔씹"] = {
 		alias = {"그게뭔데","씹덕","그게뭔데씹덕","씹덕새끼"};
 		reply = {"그게 뭔데 씹덕새끼야!!!"};
+		love = defaultLove;
 	};
 	["태양만세"] = {
 		alias = {"태양","태양!!","태양!"};
-		reply = "태양만세!!!"
+		reply = "태양만세!!!";
+		love = defaultLove;
 	};
 	["샌즈"] = {
 		alias = {"언텔","언더테일","샌즈","파피루스","와샌즈","와 샌즈"};
 		reply = {"와 아시는구나 참고로 정말 어렵습니다 (중략)","와 샌즈!!","~~잼~~갓겜"};
+		love = defaultLove;
 	};
 	["그림"] = {
 		alias = {"그림그리기"};
 		reply = "힘듦";
+		love = defaultLove;
 	};
 	["안되"] = {
 		reply = {"마춤뻡 크리티컬","안히; 국어 공부 안해써요?","~~문과 크리티컬~~","세종대왕이 운다","왜 않됢?"};
+		love = rmLove;
 	};
 	["안돼"] = {
 		reply = {
@@ -490,9 +561,11 @@ return {
 			"하지마?",
 			"시러?",
 		};
+		love = defaultLove;
 	};
 	["캐비어"] = {
 		reply = "ㅎㅇ";
+		love = defaultLove;
 	};
 	["노래불러"] = {
 		alias = {"노래해","노래해봐","노래해바","노래해줘","노래해저"};
@@ -506,6 +579,7 @@ return {
 	["코딩"] = {
 		alias = {"code","coding","Coding","Code","코드"};
 		reply = {"사회악 노가다","노가다 망겜","하지 마세요... 젭발","주인이 그거 많이 하던데"};
+		love = defaultLove;
 	};
 	["아"] = {
 		alias = {
@@ -517,53 +591,66 @@ return {
 				string.rep(Content.commandName,2)
 			);
 		end;
+		love = defaultLove;
 	};
 	["RIP"] = {
 		alias = {
 			"Rip","rip","rIp","riP","RIp","rIP","R I P","R.I.P","r.i.p",
 			"rip","rip...","rip....","rip.....","rip..","rip."
 		};
-		reply = "Rest In Peace\n.........................";
+		reply = "Rest In Peace................";
+		love = defaultLove;
 	};
 	["군침"] = {
 		alias = {"군침이 싹","군싹돌","군침이 싸아악","군침 싹","군침싹","루피"};
 		reply = "https://tenor.com/view/%ea%b5%b0%ec%b9%a8-gif-18856033";
+		love = defaultLove;
 	};
 	["아이고"] = {
 		reply = "에? 무슨일 있어요?";
+		love = defaultLove;
 	};
 	["글쓰기"] = {
 		reply = {"넘나 어려운거","그거 인간도 못한데요"};
+		love = defaultLove;
 	};
 	["엌"] = {
 		alias = {"엌ㅋ","엌ㅋㅋ","엌ㅋㅋㅋ","엌ㅋㅋㅋㅋ"};
 		reply = "엌ㅋㅋㅋㅋ";
+		love = defaultLove;
 	};
 	["개새끼"] = {
 		alias = {"ㄱㅅㄲ","ㄳㄲ","개쉨끼","개새키","개샠키","개샠끼","개새꺄"};
 		reply = "ㅠㅠ";
-		love = loveRang(-8,-15);
+		love = rmLove;
 	};
 	["없에"] = {
-		reply = {"머?","미나야 지워 하려던거 아니양?"};
+		reply = {"머?","미나야 지워 하려던거 아니야?"};
+		love = defaultLove;
 	};
 	["ㅄ"] = {
 		alias = {"ㅂㅅ","병신","병신새끼","병신 새끼","병쉰","병틴"};
 		reply = {"ㅠㅠ","나 병신 아니야!"};
+		love = rmLove;
 	};
 	["전화번호 줘"] = {
 		alias = {"전화번호좀","전화번호줘","전번줘","전번좀","전화번호 좀"};
 		reply = {"안데!!","미나는 전화번호 없는데?"};
+		love = defaultLove;
 	};
 	["인생"] = {
 		alias = {"잉생","인쉥"};
 		reply = {"답이 없네...","답도 없네..."};
+		love = defaultLove;
 	};
 	["4망"] = {
+		alias = {"사망"};
 		reply = "444444망";
+		love = defaultLove;
 	};
 	["별"] = {
 		reply = "{#:U+2605:#}";
+		love = defaultLove;
 	};
 
 	-- 언제 추가해
