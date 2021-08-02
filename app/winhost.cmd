@@ -14,7 +14,6 @@ rem RETURNCODE 200 | ssh host open
 rem RETURNCODE 400 | error (?)
 
 rem SETUP
-cd ..
 echo ROOT IS %cd%
 
 rem CHECK IS VDESK
@@ -25,8 +24,8 @@ if %1 equ VDESK (
 
 rem RUN CODE
 :whenstart
-echo CMD : luvit src/bot %*
-src\bin\luvit src/server %*
+echo CMD : luvit app/bot %*
+bin\luvit app %*
 set stopcode=%ERRORLEVEL%
 echo luvit RETURNCODE : %stopcode%
 

@@ -1,7 +1,4 @@
 local module = {};
-
---local urlCode = require "src/lib/urlCode";
-
 local function makeError(msg)
     return {
         title = ":/ 불러오기를 시도하던중 오류가 발생했습니다";

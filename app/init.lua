@@ -16,11 +16,12 @@
 ]]
 xpcall(function ()
 	--#region : Luvit 모듈 / 주요 모듈 임포트
-	local path = require "luapath"; -- path 불러오기
-	package.path = path.path; -- 루아 path 지정
-	package.cpath = path.cpath;	-- c path 지정
 
-	local iLogger = require "src/lib/log"; -- log 핸들링
+	-- set require path
+	package.path = require("app.path")(package.path);
+
+	-- load modules
+	local iLogger = require "log"; -- log 핸들링
 	local json = require "json"; -- json 핸들링
 	local corohttp = require "coro-http"; -- http 핸들링
 	local timer = require "timer"; -- 타임아웃 핸들링
@@ -31,6 +32,7 @@ xpcall(function ()
 	local prettyPrint = require "pretty-print"; -- 터미널에 여러 자료형 프린팅
 	local utf8 = utf8 or require "utf8";
 
+	-- same with js's timeout function
 	local function runSchedule(time,func)
 		timer.setTimeout(time,coroutine.wrap(func));
 	end
@@ -146,58 +148,58 @@ xpcall(function ()
 		return msg;
 	end
 	--#endregion : Discord Module
+
 	--#region : 부분 모듈 임포팅
-	iLogger.info("load modules . . .");
-	local commandHandle = require "src/lib/commandHandle"; -- 커맨드 구조 처리기
-	local cRandom = require "src/lib/cRandom"; -- LUA 렌덤 핸들러
-	local strSplit = require "src/lib/stringSplit"; -- 글자 분해기
-	local urlCode = require "src/lib/urlCode"; -- 한글 URL 인코더/디코더
-	local makeId = require "src/lib/makeId"; -- ID 만드는거
-	local qFilesystem = require "src/lib/qFilesystem"; -- nt 파일 시스템
-	local makeSeed = require "src/lib/makeSeed";
-	local myXMl = require "src/lib/myXML";
+	iLogger.info("load modules . . ."); local require = function (...) print(...) return require(...) end;
+	local commandHandle = require "commandHandle"; -- 커맨드 구조 처리기
+	local cRandom = require "cRandom"; -- LUA 렌덤 핸들러
+	local strSplit = require "stringSplit"; -- 글자 분해기
+	local urlCode = require "urlCode"; -- 한글 URL 인코더/디코더
+	local makeId = require "makeId"; -- ID 만드는거
+	local qFilesystem = require "qFilesystem"; -- nt 파일 시스템
+	local makeSeed = require "makeSeed";
+	local myXMl = require "myXML";
 
 	-- 데이터
-	local data = require "src/lib/data";
+	local data = require "data";
 	data:setJson(json);
 
 	-- 네이버 사전
-	local naverDictEmbed = require "src/lib/naverDict/embed"; -- 네이버 사전 임배드 렌더러
-	local naverDictSearch = require "src/lib/naverDict/request"; -- 네이버 사전 API 핸들러
-	naverDictSearch:setCoroHttp(corohttp):setJson(json); -- 네이버 사전 셋업
+	local naverDictEmbed = require "naverDict.embed"; -- 네이버 사전 임배드 렌더러
+	local naverDictSearch = require "naverDict.request"; -- 네이버 사전 API 핸들러
+	naverDictSearch:setCoroHttp(corohttp):setJson(json):setUrlCode(urlCode); -- 네이버 사전 셋업
 
 	-- 유튜브 검색
-	local youtubeEmbed = require "src/lib/youtube/embed";
-	local youtubeSearch = require "src/lib/youtube/request"; -- 유튜브 검색
-	youtubeSearch:setCoroHttp(corohttp):setJson(json); -- 유튜브 검색 셋업
+	local youtubeEmbed = require "youtube.embed";
+	local youtubeSearch = require "youtube.request"; -- 유튜브 검색
+	youtubeSearch:setCoroHttp(corohttp):setJson(json):setUrlCode(urlCode); -- 유튜브 검색 셋업
 	youtubeEmbed:setMyXML(myXMl);
 
 	-- 코로나 현황
-	local covid19Request = require "src/lib/covid19/request";
-	local covid19Embed = require "src/lib/covid19/embed";
+	local covid19Request = require "covid19.request";
+	local covid19Embed = require "covid19.embed";
 	covid19Request:setCoroHttp(corohttp):setMyXML(myXMl);
 
 	-- 영문 명언
-	local engquoteRequest = require "src/lib/engquote/request";
-	local engquoteEmbed = require "src/lib/engquote/embed";
+	local engquoteRequest = require "engquote.request";
+	local engquoteEmbed = require "engquote.embed";
 	engquoteRequest:setCoroHttp(corohttp):setJson(json);
+	engquoteEmbed:setUrlCode(urlCode);
 
 	-- 한글 명언
-	local korquoteRequest = require "src/lib/korquote/request";
-	local korquoteEmbed = require "src/lib/korquote/embed";
+	local korquoteRequest = require "korquote.request";
+	local korquoteEmbed = require "korquote.embed";
 	korquoteRequest:setCRandom(cRandom):setJson(json);
+	korquoteEmbed:setUrlCode(urlCode);
 
 	-- 에이펙수
-	local apexLegendsRequest = require "src/lib/apexLegends/request";
-	local apexLegendsEmbed = require "src/lib/apexLegends/embed";
-	apexLegendsRequest:setCoroHttp(corohttp):setJson(json);
+	local apexLegendsRequest = require "apexLegends.request";
+	local apexLegendsEmbed = require "apexLegends.embed";
+	apexLegendsRequest:setCoroHttp(corohttp):setJson(json):setUrlCode(urlCode);
 
 	-- 유저 데이터 핸들링
-	local userData = require "src/lib/userData";
+	local userData = require "userData";
 	userData:setJson(json):setILogger(iLogger):setMakeId(makeId);
-
-	-- C 라이브러리 : 메시징
-	--ffi.cdef(data.loadRaw("src/lib/clib/msgBox.c"));
 
 	--#endregion : 부분 모듈 임포팅
 	--#region : 설정파일 불러오기
@@ -246,6 +248,7 @@ xpcall(function ()
 		"(갸우뚱?)","무슨 말이에요?","네?",":thinking: 먀?","으에?","먕?"
 	};
 	local CommandEnv = { -- 커맨드 사전에 환경을 제공하기 위한 테이블
+		["require"] = require;
 		["cRandom"] = cRandom;
 		["myXML"] = myXMl;
 		["json"] = json;
@@ -735,7 +738,6 @@ xpcall(function ()
 				reload = "reload code";
 				restart = "same with reload";
 				help = "show this msg";
-				pause = "stop all threads";
 				commit = "commit and push, eng only";
 				getUserData = "get user data table";
 				saveUserData = "save user data table";
@@ -747,9 +749,6 @@ xpcall(function ()
 		end
 		function runEnv.saveUserData(id)
 			return userData:saveData(id);
-		end
-		function runEnv.pause() -- 모든 스레드를 일시 정지
-			ffi.C.MessageBoxA(nil,"Code paused","PAUSE",0);
 		end
 		function runEnv.commit(arg)
 			os.execute("commit.cmd " .. arg);
@@ -784,11 +783,11 @@ xpcall(function ()
 	--#endregion : 커맨드 창 인풋 읽기
 end,function (err)
 	--#region : 디버깅
-	local iLogger = require "src/lib/log";
+	local iLogger = require "log";
 	iLogger.fatal(err);
 	local err = (tostring(err) .. "\n");
 	local dat = os.date("*t");
-	local fnm = ("src/log/err/%dY_%dM_%dD"):format(dat.year,dat.month,dat.day);
+	local fnm = ("log/err/%dY_%dM_%dD"):format(dat.year,dat.month,dat.day);
 
 	iLogger.debug(("Error log was saved in err folder (%s)"):format(fnm));
 	local fil = io.open(fnm,"a");
@@ -796,12 +795,3 @@ end,function (err)
 	fil:close();
 	--#endregion : 디버깅
 end);
-
-local http = require('http');
-
-http.createServer(function (req, res)
-  local body = "Hello world\n";
-  res:setHeader("Content-Type", "text/plain");
-  res:setHeader("Content-Length", #body);
-  res:finish(body);
-end):listen(8282, '127.0.0.1');

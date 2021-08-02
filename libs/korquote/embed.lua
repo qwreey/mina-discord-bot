@@ -1,14 +1,12 @@
-local engquoteEmbed = {};
-local urlCode = require "src/lib/urlCode";
+local module = {};
 
--- class : engquoteEmbed
--- embed quote with api's return
--- it returns table for discordia's embed system
+local urlCode;
+function module:setUrlCode(newUrlCode)
+    urlCode = newUrlCode;
+    return self;
+end
 
--- written by qwreey all right of this code had owned by qwreey;
--- 2021 / 07 / 04
-
-function engquoteEmbed:embed(body)
+function module:embed(body)
     local author = body.author
     return {
         color = 16760299;
@@ -23,4 +21,4 @@ function engquoteEmbed:embed(body)
     };
 end
 
-return engquoteEmbed;
+return module;

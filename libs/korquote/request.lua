@@ -1,15 +1,13 @@
 local module = {};
 local dat,len;
 
-local json;
-function module:setJson(nJson)
-    json = nJson;
+local cRandom,json;
+function module:setJson(newJson)
+    json = newJson;
     return self;
 end
-
-local cRandom;
-function module:setCRandom(nCRandom)
-    cRandom = nCRandom;
+function module:setCRandom(newCRandom)
+    cRandom = newCRandom;
     return self;
 end
 

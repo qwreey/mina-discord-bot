@@ -9,21 +9,19 @@
 ]]
 
 local module = {};
-local corohttp;
-local urlCode = require "src/lib/urlCode";
-local myXML;
+local myXML,corohttp;
 
-function module:setCoroHttp(NewCorohttp)
-	corohttp = NewCorohttp;
+function module:setCoroHttp(newCorohttp)
+	corohttp = newCorohttp;
 	return self;
 end
-function module:setMyXML(NewMyXML)
-	myXML = NewMyXML;
+function module:setMyXML(newMyXML)
+	myXML = newMyXML;
 	return self;
 end
 
 local dayInSec = 86400;
-function module.get(ClientData)
+function module.get(clientData)
     local time = os.time();
     local today = os.date("*t",time);
     local yesterday = os.date("*t",time - dayInSec);
@@ -59,11 +57,9 @@ function module.get(ClientData)
     end
 
     local url = ("http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?serviceKey=%s&pageNo=1&numOfRows=1&startCreateDt=%s&endCreateDt=%s")
-        :format(ClientData.covid19Client,yesterdayStr,todayStr);
-
-	local KeywordUrl = urlCode.urlEncode(Keyword);
-	local Header,Body = corohttp.request("GET",url);
-	return myXML.xmlToItem(Body);
+        :format(clientData.covid19Client,yesterdayStr,todayStr);
+	local _,body = corohttp.request("GET",url);
+	return myXML.xmlToItem(body);
 end
 
 return module;

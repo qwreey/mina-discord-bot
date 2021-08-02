@@ -1,15 +1,16 @@
 local module = {};
-
-local urlCode = require "src/lib/urlCode";
-local json,corohttp;
+local urlCode,json,corohttp;
 
 function module:setCoroHttp(newCorohttp)
     corohttp = newCorohttp;
     return self;
 end
-
 function module:setJson(newJson)
     json = newJson;
+    return self;
+end
+function module:setUrlCode(newUrlCode)
+    urlCode = newUrlCode;
     return self;
 end
 

@@ -9,9 +9,7 @@
 ]]
 
 local module = {};
-local corohttp;
-local urlCode = require "src/lib/urlCode";
-local json;
+local corohttp,json,urlCode;
 local searchURLTemp = "https://www.googleapis.com/youtube/v3/search?key=%s&part=snippet&maxResults=8&q=%s";
 
 function module:setCoroHttp(NewCorohttp)
@@ -20,6 +18,10 @@ function module:setCoroHttp(NewCorohttp)
 end
 function module:setJson(NewJson)
 	json = NewJson;
+	return self;
+end
+function module:setUrlCode(NewUrlCode)
+	urlCode = NewUrlCode;
 	return self;
 end
 

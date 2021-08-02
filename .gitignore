@@ -2,6 +2,10 @@
 test.lua
 lit-temp
 
+# Discordia 생성 파일
+gateway.json
+discordia.log
+
 # 데이터 파일
 data/*
 deps/*
