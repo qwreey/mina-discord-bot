@@ -38,17 +38,13 @@ local function indexingCommand(IndexTable,CommandName,CommandInfo)
 	return len;
 end
 
-function module.encodeCommands(TableOfCommand,otherCommands)
+function module.encodeCommands(...)
 	local this = {};
 	local len = 0;
-	for CommandName,CommandInfo in pairs(TableOfCommand) do
-		len = len + indexingCommand(this,CommandName,CommandInfo);
-	end
 
-	local otherCommands = otherCommands or {};
-	for _,CmdTable in pairs(otherCommands) do
-		for CommandName,CommandInfo in pairs(CmdTable) do
-			len = len + indexingCommand(this,CommandName,CommandInfo);
+	for _,commandPackage in pairs({...}) do
+		for commandName,commandInfo in pairs(commandPackage) do
+			len = len + indexingCommand(this,commandName,commandInfo);
 		end
 	end
 

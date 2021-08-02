@@ -187,8 +187,7 @@ iLogger : 로거용 모듈
 makeId : 랜덤한 18자 아이디를 만드는 함수, UUID 처럼 활용 가능 [lib/makeId.lua 와 연결]  
 urlCode : 한글을 url 용으로 변환, [lib/urlCode.lua 와 연결]  
 strSplit : 문자를 어떤 기준으로 나누는 함수 [lib/stringSplit.lua 와 연결]  
-ACCOUNTData : 계정 정보 담긴 테이블 !사용 ㄴㄴ!  
-qFilesystem : nt파일 시스템 [lib/qFilesystem.lua 와 연결]  
+ACCOUNTData : 계정 정보 담긴 테이블 !사용 ㄴㄴ!
 runSchedule : ms 초 뒤에 함수 실행시키는 함수 (루틴)  
 ffi : C 코드 가져와서 바인딩 하는 라이브러리 => https://luajit.org/ext_ffi.html  
 timer : luvit 의 timer 모듈 => https://luvit.io/api/timer.html  

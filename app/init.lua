@@ -21,21 +21,22 @@ xpcall(function ()
 	package.path = require("app.path")(package.path);
 
 	-- load modules
-	local iLogger = require "log"; -- log 핸들링
-	local json = require "json"; -- json 핸들링
-	local corohttp = require "coro-http"; -- http 핸들링
-	local timer = require "timer"; -- 타임아웃 핸들링
-	local thread = require "thread"; -- 스레드 조정
-	local fs = require "fs"; -- 파일 시스템
-	local ffi = require "ffi"; -- C 동적 상호작용
-	local readline = require "readline"; -- 터미널 라인 읽기
-	local prettyPrint = require "pretty-print"; -- 터미널에 여러 자료형 프린팅
-	local utf8 = utf8 or require "utf8";
+	local iLogger = require "log"; _G.iLogger = iLogger; -- log 핸들링
+	local json = require "json"; _G.json = json;-- json 핸들링
+	local corohttp = require "coro-http"; _G.corohttp = corohttp;-- http 핸들링
+	local timer = require "timer"; _G.timer = timer;-- 타임아웃 핸들링
+	local thread = require "thread"; _G.thread = thread-- 스레드 조정
+	local fs = require "fs"; _G.fs = fs;-- 파일 시스템
+	local ffi = require "ffi"; _G.ffi = ffi;-- C 동적 상호작용
+	local readline = require "readline"; _G.readline = readline;-- 터미널 라인 읽기
+	local prettyPrint = require "pretty-print"; _G.prettyPrint = prettyPrint;-- 터미널에 여러 자료형 프린팅
+	local utf8 = utf8 or require "utf8"; _G.utf8 = utf; -- 유니코드8 라이브러리 불러오기
 
 	-- same with js's timeout function
 	local function runSchedule(time,func)
 		timer.setTimeout(time,coroutine.wrap(func));
 	end
+	_G.runSchedule = runSchedule;
 
 	iLogger.info("------------------------ [CLEAN  UP] ------------------------");
 	iLogger.info("luvit loaded");
@@ -56,11 +57,23 @@ xpcall(function ()
 	--#endregion : 커맨드 라인 인자 받아오기
 	--#region : 디코 모듈 임포트
 	iLogger.info("wait for discordia . . .");
-	local discordia = require "discordia"; -- 디스코드 lua 봇 모듈 불러오기
-	local discordia_class = require "discordia/libs/class"; -- 디스코드 클레스 가져오기
-	local discordia_Logger = discordia_class.classes.Logger; -- 로거부분 가져오기 (통합을 위해 수정)
-	local enums = discordia.enums; -- 디스코드 enums 가져오기
-	local client = discordia.Client(); -- 디스코드 클라이언트 만들기
+	local discordia = require "discordia"; _G.discordia = discordia; -- 디스코드 lua 봇 모듈 불러오기
+	local discordia_class = require "discordia/libs/class"; _G.discordia_class = discordia_class; -- 디스코드 클레스 가져오기
+	local discordia_Logger = discordia_class.classes.Logger; _G.discordia_Logger = discordia_Logger; -- 로거부분 가져오기 (통합을 위해 수정)
+	local enums = discordia.enums; _G.enums = enums; -- 디스코드 enums 가져오기
+	local client = discordia.Client(); _G.client = client; -- 디스코드 클라이언트 만들기
+	function discordia_Logger:log(level, msg, ...) -- 디스코드 모듈 로거부분 편집
+		if self._level < level then return end
+		msg = string.format(msg, ...);
+		local logFn =
+			(level == 3 and iLogger.debug) or
+			(level == 2 and iLogger.info) or
+			(level == 1 and iLogger.warn) or
+			(level == 0 and iLogger.error);
+		logFn(msg);
+		return msg;
+	end
+
 	local function startBot(botToken) -- 봇 시작시키는 함수
 		-- 토큰주고 시작
 		iLogger.debug("starting bot ...");
@@ -136,33 +149,25 @@ xpcall(function ()
 			);
 		end
 	end
-	function discordia_Logger:log(level, msg, ...) -- 디스코드 모듈 로거부분 편집
-		if self._level < level then return end
-		msg = string.format(msg, ...);
-		local logFn =
-			(level == 3 and iLogger.debug) or
-			(level == 2 and iLogger.info) or
-			(level == 1 and iLogger.warn) or
-			(level == 0 and iLogger.error);
-		logFn(msg);
-		return msg;
-	end
 	--#endregion : Discord Module
 
 	--#region : 부분 모듈 임포팅
-	iLogger.info("load modules . . ."); local require = function (...) print(...) return require(...) end;
-	local commandHandle = require "commandHandle"; -- 커맨드 구조 처리기
-	local cRandom = require "cRandom"; -- LUA 렌덤 핸들러
-	local strSplit = require "stringSplit"; -- 글자 분해기
-	local urlCode = require "urlCode"; -- 한글 URL 인코더/디코더
-	local makeId = require "makeId"; -- ID 만드는거
-	local qFilesystem = require "qFilesystem"; -- nt 파일 시스템
-	local makeSeed = require "makeSeed";
-	local myXMl = require "myXML";
+	iLogger.info("load modules . . .");
+	local commandHandler = require "commandHandler"; _G.commandHandler = commandHandler; -- 커맨드 구조 처리기
+	local cRandom = require "cRandom"; _G.cRandom = cRandom; -- LUA 렌덤 핸들러
+	local strSplit = require "stringSplit"; _G.strSplit = strSplit; -- 글자 분해기
+	local urlCode = require "urlCode"; _G.urlCode = urlCode; -- 한글 URL 인코더/디코더
+	local makeId = require "makeId"; _G.makeId = makeId; -- ID 만드는거
+	local makeSeed = require "makeSeed"; _G.makeSeed = makeSeed;
+	local myXMl = require "myXML"; _G.myXMl = myXMl;
 
 	-- 데이터
-	local data = require "data";
+	local data = require "data"; _G.data = data;
 	data:setJson(json);
+
+	-- 유저 데이터 핸들링
+	local userData = require "userData"; _G.userData = userData;
+	userData:setJson(json):setILogger(iLogger):setMakeId(makeId);
 
 	-- 네이버 사전
 	local naverDictEmbed = require "naverDict.embed"; -- 네이버 사전 임배드 렌더러
@@ -196,10 +201,6 @@ xpcall(function ()
 	local apexLegendsRequest = require "apexLegends.request";
 	local apexLegendsEmbed = require "apexLegends.embed";
 	apexLegendsRequest:setCoroHttp(corohttp):setJson(json):setUrlCode(urlCode);
-
-	-- 유저 데이터 핸들링
-	local userData = require "userData";
-	userData:setJson(json):setILogger(iLogger):setMakeId(makeId);
 
 	--#endregion : 부분 모듈 임포팅
 	--#region : 설정파일 불러오기
@@ -247,48 +248,18 @@ xpcall(function ()
 	local unknownReply = { -- 반응 없을때 띄움
 		"(갸우뚱?)","무슨 말이에요?","네?",":thinking: 먀?","으에?","먕?"
 	};
-	local CommandEnv = { -- 커맨드 사전에 환경을 제공하기 위한 테이블
-		["require"] = require;
-		["cRandom"] = cRandom;
-		["myXML"] = myXMl;
-		["json"] = json;
-		["client"] = client;
-		["discordia"] = discordia;
-		["enums"] = enums;
-		["iLogger"] = iLogger;
-		["makeId"] = makeId;
-		["urlCode"] = urlCode;
-		["strSplit"] = strSplit;
-		["ACCOUNTData"] = ACCOUNTData;
-		["qFilesystem"] = qFilesystem;
-		["runSchedule"] = runSchedule;
-		["ffi"] = ffi;
-		["timer"] = timer;
-		["fs"] = fs;
-		["thread"] = thread;
-		["EULA"] = EULA;
-		["corohttp"] = corohttp;
-		["data"] = data;
-		["userData"] = userData;
-		["makeSeed"] = makeSeed;
-	};
 	iLogger.info(" |- load commands from ./commands");
-	local otherCommands = {} do -- commands 폴더에서 커맨드 불러오기
-		local function loadCommandFiles(FileRoot)
-			local SetEnv = require(FileRoot);
-			return SetEnv(CommandEnv);
-		end
-		for CmdDict in qFilesystem:GetFiles("src/commands",true) do
-			local CmdDict = string.sub(CmdDict,1,-5);
-			iLogger.info(" |  |- load command dict from : src/commands/" .. CmdDict);
-			otherCommands[#otherCommands+1] = loadCommandFiles("src/commands/" .. CmdDict);
-		end
+	local otherCommands = {} -- commands 폴더에서 커맨드 불러오기
+	for dir in fs.scandirSync("commands") do
+		dir = string.sub(dir,1,-5);
+		iLogger.info(" |  |- load command dict from : commands/" .. dir .. ".lua");
+		otherCommands[#otherCommands+1] = require("commands." .. dir);
 	end
 	iLogger.info("settings loaded!");
 	-- 커맨드 색인파일 만들기
 	iLogger.info("encoding commands...");
 	local commands,commandsLen;
-	commands,commandsLen = commandHandle.encodeCommands({
+	commands,commandsLen = commandHandler.encodeCommands({
 		-- 특수기능
 		["미나초대"] = {
 			alias = {"초대링크","미나 초대","초대 링크"};
@@ -500,7 +471,7 @@ xpcall(function ()
 		-- 		return replyMsg:setContent()
 		-- 	end;
 		-- };
-	},otherCommands);
+	},unpack(otherCommands));
 	iLogger.info("command encode end!");
 	--#endregion : 반응, 프리픽스, 설정
 	--#region : 메인 파트
@@ -573,14 +544,14 @@ xpcall(function ()
 				spText = spText .. (index ~= 1 and " " or "") .. thisText;
 				text = text .. thisText;
 			end
-			local spTempCommand = commandHandle.findCommandFrom(commands,spText);
+			local spTempCommand = commandHandler.findCommandFrom(commands,spText);
 			if spTempCommand then
 				CommandName = spText;
 				rawCommandName = spText;
 				Command = spTempCommand;
 				break;
 			end
-			local tempCommand = commandHandle.findCommandFrom(commands,spText);
+			local tempCommand = commandHandler.findCommandFrom(commands,spText);
 			if tempCommand then
 				CommandName = text;
 				rawCommandName = text;
@@ -594,7 +565,7 @@ xpcall(function ()
 		-- 부분부분 다 나눠서 찾기
 		if not Command then
 			for FindPos,Text in pairs(splitCommandText) do
-				Command = commandHandle.findCommandFrom(commands,Text);
+				Command = commandHandler.findCommandFrom(commands,Text);
 				if Command then
 					CommandName = "";
 					rawCommandName = Text;
@@ -681,7 +652,7 @@ xpcall(function ()
 				replyText.content = replyText.content .. loveText;
 			end
 			replyMsg = message:reply{
-				content = commandHandle.formatReply(replyText,{
+				content = commandHandler.formatReply(replyText,{
 				    Msg = message;
 				    User = User;
 				    Channel = Channel;
