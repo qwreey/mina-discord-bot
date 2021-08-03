@@ -9,3 +9,6 @@ discordia.log
 # 데이터 파일
 data/*
 deps/*
+
+# vscode files
+.vscode/*
