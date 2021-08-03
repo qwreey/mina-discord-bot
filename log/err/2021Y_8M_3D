@@ -25,3 +25,6 @@ module 'app.repl' not found:
 .\app\term.lua:1: attempt to index global 'readline' (a nil value)
 [string "bundle:deps/require.lua"]:279: No such module 'app.term' in 'C:/Users/Administrator/Desktop/MINABot2BETA/app/init.lua'
 .\app\term.lua:1: attempt to index global 'readline' (a nil value)
+[string "bundle:deps/require.lua"]:279: No such module 'app.term' in 'C:/Users/Administrator/Desktop/MINABot2BETA/app/init.lua'
+error loading module 'app.term' from file '.\app\term.lua':
+	.\app\term.lua:9: '<name>' expected near 'end'

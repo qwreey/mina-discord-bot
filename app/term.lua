@@ -1,6 +1,13 @@
 local history = readline.History.new(); -- 히스토리 홀더 만들기
 local editor = readline.Editor.new({stdin = process.stdin.handle, stdout = process.stdout.handle, history = history});
 
+local version do
+    local file = io.popen("git log -1 --format=%cd");
+    version = file:read("*a");
+    file:close();
+    local month,day,times,year,gmt = version:match("[^ ]+ +([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+)");
+end
+
 local function buildPrompt()
     return "\27[44;30m TEST \27[0m\27[34m\27[0m ";
 end
