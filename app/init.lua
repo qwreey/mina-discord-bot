@@ -17,10 +17,14 @@
 xpcall(function ()
 	--#region : Luvit 모듈 / 주요 모듈 임포트
 
+	-- set utf-8 terminal
+	os.execute("chcp 65001");
+
 	-- set require path
 	package.path = require("app.path")(package.path);
 
 	-- load modules
+	local readline = require "readline"; _G.readline = readline;-- 터미널 라인 읽기
 	local iLogger = require "log"; _G.iLogger = iLogger; -- log 핸들링
 	local json = require "json"; _G.json = json;-- json 핸들링
 	local corohttp = require "coro-http"; _G.corohttp = corohttp;-- http 핸들링
@@ -28,9 +32,9 @@ xpcall(function ()
 	local thread = require "thread"; _G.thread = thread-- 스레드 조정
 	local fs = require "fs"; _G.fs = fs;-- 파일 시스템
 	local ffi = require "ffi"; _G.ffi = ffi;-- C 동적 상호작용
-	local readline = require "readline"; _G.readline = readline;-- 터미널 라인 읽기
-	local prettyPrint = require "pretty-print"; _G.prettyPrint = prettyPrint;-- 터미널에 여러 자료형 프린팅
 	local utf8 = utf8 or require "utf8"; _G.utf8 = utf; -- 유니코드8 라이브러리 불러오기
+	local prettyPrint = require "pretty-print"; _G.prettyPrint = prettyPrint;-- 터미널에 여러 자료형 프린팅
+	local term = require "app.term"; -- terminal settings
 
 	-- same with js's timeout function
 	local function runSchedule(time,func)
@@ -565,77 +569,7 @@ xpcall(function ()
 	--#endregion : 메인 파트
 	--#region : 커맨드 창 인풋 읽기
 	if not RunOption.Background then -- 백그라운드이면 불러오지 말기
-		local history = readline.History.new(); -- 히스토리 홀더 만들기
-		---@diagnostic disable-next-line
-		local editor = readline.Editor.new({stdin = process.stdin.handle, stdout = process.stdout.handle, history = history});
-		-- 리드 라인 에디터 만들기
-		prettyPrint.print = iLogger.cmd; -- 프리티 프린터에 로거 함수 넘기기
-		local runEnv = { -- 명령어 실행 환경 만들기
-			runSchedule = runSchedule;
-		};
-		runEnv.iLogger,runEnv.json,runEnv.corohttp,runEnv.timer,
-		runEnv.thread,runEnv.fs,runEnv.ffi,runEnv.readline,runEnv.prettyPrint =
-			iLogger,json,corohttp,timer,thread,fs,ffi,readline,prettyPrint;
-		function runEnv.clear() -- 화면 지우기 명령어
-			os.execute("cls");
-			return "screen clear!";
-		end
-		function runEnv.exit() -- 봇 끄기
-			os.exit(100);
-		end
-		function runEnv.reload() -- 다시 로드
-			os.execute("cls");
-			os.exit(101);
-		end
-		runEnv.restart = runEnv.reload;
-		function runEnv.help() -- 도움말
-			return {
-				clear = "clear screen";
-				exit = "kill luvit/cmd";
-				reload = "reload code";
-				restart = "same with reload";
-				help = "show this msg";
-				commit = "commit and push, eng only";
-				getUserData = "get user data table";
-				saveUserData = "save user data table";
-				pull = "pull codes from github";
-			};
-		end
-		function runEnv.getUserData(id)
-			return userData:loadData(id);
-		end
-		function runEnv.saveUserData(id)
-			return userData:saveData(id);
-		end
-		function runEnv.commit(arg)
-			os.execute("commit.cmd " .. arg);
-		end
-		function runEnv.pull()
-			os.execute("pull.cmd");
-		end
-		setmetatable(runEnv,{ -- _G (글로벌) 과 연결
-			__index = _G;
-			__newindex = _G;
-		});
-		-- 라인 읽기 함수
-		local function onLine(err, line, ...)
-			if line then
-				editor:readLine("", onLine); -- 에디터가 개속 읽게 하기
-				local func = (loadstring("return " .. line) or loadstring(line))
-				local envfunc = setfenv(func or function ()
-					error("Un error occur on loadstring");
-				end,runEnv) -- 명령어 분석
-				local pass,dat = pcall(envfunc); -- 보호 모드로 명령어를 실행
-				if not pass then -- 오류 나면
-					iLogger.error("LUA | error : " .. dat);
-				else
-					prettyPrint.prettyPrint(dat);
-				end
-			else
-				process:exit(); ---@diagnostic disable-line
-			end
-		end
-		editor:readLine("", onLine); -- 라인 읽기 시작
+		term();
 	end
 	--#endregion : 커맨드 창 인풋 읽기
 end,function (err)

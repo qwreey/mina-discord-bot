@@ -11,6 +11,5 @@ return function (path)
     add(".\\app\\?.lua");
     add(".\\bin\\?.lua");
 
-    print(path)
     return path;
 end;
