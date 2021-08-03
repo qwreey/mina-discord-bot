@@ -1,5 +1,7 @@
 local module = {};
 
+-- TODO: 코맨트 무시 필요, !CDATA 읽기 수정 필요
+
 local tremove = table.remove
 local tinsert = table.insert
 
