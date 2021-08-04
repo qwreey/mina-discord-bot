@@ -25,6 +25,7 @@ function module.get(clientData)
     local time = os.time();
     local today = os.date("*t",time);
     local yesterday = os.date("*t",time - dayInSec);
+    print(today,"\n\n",yesterday);
 
     local todayStr = tostring(today.year) do;
         local tmp;

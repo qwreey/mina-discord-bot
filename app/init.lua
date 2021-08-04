@@ -22,6 +22,7 @@ xpcall(function ()
 
 	-- set require path
 	package.path = require("app.path")(package.path);
+	_G.require = require;
 
 	-- load modules
 	local readline = require "readline"; _G.readline = readline;-- 터미널 라인 읽기

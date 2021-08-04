@@ -8,7 +8,7 @@ return {
         alias = {"코로나 상황","코로나 확진자","코로나 통계","오늘자 코로나","코로나 정보"};
         reply = "잠시만 기달려주세요... (확인중)";
         func = function(replyMsg,message,args,Content)
-            local body = covid19Request.get(ACCOUNTData)[2]
+            local body = covid19Request.get(ACCOUNTData)[2];
             local dat = body:getFirstChildByTag("body"):getFirstChildByTag("items");
             local today = dat[1];
             local yesterday = dat[2];
