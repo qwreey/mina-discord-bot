@@ -44,10 +44,12 @@ local function runLog(thisName,thisLevel,color,debugInfo,...)
 	);
 	--io.write(text .. "\n");
 	local buildPrompt = _G.buildPrompt;
-	if buildPrompt then
-		io.write("\27[2K\r",text,"\n",buildPrompt());
+	local str = buildPrompt and {"\27[2K\r",text,"\n",buildPrompt()} or {text,"\n"};
+	local prettyPrint = _G.prettyPrint;
+	if prettyPrint then
+		prettyPrint.stdout:write(str);
 	else
-		io.write(text,"\n");
+		io.write(unpack(str));
 	end
 
 	-- 아웃풋 파일에 집어넣기

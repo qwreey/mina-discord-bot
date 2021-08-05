@@ -25,6 +25,7 @@ xpcall(function ()
 	_G.require = require;
 
 	-- load modules
+	local prettyPrint = require "pretty-print"; _G.prettyPrint = prettyPrint;-- 터미널에 여러 자료형 프린팅
 	local readline = require "readline"; _G.readline = readline;-- 터미널 라인 읽기
 	local iLogger = require "log"; _G.iLogger = iLogger; -- log 핸들링
 	local json = require "json"; _G.json = json;-- json 핸들링
@@ -34,7 +35,6 @@ xpcall(function ()
 	local fs = require "fs"; _G.fs = fs;-- 파일 시스템
 	local ffi = require "ffi"; _G.ffi = ffi;-- C 동적 상호작용
 	local utf8 = utf8 or require "utf8"; _G.utf8 = utf; -- 유니코드8 라이브러리 불러오기
-	local prettyPrint = require "pretty-print"; _G.prettyPrint = prettyPrint;-- 터미널에 여러 자료형 프린팅
 	local term = require "app.term"; -- terminal settings
 
 	-- same with js's timeout function

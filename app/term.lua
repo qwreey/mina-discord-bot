@@ -40,15 +40,20 @@ local function buildLine(color,text)
 end
 _G.buildLine = buildLine;
 
+local lastLine;
 local function buildPrompt()
     local str = "";
 
-    str = str .. buildLine(colors.blue,"TestBuild");
-    str = str .. buildLine(colors.yellow," " .. version);
+    if lastLine then
+        str = "❯ ";
+    else
+        str = str .. buildLine(colors.blue,"APP");
+        str = str .. buildLine(colors.yellow," " .. version);
 
-    -- set end point
-    str = str .. ("\27[0m\27[%dm\27[0m "):format(lastColor[1]);
-    lastColor = nil;
+        -- set end point
+        str = str .. ("\27[0m\27[%dm\27[0m "):format(lastColor[1]);
+        lastColor = nil;
+    end
     return str;
 end
 _G.buildPrompt = buildPrompt;
@@ -103,23 +108,51 @@ setmetatable(runEnv,{ -- wtf?? lua can use metable env... cuz lua's global is a 
 });
 -- 라인 읽기 함수
 return function ()
-    local last = "";
     local function onLine(err, line, ...)
         if line then
-            editor:readLine(buildPrompt(), onLine); -- 에디터가 개속 읽게 하기
-            local func,err = (loadstring("return " .. line) or loadstring(line));
-            -- if err:match "'<eof>'$" then
-            --     last = 
-            -- end
+
+            -- merge last line (for read multi lines)
+            if lastLine then
+                line = lastLine .. "\n" .. line;
+            end
+
+            -- if it is start with .; it is console command!
+            local cmdMode = line:sub(1,1) == ".";
+            if cmdMode then
+                local _,_,returncode = os.execute(line:sub(2,-1));
+                prettyPrint.stdout:write{" → ",prettyPrint.dump(returncode),"\n"};
+            end
+
+            -- first, decoding lua
+            local func,err = loadstring("return " .. line);
+            if not func then
+                func,err = loadstring(line);
+            end
+
+            -- lua wants more line, bypass running
+            if err and err:match "'<eof>'$" then
+                if not lastLine then
+                    prettyPrint.stdout:write{"\27[92mMulti line mode . . .\n\27[32m","❯ ",line,"\n"};
+                end
+                lastLine = line;
+            else
+                lastLine = nil;
+            end
+
+            -- continue read lines
+            editor:readLine(buildPrompt(), onLine);
+            if lastLine or cmdMode then
+                return;
+            end
 
             local envfunc = setfenv(func or function ()
-                error("Un error occur on loadstring");
+                error(tostring(err));
             end,runEnv) -- 명령어 분석
             local pass,dat = pcall(envfunc); -- 보호 모드로 명령어를 실행
             if not pass then -- 오류 나면
                 iLogger.error("LUA | error : " .. dat);
             else
-                io.write("\27[2K\r",prettyPrint.dump(dat),"\n",buildPrompt());
+                prettyPrint.stdout:write{"\27[2K\r → ",prettyPrint.dump(dat),"\n",buildPrompt()};
             end
         else
             process:exit();
