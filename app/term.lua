@@ -66,6 +66,7 @@ function runEnv.clear() -- 화면 지우기 명령어
     return "screen clear!";
 end
 function runEnv.exit() -- 봇 끄기
+    prettyPrint.stdout:write{"\27[2K\r\27[",tostring(colors.red[1]),"m[ PROCESS STOPPED ]\27[0m\n"};
     os.exit(100);
 end
 function runEnv.reload() -- 다시 로드
