@@ -18,7 +18,7 @@ xpcall(function ()
 	--#region : Luvit 모듈 / 주요 모듈 임포트
 
 	-- set utf-8 terminal
-	os.execute("chcp 65001");
+	os.execute("chcp 65001>NUL");
 
 	-- set require path
 	package.path = require("app.path")(package.path);
