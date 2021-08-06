@@ -19,6 +19,7 @@ xpcall(function ()
 
 	-- set utf-8 terminal
 	os.execute("chcp 65001>NUL");
+	os.execute("title DISCORD BOT");
 
 	-- set require path
 	package.path = require("app.path")(package.path);
