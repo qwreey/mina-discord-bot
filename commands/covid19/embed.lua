@@ -1,5 +1,16 @@
 local covid19Embed = {};
 
+local function makeError()
+    return {
+        title = ":/ 아직 통계가 없어요!";
+        description = "혹시 새벽 시간인가요? 새벽 시간에는 데이터가 아직 모이지 않아서 불러올 수 없어요!\n또는 알 수 없는 오류가 발생했을수도 있어요!\n";
+        color = 16711680;
+        footer = {
+            text = ":cry:";
+        };
+    };
+end
+
 -- class : youtubeEmbed
 -- embed youtube search with youtube api's returns
 -- it returns table for discordia's embed system
@@ -21,6 +32,10 @@ local view = {
 
 function covid19Embed:embed(today,yesterday)
     local fields = {};
+
+    if (not yesterday) or (not today) then
+        return makeError();
+    end
 
     for _,v in ipairs(view) do
         local index = v[1];
