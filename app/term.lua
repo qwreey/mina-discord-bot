@@ -67,11 +67,11 @@ function runEnv.clear() -- 화면 지우기 명령어
 end
 function runEnv.exit() -- 봇 끄기
     prettyPrint.stdout:write{"\27[2K\r\27[",tostring(colors.red[1]),"m[ PROCESS STOPPED ]\27[0m\n"};
-    os.exit(100);
+    os.exit(exitCodes.exit);
 end
 function runEnv.reload() -- 다시 로드
     os.execute("cls");
-    os.exit(101);
+    os.exit(exitCodes.reload);
 end
 function runEnv.print(...)
     io.write("\27[2K\r");
