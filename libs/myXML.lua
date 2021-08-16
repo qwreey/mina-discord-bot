@@ -6,7 +6,7 @@ local tremove = table.remove
 local tinsert = table.insert
 
 local item = {}
-item.__index = item;
+item.__index = item
 
 function item.isItem(thing)
     local ty = type(thing)
@@ -37,14 +37,14 @@ function item:removeValue(value)
     for i,v in pairs(self) do
         if v == value then
             if ty ~= "string" then
-                value.__parent = nil;
-                value.__pindex = nil;
+                value.__parent = nil
+                value.__pindex = nil
             end
             tremove(self, i)
-            return true;
+            return true
         end
     end
-    return false;
+    return false
 end
 
 function item:insert(index,value)
@@ -92,7 +92,7 @@ end
 !autoDoc!]]
 function item:getFirstChildByTag(tag)
     if type(tag) ~= "string" then
-        error(("[ERROR] Xml.Item : getFirstChildByTag method arg 1 'tag' must be a string, but got %s"):format(type(value)))
+        error(("[ERROR] Xml.Item : getFirstChildByTag method arg 1 'tag' must be a string, but got %s"):format(type(tag)))
     end
     for i,v in ipairs(self) do
         if v.tag == tag then
@@ -110,7 +110,7 @@ end
 !autoDoc!]]
 function item:getChildrenByTag(tag)
     if type(tag) ~= "string" then
-        error(("[ERROR] Xml.Item : getFirstChildByTag method arg 1 'tag' must be a string, but got %s"):format(type(value)))
+        error(("[ERROR] Xml.Item : getFirstChildByTag method arg 1 'tag' must be a string, but got %s"):format(type(tag)))
     end
     local t,c = {},0
     for i,v in ipairs(self) do
@@ -153,8 +153,8 @@ function item:destroy()
         p:removeValue(self)
     end
 
-    self.__parent = nil;
-    self.__pindex = nil;
+    self.__parent = nil
+    self.__pindex = nil
 
     setmetatable(self,nil)
 end
@@ -247,7 +247,7 @@ local function strToOption(str)
         local qtStart,_ = sfind(str,"\"",nameEnd+1)
         local qtEnd,_ = sfind(str,"\"",qtStart+1)
         option[name] = toLuaStr(ssub(str,qtStart+1,qtEnd-1))
-        str = ssub(str,qtEnd+1,-1);
+        str = ssub(str,qtEnd+1,-1)
     end
     return option
 end
@@ -264,7 +264,7 @@ local function optionToStr(option)
     for i,v in pairs(option) do
         str = optionFormat:format(str,i,toXmlStr(v))
     end
-    return ssub(str,1,-2);
+    return ssub(str,1,-2)
 end
 module.optionToStr = optionToStr
 
@@ -275,7 +275,7 @@ function module.xmlToItem(xml)
     local stack = {}
     local now = main
     while true do
-        local posStart,posEnd,prefix,tag,option,suffix = sfind(xml,tagFind);
+        local posStart,posEnd,prefix,tag,option,suffix = sfind(xml,tagFind)
         if posStart == nil then
             break
         end
@@ -305,8 +305,8 @@ function module.xmlToItem(xml)
         xml = string.sub(xml,posEnd+1,-1)
     end
     setmetatable(main,nil)
-    main.tag = nil;
-    main.option = nil;
+    main.tag = nil
+    main.option = nil
     return main
 end
 

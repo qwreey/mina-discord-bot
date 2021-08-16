@@ -115,20 +115,26 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 	elseif (Text == "!!!pull" or Text == "!!!download") then
 		iLogger.info("Download codes ...");
 		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . .');
+		_G.livereloadEnabled = false;
 		os.execute("git -C src pull"); -- git 에서 변동사항 가져와 적용하기
+		_G.livereloadEnabled = true;
 		msg:setContent('> 적용중 . . . (3초 내로 완료됩니다)');
 		reloadBot();
 		os.exit(exitCodes.reload); -- 다운로드 (리로드)
 	elseif (Text == "!!!push" or Text == "!!!upload") then
 		iLogger.info("Upload codes ...");
 		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 코드를 업로드중 . . .');
+		_G.livereloadEnabled = false;
 		os.execute("git -C src add .&&git -C src commit -m 'MINA : Upload in main code (bot.lua)'&&git -C src push");
+		_G.livereloadEnabled = true;
 		msg:setContent('> 완료!');
 		return; -- 업로드
 	elseif (Text == "!!!sync") then
 		iLogger.info("Sync codes ...");
 		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 동기화중 . . . (8초 내로 완료됩니다)');
+		_G.livereloadEnabled = false;
 		os.execute('git -C src add .&&git -C src commit -m "MINA : Sync in main code (Bot.lua)"&&git -C src pull&&git -C src push');
+		_G.livereloadEnabled = true;
 		msg:setContent('> 적용중 . . . (3초 내로 완료됩니다)');
 		reloadBot();
 		os.exit(exitCodes.reload); -- 동기화 (리로드)
@@ -558,5 +564,6 @@ startBot(ACCOUNTData.botToken); -- 봇 켜기
 if not RunOption.Background then -- 백그라운드 서비스가 아니면
 	term(); -- 커맨드 창 인풋 읽기
 end
+_G.livereloadEnabled = true;
 require("app.livereload");
 --#endregion : 메인 파트
