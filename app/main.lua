@@ -560,10 +560,10 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 		});
 	end
 end);
-startBot(ACCOUNTData.botToken); -- 봇 켜기
-if not RunOption.Background then -- 백그라운드 서비스가 아니면
-	term(); -- 커맨드 창 인풋 읽기
+
+startBot(ACCOUNTData.botToken); -- init bot (init discordia)
+if not RunOption.Background then -- check this service is not on background; if this service is on background; ignore calling terminal REPL system
+	term(); -- loads terminal read - execute - print - loop (AKA REPL) system; it will allows us make debug easy
 end
-_G.livereloadEnabled = true;
-require("app.livereload");
+require("app.livereload"); -- loads livereload system; it will make uv event and take file changed signal
 --#endregion : 메인 파트
