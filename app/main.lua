@@ -565,5 +565,6 @@ startBot(ACCOUNTData.botToken); -- init bot (init discordia)
 if not RunOption.Background then -- check this service is not on background; if this service is on background; ignore calling terminal REPL system
 	term(); -- loads terminal read - execute - print - loop (AKA REPL) system; it will allows us make debug easy
 end
+_G.livereloadEnabled = true; -- enable live reload
 require("app.livereload"); -- loads livereload system; it will make uv event and take file changed signal
 --#endregion : 메인 파트
