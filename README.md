@@ -1,3 +1,5 @@
+this project are no longer maintained; there are many bugs are exist; we should fix that!!
+
 # MINA_DiscordBot
 
 실험 / 재미 / 교육 (공부) 목적으로 만들어진 프로젝트 미나 디스코드 봇  
