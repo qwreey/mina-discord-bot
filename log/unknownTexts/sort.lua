@@ -1,4 +1,4 @@
-local logFile = io.open("log/unknown/raw.txt");
+local logFile = io.open("log/unknownTexts/raw.txt");
 local log = logFile:read("a");
 logFile:close();
 
@@ -10,7 +10,7 @@ string.gsub(log,"(.-)\n",function(this)
     return;
 end)
 
-logFile = io.open("log/sorted.txt","a+");
+logFile = io.open("log/unknownTexts/sorted.txt","a+");
 for str,much in pairs(tb) do
     local p = ("[%d] : %s"):format(much,str);
     print(p);

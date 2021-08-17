@@ -57,27 +57,29 @@
 	안녕 하면 시간까지 말한다
 ]]
 
-local loveRang = function (min,max)
-	return function ()
-		return cRandom(min,max);
-	end;
-end;
-local defaultLove = loveRang(2,8);
-local rmLove = loveRang(-2,-8);
-
 return {
 	-------------------------------------------------
 	-- 특수 반응 (함수를 쓰거나 여러 의도가 담긴 반응)
 	-------------------------------------------------
+	["시간"] = {
+		alias = {
+			"안녕 몇시야","안녕 지금 시간 알려줘","지금 시간","몇시야",
+			"안녕 몇시야?","몇시야?","지금시간","알려줘 시간","what time is",
+			"what time is?","지금은 몇시","지금은 몇시?"
+		};
+		reply = "안뇽! 지금 시간은 {#:T+%I:#}시 {#:T+%M:#}분이야!";
+		love = defaultLove;
+	};
 	["나이"] = {
 		func = function (_,message)
-			local Year = tostring(math.floor((10000*(os.time() - ACCOUNTData.BirthdayDay) / 31536000))/10000);
-			message:reply(("미나는 %s 살이에요"):format(tostring(Year)));
+			--local Year = tostring(math.floor((10000*(os.time() - ACCOUNTData.BirthdayDay) / 31536000))/10000);
+			local Day = math.floor((os.time() - ACCOUNTData.BirthdayDay) / 86400);
+			message:reply(("미나는 %s 일 살았어요"):format(tostring(Day)));
 		end;
 		love = defaultLove;
 	};
 	["테스트"] = {
-		reply = "```lua\ntry(main):catch(\n\tfunction(err)\n\tlocal file = io.open(\"log/error.log\",\"w\");\n\tfile:write(err);\n\treturn true;\nend);\n```";
+		reply = "```lua\ntry(main):catch(function(err)\n\tlocal file = io.open(\"log/error.log\",\"w\");\n\tfile:write(err);\n\tfile:close();\n\treturn true;\nend);\n```";
 		love = defaultLove;
 	};
 	["약관"] = {
@@ -87,7 +89,7 @@ return {
 	};
 	["몸무계"] = {
 		alias = {"무계","얼마나무거워"};
-		reply = "11MB";
+		reply = "33.6MB";
 		love = defaultLove;
 	};
 	["검열"] = {
