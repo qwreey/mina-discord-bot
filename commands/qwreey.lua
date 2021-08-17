@@ -57,14 +57,6 @@
 	안녕 하면 시간까지 말한다
 ]]
 
-local loveRang = function (min,max)
-	return function ()
-		return cRandom(min,max);
-	end;
-end;
-local defaultLove = loveRang(2,8);
-local rmLove = loveRang(-2,-8);
-
 return {
 	-------------------------------------------------
 	-- 특수 반응 (함수를 쓰거나 여러 의도가 담긴 반응)
@@ -76,6 +68,7 @@ return {
 			"what time is?","지금은 몇시","지금은 몇시?"
 		};
 		reply = "안뇽! 지금 시간은 {#:T+%I:#}시 {#:T+%M:#}분이야!";
+		love = defaultLove;
 	};
 	["나이"] = {
 		func = function (_,message)

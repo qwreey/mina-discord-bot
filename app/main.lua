@@ -214,6 +214,21 @@ local prefixReply = { -- 그냥 미나야 하면 답
 local unknownReply = { -- 반응 없을때 띄움
 	"(갸우뚱?)","무슨 말이에요?","네?","으에?"--,"먕?",":thinking: 먀?"
 };
+do -- 글로벌에 loveRang 함수 추가
+	local cache = {};
+	_G.loveRang = function (min,max)
+		local key = ("%dx%d"):format(min,max);
+		local incache = cache[key];
+		if incache then return incache; end
+		local new = function ()
+			return cRandom(min,max);
+		end;
+		cache[key] = new;
+		return new;
+	end;
+	_G.defaultLove = loveRang(2,8);
+	_G.rmLove = loveRang(-2,-8);
+end
 iLogger.info(" |- load commands from ./commands");
 local otherCommands = {} -- commands 폴더에서 커맨드 불러오기
 for dir in fs.scandirSync("commands") do
