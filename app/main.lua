@@ -16,6 +16,9 @@
 ]]
 --#region : Luvit 모듈 / 주요 모듈 임포트
 
+-- set title of terminal
+os.execute("title DISCBOT");
+
 -- set utf-8 terminal
 do
 	local chcpStatus do
@@ -28,9 +31,6 @@ do
 		os.execute("chcp 65001>NUL");
 	end
 end
-
--- set title of terminal
-os.execute("title DISCBOT");
 
 -- set require path
 package.path = require("app.path")(package.path);
