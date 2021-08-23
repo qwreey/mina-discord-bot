@@ -120,7 +120,10 @@ return function ()
             -- if it is start with .; it is console command!
             local cmdMode = line:sub(1,1) == ".";
             if cmdMode then
+                local lastStatus = _G.livereloadEnabled;
+                _G.livereloadEnabled = false;
                 local _,_,returncode = os.execute(line:sub(2,-1));
+                _G.livereloadEnabled = lastStatus;
                 prettyPrint.stdout:write{" → ",prettyPrint.dump(returncode),"\n"};
             end
 
