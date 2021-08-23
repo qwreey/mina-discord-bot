@@ -30,7 +30,7 @@ do
 end
 
 -- set title of terminal
-os.execute("title DISCORD BOT");
+os.execute("title DISCBOT");
 
 -- set require path
 package.path = require("app.path")(package.path);
