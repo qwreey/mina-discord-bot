@@ -242,19 +242,6 @@ iLogger.info("encoding commands...");
 local commands,commandsLen;
 commands,commandsLen = commandHandler.encodeCommands({
 	-- 특수기능
-	["미나초대"] = {
-		alias = {"초대링크","미나 초대","초대 링크"};
-		reply = {"쨘!"};
-		func = function(replyMsg,message,args,Content)
-			replyMsg:setEmbed {
-				color = 10026831;
-				fields = {{
-					name = "아래의 버튼을 누르면 미나를 다른 서버에 추가 할 수 있어요!";
-					value = ("[초대하기](%s)"):format(ACCOUNTData.InvLink);
-				}};
-			};
-		end;
-	};
 	["호감도"] = {
 		reply = function (message,args,c)
 			if message.author.id == "480318544693821450" then
@@ -379,21 +366,25 @@ iLogger.info("command encode end!");
 --#region : 메인 파트
 iLogger.info("----------------------- [SET UP BOT ] -----------------------");
 client:on('messageCreate', function(message) -- 메시지 생성됨
+
+	-- get base information from message object
 	local User = message.author;
 	local Text = message.content;
 	local Channel = message.channel;
 	local IsDm = Channel.type == enums.channelType.private;
 
-	-- 유저가 봇인경우
+	-- check user that is bot; if it is bot, then return (ignore call)
 	if User.bot then
 		return;
 	end
-	-- 하드코딩된 관리 명령어)
+
+	-- run admin command if exist
 	if Admins[User.id] then
 		adminCmd(Text,message);
 	end
 
-	-- 명령어
+	-- LOCAL VARIABLES
+	-- Text : 들어온 텍스트 (lower cased)
 	-- prefix : 접두사
 	-- rawCommandText : 접두사 뺀 커맨드 전채
 	-- splitCommandText : rawCommandText 를 \32 로 분해한 array
@@ -402,6 +393,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	-- | 찾은 후 (for 루프 뒤)
 	-- Command : 커맨드 개체 (찾은경우)
 
+	-- make sure text is lower case
 	Text = string.lower(Text);
 
 	-- 접두사 구문 분석하기
