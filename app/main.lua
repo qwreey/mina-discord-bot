@@ -399,8 +399,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	-- 접두사 구문 분석하기
 	local prefix;
 	for _,nprefix in pairs(prefixs) do
-		-- 만약 접두사와 글자가 일치하는경우 반응 달기
-		if nprefix == Text then
+		if nprefix == Text then -- 만약 접두사와 글자가 일치하는경우 반응 달기
 			message:reply {
 				content = prefixReply[cRandom(1,#prefixReply)];
 				reference = {message = message, mention = false};
@@ -413,9 +412,10 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 			break;
 		end
 	end
-	if not prefix then
+	if (not prefix) and (not IsDm) then
 		return;
 	end
+	prefix = "";
 
 	-- 알고리즘 작성
 	-- 커맨드 찾기
@@ -489,15 +489,15 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 		(love > 0 and ("\n` ❤ + %d `"):format(love)) or -- 만약 love 가 + 면
 		(love < 0 and ("\n` 💔 - %d `"):format(math.abs(love))) -- 만약 love 가 - 면
 	) or "";
-
 	local func = Command.func; -- 커맨드 함수 가져오기
 	local replyText = Command.reply; -- 커맨드 리플(답변) 가져오기
 	local rawArgs,args; -- 인수 (str,띄어쓰기 단위로 나눔 array)
-	replyText = (
+	replyText = ( -- reply 하나 가져오기
 		(type(replyText) == "table") -- 커맨드 답변이 여러개면 하나 뽑기
 		and (replyText[cRandom(1,#replyText)])
 		or replyText
 	);
+
 	-- 만약 호감도가 있으면 올려주기
 	if love then
 		local thisUserDat = userData:loadData(User.id);
@@ -508,35 +508,34 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 			loveText = eulaComment_love;
 		end
 	end
+
+	-- 함수 실행을 위한 콘탠츠 만들기
+	local contents = {
+		rawCommandText = rawCommandText; -- 접두사를 지운 커맨드 스트링
+		prefix = prefix; -- 접두사(확인된)
+		rawArgs = rawArgs; -- args 를 str 로 받기 (직접 분석용)
+		rawCommandName = rawCommandName;
+		self = Command;
+		commandName = CommandName;
+		saveUserData = function ()
+			return userData:saveData(User.id);
+		end;
+		getUserData = function ()
+			return userData:loadData(User.id);
+		end;
+		loveText = loveText;
+	};
+
 	-- 만약 답변글이 함수면 (지금은 %s 시에요 처럼 쓸 수 있도록) 실행후 결과 가져오기
 	if type(replyText) == "function" then
 		rawArgs = string.sub(rawCommandText,#CommandName+2,-1);
 		args = strSplit(rawArgs,"\32");
-		replyText = replyText(
-			message,args,{
-				rawCommandText = rawCommandText; -- 접두사를 지운 커맨드 스트링
-				prefix = prefix; -- 접두사(확인된)
-				rawArgs = rawArgs; -- args 를 str 로 받기 (직접 분석용)
-				rawCommandName = rawCommandName;
-				self = Command;
-				commandName = CommandName;
-				saveUserData = function ()
-					return userData:saveData(User.id);
-				end;
-				getUserData = function ()
-					return userData:loadData(User.id);
-				end;
-			}
-		);
+		contents.rawArgs = rawArgs;
+		replyText = replyText(message,args,contents);
 	end
-	--replyText = (
-	--	type(replyText) == "function" and
-	--	replyText(message,args,{
-	--	}) or replyText
-	--);
+
 	local replyMsg; -- 답변 오브잭트를 담을 변수
-	if replyText then -- 만약 답변글이 있으면
-		-- 답변 주기
+	if replyText then -- 만약 답변글이 있으면 답변 주기
 		local replyTextType = type(replyText);
 		if replyTextType == "string" then
 			replyText = replyText .. loveText;
@@ -552,19 +551,15 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 			reference = {message = message, mention = false};
 		};
 	end
+
+	-- 명령어에 담긴 함수를 실행합니다
 	-- func (replyMsg,message,args,EXTENDTable);
 	if func then -- 만약 커맨드 함수가 있으면
 		-- 커맨드 함수 실행
 		rawArgs = rawArgs or string.sub(rawCommandText,#CommandName+2,-1);
+		contents.rawArgs = rawArgs;
 		args = strSplit(rawArgs,"\32");
-		func(replyMsg,message,args,{
-			rawCommandText = rawCommandText; -- 접두사를 지운 커맨드 스트링
-			prefix = prefix; -- 접두사(확인된)
-			rawArgs = rawArgs; -- args 를 str 로 받기 (직접 분석용)
-			rawCommandName = rawCommandName;
-			self = Command;
-			loveText = loveText;
-		});
+		func(replyMsg,message,args,contents);
 	end
 end);
 

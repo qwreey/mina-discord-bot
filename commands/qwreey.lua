@@ -74,9 +74,24 @@ return {
 			};
 		end;
 	};
+	["뽑기"] = {
+		alias = {"추첨","뽑아","추첨해","골라","골라봐"};
+		reply = "결과는?! **(두구두구두구두구)**";
+		func = function(replyMsg,message,args,Content)
+			runSchedule(2000,function ()
+				local items = {};
+				for str in Content.rawArgs:gmatch("[^,]+") do
+					table.insert(items,str);
+				end
+				replyMsg:setContent(("%s (이)가 뽑혔어요!"):format(
+					tostring(items[cRandom(1,#items)]))
+				);
+			end);
+		end;
+	};
 	["시간"] = {
 		alias = {
-			"안녕 몇시야","안녕 지금 시간 알려줘","지금 시간","몇시야",
+			"안녕 몇시야","안녕 지금 시간 알려줘","지금 시간","몇시야","몇시",
 			"안녕 몇시야?","몇시야?","지금시간","알려줘 시간","what time is",
 			"what time is?","지금은 몇시","지금은 몇시?"
 		};
