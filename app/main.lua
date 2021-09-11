@@ -415,7 +415,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	if (not prefix) and (not IsDm) then
 		return;
 	end
-	prefix = "";
+	prefix = prefix or "";
 
 	-- 알고리즘 작성
 	-- 커맨드 찾기
