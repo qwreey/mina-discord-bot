@@ -525,7 +525,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 		end;
 		loveText = loveText;
 	};
-
+	
 	-- 만약 답변글이 함수면 (지금은 %s 시에요 처럼 쓸 수 있도록) 실행후 결과 가져오기
 	if type(replyText) == "function" then
 		rawArgs = string.sub(rawCommandText,#CommandName+2,-1);

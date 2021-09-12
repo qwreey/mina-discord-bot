@@ -75,7 +75,7 @@ return {
 		end;
 	};
 	["뽑기"] = {
-		alias = {"추첨","뽑아","추첨해","골라","골라봐"};
+		alias = {"선택해","선택","추첨","뽑아","추첨해","골라","골라봐"};
 		reply = "결과는?! **(두구두구두구두구)**";
 		func = function(replyMsg,message,args,Content)
 			runSchedule(2000,function ()
