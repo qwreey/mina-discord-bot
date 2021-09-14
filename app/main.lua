@@ -57,11 +57,10 @@ end
 _G.runSchedule = runSchedule;
 
 iLogger.info("------------------------ [CLEAN  UP] ------------------------");
-iLogger.info("luvit loaded");
 --#endregion : Luvit 모듈 / 주요 모듈 임포트
 --#region : 커맨드 라인 인자 받아오기
 local RunOption = {}; -- 인자 옵션 받는곳
-iLogger.info("find command line args . . .");
+iLogger.info("find command line args ...");
 for i,v in pairs(args) do ---@diagnostic disable-line
 	if i > 1 then
 		iLogger.info((" |- args[%d] : %s"):format(i-1,v));
@@ -74,7 +73,7 @@ if RunOption["Background"] then
 end
 --#endregion : 커맨드 라인 인자 받아오기
 --#region : 디코 모듈 임포트
-iLogger.info("wait for discordia . . .");
+iLogger.info("wait for discordia ...");
 local discordia = require "discordia"; _G.discordia = discordia; -- 디스코드 lua 봇 모듈 불러오기
 local discordia_class = require "discordia/libs/class"; _G.discordia_class = discordia_class; -- 디스코드 클레스 가져오기
 local discordia_Logger = discordia_class.classes.Logger; _G.discordia_Logger = discordia_Logger; -- 로거부분 가져오기 (통합을 위해 수정)
@@ -100,7 +99,7 @@ local function startBot(botToken) -- 봇 시작시키는 함수
 	return;
 end
 local function reloadBot() -- 봇 종료 함수
-	iLogger.info("Try restarting ...");
+	iLogger.info("try restarting ...");
 	client:setGame("재시작중...");
 end
 local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
@@ -151,7 +150,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 end
 --#endregion : Discord Module
 --#region : 부분 모듈 임포팅
-iLogger.info("load modules . . .");
+iLogger.info("load modules ...");
 local commandHandler = require "commandHandler"; _G.commandHandler = commandHandler; -- 커맨드 구조 처리기
 local cRandom = require "cRandom"; _G.cRandom = cRandom; -- LUA 렌덤 핸들러
 local strSplit = require "stringSplit"; _G.strSplit = strSplit; -- 글자 분해기
@@ -170,7 +169,7 @@ userData:setJson(json):setILogger(iLogger):setMakeId(makeId);
 
 --#endregion : 부분 모듈 임포팅
 --#region : 설정파일 불러오기
-iLogger.info("load files . . .");
+iLogger.info("load files ...");
 local ACCOUNTData = data.load("data/ACCOUNT.json"); _G.ACCOUNTData = ACCOUNTData;
 local loveLeaderstats = data.load("data/loveLeaderstats.json");
 local EULA = data.loadRaw("data/EULA.txt"); _G.EULA = EULA;
@@ -178,7 +177,7 @@ local EULA = data.loadRaw("data/EULA.txt"); _G.EULA = EULA;
 --#region : 반응, 프리픽스, 설정, 커맨드 등등
 iLogger.info("---------------------- [LOAD SETTINGS] ----------------------");
 iLogger.info("load settings ...");
-iLogger.info(" |- admins, prefixs, prefix reply, unknown reply, command env");
+iLogger.info(" |- load admins, prefixs, prefix reply, unknown reply, command env");
 local disableDm = "이 반응은 DM 에서 사용 할 수 없어요! 서버에서 이용해 주세요";
 local eulaComment_love = "\n" .. -- 약관 동의 안할때 호감도 표시
 	"\n> 호감도 기능을 사용할 수 없어요!" ..

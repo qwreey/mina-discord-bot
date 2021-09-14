@@ -13,6 +13,8 @@ log.usecolor = true;
 log.outfile = nil;
 log.minLevel = 1;
 log.disable = false;
+local root = log.root;
+local rootLen = #root;
 
 -- 베이스 함수
 local function runLog(thisName,thisLevel,color,debugInfo,...)
@@ -28,16 +30,19 @@ local function runLog(thisName,thisLevel,color,debugInfo,...)
 	end
 
 	-- 파일명 : 라인 번호 를 가져옴
-	if string.sub(debugInfo.short_src,1,#log.root) == log.root then
-		debugInfo.short_src = string.sub(debugInfo.short_src,#log.root+2,-1)
+	local src = debugInfo.short_src;
+	if string.sub(src,1,rootLen) == root then
+		src = string.sub(src,rootLen+2,-1);
 	end
-	local lineinfo = debugInfo.short_src .. ":" .. debugInfo.currentline;
+	src = src:gsub("%.lua$","");
+	local line = tostring(debugInfo.currentline);
+	local lineinfo = src .. ":" .. line .. string.rep(" ",4-#line);
 
 	-- 프린트
 	local text = string.format("%s[%-6s%s]%s %s: %s ",
 		log.usecolor and color or "",
 		thisName,
-		os.date("%H:%M:%S"),
+		os.date("%H:%M"),
 		log.usecolor and "\27[0m" or "",
 		lineinfo,
 		msg
