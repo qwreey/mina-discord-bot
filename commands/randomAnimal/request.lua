@@ -31,6 +31,13 @@ local requests = {
 			return json.decode(Body).url;
 		end;
 	};
+	["dog"] = {
+		alias = {"개","멍멍이","도그","멍뭉이","강얼지","강아쥐","강얼쥐","강알쥐","강알지"};
+		func = function ()
+			local Header,Body = corohttp.request("GET","https://dog.ceo/api/breeds/image/random");
+			return json.decode(Body).message;
+		end;
+	};
 };
 local indexedRequests = {};
 for i,v in pairs(requests) do
