@@ -38,6 +38,13 @@ local requests = {
 			return json.decode(Body).message;
 		end;
 	};
+	["fox"] = {
+		alias = {"폭스","여우","녀우","여웅"};
+		func = function ()
+			local Header,Body = corohttp.request("GET","https://randomfox.ca/floof");
+			return json.decode(Body).image;
+		end;
+	};
 };
 local indexedRequests = {};
 for i,v in pairs(requests) do
@@ -50,9 +57,12 @@ end
 requests = nil;
 
 function module.fetch(name)
+	if not name then
+		return "불러 올 수 있는 동물은 "
+	end
 	local func = indexedRequests[name];
 	if not func then
-		return "오류! %s 는 유효한 식별가능한 동물이 아닙니다";
+		return "오류! %s 는 유효한 식별가능한 동물이 아닙니다\n불러올 수 있는 동물을 보려면 ";
 	end
 	return func();
 end
