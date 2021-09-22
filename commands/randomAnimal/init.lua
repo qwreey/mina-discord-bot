@@ -7,7 +7,6 @@
 
 local request = require "commands.randomAnimal.request";
 request:setCoroHttp(corohttp):setJson(json);
-request:setUrlCode(urlCode);
 
 return {
 	["동물"] = {
