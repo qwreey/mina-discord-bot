@@ -24,28 +24,42 @@ function module:setJson(NewJson)
 end
 
 local requests = {
-	["cat"] = {
-		alias = {"고먐미","고양이","캣","꼬야미","고얌이","꼬얌미"};
+	["고양이"] = {
+		alias = {"고먐미","cat","캣","꼬야미","고얌이","꼬얌미"};
 		func = function ()
 			local Header,Body = corohttp.request("GET","https://api.thecatapi.com/v1/images/search");
-			return json.decode(Body).url;
+			if not Body then return end
+			local decoded = json.decode(Body);
+			if not decoded then return end
+			local this = decoded[1];
+			if (not this) then return end
+			return this.url;
 		end;
 	};
-	["dog"] = {
-		alias = {"개","멍멍이","도그","멍뭉이","강얼지","강아쥐","강얼쥐","강알쥐","강알지"};
+	["강아지"] = {
+		alias = {"dog","개","멍멍이","도그","멍뭉이","강얼지","강아쥐","강얼쥐","강알쥐","강알지"};
 		func = function ()
+			p("Calling dog api")
 			local Header,Body = corohttp.request("GET","https://dog.ceo/api/breeds/image/random");
-			return json.decode(Body).message;
+			p(Body)
+			if not Body then return end
+			local decoded = json.decode(Body);
+			if not decoded then return end
+			return decoded.message;
 		end;
 	};
-	["fox"] = {
-		alias = {"폭스","여우","녀우","여웅"};
+	["여우"] = {
+		alias = {"폭스","fox","녀우","여웅"};
 		func = function ()
-			local Header,Body = corohttp.request("GET","https://randomfox.ca/floof");
-			return json.decode(Body).image;
+			local Header,Body = corohttp.request("GET","https://randomfox.ca/floof/");
+			if not Body then return end
+			local decoded = json.decode(Body);
+			if not decoded then return end
+			return decoded.image;
 		end;
 	};
 };
+local loadable = "";
 local indexedRequests = {};
 for i,v in pairs(requests) do
 	local this = v.func;
@@ -53,16 +67,19 @@ for i,v in pairs(requests) do
 	for _,i2 in ipairs(v.alias) do
 		indexedRequests[i2] = this;
 	end
+	loadable = loadable .. ("'%s', "):format(i);
 end
+loadable = loadable:sub(1,-3);
 requests = nil;
+local loadableMsg = ("불러 올 수 있는 동물은 %s 입니다"):format(loadable)
 
 function module.fetch(name)
-	if not name then
-		return "불러 올 수 있는 동물은 "
+	if (not name) or (name == '') then
+		return loadableMsg;
 	end
 	local func = indexedRequests[name];
 	if not func then
-		return "오류! %s 는 유효한 식별가능한 동물이 아닙니다\n불러올 수 있는 동물을 보려면 ";
+		return ("오류! %s 는 유효한 식별가능한 동물이 아닙니다\n%s"):format(name,loadableMsg);
 	end
 	return func();
 end
