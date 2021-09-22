@@ -49,6 +49,8 @@ local fs = require "fs"; _G.fs = fs;-- 파일 시스템
 local ffi = require "ffi"; _G.ffi = ffi;-- C 동적 상호작용
 local utf8 = utf8 or require "utf8"; _G.utf8 = utf; -- 유니코드8 라이브러리 불러오기
 local term = require "app.term"; -- terminal settings
+local utils = require "utils"; _G.utils = utils;
+local adapt = utils.adapt; _G.adapt = adapt;
 
 -- same with js's timeout function
 local function runSchedule(time,func)
