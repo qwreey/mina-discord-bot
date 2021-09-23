@@ -17,7 +17,11 @@
 --#region : Luvit 모듈 / 주요 모듈 임포트
 
 -- set title of terminal
-os.execute("title DISCBOT");
+_G.app = {
+	name = "DiscordBot";
+	fullname = "discord_mina_bot";
+};
+os.execute("title " .. _G.app.name);
 
 -- set utf-8 terminal
 do

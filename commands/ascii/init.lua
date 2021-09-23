@@ -3,6 +3,7 @@ local function drawAscii(font,text)
 	local proc = io.popen(("figlet -f \"%s\" \"%s\""):format(font,text));
 	local ret = proc:read("*a");
 	proc:close();
+	os.execute("title " .. _G.app.name);
 	return ret;
 end
 
