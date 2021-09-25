@@ -20,14 +20,14 @@ return {
 		alias = {"아스키 아트","아스키아트","ascii","글자아트","글자 아트"};
 		reply = "그리고 있어요 . . .";
 		func = function(replyMsg,message,args,Content)
-			replyMsg:setContent(("```\n%s```"):format(drawAnscii("Soft",Content.rawArgs)));
+			replyMsg:setContent(("```\n%s```"):format(drawAscii("Soft",Content.rawArgs)));
 		end;
 	};
 	["열차그리기"] = {
 		alias = {"train"};
 		reply = "그리고 있어요 . . .";
 		func = function(replyMsg,message,args,Content)
-			replyMsg:setContent(("```\n%s```"):format(drawAnscii("Train",Content.rawArgs)));
+			replyMsg:setContent(("```\n%s```"):format(drawAscii("Train",Content.rawArgs)));
 		end;
 	};
 };
