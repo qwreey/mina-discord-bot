@@ -26,22 +26,29 @@ end
 local requests = {
 	["고양이"] = {
 		alias = {"고먐미","cat","캣","꼬야미","고얌이","꼬얌미"};
-		func = function ()
-			local Header,Body = corohttp.request("GET","https://api.thecatapi.com/v1/images/search");
-			if not Body then return end
-			local decoded = json.decode(Body);
-			if not decoded then return end
-			local this = decoded[1];
-			if (not this) then return end
-			return this.url;
-		end;
+		func = {
+			function ()
+				local Header,Body = corohttp.request("GET","https://api.thecatapi.com/v1/images/search");
+				if not Body then return end
+				local decoded = json.decode(Body);
+				if not decoded then return end
+				local this = decoded[1];
+				if (not this) then return end
+				return this.url;
+			end;
+			function ()
+				local Header,Body = corohttp.request("GET","https://aws.random.cat/meow");
+				if not Body then return end
+				local decoded = json.decode(Body);
+				if not decoded then return end
+				return decoded.file;
+			end;
+		};
 	};
 	["강아지"] = {
 		alias = {"dog","개","멍멍이","도그","멍뭉이","강얼지","강아쥐","강얼쥐","강알쥐","강알지"};
 		func = function ()
-			p("Calling dog api")
 			local Header,Body = corohttp.request("GET","https://dog.ceo/api/breeds/image/random");
-			p(Body)
 			if not Body then return end
 			local decoded = json.decode(Body);
 			if not decoded then return end
@@ -80,6 +87,9 @@ function module.fetch(name)
 	local func = indexedRequests[name];
 	if not func then
 		return ("오류! %s 는 유효한 식별가능한 동물이 아닙니다\n%s"):format(name,loadableMsg);
+	end
+	if type(func) == "table" then
+		func = func[cRandom(1,#func)];
 	end
 	return func();
 end

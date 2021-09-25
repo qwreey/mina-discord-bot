@@ -78,7 +78,7 @@ return {
 		alias = {"선택해","선택","추첨","뽑아","추첨해","골라","골라봐"};
 		reply = "결과는?! **(두구두구두구두구)**";
 		func = function(replyMsg,message,args,Content)
-			runSchedule(2000,function ()
+			timeout(2000,function ()
 				local items = {};
 				for str in Content.rawArgs:gmatch("[^,]+") do
 					table.insert(items,str);
@@ -123,7 +123,7 @@ return {
 	["검열"] = {
 		reply = "검-열";
 		func = function (message)
-			runSchedule(100,function ()
+			timeout(100,function ()
 				message:delete();
 			end);
 		end;
@@ -161,7 +161,7 @@ return {
 			"대굴 대굴... **6** 나왔당!";
 			function (msg)
 				local newMsg = msg:reply("대굴 대굴... 어? 0? 이게 왜 나왔지?");
-				runSchedule(500,function ()
+				timeout(500,function ()
 					newMsg:delete();
 				end);
 			end;
@@ -176,7 +176,7 @@ return {
 		alias = {"쯧...","쯧.","쯧..","쯔읏","ㅉ","쯧","쯧쯧"};
 		reply = function (msg)
 			local newMsg = msg:reply("~~저저 꼰대 쉨~~");
-				runSchedule(500,function ()
+				timeout(500,function ()
 				newMsg:setContent("아! 아무것도 아니야 ㅎㅎ");
 			end);
 		end;

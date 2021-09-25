@@ -55,12 +55,15 @@ local utf8 = utf8 or require "utf8"; _G.utf8 = utf; -- 유니코드8 라이브�
 local term = require "app.term"; -- terminal settings
 local utils = require "utils"; _G.utils = utils;
 local adapt = utils.adapt; _G.adapt = adapt;
+local uv = require "uv"; _G.uv = uv;
+local qDebug = require "app.debug"; _G.qDebug = qDebug;
+local dumpTable = require "libs.dumpTable";
 
 -- same with js's timeout function
 local function runSchedule(time,func)
 	timer.setTimeout(time,coroutine.wrap(func));
 end
-_G.runSchedule = runSchedule;
+_G.timeout = runSchedule;
 
 iLogger.info("------------------------ [CLEAN  UP] ------------------------");
 --#endregion : Luvit 모듈 / 주요 모듈 임포트

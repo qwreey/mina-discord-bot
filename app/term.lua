@@ -59,7 +59,7 @@ end
 _G.buildPrompt = buildPrompt;
 
 local runEnv = { -- 명령어 실행 환경 만들기
-    runSchedule = runSchedule;
+    runSchedule = timeout;
 };
 function runEnv.clear() -- 화면 지우기 명령어
     os.execute("cls");
@@ -123,8 +123,9 @@ return function ()
                 local lastStatus = _G.livereloadEnabled;
                 _G.livereloadEnabled = false;
                 local _,_,returncode = os.execute(line:sub(2,-1));
-                _G.livereloadEnabled = lastStatus;
                 prettyPrint.stdout:write{" → ",prettyPrint.dump(returncode),"\n"};
+                uv.sleep(20);
+                _G.livereloadEnabled = lastStatus;
             end
 
             -- first, decoding lua
