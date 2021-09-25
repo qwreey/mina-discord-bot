@@ -12,6 +12,7 @@ local spawn = require('coro-spawn');
 local split = require('coro-split');
 local parse = require('url').parse;
 local function getStream(url)
+    p(url)
     local child = spawn('youtube-dl', {
         args = {'-g', url},
         stdio = {nil, true, true}
@@ -38,8 +39,38 @@ local function getStream(url)
     end
 
     split(readstdout, readstderr, child.waitExit);
+    p(stream);
     return stream and stream:gsub('%c', '');
 end
+-- local function getPlaylistStream(url, number)
+--     local child = spawn('youtube-dl', {
+--         args = {'-g', '--playlist-items', number, url},
+--         stdio = {nil, true, true}
+--     });
+
+--     local stream
+--     local function readstdout()
+--         local stdout = child.stdout;
+--         for chunk in stdout.read do
+--             local mime = parse(chunk, true).query.mime;
+--             if mime and mime:find('audio') then
+--                 stream = chunk;
+--             end
+--         end
+--         return pcall(stdout.handle.close, stdout.handle);
+--     end
+
+--     local function readstderr()
+--         local stderr = child.stderr;
+--         for chunk in stderr.read do
+--             print(chunk);
+--         end
+--         return pcall(stderr.handle.close, stderr.handle);
+--     end
+
+--     split(readstdout, readstderr, child.waitExit);
+--     return stream and stream:gsub('%c', '');
+-- end
 
 --[[
 voiceChannelID : 그냥 식별용으로 쓰기 위해 만든 별거 없는 아이디스페이스
@@ -67,9 +98,9 @@ function this:__play(thing) -- PRIVATE
     self.nowPlaying = thing;
     local stream = getStream(thing.url);
     coroutine.wrap(function()
-        self.handle:playFile(stream);
+        self.handler:_play(stream);
         self.nowPlaying = nil; -- remove song
-        uv.sleep(200);
+        timer.sleep(20);
         self:remove(1);
     end)();
 end
@@ -92,15 +123,20 @@ function this:apply()
     if self.nowPlaying == self[1] then
         return;
     end
-    self.__play(self[1]);
+    qDebug {
+        title = "apply playlist changed";
+        this = self;
+    };
+    self:__play(self[1]);
 end
 
 local insert = table.insert;
 --- insert new song
 function this:add(thing,onIndex)
-    insert(self,onIndex,thing);
-    if self.playIndex == 0 then
-        self.playIndex = 1;
+    if onIndex then
+        insert(self,onIndex,thing);
+    else
+        insert(self,thing);
     end
     self:apply();
 end
@@ -111,8 +147,9 @@ function this:remove(index)
     if not index then
         index = #self;
     end
-    remove(self,index);
+    local poped = remove(self,index);
     self:apply();
+    return poped;
 end
 
 function this:embedfiy()
@@ -133,6 +170,5 @@ function this:embedfiy()
         color = 16040191;
     };
 end
-
 
 return this;
