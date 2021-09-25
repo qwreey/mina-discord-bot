@@ -1,5 +1,9 @@
-client.voice:loadOpus('libopus-x86');
-client.voice:loadSodium('libsodium-x86');
+if true then
+    return {};
+end
+
+-- client.voice:loadOpus('libopus-x86');
+-- client.voice:loadSodium('libsodium-x86');
 
 local spawn = require('coro-spawn');
 local split = require('coro-split');
@@ -159,7 +163,7 @@ return {
 
             -- TODO: 여기서 커낵션 만들고 스트림 연결해서 음악 넘겨줌
             local voiceChannelID = voiceChannel:__hash();
-            local playlist = playlistForChannels
+            local playlist = playlistForChannels;
             
         end;
     };
