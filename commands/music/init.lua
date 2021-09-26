@@ -12,68 +12,12 @@
 -- local playingURL = '';
 -- local playingTrack = 0;
 
--- DICT: [channelID] = {
---     ... (array of playing URL)
--- };
-local playlistForChannels = {};
+local playerForChannels = {};
 local playerClass = require "commands.music.playerClass";
-
--- local streamPlaylist = coroutine.wrap(function(url, beginWith)
---     local child = spawn('youtube-dl', {
---         args = {'-J', url},
---         stdio = {nil, true, true}
---     });
---     local playlist = json.decode(child.stdout:read());
---     connection = channel:join();
---     if connection then
---         for playingTrack = beginWith or 1, len(playlist.entries) do
---             local stream = getPlaylistStream(url, playingTrack);
---             print('Playing track '..playingTrack..' of '..len(playlist.entries));
---             connection:playFile(stream);
---         end
---     end
--- end);
-
--- client.voice:loadOpus('libopus-x86');
--- client.voice:loadSodium('libsodium-x86');
-
--- client:on('ready', function()
---   p('Logged in as ' .. client.user.username)
---   channel = client:getVoiceChannel('') -- channel ID goes here
--- end)
-
--- client:on('messageCreate', function(message)
---   print(os.date('!%Y-%m-%d %H:%M:%S', message.createdAt).. ' <'.. message.author.name.. '> '.. message.content) --Screen output
---   if message.author.id ~= client.user.id then --If not himself
---     msg = message
---     if string.find(msg.content, 'audio%.play ') then
---       connection = channel:join()
---       if connection then
---         print('connected')
---         playingURL = string.gsub(msg.content, 'audio%.play ', '')
---         local stream = getStream(playingURL) -- URL goes here
---         print('playing')
---         connection:playFile(stream)
---       end
---     elseif string.find(msg.content, 'audio%.playlist ') then
---       playingURL = string.gsub(msg.content, 'audio%.playlist ', '')
---       streamPlaylist(playingURL, 2)
---     elseif msg.content == 'audio.pause' then
---       connection:pauseStream(playingURL)
---     elseif msg.content == 'audio.resume' then
---       connection:resumeStream()
---     elseif msg.content == 'audio.skip' then
---       print('stopping')
---       connection:stopStream()
---     end
---   end
--- end)
-
--- client:run(args[2])
 
 return {
     ["add music"] = {
-        alias = {"음악추가","음악 추가","음악 add","music add","music 추가"};
+        alias = {"음악추가","음악 추가","음악 add","music add","music 추가","음악 재생","음악재생"};
         reply = "처리중입니다";
         func = function(replyMsg,message,args,Content)
             -- check users voice channel
@@ -90,16 +34,18 @@ return {
                 return;
             end
 
-            -- TODO: 여기서 커낵션 만들고 스트림 연결해서 음악 넘겨줌
+            -- get player object from playerClass
             local voiceChannelID = voiceChannel:__hash();
-            local playlist = playlistForChannels[voiceChannelID] or playerClass.new {
-                voiceChannel = voiceChannel;
-                voiceChannelID = voiceChannelID;
-                handler = voiceChannel:join();
-            };
-            playlistForChannels[voiceChannelID] = playlist;
-            playlist:add({
-                name = "test";
+            local player = playerForChannels[voiceChannelID];
+            if not guildConnection then
+                player = playerClass.new {
+                    voiceChannel = voiceChannel;
+                    voiceChannelID = voiceChannelID;
+                    handler = voiceChannel:join();
+                };
+            end
+            playerForChannels[voiceChannelID] = player;
+            player:add({
                 url = Content.rawArgs;
             });
         end;

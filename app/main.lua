@@ -58,6 +58,7 @@ local adapt = utils.adapt; _G.adapt = adapt;
 local uv = require "uv"; _G.uv = uv;
 local qDebug = require "app.debug"; _G.qDebug = qDebug;
 local dumpTable = require "libs.dumpTable";
+local spawn = require "coro-spawn"; _G.spawn = spawn;
 
 -- same with js's timeout function
 local function runSchedule(time,func)
