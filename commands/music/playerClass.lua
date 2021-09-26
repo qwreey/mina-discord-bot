@@ -16,98 +16,110 @@ nowPlaying : 지금 플레이중인 곡
 new.playIndex
 ]]
 function this.new(props)
-    local new = {};
-    new.voiceChannelID = props.voiceChannelID;
-    new.nowPlaying = nil;
-    new.handler = props.handler;
-    setmetatable(new,this);
-    return new;
+	local new = {};
+	new.voiceChannelID = props.voiceChannelID;
+	new.nowPlaying = nil;
+	new.handler = props.handler;
+	setmetatable(new,this);
+	return new;
 end
 
 --#region : Stream handling methods
 
 function this:__play(thing) -- PRIVATE
-    if not thing then -- if thing is none - song
-        return;
-    end
-    if self.nowPlaying then
-        self:__stop();
-    end
-    self.nowPlaying = thing;
-    coroutine.wrap(function()
-        self.handler:playFFmpeg(thing.audio);
-        self.nowPlaying = nil; -- remove song
-        timer.sleep(20);
-        self:remove(1);
-    end)();
+	if not thing then -- if thing is none - song
+		return;
+	end
+	if self.nowPlaying then
+		self:__stop();
+	end
+	self.nowPlaying = thing;
+	coroutine.wrap(function()
+		self.handler:playFFmpeg(thing.audio);
+		self.nowPlaying = nil; -- remove song
+		timer.sleep(20);
+		self:remove(1);
+	end)();
 end
 function this:__stop() -- PRIVATE
-    if not self.nowPlaying then
-        return;
-    end
-    self.nowPlaying = nil;
-    self.handler:stopStream();
+	if not self.nowPlaying then
+		return;
+	end
+	self.nowPlaying = nil;
+	self.handler:stopStream();
 end
 function this:resume()
-    self.handler:resumeStream();
+	self.handler:resumeStream();
 end
 function this:pause()
-    self.handler:pauseStream();
+	self.handler:pauseStream();
 end
 --#endregion : Stream handling methods
 
 function this:apply()
-    if self.nowPlaying == self[1] then
-        return;
-    end
-    qDebug {
-        title = "playing music";
-        channelID = self.voiceChannelID;
-        file = self.url;
-    };
-    self:__play(self[1]);
+	if self.nowPlaying == self[1] then
+		return;
+	end
+	qDebug {
+		title = "playing music";
+		channelID = self.voiceChannelID;
+		file = self.url;
+	};
+	self:__play(self[1]);
 end
 
 local insert = table.insert;
 --- insert new song
-function this:add(thing,onIndex)
-    if onIndex then
-        insert(self,onIndex,thing);
-    else
-        insert(self,thing);
-    end
-    thing.audio = ytDown.download(thing.url);
-    self:apply();
+function this:add(thing,onIndex,callback)
+	local audio = ytDown.download(thing.url)
+	if not audio then
+		return nil;
+	end
+	thing.audio = audio
+	if onIndex then
+		insert(self,onIndex,thing);
+	else
+		insert(self,thing);
+	end
+	self:apply();
+	return audio;
 end
 
 local remove = table.remove;
 -- remove song and check
 function this:remove(index)
-    if not index then
-        index = #self;
-    end
-    local poped = remove(self,index);
-    self:apply();
-    return poped;
+	if not index then
+		index = #self;
+	end
+	local poped = remove(self,index);
+	self:apply();
+	return poped;
+end
+
+function this:kill()
+	local handler = self.handler;
+	if handler then
+		handler:close();
+	end
 end
 
 function this:embedfiy()
-    local fields = {};
-    for i,song in ipairs(self) do
-        insert(fields,{
-            name = ("%d 번째 곡"):format(i);
-            value = ("[%s](%s)"):format(song.name:gsub("\"","\\\""),song.url);
-        });
-    end
+	local fields = {};
+	for i,song in ipairs(self) do
+		insert(fields,{
+			name = ("%d 번째 곡"):format(i);
+			value = ("[%s](%s)"):format(song.name:gsub("\"","\\\""),song.url);
+		});
+	end
 
-    return {
-        fields = fields;
-        footer = {
-             text = "제발 되라 버그 안나고 - 개발중 작성";
-        };
-        title = "재생 목록에 있는 곡들은 다음과 같습니다";
-        color = 16040191;
-    };
+	return {
+		fields = fields;
+		footer = {
+			 text = "제발 되라 버그 안나고 - 개발중 작성";
+		};
+		title = "재생 목록에 있는 곡들은 다음과 같습니다";
+		color = 16040191;
+	};
 end
 
 return this;

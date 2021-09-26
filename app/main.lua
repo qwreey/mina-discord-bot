@@ -59,6 +59,7 @@ local uv = require "uv"; _G.uv = uv;
 local qDebug = require "app.debug"; _G.qDebug = qDebug;
 local dumpTable = require "libs.dumpTable";
 local spawn = require "coro-spawn"; _G.spawn = spawn;
+local split = require "coro-split"; _G.split = split;
 
 -- same with js's timeout function
 local function runSchedule(time,func)
@@ -402,21 +403,21 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	-- | 찾은 후 (for 루프 뒤)
 	-- Command : 커맨드 개체 (찾은경우)
 
-	-- make sure text is lower case
-	Text = string.lower(Text);
-
+	
+	
 	-- 접두사 구문 분석하기
 	local prefix;
+	local TextL = string.lower(Text); -- make sure text is lower case
 	for _,nprefix in pairs(prefixs) do
-		if nprefix == Text then -- 만약 접두사와 글자가 일치하는경우 반응 달기
+		if nprefix == TextL then -- 만약 접두사와 글자가 일치하는경우 반응 달기
 			message:reply {
 				content = prefixReply[cRandom(1,#prefixReply)];
 				reference = {message = message, mention = false};
 			};
 			return;
 		end
-		local nprefix = nprefix .. "\32"; -- 맨 앞 실행 접두사
-		if string.sub(Text,1,#nprefix) == nprefix then -- 만약에 접두가사 일치하면
+		nprefix = nprefix .. "\32"; -- 맨 앞 실행 접두사
+		if TextL:sub(1,#nprefix) == nprefix then -- 만약에 접두가사 일치하면
 			prefix = nprefix;
 			break;
 		end
@@ -431,8 +432,8 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	-- 단어 분해 후 COMMAND DICT 에 색인시도
 	-- 못찾으면 다시 넘겨서 뒷단어로 넘김
 	-- 찾으면 넘겨서 COMMAND RUN 에 TRY 던짐
-	local rawCommandText = string.sub(Text,#prefix+1,-1); -- 접두사 뺀 글자
-	local splitCommandText = strSplit(rawCommandText,"\32");
+	local rawCommandText = Text:sub(#prefix+1,-1); -- 접두사 뺀 글자
+	local splitCommandText = strSplit(rawCommandText:lower(),"\32");
 	local CommandName,Command,rawCommandName;
 
 	-- (커맨드 색인 1 차시도) 띄어쓰기를 포함한 명령어를 검사할 수 있도록 for 루프 실행
@@ -467,11 +468,11 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	-- 찾기 찾기 찾기
 	-- 부분부분 다 나눠서 찾기
 	if not Command then
-		for FindPos,Text in pairs(splitCommandText) do
-			Command = commandHandler.findCommandFrom(commands,Text);
+		for FindPos,Textn in pairs(splitCommandText) do
+			Command = commandHandler.findCommandFrom(commands,Textn);
 			if Command then
 				CommandName = "";
-				rawCommandName = Text;
+				rawCommandName = Textn;
 				for Index = 1,FindPos do
 					CommandName = CommandName .. splitCommandText[Index];
 				end
@@ -534,10 +535,10 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 		end;
 		loveText = loveText;
 	};
-	
+
 	-- 만약 답변글이 함수면 (지금은 %s 시에요 처럼 쓸 수 있도록) 실행후 결과 가져오기
 	if type(replyText) == "function" then
-		rawArgs = string.sub(rawCommandText,#CommandName+2,-1);
+		rawArgs = rawCommandText:sub(#CommandName+2,-1);
 		args = strSplit(rawArgs,"\32");
 		contents.rawArgs = rawArgs;
 		replyText = replyText(message,args,contents);
@@ -565,10 +566,27 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	-- func (replyMsg,message,args,EXTENDTable);
 	if func then -- 만약 커맨드 함수가 있으면
 		-- 커맨드 함수 실행
-		rawArgs = rawArgs or string.sub(rawCommandText,#CommandName+2,-1);
+		rawArgs = rawArgs or rawCommandText:sub(#CommandName+2,-1);
 		contents.rawArgs = rawArgs;
 		args = strSplit(rawArgs,"\32");
-		func(replyMsg,message,args,contents);
+		local passed,ret = pcall(func,replyMsg,message,args,contents);
+		if not passed then
+			iLogger.error("an error occurred on running function");
+			iLogger.errorf(" | original message : %s",tostring(Text));
+			iLogger.error(" | error traceback was");
+			iLogger.error(tostring(ret));
+			iLogger.error(" | more information was saved on log/debug.log");
+			qDebug {
+				title = "an error occurred on running command function";
+				traceback = tostring(ret);
+				originalMsg = tostring(Text);
+				command = Command;
+				this = message;
+			};
+			replyMsg:setContent(("명령어 처리중에 오류가 발생하였습니다\n```%s```")
+				:format(tostring(ret))
+			);
+		end
 	end
 end);
 
