@@ -26700,3 +26700,52 @@
   vid = "bZYPI4mYwhw";
   title = "failed to download video from youtube";
 }
+{
+  timestemp = "Sun Sep 26 21:51:40 2021";
+  trace = {
+    stdout = {
+      read = function: 0x01d48ed32730;
+      handle = uv_pipe_t: 0x01d48d483970;
+    };
+    waitExit = function: 0x01d48ed67970;
+    stderr = {
+      read = function: 0x01d48edd0780;
+      handle = uv_pipe_t: 0x01d48d483bc0;
+    };
+    handle = uv_process_t: 0x01d48f1b5fb0;
+    pid = 15612;
+  };
+  status = "error";
+  vid = "bZYPI4mYwhw";
+  title = "failed to download video from youtube";
+}
+{
+  channelID = "772816336749461539";
+  timestemp = "Sun Sep 26 21:52:43 2021";
+  title = "playing music";
+}
+{
+  channelID = "772816336749461539";
+  timestemp = "Sun Sep 26 21:53:42 2021";
+  title = "playing music";
+}
+{
+  channelID = "772816336749461539";
+  timestemp = "Sun Sep 26 21:55:36 2021";
+  title = "playing music";
+}
+{
+  channelID = "772816336749461539";
+  timestemp = "Sun Sep 26 21:59:28 2021";
+  title = "playing music";
+}
+{
+  channelID = "772816336749461539";
+  timestemp = "Sun Sep 26 21:59:36 2021";
+  title = "playing music";
+}
+{
+  channelID = "772816336749461539";
+  timestemp = "Sun Sep 26 22:00:08 2021";
+  title = "playing music";
+}

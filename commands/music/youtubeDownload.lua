@@ -5,17 +5,7 @@ local exts = {"opus", "m4a", "mp3", "wav", "best", "aac", "flac", "vorbis"};
 function module.download(vid)
 	vid = module.getVID(vid);
 
-	-- if is exist already, just return it
-	local filePath = ("data/youtubeFiles/%s.%%s"):format(vid);
-    local info = fs.readFileSync(("data/youtubeFiles/%s.info"):format(vid)) or "";
-	for _,str in ipairs(exts) do
-		local this = filePath:format(str);
-		if fs.existsSync(this) then
-			return this,json.decode(info);
-		end
-	end
-
-	-- if not exist already, create new it
+	-- create stream
 	local newProcess = spawn("youtube-dl",{
 		args = {
 			-- '-q','-x','--audio-quality','0','--print-json','--write-thumbnail','--geo-bypass','-o','./data/youtubeFiles/%(id)s.%(ext)s','--cache-dir','./data/youtube.Cache',
@@ -26,20 +16,21 @@ function module.download(vid)
 		cwd = "./";
 		stdio = {nil,true,true};
 	});
-
-	info = "";
+	local audio,info = "","";
+	local index = 1;
 	for str in newProcess.stdout.read do
-		p(str);
-		info = info .. str;
+		if index == 2 then
+			audio = str;
+		elseif index == 3 then
+			info = str;
+		end
+		index = index + 1;
 	end
-	fs.writeFile(("data/youtubeFiles/%s.info"):format(vid),info);
 	newProcess.waitExit();
 
-	for _,str in ipairs(exts) do
-		local this = filePath:format(str);
-		if fs.existsSync(this) then
-			return this,json.decode(info);
-		end
+	-- return it
+	if info and audio then
+		return audio:sub(1,-2),json.decode(info);
 	end
 
 	-- video was not found from youtube? or something want wrongly
