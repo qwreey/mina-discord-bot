@@ -18,15 +18,18 @@ function module.download(vid)
 	-- if not exist already, create new it
 	local newProcess = spawn("youtube-dl",{
 		args = {
-			'-q','-x','--audio-quality','0','--print-json','--write-thumbnail','--geo-bypass','-o','./data/youtubeFiles/%(id)s.%(ext)s','--cache-dir','./data/youtube.Cache',
+			-- '-q','-x','--audio-quality','0','--print-json','--write-thumbnail','--geo-bypass','-o','./data/youtubeFiles/%(id)s.%(ext)s','--cache-dir','./data/youtube.Cache',
+			'--print-json','-g','--cache-dir','./data/youtube.Cache','--geo-bypass',
 			('https://www.youtube.com/watch?v=%s'):format(vid)
 		};
 		hide = true;
 		cwd = "./";
 		stdio = {nil,true,true};
 	});
+
 	info = "";
 	for str in newProcess.stdout.read do
+		p(str);
 		info = info .. str;
 	end
 	fs.writeFile(("data/youtubeFiles/%s.info"):format(vid),info);

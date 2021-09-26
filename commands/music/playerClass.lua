@@ -35,8 +35,7 @@ function this:__play(thing) -- PRIVATE
 	end
 	self.nowPlaying = thing;
 	coroutine.wrap(function()
-		--self.handler:playFFmpeg(thing.audio);
-		self.handler:playFFmpeg("https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1632663403&ei=CyNQYcOrJJLU2roP5oGFmA4&ip=115.138.195.111&id=o-AHD3cSrYNIcrrVbYS3Px_XoLr-2JUP-UqgLct29siyuF&itag=249&source=youtube&requiressl=yes&mh=T8&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2sd&ms=au%2Crdu&mv=m&mvi=1&pl=24&initcwndbps=2118750&vprv=1&mime=audio%2Fwebm&ns=pkbzpSIuZEsdLFC_o6-sppsG&gir=yes&clen=1421624&dur=221.801&lmt=1632576947873438&mt=1632641573&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5531432&n=1g2FPUvBkvLY01_&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIgdLP-YY9xlqt4rizhjYDZs_uLwd6UaW6HUQGhIAcoZBMCIQDQKDx4ooTLkfP7f4njNU9R-hUpYhCyeF97K5Lxf5FaXA%3D%3D&sig=AOq0QJ8wRQIhALC3fLqnYcJlIz4KKaQQtklyc63VVy0cngKR4gjyjPATAiAduQ5mYzjq98Ax9lX0rdtSKd7AIoCPtJNQU8fodLjfBA==");
+		self.handler:playFFmpeg(thing.audio);
 		self.nowPlaying = nil; -- remove song
 		timer.sleep(20);
 		self:remove(1);
