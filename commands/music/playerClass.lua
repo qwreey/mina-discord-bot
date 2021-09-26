@@ -109,7 +109,7 @@ function this:embedfiy()
 	for i,song in ipairs(self) do
 		insert(fields,{
 			name = ("%d 번째 곡"):format(i);
-			value = ("[%s](%s)"):format(song.name:gsub("\"","\\\""),song.url);
+			value = ("[%s](%s)"):format(song.info.title:gsub("\"","\\\""),song.url);
 		});
 	end
 

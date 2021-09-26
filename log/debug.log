@@ -26749,3 +26749,914 @@
   timestemp = "Sun Sep 26 22:00:08 2021";
   title = "playing music";
 }
+{
+  channelID = "772816336749461539";
+  timestemp = "Sun Sep 26 22:07:01 2021";
+  title = "playing music";
+}
+{
+  channelID = "772816336749461539";
+  timestemp = "Sun Sep 26 22:09:06 2021";
+  title = "playing music";
+}
+{
+  channelID = "772816336749461539";
+  timestemp = "Sun Sep 26 22:11:53 2021";
+  title = "playing music";
+}
+{
+  channelID = "772816336749461539";
+  timestemp = "Sun Sep 26 22:18:40 2021";
+  title = "playing music";
+}
+{
+  channelID = "772816336749461539";
+  timestemp = "Sun Sep 26 22:21:07 2021";
+  title = "playing music";
+}
+{
+  traceback = ".\commands\music\playerClass.lua:112: attempt to index a nil value";
+  command = {
+    func = function: 0x02119b7f3568;
+    reply = "처리중입니다 . . .";
+    name = "list music";
+    alias = {
+      [1] = "음악 리스트";
+      [2] = "음악리스트";
+      [3] = "list music";
+      [4] = "queue music";
+      [5] = "music queue";
+      [6] = "음악 queue";
+    };
+  };
+  title = "an error occurred on running command function";
+  timestemp = "Sun Sep 26 22:21:11 2021";
+  originalMsg = "미나야 음악 리스트";
+  this = {
+    [1] = {
+      [1] = {
+        [1] = {
+          [1] = {
+            messageCreate = {
+              [1] = {
+                fn = function: 0x02119b69b488;
+              };
+            };
+          };
+          [2] = {
+            maxRetries = 5;
+            gatewayFile = "gateway.json";
+            firstShard = 0;
+            autoReconnect = true;
+            cacheAllMembers = false;
+            shardCount = 0;
+            syncGuilds = false;
+            compress = true;
+            dateTime = "%F %T";
+            logLevel = 3;
+            bitrate = 64000;
+            routeDelay = 250;
+            logFile = "discordia.log";
+            largeThreshold = 100;
+            lastShard = -1;
+          };
+          [3] = {
+            [0] = {
+              [1] = {};
+              [2] = "#Recursive detected#";
+              [3] = {
+                [1] = {};
+                [2] = 0;
+                [3] = -1;
+                [4] = false;
+              };
+              [4] = {
+                [1] = 4706971748899;
+              };
+              [5] = 0;
+              [6] = "#Recursive detected#";
+              [7] = 1000;
+              [8] = function: 0x02119b7d3828;
+              [9] = function: 0x02119b751ed0;
+              [11] = uv_timer_t: 0x02119b923430;
+              [12] = 14;
+              [13] = "f3bbc2cb6899fca810de085f770125df";
+              [14] = true;
+            };
+          };
+          [4] = {
+            [1] = "#Recursive detected#";
+            [2] = {
+              ["/channels/796349439958319125/messages"] = "#Recursive detected#";
+            };
+            [3] = "Bot ODI4ODk0NDgxMjg5OTY5NjY1.YGwOJA.UKTxDbmGaDah782PWD9SSDbkY-0";
+          };
+          [5] = "#Recursive detected#";
+          [6] = {
+            745985317240307762 = {
+              [1] = "#Recursive detected#";
+              [2] = "7825";
+              [4] = "745985317240307762";
+              [6] = true;
+              [7] = "a38c5a76edf75abf53390bccbaffd9ae";
+              [14] = "잌 (장난감 봇)";
+            };
+            415804982764371969 = {
+              [1] = "#Recursive detected#";
+              [2] = "5140";
+              [4] = "415804982764371969";
+              [7] = "f2f50cc3ccf247f206d501def3012323";
+              [14] = "세제 원샷";
+            };
+            654245768055619584 = {
+              [1] = "#Recursive detected#";
+              [2] = "5252";
+              [4] = "654245768055619584";
+              [7] = "be6669a2b4ba0478c2412c232d50c632";
+              [10] = 256;
+              [14] = "12302a";
+            };
+            684324201536290923 = {
+              [1] = "#Recursive detected#";
+              [2] = "5017";
+              [4] = "684324201536290923";
+              [7] = "191a714d5abdab8ffb107533655bd567";
+              [10] = 64;
+              [14] = "이상욱";
+            };
+            235088799074484224 = {
+              [1] = "#Recursive detected#";
+              [2] = "3722";
+              [4] = "235088799074484224";
+              [6] = true;
+              [7] = "9b29bfc497a70b6cc85bb2087936f8fd";
+              [10] = 65536;
+              [14] = "Rythm";
+            };
+            414925323197612032 = {
+              [1] = "#Recursive detected#";
+              [2] = "9735";
+              [4] = "414925323197612032";
+              [6] = true;
+              [7] = "5903cdb6377fc799f08c16f9f2dbe75a";
+              [10] = 65536;
+              [14] = "KDBot";
+            };
+            797445655563993099 = {
+              [1] = "#Recursive detected#";
+              [2] = "9532";
+              [4] = "797445655563993099";
+              [14] = "기록봇";
+              [6] = true;
+            };
+            545032348597485578 = {
+              [1] = "#Recursive detected#";
+              [2] = "9488";
+              [4] = "545032348597485578";
+              [7] = "a_743d44ba9815a2a72adf8dc25c0b25e3";
+              [10] = 256;
+              [14] = "이승헌";
+            };
+            647101613047152640 = {
+              [1] = "#Recursive detected#";
+              [2] = "9961";
+              [4] = "647101613047152640";
+              [7] = "a4a256cda49eef204a7a2d26bbde242c";
+              [10] = 128;
+              [14] = "눈송이";
+            };
+            664505196969328652 = {
+              [1] = "#Recursive detected#";
+              [2] = "2178";
+              [4] = "664505196969328652";
+              [7] = "1f3910eb8b63ac59478483cc6bcd8dcc";
+              [14] = "고추니";
+            };
+            870241583184887849 = {
+              [1] = "#Recursive detected#";
+              [2] = "8414";
+              [4] = "870241583184887849";
+              [6] = true;
+              [7] = "96703505773c97ea5654ad8065bfc392";
+              [14] = "Satgod Entertainment Bot";
+            };
+            828894481289969665 = {
+              [1] = "#Recursive detected#";
+              [2] = "6938";
+              [4] = "828894481289969665";
+              [5] = true;
+              [6] = true;
+              [7] = "48aae1de0adbf0a8e9b16350add0f3a2";
+              [10] = 0;
+              [12] = 0;
+              [13] = true;
+              [14] = "미나 (BETA-2)";
+              [15] = "en-US";
+              [16] = "";
+            };
+            419476138331602946 = {
+              [1] = "#Recursive detected#";
+              [2] = "3872";
+              [4] = "419476138331602946";
+              [6] = true;
+              [7] = "34ab6aa91af582699a1ebd8057dbcf51";
+              [10] = 65536;
+              [14] = "크시";
+            };
+            449177180606300160 = {
+              [1] = "#Recursive detected#";
+              [2] = "8287";
+              [4] = "449177180606300160";
+              [7] = "df8896e106e4c8fbd8db87c794584135";
+              [14] = "혀니";
+            };
+            480318544693821450 = {
+              [1] = "#Recursive detected#";
+              [2] = "9441";
+              [4] = "480318544693821450";
+              [7] = "58d85ae857ec68ff02e2f0bcbefe88ee";
+              [10] = 64;
+              [14] = "Ruža";
+            };
+            367946917197381644 = {
+              [1] = "#Recursive detected#";
+              [2] = "1234";
+              [4] = "367946917197381644";
+              [7] = "9475979bf6842d64148d1344ffacdc5d";
+              [10] = 64;
+              [12] = 64;
+              [14] = "쿼리";
+            };
+            479774031185313807 = {
+              [1] = "#Recursive detected#";
+              [2] = "2206";
+              [4] = "479774031185313807";
+              [7] = "2df200649a56589dce56de3b6e8729f6";
+              [14] = "알파카";
+            };
+            353501674670653441 = {
+              [1] = "#Recursive detected#";
+              [2] = "5877";
+              [4] = "353501674670653441";
+              [7] = "1ad17126afb44222a3ba61a3b2cf697e";
+              [10] = 128;
+              [14] = "ㄱㅁㄱ";
+            };
+            533678855257325568 = {
+              [1] = "#Recursive detected#";
+              [2] = "4634";
+              [4] = "533678855257325568";
+              [7] = "af4cd3810eb00162566741fd42fd1b1e";
+              [14] = "Love was people";
+            };
+            711769311387058238 = {
+              [1] = "#Recursive detected#";
+              [2] = "7250";
+              [4] = "711769311387058238";
+              [6] = true;
+              [7] = "b6d815a450ad47beae8551ced7e26d64";
+              [10] = 65536;
+              [14] = "하나";
+            };
+            559313466641612830 = {
+              [1] = "#Recursive detected#";
+              [2] = "1263";
+              [4] = "559313466641612830";
+              [7] = "3d0d650aa038f923d156c64a8d1ad1b3";
+              [14] = "황정수";
+            };
+            754620012450414682 = {
+              [1] = "#Recursive detected#";
+              [2] = "9565";
+              [14] = "RABBIT__TURTLE";
+              [4] = "754620012450414682";
+            };
+            756035861250048031 = {
+              [1] = "#Recursive detected#";
+              [2] = "6366";
+              [4] = "756035861250048031";
+              [10] = 0;
+              [14] = "꺄얍";
+            };
+            494474648419958788 = {
+              [1] = "#Recursive detected#";
+              [2] = "1082";
+              [4] = "494474648419958788";
+              [7] = "ca4627c71ea3bd4ee49d1c385f9f27b4";
+              [14] = "김동민";
+            };
+            853947057562714133 = {
+              [1] = "#Recursive detected#";
+              [2] = "6394";
+              [4] = "853947057562714133";
+              [6] = true;
+              [7] = "1ad94c5a4683d207df4e593070586317";
+              [14] = "DUSK's Bot";
+            };
+            827428530559254589 = {
+              [1] = "#Recursive detected#";
+              [2] = "0462";
+              [4] = "827428530559254589";
+              [6] = true;
+              [7] = "0057c770696149efa509985ff3c54e31";
+              [14] = "Bun";
+            };
+            755378215907885116 = {
+              [1] = "#Recursive detected#";
+              [2] = "4189";
+              [4] = "755378215907885116";
+              [7] = "59bd4cc90aa3e0e80356d125df0401c5";
+              [10] = 64;
+              [14] = "SATGOD";
+            };
+            234395307759108106 = {
+              [1] = "#Recursive detected#";
+              [2] = "7254";
+              [4] = "234395307759108106";
+              [6] = true;
+              [7] = "0e7adc5d634d957b7725021c067bfd87";
+              [10] = 65536;
+              [14] = "Groovy";
+            };
+            864089849933070346 = {
+              [1] = "#Recursive detected#";
+              [2] = "8470";
+              [14] = "모바일_래빗";
+              [4] = "864089849933070346";
+            };
+            686077975392944156 = {
+              [1] = "#Recursive detected#";
+              [2] = "3902";
+              [4] = "686077975392944156";
+              [7] = "a_db7543054a2f1f08bf079a4f8e722fee";
+              [10] = 64;
+              [14] = "Doge";
+            };
+            740104929804288031 = {
+              [1] = "#Recursive detected#";
+              [2] = "7305";
+              [4] = "740104929804288031";
+              [7] = "f9773d65b7f005fe09410d243215aa23";
+              [10] = 64;
+              [14] = "DUSK_";
+            };
+            218010938807287808 = {
+              [1] = "#Recursive detected#";
+              [2] = "1657";
+              [4] = "218010938807287808";
+              [6] = true;
+              [7] = "be6672594da87c2c8d33d09c63d7351d";
+              [10] = 65536;
+              [14] = "마냥";
+            };
+            701402995484655697 = {
+              [1] = "#Recursive detected#";
+              [2] = "8187";
+              [4] = "701402995484655697";
+              [7] = "e266aa5c22456a2d6ab779cef477df94";
+              [14] = "용용";
+            };
+            889791736270974976 = {
+              [1] = "#Recursive detected#";
+              [2] = "4729";
+              [14] = "김치";
+              [4] = "889791736270974976";
+            };
+            465767189375483907 = {
+              [1] = "#Recursive detected#";
+              [2] = "4432";
+              [4] = "465767189375483907";
+              [7] = "b81d91cac1d64948bdea35e641e4cef0";
+              [10] = 0;
+              [14] = "ㅇ0ㅇ";
+            };
+            855704481135460362 = {
+              [1] = "#Recursive detected#";
+              [2] = "1883";
+              [4] = "855704481135460362";
+              [7] = "9c3dec743e97179eb95ae7c970bec611";
+              [14] = "furan";
+            };
+            349181518456815626 = {
+              [1] = "#Recursive detected#";
+              [2] = "9235";
+              [4] = "349181518456815626";
+              [7] = "0c1a7d3b70db64d3420e17abdea68484";
+              [10] = 128;
+              [14] = "GukJin";
+            };
+            769154913766080543 = {
+              [1] = "#Recursive detected#";
+              [2] = "0485";
+              [4] = "769154913766080543";
+              [7] = "2463939f152d9487483d51005b2a1afb";
+              [14] = "seop";
+            };
+          };
+          [7] = "#Recursive detected#";
+          [8] = "#Recursive detected#";
+          [9] = "#Recursive detected#";
+          [10] = "#Recursive detected#";
+          [11] = {};
+          [12] = {
+            [1] = 3;
+            [2] = "%F %T";
+            [3] = 3;
+          };
+          [13] = {
+            [1] = {};
+            [2] = "#Recursive detected#";
+          };
+          [14] = {
+            877038377118081036 = {
+              [1] = "#Recursive detected#";
+              [2] = false;
+              [3] = "870243263825707018";
+              [4] = "#Recursive detected#";
+              [5] = "#Recursive detected#";
+              [6] = "#Recursive detected#";
+              [7] = "#Recursive detected#";
+              [8] = "#Recursive detected#";
+              [9] = "#Recursive detected#";
+              [10] = {};
+              [12] = 0;
+              [13] = false;
+              [15] = 0;
+              [16] = 0;
+              [17] = 300;
+              [19] = "870243263825707021";
+              [20] = 9;
+              [21] = 25;
+              [22] = 0;
+              [23] = 250000;
+              [24] = 0;
+              [26] = 0;
+              [27] = "en-US";
+              [28] = true;
+              [30] = false;
+              [31] = "south-korea";
+              [33] = "테스트 서버";
+              [34] = 0;
+              [35] = 0;
+              [39] = "2021-09-26T10:16:53.069486+00:00";
+              [41] = 0;
+              [42] = "755378215907885116";
+              [43] = {};
+            };
+            827199450774372382 = {
+              [1] = "#Recursive detected#";
+              [2] = false;
+              [3] = "819762474348707850";
+              [4] = "#Recursive detected#";
+              [5] = "#Recursive detected#";
+              [6] = "#Recursive detected#";
+              [7] = "#Recursive detected#";
+              [8] = "#Recursive detected#";
+              [9] = "#Recursive detected#";
+              [10] = {};
+              [12] = 0;
+              [13] = false;
+              [15] = 0;
+              [16] = 0;
+              [17] = 300;
+              [18] = "819765068203819038";
+              [19] = "819805193767354398";
+              [20] = 23;
+              [21] = 25;
+              [22] = 37;
+              [23] = 250000;
+              [24] = 0;
+              [26] = 0;
+              [27] = "en-US";
+              [28] = true;
+              [30] = false;
+              [31] = "south-korea";
+              [32] = "fe959779eef1e989234d7ea3df1afcfe";
+              [33] = "비정상 모임";
+              [34] = 0;
+              [35] = 0;
+              [39] = "2021-06-05T03:24:53.405689+00:00";
+              [41] = 0;
+              [42] = "415804982764371969";
+              [43] = {};
+            };
+            827211779930718209 = "#Recursive detected#";
+            827214987743068211 = "#Recursive detected#";
+            819762474348707850 = "#Recursive detected#";
+            827212586373611550 = "#Recursive detected#";
+            891629393280106497 = "#Recursive detected#";
+            824949557602942986 = "#Recursive detected#";
+            827215618184708106 = "#Recursive detected#";
+            832163847275413534 = {
+              [1] = "#Recursive detected#";
+              [2] = false;
+              [3] = "754620784986685472";
+              [4] = "#Recursive detected#";
+              [5] = "#Recursive detected#";
+              [6] = "#Recursive detected#";
+              [7] = "#Recursive detected#";
+              [8] = "#Recursive detected#";
+              [9] = "#Recursive detected#";
+              [10] = {};
+              [12] = 0;
+              [13] = false;
+              [15] = 0;
+              [16] = 0;
+              [17] = 300;
+              [19] = "754620785426956351";
+              [20] = 8;
+              [21] = 25;
+              [22] = 0;
+              [23] = 250000;
+              [24] = 0;
+              [26] = 0;
+              [27] = "en-US";
+              [28] = true;
+              [30] = false;
+              [31] = "south-korea";
+              [32] = "257602e77e4f3cfed020edd275e03d4a";
+              [33] = "4명모임 ㅋㅋ";
+              [34] = 0;
+              [35] = 0;
+              [39] = "2021-09-22T12:43:09.020000+00:00";
+              [41] = 0;
+              [42] = "754620012450414682";
+              [43] = {};
+            };
+            831901563470741556 = "#Recursive detected#";
+            819794709400387584 = "#Recursive detected#";
+            837628664211439666 = "#Recursive detected#";
+            754620784986685472 = "#Recursive detected#";
+            828272433089085490 = "#Recursive detected#";
+            836985971240206386 = "#Recursive detected#";
+            889438990153941002 = "#Recursive detected#";
+            827199883152588860 = "#Recursive detected#";
+            827211529950199879 = "#Recursive detected#";
+            840888485338546186 = "#Recursive detected#";
+            847125355848138812 = "#Recursive detected#";
+            828614761687416893 = "#Recursive detected#";
+            830737930515120128 = "#Recursive detected#";
+            833877360549560360 = "#Recursive detected#";
+            820547375633793046 = "#Recursive detected#";
+            827204407627218996 = "#Recursive detected#";
+            832163751448412181 = "#Recursive detected#";
+            842970190017855509 = "#Recursive detected#";
+            827214508921192518 = "#Recursive detected#";
+            833905546100342834 = "#Recursive detected#";
+            890216650744418306 = "#Recursive detected#";
+            827212726458777660 = "#Recursive detected#";
+            830779346591154196 = "#Recursive detected#";
+            827201590728458261 = "#Recursive detected#";
+            827200443267678258 = "#Recursive detected#";
+            832163412335001631 = "#Recursive detected#";
+            877037154612690964 = "#Recursive detected#";
+            797469591244767262 = "#Recursive detected#";
+            874444935682728027 = "#Recursive detected#";
+            828614685137436692 = "#Recursive detected#";
+            827213936625582100 = "#Recursive detected#";
+            870243263825707018 = "#Recursive detected#";
+            827205515897077800 = "#Recursive detected#";
+            843860051248414740 = "#Recursive detected#";
+            827215106399404052 = "#Recursive detected#";
+            827212302670757978 = "#Recursive detected#";
+            838463068953641011 = "#Recursive detected#";
+            838938463390138398 = "#Recursive detected#";
+            819794412686540810 = "#Recursive detected#";
+            831563270406012940 = "#Recursive detected#";
+            844775961463095356 = "#Recursive detected#";
+            827210690644279352 = "#Recursive detected#";
+            819902159733915679 = "#Recursive detected#";
+            864001689493307442 = "#Recursive detected#";
+            772816335859089420 = "#Recursive detected#";
+            836986778254442536 = "#Recursive detected#";
+            827211406155710544 = "#Recursive detected#";
+            827200876472041482 = "#Recursive detected#";
+            827199780442734632 = "#Recursive detected#";
+            827211654235291699 = "#Recursive detected#";
+            827205130544742470 = "#Recursive detected#";
+            819776535367122944 = "#Recursive detected#";
+            827215368182562817 = "#Recursive detected#";
+            820547203700883466 = "#Recursive detected#";
+            833246221803061258 = "#Recursive detected#";
+            827211309305036861 = "#Recursive detected#";
+            831172853234663495 = "#Recursive detected#";
+            827211138650341396 = "#Recursive detected#";
+            820547941751717951 = "#Recursive detected#";
+            827210415398322176 = "#Recursive detected#";
+            827201489180557362 = "#Recursive detected#";
+            827204685844185149 = "#Recursive detected#";
+            827213593086525531 = "#Recursive detected#";
+            827215453805477938 = "#Recursive detected#";
+            827201147977859103 = "#Recursive detected#";
+            827201306354909264 = "#Recursive detected#";
+            825272974701101056 = "#Recursive detected#";
+            824955839525421116 = "#Recursive detected#";
+            827215586865971200 = "#Recursive detected#";
+            835057924736679936 = "#Recursive detected#";
+            843479263382732801 = "#Recursive detected#";
+            830805981499359252 = "#Recursive detected#";
+            842059252230914119 = "#Recursive detected#";
+            850575882719854633 = "#Recursive detected#";
+            838462637208502292 = "#Recursive detected#";
+            827212824320802856 = "#Recursive detected#";
+            827200254063542342 = "#Recursive detected#";
+            846087127451303996 = "#Recursive detected#";
+            847498131586154536 = "#Recursive detected#";
+            827212183363780640 = "#Recursive detected#";
+            830805323425644544 = "#Recursive detected#";
+            827205182240456796 = "#Recursive detected#";
+            832163652916346901 = "#Recursive detected#";
+            833337171624722493 = "#Recursive detected#";
+            871341242632511518 = "#Recursive detected#";
+            797669760485031966 = "#Recursive detected#";
+            827213831188905994 = "#Recursive detected#";
+            827200754728435733 = "#Recursive detected#";
+            827214269586210876 = "#Recursive detected#";
+            826149287658127411 = "#Recursive detected#";
+            827215230399414352 = "#Recursive detected#";
+            829344351271387136 = "#Recursive detected#";
+            827200241371316234 = "#Recursive detected#";
+            827213693527523339 = "#Recursive detected#";
+            819794054304628767 = "#Recursive detected#";
+            827205383902068788 = "#Recursive detected#";
+            847498144258457690 = "#Recursive detected#";
+            830747775184142356 = "#Recursive detected#";
+            819780697635029012 = "#Recursive detected#";
+          };
+          [15] = {
+            844617279807291432 = "#Recursive detected#";
+            830419196247539752 = "#Recursive detected#";
+            841972215658708993 = "#Recursive detected#";
+            844617394625183804 = "#Recursive detected#";
+            872644807821000764 = "#Recursive detected#";
+            830732467434422282 = "#Recursive detected#";
+            872645119105437716 = "#Recursive detected#";
+            872645418905919498 = "#Recursive detected#";
+            872644861730390016 = "#Recursive detected#";
+            844617509347786802 = "#Recursive detected#";
+            844617111288807474 = "#Recursive detected#";
+            872644618708205619 = "#Recursive detected#";
+            872644930860879872 = "#Recursive detected#";
+            841972315972960266 = "#Recursive detected#";
+            830419151079211028 = "#Recursive detected#";
+            841972275392806942 = "#Recursive detected#";
+            872644765311701012 = "#Recursive detected#";
+          };
+          [16] = {
+            889442998990028810 = "#Recursive detected#";
+            829977731545825300 = "#Recursive detected#";
+            819763541460254721 = "#Recursive detected#";
+            772816336749461535 = "#Recursive detected#";
+            828807746270920704 = "#Recursive detected#";
+            829228170926489630 = "#Recursive detected#";
+            833921431477420043 = "#Recursive detected#";
+            830395166945968129 = "#Recursive detected#";
+            829977563685978203 = "#Recursive detected#";
+            870243263825707021 = "#Recursive detected#";
+            772816336749461536 = "#Recursive detected#";
+            836747891694501909 = "#Recursive detected#";
+            819833872987455498 = "#Recursive detected#";
+            819805193767354398 = "#Recursive detected#";
+            819763571117916160 = "#Recursive detected#";
+            829977268452982826 = "#Recursive detected#";
+            754620785426956349 = "#Recursive detected#";
+            754620785426956350 = "#Recursive detected#";
+            842041669750882311 = "#Recursive detected#";
+            833588321463828490 = "#Recursive detected#";
+            772816336749461539 = "#Recursive detected#";
+            835782189069238292 = "#Recursive detected#";
+            819766398599299164 = "#Recursive detected#";
+            819763503795404810 = "#Recursive detected#";
+            842041735387021332 = "#Recursive detected#";
+            850947178218127360 = "#Recursive detected#";
+            870243263825707019 = "#Recursive detected#";
+            835796172328796182 = "#Recursive detected#";
+            870243263825707020 = "#Recursive detected#";
+            819764858912243753 = "#Recursive detected#";
+            838950914668232714 = "#Recursive detected#";
+            833921581230325781 = "#Recursive detected#";
+            870243263825707022 = "#Recursive detected#";
+            829546628830199808 = "#Recursive detected#";
+            819764250766999563 = "#Recursive detected#";
+            754620785426956352 = "#Recursive detected#";
+            829977619830276196 = "#Recursive detected#";
+            835771021126008852 = "#Recursive detected#";
+            796349439958319125 = "#Recursive detected#";
+            819765068203819038 = "#Recursive detected#";
+            819764632323358790 = "#Recursive detected#";
+            754620785426956351 = "#Recursive detected#";
+            828533666299904030 = "#Recursive detected#";
+          };
+          [17] = {
+            PRESENCE_UPDATE = function: 0x02119b58e148;
+            RELATIONSHIP_REMOVE = function: 0x02119b58e1b0;
+            GUILD_MEMBERS_CHUNK = function: 0x02119b58d4c8;
+            CHANNEL_DELETE = function: 0x02119b58d730;
+            MESSAGE_CREATE = function: 0x02119b58dec8;
+            MESSAGE_UPDATE = function: 0x02119b58df40;
+            WEBHOOKS_UPDATE = function: 0x02119b58e938;
+            GUILD_CREATE = function: 0x02119b58d930;
+            READY = function: 0x02119b58d370;
+            GUILD_SYNC = function: 0x02119b58d5a8;
+            GUILD_MEMBER_REMOVE = function: 0x02119b58dde8;
+            MESSAGE_DELETE_BULK = function: 0x02119b58dfc0;
+            RESUMED = function: 0x02119b58d498;
+            GUILD_ROLE_DELETE = function: 0x02119b58de90;
+            CHANNEL_UPDATE = function: 0x02119b58d6f0;
+            RELATIONSHIP_ADD = function: 0x02119b58e180;
+            MESSAGE_REACTION_REMOVE_ALL = function: 0x02119b58e0c8;
+            MESSAGE_REACTION_REMOVE = function: 0x02119b58e080;
+            GUILD_EMOJIS_UPDATE = function: 0x02119b58da38;
+            CHANNEL_PINS_UPDATE = function: 0x02119b58e108;
+            GUILD_MEMBER_ADD = function: 0x02119b58da70;
+            TYPING_START = function: 0x02119b58e1e0;
+            CHANNEL_RECIPIENT_ADD = function: 0x02119b58d460;
+            VOICE_SERVER_UPDATE = function: 0x02119b58e8f8;
+            VOICE_STATE_UPDATE = function: 0x02119b58e878;
+            GUILD_MEMBER_UPDATE = function: 0x02119b58daa8;
+            CHANNEL_CREATE = function: 0x02119b58d5e8;
+            MESSAGE_REACTION_ADD = function: 0x02119b58e000;
+            GUILD_BAN_ADD = function: 0x02119b58d9c8;
+            GUILD_ROLE_UPDATE = function: 0x02119b58de58;
+            USER_UPDATE = function: 0x02119b58e818;
+            CHANNEL_RECIPIENT_REMOVE = function: 0x02119b58d770;
+            MESSAGE_DELETE = function: 0x02119b58df80;
+            GUILD_BAN_REMOVE = function: 0x02119b58da00;
+            GUILD_DELETE = function: 0x02119b58d998;
+            GUILD_ROLE_CREATE = function: 0x02119b58de20;
+            GUILD_UPDATE = function: 0x02119b58d968;
+          };
+          [18] = {
+            status = {};
+            since = "#Recursive detected#";
+            afk = "#Recursive detected#";
+            game = {
+              name = "'미나야 도움말' 을 이용해 도움말을 얻거나 '미나야 <할말>' 을 이용해 미나와 대화하세요!";
+              type = 0;
+            };
+          };
+          [19] = "#Recursive detected#";
+          [20] = "Bot ODI4ODk0NDgxMjg5OTY5NjY1.YGwOJA.UKTxDbmGaDah782PWD9SSDbkY-0";
+          [21] = "#Recursive detected#";
+          [22] = 1;
+          [23] = 1;
+        };
+        [2] = false;
+        [3] = "772816335859089420";
+        [4] = "#Recursive detected#";
+        [5] = "#Recursive detected#";
+        [6] = "#Recursive detected#";
+        [7] = "#Recursive detected#";
+        [8] = "#Recursive detected#";
+        [9] = "#Recursive detected#";
+        [10] = {
+          828894481289969665 = {
+            self_video = false;
+            member = {
+              deaf = false;
+              mute = false;
+              user = {
+                discriminator = "6938";
+                id = "828894481289969665";
+                username = "미나 (BETA-2)";
+                avatar = "48aae1de0adbf0a8e9b16350add0f3a2";
+                bot = true;
+              };
+              hoisted_role = "#Recursive detected#";
+              joined_at = "2021-04-12T14:24:10.702000+00:00";
+              roles = {
+                [1] = "831172853234663495";
+              };
+            };
+            session_id = "f3bbc2cb6899fca810de085f770125df";
+            mute = false;
+            token = "50a764f9c9f0da35";
+            guild_id = "772816335859089420";
+            channel_id = "772816336749461539";
+            suppress = false;
+            self_deaf = false;
+            self_mute = false;
+            user_id = "828894481289969665";
+            deaf = false;
+            request_to_speak_timestamp = "#Recursive detected#";
+            endpoint = "south-korea1026.discord.media:443";
+          };
+          756035861250048031 = {
+            self_video = false;
+            session_id = "0b049d642aaedae02d10a6d60316dd34";
+            channel_id = "772816336749461539";
+            suppress = false;
+            self_deaf = false;
+            self_mute = true;
+            user_id = "756035861250048031";
+            deaf = false;
+            request_to_speak_timestamp = "#Recursive detected#";
+            mute = false;
+          };
+        };
+        [12] = 0;
+        [13] = false;
+        [15] = 0;
+        [16] = 0;
+        [17] = 300;
+        [20] = 7;
+        [21] = 25;
+        [22] = 0;
+        [23] = 250000;
+        [24] = 0;
+        [26] = 0;
+        [27] = "en-US";
+        [28] = true;
+        [30] = false;
+        [31] = "south-korea";
+        [33] = "테스트 하는곳";
+        [34] = 0;
+        [35] = 0;
+        [39] = "2021-04-12T14:24:10.702000+00:00";
+        [41] = 0;
+        [42] = "756035861250048031";
+        [43] = {};
+        [44] = {
+          [1] = {
+            [1] = "#Recursive detected#";
+            [3] = "772816336749461539";
+            [5] = 0;
+            [6] = "772816336749461536";
+            [7] = 64000;
+            [8] = 2;
+            [10] = "General";
+            [11] = 0;
+            [12] = "#Recursive detected#";
+            [14] = "#Recursive detected#";
+          };
+          [2] = {};
+          [4] = "cdata<const unsigned char [32]>: 0x02119b603e88";
+          [5] = {
+            [1] = {};
+            [2] = "#Recursive detected#";
+            [3] = "#Recursive detected#";
+            [4] = {
+              [1] = 4712125107400;
+            };
+            [5] = "#Recursive detected#";
+            [6] = "#Recursive detected#";
+            [7] = "#Recursive detected#";
+            [8] = "#Recursive detected#";
+            [9] = "f3bbc2cb6899fca810de085f770125df";
+            [10] = function: 0x02119b743118;
+            [11] = function: 0x02119b832620;
+            [13] = uv_timer_t: 0x02119b922e00;
+            [14] = "xsalsa20_poly1305";
+            [15] = 320733;
+            [16] = uv_udp_t: 0x02119b969530;
+            [17] = "35.216.53.45";
+            [18] = 50001;
+          };
+          [6] = "35.216.53.45";
+          [7] = 50001;
+          [8] = uv_udp_t: 0x02119b969530;
+          [9] = 320733;
+          [10] = "xsalsa20_poly1305";
+          [11] = "#Recursive detected#";
+          [12] = "#Recursive detected#";
+          [13] = 121;
+          [14] = 116160;
+          [15] = "cdata<struct OpusEncoder *>: 0x02119b9895e0";
+          [16] = true;
+          [17] = true;
+        };
+      };
+      [2] = 0;
+      [3] = 2;
+      [4] = "796349439958319125";
+      [5] = "772816336749461535";
+      [6] = 0;
+      [7] = "891675117749432370";
+      [8] = "테스팅";
+      [10] = "#Recursive detected#";
+      [11] = "#Recursive detected#";
+    };
+    [2] = "891675775877652522";
+    [3] = "2021-09-26T13:21:11.504000+00:00";
+    [4] = "772816335859089420";
+    [5] = "891675771624488960";
+    [6] = false;
+    [7] = false;
+    [8] = "미나야 음악 리스트";
+    [9] = "796349439958319125";
+    [10] = 0;
+    [11] = 0;
+    [13] = false;
+    [15] = "#Recursive detected#";
+  };
+}
+{
+  channelID = "772816336749461539";
+  timestemp = "Sun Sep 26 22:22:51 2021";
+  title = "playing music";
+}
+{
+  channelID = "772816336749461539";
+  timestemp = "Sun Sep 26 22:26:34 2021";
+  title = "playing music";
+}
