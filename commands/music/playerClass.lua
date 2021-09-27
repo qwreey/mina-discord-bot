@@ -20,6 +20,7 @@ function this.new(props)
 	new.voiceChannelID = props.voiceChannelID;
 	new.nowPlaying = nil;
 	new.handler = props.handler;
+	new.isPaused = false;
 	setmetatable(new,this);
 	return new;
 end
@@ -49,9 +50,11 @@ function this:__stop() -- PRIVATE
 	self.handler:stopStream();
 end
 function this:resume()
+	self.isPaused = false;
 	self.handler:resumeStream();
 end
 function this:pause()
+	self.isPaused = true;
 	self.handler:pauseStream();
 end
 --#endregion : Stream handling methods
