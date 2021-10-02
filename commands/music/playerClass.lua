@@ -107,32 +107,32 @@ function this:kill()
 	end
 end
 
-local itemPerPage = 0;
-function this:embedfiyList(page)
-	page = page or 1;
-	local fields = {};
-	for index = itemPerPage * (page-1) + 1,page * itemPerPage do
+-- local itemPerPage = 0;
+-- function this:embedfiyList(page)
+-- 	page = page or 1;
+-- 	local fields = {};
+-- 	for index = itemPerPage * (page-1) + 1,page * itemPerPage do
 		
-	end
-	if #fields == 0 then
-		if page == 1 then
-			return {
-				footer = {
-					text = "1 페이지";
-				};
-				title = "재생 목록이 비어있습니다";
-				color = 16040191;
-			};
-		end
-		return {
-			footer = {
-				text = ("%d");
-			};
-			title = "페이지가 비어있습니다";
-			color = 16040191;
-		};
-	end
-end
+-- 	end
+-- 	if #fields == 0 then
+-- 		if page == 1 then
+-- 			return {
+-- 				footer = {
+-- 					text = "1 페이지";
+-- 				};
+-- 				title = "재생 목록이 비어있습니다";
+-- 				color = 16040191;
+-- 			};
+-- 		end
+-- 		return {
+-- 			footer = {
+-- 				text = ("%d");
+-- 			};
+-- 			title = "페이지가 비어있습니다";
+-- 			color = 16040191;
+-- 		};
+-- 	end
+-- end
 
 function this:embedfiy()
 	local fields = {};

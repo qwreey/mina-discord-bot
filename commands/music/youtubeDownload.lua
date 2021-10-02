@@ -31,7 +31,6 @@ function module.download(vid)
 	end
 	fs.writeFile(("data/youtubeFiles/%s.info"):format(vid),info);
 	newProcess.waitExit();
-	p(info);
 	for _,str in ipairs(exts) do
 		local this = filePath:format(str);
 		if fs.existsSync(this) then
@@ -52,7 +51,7 @@ function module.download(vid)
 end
 
 function module.getVID(url)
-	return url:match("watch%?v=(...........)") or url;
+	return url:match("watch%?v=(...........)") or url:match("https://youtu%.be/(...........)") or url;
 end
 
 return module;
