@@ -27660,3 +27660,2133 @@
   timestemp = "Sun Sep 26 22:26:34 2021";
   title = "playing music";
 }
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 00:28:36 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 11:56:31 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 11:58:16 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 12:16:39 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 12:19:42 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 12:23:11 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 13:38:51 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 13:42:50 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 13:47:30 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 14:00:49 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 14:04:31 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 14:10:23 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 14:16:10 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 14:23:49 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 14:27:53 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 14:32:06 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 14:34:52 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 14:39:36 2021";
+  title = "playing music";
+}
+{
+  timestemp = "Sat Oct  2 14:43:01 2021";
+  info = "{\"id\": \"B61nm9OHt5A\", \"title\": \"The Red Knot\", \"formats\": [{\"asr\": 48000, \"filesize\": 1771169, \"format_id\": \"249\", \"format_note\": \"tiny\", \"fps\": null, \"height\": null, \"quality\": 0, \"tbr\": 52.308, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=249&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=audio%2Fwebm&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=1771169&dur=270.881&lmt=1565564114079122&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5431432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRgIhAOTbvHIKdw4a-c8vEEL4yGdDj-UPdQvnp7d3iIAQQV18AiEAhCTbyY-J4K1k5a8KCMa1Duer2ZMexpf8Fh4L-F8r2GI%3D&sig=AOq0QJ8wRgIhALNB0R0YPE-3DgO2gvtOnIpK8vCoZlAvmWHPxSX8HGSwAiEA-JhgZ8oviOM1V3zjI4ZhojfWX8cUlP-mvA9dgQf6KLI=\", \"width\": null, \"ext\": \"webm\", \"vcodec\": \"none\", \"acodec\": \"opus\", \"abr\": 52.308, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"webm_dash\", \"format\": \"249 - audio only (tiny)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": 48000, \"filesize\": 2351946, \"format_id\": \"250\", \"format_note\": \"tiny\", \"fps\": null, \"height\": null, \"quality\": 0, \"tbr\": 69.46, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=250&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=audio%2Fwebm&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=2351946&dur=270.881&lmt=1565564117383373&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5431432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRAIgJaVNC9crlC4chB_ny3zTjH9f4-xU_uCCuJ9StNmTEWYCICFcGzkcuBcaknW5uqvzHBiQe6CzLn96cLShscC7rsft&sig=AOq0QJ8wRgIhAIgQOdkjlJ18ERIpOFsNh3yKvILlpaCt9a4kneKECNCxAiEA5QGGleSutJx5D2tc8KpnkGHanW9DAlRErHns43zBirs=\", \"width\": null, \"ext\": \"webm\", \"vcodec\": \"none\", \"acodec\": \"opus\", \"abr\": 69.46, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"webm_dash\", \"format\": \"250 - audio only (tiny)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": 44100, \"filesize\": 4385355, \"format_id\": \"140\", \"format_note\": \"tiny\", \"fps\": null, \"height\": null, \"quality\": 0, \"tbr\": 129.521, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=140&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=audio%2Fmp4&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=4385355&dur=270.866&lmt=1565564116174711&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5431432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIgXXdVJI_6Gl0c0xiTs7zXetife51NHPByXDvUxxRxUPgCIQCkuDA0yq_pCBmWbQdtGcMAZBx3TSFWHfRpJMWINkYCWw%3D%3D&sig=AOq0QJ8wRgIhAIx36vBwioUytkgPWdFIHsEZSfYAiNYWiXrTJ6P3J9AsAiEA_2q1wCoFadHhPAZ0sbKGOQ5XW7ZZ6H74ZpOs2P81a7k=\", \"width\": null, \"ext\": \"m4a\", \"vcodec\": \"none\", \"acodec\": \"mp4a.40.2\", \"abr\": 129.521, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"m4a_dash\", \"format\": \"140 - audio only (tiny)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": 48000, \"filesize\": 4612909, \"format_id\": \"251\", \"format_note\": \"tiny\", \"fps\": null, \"height\": null, \"quality\": 0, \"tbr\": 136.234, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=251&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=audio%2Fwebm&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=4612909&dur=270.881&lmt=1565564117385303&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5431432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIhAIbvxRfy-kUByUuPf-vxc7pd6mt3is5M64_DSEzdNY0mAiAqjc87Imf11oj62y51_XSmtD27a8CvuKyj1RVP93QSsw%3D%3D&sig=AOq0QJ8wRgIhAKi-yL2hm0G9P2cQ1XBOqtyn0u-lWLz6LEcLlEWGWxCmAiEA2-Fa2ky2SPcNbLnEz5sR4hVj5YrMJbhg2OCUaaRz0qI=\", \"width\": null, \"ext\": \"webm\", \"vcodec\": \"none\", \"acodec\": \"opus\", \"abr\": 136.234, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"webm_dash\", \"format\": \"251 - audio only (tiny)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 383355, \"format_id\": \"160\", \"format_note\": \"144p\", \"fps\": 25, \"height\": 144, \"quality\": 0, \"tbr\": 11.323, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=160&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=video%2Fmp4&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=383355&dur=270.840&lmt=1565564129220962&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5432432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIgC_60yDTujDgBVDqjmI2mvqavQ5aldKeJCf0m6zY_nEECIQDRabf4GE1XAVFadxtS_Jzx16oVTsnHtp8IvLoQKEdZ2g%3D%3D&sig=AOq0QJ8wRQIgbWF2wG9uKI66cw3A-ru8Qe0-hPuRWl5oXOcIh3LWWjYCIQC9kvl0dLwHiXZI53eF8ObCyoEqzE-u8A5jSCofRWyp6w==\", \"width\": 144, \"ext\": \"mp4\", \"vcodec\": \"avc1.4d400b\", \"acodec\": \"none\", \"vbr\": 11.323, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"160 - 144x144 (144p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 765472, \"format_id\": \"278\", \"format_note\": \"144p\", \"fps\": 25, \"height\": 144, \"quality\": 0, \"tbr\": 22.61, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=278&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=video%2Fwebm&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=765472&dur=270.840&lmt=1565564129940445&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5431432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIhAL44NeWWrhPzePLF_gbsmKk42kGQ3KhjbLPjIWXJAeNVAiB_MR9lIwuz_7BCJrP_GorkxAEALeuWTbEdvJrxJXbxsQ%3D%3D&sig=AOq0QJ8wRAIgYVHF_BldJamFyP2NB6Ht2G6Y9b08TlkwGhlV3cUwQI0CIFoBO0hF8-ldif7E6WAbejw_1JOrH6g-oLEe9uDMlm7h\", \"width\": 144, \"ext\": \"webm\", \"vcodec\": \"vp9\", \"acodec\": \"none\", \"vbr\": 22.61, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"webm_dash\", \"format\": \"278 - 144x144 (144p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 973175, \"format_id\": \"394\", \"format_note\": \"144p\", \"fps\": 25, \"height\": 144, \"quality\": 0, \"tbr\": 28.745, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=394&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=video%2Fmp4&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=973175&dur=270.840&lmt=1623759589988493&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5436432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRAIgbRy60WK4ROFKhWwivlc46hCu2m7Lxb6yeydw4cJh81gCIGFdXBaPrCV32OTRZrlHAFmcLl8WpAdc_bH75nxHRlaP&sig=AOq0QJ8wRAIgcbKyjroeDXVrDZnTYNd3uGOmvCYHYYPj49mpf3KxqW4CIFh69lhIsO2hX2dZDJwS1iGlyPd0kFUeWZkiCLsqiNC3\", \"width\": 144, \"ext\": \"mp4\", \"vcodec\": \"av01.0.00M.08\", \"acodec\": \"none\", \"vbr\": 28.745, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"394 - 144x144 (144p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 595372, \"format_id\": \"133\", \"format_note\": \"240p\", \"fps\": 25, \"height\": 240, \"quality\": 1, \"tbr\": 17.585, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=133&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=video%2Fmp4&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=595372&dur=270.840&lmt=1565564125200037&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5432432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRAIgFfwWu3bXj9Y6IBZCIFtQv1dNvXnv5swz2buaI__c_SMCIAUT1eJG3h44XxCk9KAeM22YKTzfVrvQCBAfAi5v3DXE&sig=AOq0QJ8wRgIhAMRlUnllvZU0Ry9MaCIosRB6QHG6arjSOUYUGF05_aDxAiEArfHUJ4NoVWCQimgjANc2cC5smYfJJueKNYiE7BSkdqU=\", \"width\": 240, \"ext\": \"mp4\", \"vcodec\": \"avc1.4d400c\", \"acodec\": \"none\", \"vbr\": 17.585, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"133 - 240x240 (240p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 1408432, \"format_id\": \"242\", \"format_note\": \"240p\", \"fps\": 25, \"height\": 240, \"quality\": 1, \"tbr\": 41.601, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=242&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=video%2Fwebm&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=1408432&dur=270.840&lmt=1565564131849678&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5431432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRgIhANc-tRf9MzXrinkh_DrhvOiO00-septIl0JKFGwGn81zAiEAvslfXmTRyVDfDQS-HCrvMm0ga-wISJfhtlg2vPIqjxQ%3D&sig=AOq0QJ8wRAIgYkAJgwt3Uh5O8yQAf_LVNUBdjJtbEyCWNP1DU3QNMnYCIDOxYI9yUnxGrSmbuErlRcaPC9qZIe8oYBVBfHAMVd4o\", \"width\": 240, \"ext\": \"webm\", \"vcodec\": \"vp9\", \"acodec\": \"none\", \"vbr\": 41.601, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"webm_dash\", \"format\": \"242 - 240x240 (240p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 1730267, \"format_id\": \"395\", \"format_note\": \"240p\", \"fps\": 25, \"height\": 240, \"quality\": 1, \"tbr\": 51.108, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=395&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=video%2Fmp4&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=1730267&dur=270.840&lmt=1623759591172535&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5436432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIgWJgLD9jsX89JzH8MCgIooLi7wnvuI79mdCVLjprieecCIQDApSbTYGrMtzsAl12DlffW3w-iMN3-9d0YOQhF16eMLQ%3D%3D&sig=AOq0QJ8wRQIhALQ51A4TVG-o4nC_kD6ephWU6L-knlsMpxwKhDMdo9qYAiBGeiGfk4V1eAdCNYjClii9eUrS3DjzPupgSw2hE97mZA==\", \"width\": 240, \"ext\": \"mp4\", \"vcodec\": \"av01.0.00M.08\", \"acodec\": \"none\", \"vbr\": 51.108, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"395 - 240x240 (240p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 1157056, \"format_id\": \"134\", \"format_note\": \"360p\", \"fps\": 25, \"height\": 360, \"quality\": 2, \"tbr\": 34.176, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=134&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=video%2Fmp4&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=1157056&dur=270.840&lmt=1565564128611640&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5432432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIhALuwBvZgVCN3xjCcVHuzZcEudOjiTIBvDxY5qo8z105SAiB_rRBSTfqDlQphoy7aTVSe8pkR6yT0UCOaaljUf95DyQ%3D%3D&sig=AOq0QJ8wRQIgBFatLmjzpOuU3hU3sabh3NoJrmVwqrREdboLR1eD0ygCIQDhk_yQeO5A-L213wtCSoxBhvhhyJjo_hyR548cmQ10bA==\", \"width\": 360, \"ext\": \"mp4\", \"vcodec\": \"avc1.4d4015\", \"acodec\": \"none\", \"vbr\": 34.176, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"134 - 360x360 (360p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 2354097, \"format_id\": \"243\", \"format_note\": \"360p\", \"fps\": 25, \"height\": 360, \"quality\": 2, \"tbr\": 69.534, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=243&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=video%2Fwebm&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=2354097&dur=270.840&lmt=1565564166601272&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5431432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRAIgOmejYsUiXVfr4On_eYQlpFSe9w0iiF724qh9-k7YFHACIBqvjMXYmfwiasq-mIWv05X4cnGApe_Zqqr7aKwIwI0m&sig=AOq0QJ8wRgIhAPcyJZu96MR-0mjbnJXD-Z7Saa81glMS0p54XSy9faJkAiEA4h1ZzWuXSqCqa-AcenMnywROvViTBkx4rc97I3njMJc=\", \"width\": 360, \"ext\": \"webm\", \"vcodec\": \"vp9\", \"acodec\": \"none\", \"vbr\": 69.534, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"webm_dash\", \"format\": \"243 - 360x360 (360p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 2626908, \"format_id\": \"396\", \"format_note\": \"360p\", \"fps\": 25, \"height\": 360, \"quality\": 2, \"tbr\": 77.592, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=396&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=video%2Fmp4&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=2626908&dur=270.840&lmt=1623759590168759&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5436432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIgRyVrfFZnG6nJNxPLzJjxxDur2Bd1AaMplieP9yZbz88CIQCrEQqYoMxQbpUSlEFb_nomXnAO_Ms0ruGKBXCZySLYUw%3D%3D&sig=AOq0QJ8wRAIgIDto6H2UMsrRXEXzXQ-9VYx77y1kSPr-xXql_SjD0GUCIB4051gmvm4x4edwgWpLm0Ng4LkdnTTlMK84FzYasGp6\", \"width\": 360, \"ext\": \"mp4\", \"vcodec\": \"av01.0.00M.08\", \"acodec\": \"none\", \"vbr\": 77.592, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"396 - 360x360 (360p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 1905006, \"format_id\": \"135\", \"format_note\": \"480p\", \"fps\": 25, \"height\": 480, \"quality\": 3, \"tbr\": 56.269, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=135&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=video%2Fmp4&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=1905006&dur=270.840&lmt=1565564130432336&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5432432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRAIgLXTyE4FTYA9haqFUbaGH-FEiFvFwQi1bcqHYzKf8bToCIGYdA22zj1ETDjhPlen4QkkeTJk8MBAgNYeTD_IKVP_5&sig=AOq0QJ8wRAIgO4Ne3Qjae8H3Ol9M__LrebWR5Ro5oNXcfMuPUcCHrCkCIGuxqToGzGXr3ee6GPr0L-56SRJdG_YEdyqSZ5HTqewv\", \"width\": 480, \"ext\": \"mp4\", \"vcodec\": \"avc1.4d401e\", \"acodec\": \"none\", \"vbr\": 56.269, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"135 - 480x480 (480p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 4016382, \"format_id\": \"244\", \"format_note\": \"480p\", \"fps\": 25, \"height\": 480, \"quality\": 3, \"tbr\": 118.634, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=244&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=video%2Fwebm&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=4016382&dur=270.840&lmt=1565564221208290&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5431432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRAIgZpj92rrvEi9LIIue0L9yAXAUlr1hCi4-M0jl9X954YgCIFmcGMrJ_bGKdaT-ePGe1kC9bho_50ObOMk5SYlZmlTY&sig=AOq0QJ8wRQIhAMijvOC_IKgsC2P5B9qpkrT7d_cEVygUQ48gJ-LIt7c9AiBH4MfKmoQRsHDU486BVaKyFyYA-aVTF3qYjM3QS8PcuA==\", \"width\": 480, \"ext\": \"webm\", \"vcodec\": \"vp9\", \"acodec\": \"none\", \"vbr\": 118.634, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"webm_dash\", \"format\": \"244 - 480x480 (480p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 4062728, \"format_id\": \"397\", \"format_note\": \"480p\", \"fps\": 25, \"height\": 480, \"quality\": 3, \"tbr\": 120.003, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=397&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=video%2Fmp4&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=4062728&dur=270.840&lmt=1623759594575429&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5436432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIgNKQ6Q3cqD6gJX3cBjkrKx-UI-KWwBTIVLu8VblnFzQ8CIQDbCfTNJqZH_b4usdV1YJQa464zdnLD-m-2qYnlIAdv8A%3D%3D&sig=AOq0QJ8wRAIgRMca6vVDrVjG-KI99fI5Ex4aWZq4fG8qStJSYkzjheUCIC5RmBBXOZbqBo8krtJz6e1Q3MyYIUh7bN2SBoBQcmNV\", \"width\": 480, \"ext\": \"mp4\", \"vcodec\": \"av01.0.01M.08\", \"acodec\": \"none\", \"vbr\": 120.003, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"397 - 480x480 (480p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 3130999, \"format_id\": \"136\", \"format_note\": \"720p\", \"fps\": 25, \"height\": 720, \"quality\": 4, \"tbr\": 92.482, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=136&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=video%2Fmp4&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=3130999&dur=270.840&lmt=1565564129826329&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5432432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIhAPvJzwttBqx7T84A2BgKMnjcYkHJ-yGbXRA1GMnqKQDoAiBZygpq6ujGdifT-570KJczr1nyjzUxV8kp8TZJexbfdQ%3D%3D&sig=AOq0QJ8wRgIhAN_FLAUB5M1d_I5sSWg8ZClTQZOz0ZBGVNBX4Z2pcufsAiEAwfW2uipuV7GXjH-YNRPLh2PwlZvYFP9CeoCVrEDJQLA=\", \"width\": 720, \"ext\": \"mp4\", \"vcodec\": \"avc1.4d401f\", \"acodec\": \"none\", \"vbr\": 92.482, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"136 - 720x720 (720p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 6208315, \"format_id\": \"398\", \"format_note\": \"720p\", \"fps\": 25, \"height\": 720, \"quality\": 4, \"tbr\": 183.379, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=398&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=video%2Fmp4&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=6208315&dur=270.840&lmt=1623759592873542&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5436432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRAIgXfMMHnEyu0CDsUn_U-ID2cZlkQv5UPAYDsoTecvTkRUCIEasDlQ6oATVAoWS4wEZo1fysSakkBXdaHMVkhVLynsd&sig=AOq0QJ8wRQIgbAJAjhKU4Djq64b7pIcAjN55Esvcz_su8WwLC1P1vh0CIQCvwUy4lEEfI9q1QoYj8basdAGkz7TfsPMxb306ZKksag==\", \"width\": 720, \"ext\": \"mp4\", \"vcodec\": \"av01.0.04M.08\", \"acodec\": \"none\", \"vbr\": 183.379, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"398 - 720x720 (720p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 8083045, \"format_id\": \"247\", \"format_note\": \"720p\", \"fps\": 25, \"height\": 720, \"quality\": 4, \"tbr\": 238.754, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=247&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=video%2Fwebm&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=8083045&dur=270.840&lmt=1565564194139122&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5431432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRgIhAIkzbqu5F2gHpDsrHpayuR7cZa8spqiXQEGGSiVTpQQ5AiEA_lcjl5KgN2w5SsUPGWNRgf94J6VxrgZTteoIDGIQ1bI%3D&sig=AOq0QJ8wRAIgV8GscPEk8Qd1KX9pnntwd-OAlgaXbN82wCycwZnrL4gCIBBFpJVm3uD6dluf3mWMdgtrzfkgwoTQwPohIqDAw5EG\", \"width\": 720, \"ext\": \"webm\", \"vcodec\": \"vp9\", \"acodec\": \"none\", \"vbr\": 238.754, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"webm_dash\", \"format\": \"247 - 720x720 (720p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 4661127, \"format_id\": \"137\", \"format_note\": \"1080p\", \"fps\": 25, \"height\": 1080, \"quality\": 5, \"tbr\": 137.679, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=137&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=video%2Fmp4&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=4661127&dur=270.840&lmt=1565564134032693&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5432432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRgIhAPBgU8etdG2-lpfkoLSl_k4txTcEOGCTyq2rXr8v_ougAiEAytlUynle32lx-v3xpmqqxhxwwGgjhRH6B4KXVusvQJM%3D&sig=AOq0QJ8wRQIgTdU_Mj1Z7V1kgef9LGrQ4ptTRSjDevmLtzCg2kd1MeoCIQDSHiXxp0EQrm6hn2pBYiZRWIY344mPF9kNQspf_ommUw==\", \"width\": 1080, \"ext\": \"mp4\", \"vcodec\": \"avc1.640020\", \"acodec\": \"none\", \"vbr\": 137.679, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"137 - 1080x1080 (1080p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 12114701, \"format_id\": \"399\", \"format_note\": \"1080p\", \"fps\": 25, \"height\": 1080, \"quality\": 5, \"tbr\": 357.84, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=399&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=video%2Fmp4&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=12114701&dur=270.840&lmt=1623759596574783&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5436432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIhAIEAuyN7mndswKrxkN8ogVOkYu5glof1n7lmnw7i66swAiBmoD6PcUjbzNuyyB52jUM75sJeUTX1yf6G7Rmiq7KuWQ%3D%3D&sig=AOq0QJ8wRAIgVlUFHZLa_9wd52TaWruUXN1GkxrDPld48zHtHnu4LtACIEdq8b6k5SDgjGIQdRMaGiksj0dDl6tVSLLKerAPcZqb\", \"width\": 1080, \"ext\": \"mp4\", \"vcodec\": \"av01.0.08M.08\", \"acodec\": \"none\", \"vbr\": 357.84, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"399 - 1080x1080 (1080p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 14254679, \"format_id\": \"248\", \"format_note\": \"1080p\", \"fps\": 25, \"height\": 1080, \"quality\": 5, \"tbr\": 421.05, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=248&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=video%2Fwebm&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=14254679&dur=270.840&lmt=1565564159103815&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5431432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRgIhALG3S8g7otUEDdwEoyOpqW8wWOOsXgdiPX4O-5eSf6mlAiEA7XQVR5h9rF8w_pch9fQKWizP05Ei-1RndaOgQPctfyg%3D&sig=AOq0QJ8wRQIgE_nQ2d9gkqjFwRBZYhq2pNkfj1sOvI06CBHFM-SAwQoCIQCQmtUQPdZl4HnHSZ2ZGYSN-5z3cxFt5jlVOefls4R-eg==\", \"width\": 1080, \"ext\": \"webm\", \"vcodec\": \"vp9\", \"acodec\": \"none\", \"vbr\": 421.05, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"webm_dash\", \"format\": \"248 - 1080x1080 (1080p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": 44100, \"filesize\": 9832890, \"format_id\": \"18\", \"format_note\": \"360p\", \"fps\": 25, \"height\": 360, \"quality\": 2, \"tbr\": 290.369, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=18&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=video%2Fmp4&ns=NUyFleg7oHRdaYziguUZWPYG&gir=yes&clen=9832890&ratebypass=yes&dur=270.907&lmt=1565564151854305&mt=1633152780&fvip=6&fexp=24001373%2C24007246&c=WEB&txp=5431432&n=-x73I_o3I4dWTI2t&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cratebypass%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRAIgdHSnVMhTo-lWAS0q4g_XPRg8nn1o0hzZ2RfpOX52PtECIFY5Dyy0CDKo6rgDZne3e5ITsx9o36I1R60ngHj2-Q80&sig=AOq0QJ8wRQIgAOXLn6hTvzFkBGMZGT7zcRcs-4FbHcJUKr2uqSHdFjUCIQDDsc7tvLvuRbIkBoBj1WkQ0Oc09dKkJu9FgPgB2GEg1w==\", \"width\": 360, \"ext\": \"mp4\", \"vcodec\": \"avc1.42001E\", \"acodec\": \"mp4a.40.2\", \"format\": \"18 - 360x360 (360p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}], \"thumbnails\": [{\"height\": 94, \"url\": \"https://i.ytimg.com/vi/B61nm9OHt5A/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLDRxWeOpPRFckNZS2SRyBSzgP_3jQ\", \"width\": 168, \"resolution\": \"168x94\", \"id\": \"0\"}, {\"height\": 110, \"url\": \"https://i.ytimg.com/vi/B61nm9OHt5A/hqdefault.jpg?sqp=-oaymwEbCMQBEG5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLCoAnHkk5wcv-e78AQH5bZisE9Syg\", \"width\": 196, \"resolution\": \"196x110\", \"id\": \"1\"}, {\"height\": 138, \"url\": \"https://i.ytimg.com/vi/B61nm9OHt5A/hqdefault.jpg?sqp=-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLACL3Sn0lsy7MlOW1mVHUpSCVSJnA\", \"width\": 246, \"resolution\": \"246x138\", \"id\": \"2\"}, {\"height\": 188, \"url\": \"https://i.ytimg.com/vi/B61nm9OHt5A/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDaGH-7p1i580rI5pER-nDF2T-Q3Q\", \"width\": 336, \"resolution\": \"336x188\", \"id\": \"3\"}, {\"height\": 1080, \"url\": \"https://i.ytimg.com/vi_webp/B61nm9OHt5A/maxresdefault.webp\", \"width\": 1920, \"resolution\": \"1920x1080\", \"id\": \"4\"}], \"description\": \"Provided to YouTube by Sony Music Entertainment\n\nThe Red Knot \u00b7 Ahn Ye Eun\n\nAhn Ye Eun\n\n\u2117 2016 Pandawhale Company\n\nAuto-generated by YouTube.\", \"upload_date\": \"20161215\", \"uploader\": \"AHN YE EUN - Topic\", \"uploader_id\": \"UCM2oAe3ljJp2MvoRbI7BbaA\", \"uploader_url\": \"http://www.youtube.com/channel/UCM2oAe3ljJp2MvoRbI7BbaA\", \"channel_id\": \"UCM2oAe3ljJp2MvoRbI7BbaA\", \"channel_url\": \"https://www.youtube.com/channel/UCM2oAe3ljJp2MvoRbI7BbaA\", \"duration\": 271, \"view_count\": 4439343, \"average_rating\": 4.6073804, \"age_limit\": 0, \"webpage_url\": \"https://www.youtube.com/watch?v=B61nm9OHt5A\", \"categories\": [\"Music\"], \"tags\": [\"Ahn Ye Eun\", \"\uc548\uc608\uc740\", \"The Red Knot\"], \"is_live\": null, \"album\": \"Ahn Ye Eun\", \"artist\": \"Ahn Ye Eun\", \"track\": \"The Red Knot\", \"release_date\": null, \"release_year\": 2016, \"like_count\": 23852, \"dislike_count\": 2596, \"channel\": \"AHN YE EUN - Topic\", \"creator\": \"Ahn Ye Eun\", \"alt_title\": \"The Red Knot\", \"extractor\": \"youtube\", \"webpage_url_basename\": \"watch\", \"extractor_key\": \"Youtube\", \"playlist\": null, \"playlist_index\": null, \"thumbnail\": \"https://i.ytimg.com/vi_webp/B61nm9OHt5A/maxresdefault.webp\", \"display_id\": \"B61nm9OHt5A\", \"requested_subtitles\": null, \"asr\": 48000, \"filesize\": 4612909, \"format_id\": \"251\", \"format_note\": \"tiny\", \"fps\": null, \"height\": null, \"quality\": 0, \"tbr\": 136.234, \"url\": \"https://r6---sn-ab02a0nfpgxapox-u5xe.googlevideo.com/videoplayback?expire=1633174982&ei=ZvFXYc2jGsOMlQSarJlY&ip=115.138.195.111&id=o-APd2RXVkkMinZ42iPGrXLaSM59MkJa6DCB8gAV9A7vX_&itag=251&source=youtube&requiressl=yes&mh=5p&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xe%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=6&pcm2cms=yes&pl=24&gcr=kr&initcwndbps=2338750&vprv=1&mime=audio%2Fwebm&ns=bu7yCp20JF_Gdi396PbfS4QG&gir=yes&clen=4612909&dur=270.881&lmt=1565564117385303&mt=1633152780&fvip=6&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5431432&n=WnNXgYYtiytVDOEL&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpcm2cms%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIhAIbvxRfy-kUByUuPf-vxc7pd6mt3is5M64_DSEzdNY0mAiAqjc87Imf11oj62y51_XSmtD27a8CvuKyj1RVP93QSsw%3D%3D&sig=AOq0QJ8wRgIhAKi-yL2hm0G9P2cQ1XBOqtyn0u-lWLz6LEcLlEWGWxCmAiEA2-Fa2ky2SPcNbLnEz5sR4hVj5YrMJbhg2OCUaaRz0qI=\", \"width\": null, \"ext\": \"webm\", \"vcodec\": \"none\", \"acodec\": \"opus\", \"abr\": 136.234, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"webm_dash\", \"format\": \"251 - audio only (tiny)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3541.0 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}, \"fulltitle\": \"The Red Knot\", \"_filename\": \"data\\youtubeFiles\\B61nm9OHt5A.webm\"}\n";
+  trace = {
+    stdout = {
+      read = function: 0x02960e1d85d0;
+      handle = uv_pipe_t: 0x02960e527660;
+    };
+    waitExit = function: 0x02960e125680;
+    stderr = {
+      read = function: 0x02960c92fde8;
+      handle = uv_pipe_t: 0x02960e5278b0;
+    };
+    handle = uv_process_t: 0x02960e58cb90;
+    pid = 24924;
+  };
+  status = "error";
+  vid = "B61nm9OHt5A";
+  title = "failed to download video from youtube";
+}
+{
+  traceback = ".\commands\music\init.lua:100: attempt to index field 'info' (a nil value)";
+  command = {
+    func = function: 0x02960e3cba38;
+    reply = "처리중입니다";
+    name = "add music";
+    alias = {
+      [1] = "곡 추가";
+      [2] = "곡추가";
+      [3] = "음악추가";
+      [4] = "음악 추가";
+      [5] = "음악 add";
+      [6] = "music add";
+      [7] = "music 추가";
+      [8] = "음악 재생";
+      [9] = "음악재생";
+    };
+  };
+  title = "an error occurred on running command function";
+  timestemp = "Sat Oct  2 14:43:01 2021";
+  originalMsg = "미나 음악추가 https://www.youtube.com/watch?v=B61nm9OHt5A&list=OLAK5uy_kjU_Ihp99kophJDOzeqLFAnVL52UsbA_s&index=8&ab_channel=AHNYEEUN-Topic";
+  this = {
+    [1] = {
+      [1] = {
+        [1] = {
+          [1] = {
+            messageCreate = {
+              [1] = {
+                fn = function: 0x02960e269108;
+              };
+            };
+          };
+          [2] = {
+            maxRetries = 5;
+            gatewayFile = "gateway.json";
+            firstShard = 0;
+            autoReconnect = true;
+            cacheAllMembers = false;
+            shardCount = 0;
+            syncGuilds = false;
+            compress = true;
+            dateTime = "%F %T";
+            logLevel = 3;
+            bitrate = 64000;
+            routeDelay = 250;
+            logFile = "discordia.log";
+            largeThreshold = 100;
+            lastShard = -1;
+          };
+          [3] = {
+            [0] = {
+              [1] = {};
+              [2] = "#Recursive detected#";
+              [3] = {
+                [1] = {};
+                [2] = 0;
+                [3] = -1;
+                [4] = false;
+              };
+              [4] = {
+                [1] = 4.956010674894e+14;
+              };
+              [5] = 0;
+              [6] = "#Recursive detected#";
+              [7] = 1000;
+              [8] = function: 0x02960e2fec88;
+              [9] = function: 0x02960e210e70;
+              [11] = uv_timer_t: 0x02960e55a3f0;
+              [12] = 1122;
+              [13] = "04b5731363ef3d6063aaa939bc535131";
+              [14] = true;
+            };
+          };
+          [4] = {
+            [1] = "#Recursive detected#";
+            [2] = {};
+            [3] = "Bot ODI4ODk0NDgxMjg5OTY5NjY1.YGwOJA.UKTxDbmGaDah782PWD9SSDbkY-0";
+          };
+          [5] = "#Recursive detected#";
+          [6] = {
+            745985317240307762 = {
+              [1] = "#Recursive detected#";
+              [2] = "7825";
+              [4] = "745985317240307762";
+              [6] = true;
+              [7] = "a38c5a76edf75abf53390bccbaffd9ae";
+              [14] = "잌 (장난감 봇)";
+            };
+            415804982764371969 = {
+              [1] = "#Recursive detected#";
+              [2] = "5140";
+              [4] = "415804982764371969";
+              [7] = "f2f50cc3ccf247f206d501def3012323";
+              [14] = "세제 원샷";
+            };
+            654245768055619584 = {
+              [1] = "#Recursive detected#";
+              [2] = "5252";
+              [4] = "654245768055619584";
+              [7] = "be6669a2b4ba0478c2412c232d50c632";
+              [10] = 256;
+              [14] = "12302a";
+            };
+            684324201536290923 = {
+              [1] = "#Recursive detected#";
+              [2] = "5017";
+              [4] = "684324201536290923";
+              [7] = "191a714d5abdab8ffb107533655bd567";
+              [10] = 64;
+              [14] = "이상욱";
+            };
+            235088799074484224 = {
+              [1] = "#Recursive detected#";
+              [2] = "3722";
+              [4] = "235088799074484224";
+              [6] = true;
+              [7] = "9b29bfc497a70b6cc85bb2087936f8fd";
+              [10] = 65536;
+              [14] = "Rythm";
+            };
+            414925323197612032 = {
+              [1] = "#Recursive detected#";
+              [2] = "9735";
+              [4] = "414925323197612032";
+              [6] = true;
+              [7] = "5903cdb6377fc799f08c16f9f2dbe75a";
+              [10] = 65536;
+              [14] = "KDBot";
+            };
+            797445655563993099 = {
+              [1] = "#Recursive detected#";
+              [2] = "9532";
+              [4] = "797445655563993099";
+              [14] = "기록봇";
+              [6] = true;
+            };
+            545032348597485578 = {
+              [1] = "#Recursive detected#";
+              [2] = "9488";
+              [4] = "545032348597485578";
+              [7] = "a_743d44ba9815a2a72adf8dc25c0b25e3";
+              [10] = 256;
+              [14] = "이승헌";
+            };
+            647101613047152640 = {
+              [1] = "#Recursive detected#";
+              [2] = "9961";
+              [4] = "647101613047152640";
+              [7] = "a4a256cda49eef204a7a2d26bbde242c";
+              [10] = 128;
+              [14] = "눈송이";
+            };
+            664505196969328652 = {
+              [1] = "#Recursive detected#";
+              [2] = "2178";
+              [4] = "664505196969328652";
+              [7] = "1f3910eb8b63ac59478483cc6bcd8dcc";
+              [14] = "고추니";
+            };
+            870241583184887849 = {
+              [1] = "#Recursive detected#";
+              [2] = "8414";
+              [4] = "870241583184887849";
+              [6] = true;
+              [7] = "96703505773c97ea5654ad8065bfc392";
+              [14] = "Satgod Entertainment Bot";
+            };
+            855704481135460362 = {
+              [1] = "#Recursive detected#";
+              [2] = "1883";
+              [4] = "855704481135460362";
+              [7] = "e5ba8661984777f6d08d0d44c5761f74";
+              [14] = "furan";
+            };
+            218010938807287808 = {
+              [1] = "#Recursive detected#";
+              [2] = "1657";
+              [4] = "218010938807287808";
+              [6] = true;
+              [7] = "be6672594da87c2c8d33d09c63d7351d";
+              [10] = 65536;
+              [14] = "마냥";
+            };
+            449177180606300160 = {
+              [1] = "#Recursive detected#";
+              [2] = "8287";
+              [4] = "449177180606300160";
+              [7] = "df8896e106e4c8fbd8db87c794584135";
+              [14] = "혀니";
+            };
+            480318544693821450 = {
+              [1] = "#Recursive detected#";
+              [2] = "9441";
+              [4] = "480318544693821450";
+              [7] = "58d85ae857ec68ff02e2f0bcbefe88ee";
+              [10] = 64;
+              [14] = "Ruža";
+            };
+            367946917197381644 = {
+              [1] = "#Recursive detected#";
+              [2] = "1234";
+              [4] = "367946917197381644";
+              [7] = "9475979bf6842d64148d1344ffacdc5d";
+              [10] = 64;
+              [12] = 64;
+              [14] = "므야야ㅑㅑㅑ";
+            };
+            479774031185313807 = {
+              [1] = "#Recursive detected#";
+              [2] = "2206";
+              [4] = "479774031185313807";
+              [7] = "2df200649a56589dce56de3b6e8729f6";
+              [14] = "알파카";
+            };
+            353501674670653441 = {
+              [1] = "#Recursive detected#";
+              [2] = "5877";
+              [4] = "353501674670653441";
+              [7] = "1ad17126afb44222a3ba61a3b2cf697e";
+              [10] = 128;
+              [14] = "ㄱㅁㄱ";
+            };
+            533678855257325568 = {
+              [1] = "#Recursive detected#";
+              [2] = "4634";
+              [4] = "533678855257325568";
+              [7] = "af4cd3810eb00162566741fd42fd1b1e";
+              [14] = "Love was people";
+            };
+            711769311387058238 = {
+              [1] = "#Recursive detected#";
+              [2] = "7250";
+              [4] = "711769311387058238";
+              [6] = true;
+              [7] = "b6d815a450ad47beae8551ced7e26d64";
+              [10] = 65536;
+              [14] = "하나";
+            };
+            559313466641612830 = {
+              [1] = "#Recursive detected#";
+              [2] = "1263";
+              [4] = "559313466641612830";
+              [7] = "3d0d650aa038f923d156c64a8d1ad1b3";
+              [14] = "황정수";
+            };
+            754620012450414682 = {
+              [1] = "#Recursive detected#";
+              [2] = "9565";
+              [14] = "RABBIT__TURTLE";
+              [4] = "754620012450414682";
+            };
+            756035861250048031 = {
+              [1] = "#Recursive detected#";
+              [2] = "6366";
+              [4] = "756035861250048031";
+              [10] = 0;
+              [14] = "꺄얍";
+            };
+            494474648419958788 = {
+              [1] = "#Recursive detected#";
+              [2] = "1082";
+              [4] = "494474648419958788";
+              [7] = "ca4627c71ea3bd4ee49d1c385f9f27b4";
+              [14] = "김동민";
+            };
+            853947057562714133 = {
+              [1] = "#Recursive detected#";
+              [2] = "6394";
+              [4] = "853947057562714133";
+              [6] = true;
+              [7] = "1ad94c5a4683d207df4e593070586317";
+              [14] = "DUSK's Bot";
+            };
+            827428530559254589 = {
+              [1] = "#Recursive detected#";
+              [2] = "0462";
+              [4] = "827428530559254589";
+              [6] = true;
+              [7] = "0057c770696149efa509985ff3c54e31";
+              [14] = "Bun";
+            };
+            234395307759108106 = {
+              [1] = "#Recursive detected#";
+              [2] = "7254";
+              [4] = "234395307759108106";
+              [6] = true;
+              [7] = "0e7adc5d634d957b7725021c067bfd87";
+              [10] = 65536;
+              [14] = "Groovy";
+            };
+            755378215907885116 = {
+              [1] = "#Recursive detected#";
+              [2] = "4189";
+              [4] = "755378215907885116";
+              [7] = "59bd4cc90aa3e0e80356d125df0401c5";
+              [10] = 64;
+              [14] = "SATGOD";
+            };
+            686077975392944156 = {
+              [1] = "#Recursive detected#";
+              [2] = "3902";
+              [4] = "686077975392944156";
+              [7] = "a_db7543054a2f1f08bf079a4f8e722fee";
+              [10] = 64;
+              [14] = "Doge";
+            };
+            864089849933070346 = {
+              [1] = "#Recursive detected#";
+              [2] = "8470";
+              [14] = "모바일_래빗";
+              [4] = "864089849933070346";
+            };
+            701402995484655697 = {
+              [1] = "#Recursive detected#";
+              [2] = "8187";
+              [4] = "701402995484655697";
+              [7] = "e266aa5c22456a2d6ab779cef477df94";
+              [14] = "용용";
+            };
+            419476138331602946 = {
+              [1] = "#Recursive detected#";
+              [2] = "3872";
+              [4] = "419476138331602946";
+              [6] = true;
+              [7] = "34ab6aa91af582699a1ebd8057dbcf51";
+              [10] = 65536;
+              [14] = "크시";
+            };
+            828894481289969665 = {
+              [1] = "#Recursive detected#";
+              [2] = "6938";
+              [4] = "828894481289969665";
+              [5] = true;
+              [6] = true;
+              [7] = "48aae1de0adbf0a8e9b16350add0f3a2";
+              [10] = 0;
+              [12] = 0;
+              [13] = true;
+              [14] = "미나";
+              [15] = "en-US";
+              [16] = "";
+            };
+            465767189375483907 = {
+              [1] = "#Recursive detected#";
+              [2] = "4432";
+              [4] = "465767189375483907";
+              [7] = "b81d91cac1d64948bdea35e641e4cef0";
+              [14] = "ㅇ0ㅇ";
+            };
+            889791736270974976 = {
+              [1] = "#Recursive detected#";
+              [2] = "4729";
+              [14] = "김치";
+              [4] = "889791736270974976";
+            };
+            349181518456815626 = {
+              [1] = "#Recursive detected#";
+              [2] = "9235";
+              [4] = "349181518456815626";
+              [7] = "0c1a7d3b70db64d3420e17abdea68484";
+              [10] = 128;
+              [14] = "GukJin";
+            };
+            769154913766080543 = {
+              [1] = "#Recursive detected#";
+              [2] = "0485";
+              [4] = "769154913766080543";
+              [7] = "2463939f152d9487483d51005b2a1afb";
+              [14] = "seop";
+            };
+          };
+          [7] = "#Recursive detected#";
+          [8] = "#Recursive detected#";
+          [9] = "#Recursive detected#";
+          [10] = "#Recursive detected#";
+          [11] = {};
+          [12] = {
+            [1] = 3;
+            [2] = "%F %T";
+            [3] = 3;
+          };
+          [13] = {
+            [1] = {};
+            [2] = "#Recursive detected#";
+          };
+          [14] = {
+            877038377118081036 = {
+              [1] = "#Recursive detected#";
+              [2] = false;
+              [3] = "870243263825707018";
+              [4] = "#Recursive detected#";
+              [5] = "#Recursive detected#";
+              [6] = "#Recursive detected#";
+              [7] = "#Recursive detected#";
+              [8] = "#Recursive detected#";
+              [9] = "#Recursive detected#";
+              [10] = {};
+              [12] = 0;
+              [13] = false;
+              [15] = 0;
+              [16] = "south-korea";
+              [18] = "870243263825707021";
+              [19] = "2021-09-26T10:16:53.069486+00:00";
+              [20] = 8;
+              [21] = 25;
+              [22] = 0;
+              [23] = 250000;
+              [24] = 0;
+              [27] = 0;
+              [29] = 300;
+              [30] = "755378215907885116";
+              [31] = false;
+              [33] = 0;
+              [34] = 0;
+              [35] = 0;
+              [36] = "en-US";
+              [37] = 0;
+              [40] = false;
+              [42] = "테스트 서버";
+              [43] = true;
+              [44] = {};
+            };
+            827199450774372382 = "#Recursive detected#";
+            827211779930718209 = "#Recursive detected#";
+            827214987743068211 = "#Recursive detected#";
+            819762474348707850 = "#Recursive detected#";
+            827212586373611550 = "#Recursive detected#";
+            891629393280106497 = "#Recursive detected#";
+            824949557602942986 = "#Recursive detected#";
+            827215618184708106 = "#Recursive detected#";
+            832163847275413534 = {
+              [1] = "#Recursive detected#";
+              [2] = false;
+              [3] = "754620784986685472";
+              [4] = "#Recursive detected#";
+              [5] = "#Recursive detected#";
+              [6] = "#Recursive detected#";
+              [7] = "#Recursive detected#";
+              [8] = "#Recursive detected#";
+              [9] = "#Recursive detected#";
+              [10] = {};
+              [12] = 0;
+              [13] = false;
+              [15] = 0;
+              [16] = "south-korea";
+              [18] = "754620785426956351";
+              [19] = "2021-09-22T12:43:09.020000+00:00";
+              [20] = 8;
+              [21] = 25;
+              [22] = 0;
+              [23] = 250000;
+              [24] = 0;
+              [27] = 0;
+              [29] = 300;
+              [30] = "754620012450414682";
+              [31] = false;
+              [32] = "257602e77e4f3cfed020edd275e03d4a";
+              [33] = 0;
+              [34] = 0;
+              [35] = 0;
+              [36] = "en-US";
+              [37] = 0;
+              [40] = false;
+              [42] = "4명모임 ㅋㅋ";
+              [43] = true;
+              [44] = {};
+            };
+            831901563470741556 = {
+              [1] = "#Recursive detected#";
+              [2] = false;
+              [3] = "772816335859089420";
+              [4] = "#Recursive detected#";
+              [5] = "#Recursive detected#";
+              [6] = "#Recursive detected#";
+              [7] = "#Recursive detected#";
+              [8] = "#Recursive detected#";
+              [9] = "#Recursive detected#";
+              [10] = {};
+              [12] = 0;
+              [13] = false;
+              [15] = 0;
+              [16] = "south-korea";
+              [19] = "2021-04-12T14:24:10.702000+00:00";
+              [20] = 7;
+              [21] = 25;
+              [22] = 0;
+              [23] = 250000;
+              [24] = 0;
+              [27] = 0;
+              [29] = 300;
+              [30] = "756035861250048031";
+              [31] = false;
+              [33] = 0;
+              [34] = 0;
+              [35] = 0;
+              [36] = "en-US";
+              [37] = 0;
+              [40] = false;
+              [42] = "테스트 하는곳";
+              [43] = true;
+              [44] = {};
+            };
+            819794709400387584 = "#Recursive detected#";
+            837628664211439666 = "#Recursive detected#";
+            754620784986685472 = "#Recursive detected#";
+            828272433089085490 = "#Recursive detected#";
+            836985971240206386 = "#Recursive detected#";
+            889438990153941002 = "#Recursive detected#";
+            827199883152588860 = "#Recursive detected#";
+            827211529950199879 = "#Recursive detected#";
+            840888485338546186 = "#Recursive detected#";
+            847125355848138812 = "#Recursive detected#";
+            828614761687416893 = "#Recursive detected#";
+            830737930515120128 = "#Recursive detected#";
+            833877360549560360 = "#Recursive detected#";
+            820547375633793046 = "#Recursive detected#";
+            827204407627218996 = "#Recursive detected#";
+            832163751448412181 = "#Recursive detected#";
+            842970190017855509 = "#Recursive detected#";
+            827214508921192518 = "#Recursive detected#";
+            833905546100342834 = "#Recursive detected#";
+            890216650744418306 = "#Recursive detected#";
+            827212726458777660 = "#Recursive detected#";
+            830779346591154196 = "#Recursive detected#";
+            827201590728458261 = "#Recursive detected#";
+            827200443267678258 = "#Recursive detected#";
+            832163412335001631 = "#Recursive detected#";
+            797469591244767262 = "#Recursive detected#";
+            828614685137436692 = "#Recursive detected#";
+            827213936625582100 = "#Recursive detected#";
+            843860051248414740 = "#Recursive detected#";
+            827215106399404052 = "#Recursive detected#";
+            827212302670757978 = "#Recursive detected#";
+            820547941751717951 = "#Recursive detected#";
+            877037154612690964 = "#Recursive detected#";
+            819794412686540810 = "#Recursive detected#";
+            831563270406012940 = "#Recursive detected#";
+            874444935682728027 = "#Recursive detected#";
+            870243263825707018 = "#Recursive detected#";
+            819902159733915679 = "#Recursive detected#";
+            864001689493307442 = "#Recursive detected#";
+            772816335859089420 = "#Recursive detected#";
+            836986778254442536 = "#Recursive detected#";
+            827211406155710544 = "#Recursive detected#";
+            827200876472041482 = "#Recursive detected#";
+            827215230399414352 = "#Recursive detected#";
+            827211654235291699 = "#Recursive detected#";
+            827205130544742470 = "#Recursive detected#";
+            838938463390138398 = "#Recursive detected#";
+            827215368182562817 = "#Recursive detected#";
+            820547203700883466 = "#Recursive detected#";
+            827210690644279352 = "#Recursive detected#";
+            827211309305036861 = "#Recursive detected#";
+            831172853234663495 = "#Recursive detected#";
+            827211138650341396 = "#Recursive detected#";
+            819776535367122944 = "#Recursive detected#";
+            827210415398322176 = "#Recursive detected#";
+            827199780442734632 = "#Recursive detected#";
+            833246221803061258 = "#Recursive detected#";
+            827213593086525531 = "#Recursive detected#";
+            827215453805477938 = "#Recursive detected#";
+            827201147977859103 = "#Recursive detected#";
+            827201306354909264 = "#Recursive detected#";
+            825272974701101056 = "#Recursive detected#";
+            844775961463095356 = "#Recursive detected#";
+            827215586865971200 = "#Recursive detected#";
+            846087127451303996 = "#Recursive detected#";
+            827204685844185149 = "#Recursive detected#";
+            824955839525421116 = "#Recursive detected#";
+            842059252230914119 = "#Recursive detected#";
+            850575882719854633 = "#Recursive detected#";
+            827201489180557362 = "#Recursive detected#";
+            827212824320802856 = "#Recursive detected#";
+            827205515897077800 = "#Recursive detected#";
+            827200241371316234 = "#Recursive detected#";
+            847498131586154536 = "#Recursive detected#";
+            827212183363780640 = "#Recursive detected#";
+            833337171624722493 = "#Recursive detected#";
+            827205182240456796 = "#Recursive detected#";
+            832163652916346901 = "#Recursive detected#";
+            871341242632511518 = "#Recursive detected#";
+            827213831188905994 = "#Recursive detected#";
+            797669760485031966 = "#Recursive detected#";
+            847498144258457690 = "#Recursive detected#";
+            827200754728435733 = "#Recursive detected#";
+            827214269586210876 = "#Recursive detected#";
+            826149287658127411 = "#Recursive detected#";
+            827200254063542342 = "#Recursive detected#";
+            829344351271387136 = "#Recursive detected#";
+            843479263382732801 = "#Recursive detected#";
+            827213693527523339 = "#Recursive detected#";
+            819794054304628767 = "#Recursive detected#";
+            827205383902068788 = "#Recursive detected#";
+            835057924736679936 = "#Recursive detected#";
+            830747775184142356 = "#Recursive detected#";
+            819780697635029012 = "#Recursive detected#";
+          };
+          [15] = {
+            844617279807291432 = "#Recursive detected#";
+            830419196247539752 = "#Recursive detected#";
+            841972215658708993 = "#Recursive detected#";
+            844617394625183804 = "#Recursive detected#";
+            872644807821000764 = "#Recursive detected#";
+            830732467434422282 = "#Recursive detected#";
+            872645119105437716 = "#Recursive detected#";
+            872645418905919498 = "#Recursive detected#";
+            872644861730390016 = "#Recursive detected#";
+            844617509347786802 = "#Recursive detected#";
+            844617111288807474 = "#Recursive detected#";
+            872644618708205619 = "#Recursive detected#";
+            872644930860879872 = "#Recursive detected#";
+            841972315972960266 = "#Recursive detected#";
+            830419151079211028 = "#Recursive detected#";
+            841972275392806942 = "#Recursive detected#";
+            872644765311701012 = "#Recursive detected#";
+          };
+          [16] = {
+            889442998990028810 = "#Recursive detected#";
+            829977731545825300 = "#Recursive detected#";
+            819763541460254721 = "#Recursive detected#";
+            772816336749461535 = "#Recursive detected#";
+            828807746270920704 = "#Recursive detected#";
+            829228170926489630 = "#Recursive detected#";
+            833921431477420043 = "#Recursive detected#";
+            830395166945968129 = "#Recursive detected#";
+            829977563685978203 = "#Recursive detected#";
+            870243263825707021 = "#Recursive detected#";
+            772816336749461536 = "#Recursive detected#";
+            836747891694501909 = "#Recursive detected#";
+            819833872987455498 = "#Recursive detected#";
+            819805193767354398 = "#Recursive detected#";
+            819763571117916160 = "#Recursive detected#";
+            829977268452982826 = "#Recursive detected#";
+            754620785426956349 = "#Recursive detected#";
+            754620785426956350 = "#Recursive detected#";
+            842041669750882311 = "#Recursive detected#";
+            833588321463828490 = "#Recursive detected#";
+            772816336749461539 = "#Recursive detected#";
+            835782189069238292 = "#Recursive detected#";
+            819766398599299164 = "#Recursive detected#";
+            819763503795404810 = "#Recursive detected#";
+            842041735387021332 = "#Recursive detected#";
+            850947178218127360 = "#Recursive detected#";
+            870243263825707019 = "#Recursive detected#";
+            835796172328796182 = "#Recursive detected#";
+            870243263825707020 = "#Recursive detected#";
+            819764858912243753 = "#Recursive detected#";
+            838950914668232714 = "#Recursive detected#";
+            833921581230325781 = "#Recursive detected#";
+            870243263825707022 = "#Recursive detected#";
+            829546628830199808 = "#Recursive detected#";
+            819764250766999563 = "#Recursive detected#";
+            835771021126008852 = "#Recursive detected#";
+            829977619830276196 = "#Recursive detected#";
+            796349439958319125 = "#Recursive detected#";
+            754620785426956352 = "#Recursive detected#";
+            819765068203819038 = "#Recursive detected#";
+            819764632323358790 = "#Recursive detected#";
+            754620785426956351 = "#Recursive detected#";
+            828533666299904030 = "#Recursive detected#";
+          };
+          [17] = {
+            PRESENCE_UPDATE = function: 0x02960c9064b8;
+            RELATIONSHIP_REMOVE = function: 0x02960c906520;
+            GUILD_MEMBERS_CHUNK = function: 0x02960c905838;
+            CHANNEL_DELETE = function: 0x02960c905aa0;
+            MESSAGE_CREATE = function: 0x02960c906238;
+            MESSAGE_UPDATE = function: 0x02960c9062b0;
+            WEBHOOKS_UPDATE = function: 0x02960c9066a0;
+            GUILD_CREATE = function: 0x02960c905ca0;
+            READY = function: 0x02960c9056e0;
+            GUILD_SYNC = function: 0x02960c905918;
+            GUILD_MEMBER_REMOVE = function: 0x02960c906158;
+            MESSAGE_DELETE_BULK = function: 0x02960c906330;
+            RESUMED = function: 0x02960c905808;
+            GUILD_ROLE_DELETE = function: 0x02960c906200;
+            CHANNEL_UPDATE = function: 0x02960c905a60;
+            RELATIONSHIP_ADD = function: 0x02960c9064f0;
+            MESSAGE_REACTION_REMOVE_ALL = function: 0x02960c906438;
+            MESSAGE_REACTION_REMOVE = function: 0x02960c9063f0;
+            GUILD_EMOJIS_UPDATE = function: 0x02960c905da8;
+            CHANNEL_PINS_UPDATE = function: 0x02960c906478;
+            GUILD_MEMBER_ADD = function: 0x02960c905de0;
+            TYPING_START = function: 0x02960c906550;
+            CHANNEL_RECIPIENT_ADD = function: 0x02960c9057d0;
+            VOICE_SERVER_UPDATE = function: 0x02960c906660;
+            VOICE_STATE_UPDATE = function: 0x02960c9065e0;
+            GUILD_MEMBER_UPDATE = function: 0x02960c905e18;
+            CHANNEL_CREATE = function: 0x02960c905958;
+            MESSAGE_REACTION_ADD = function: 0x02960c906370;
+            GUILD_BAN_ADD = function: 0x02960c905d38;
+            GUILD_ROLE_UPDATE = function: 0x02960c9061c8;
+            USER_UPDATE = function: 0x02960c906580;
+            CHANNEL_RECIPIENT_REMOVE = function: 0x02960c905ae0;
+            MESSAGE_DELETE = function: 0x02960c9062f0;
+            GUILD_BAN_REMOVE = function: 0x02960c905d70;
+            GUILD_DELETE = function: 0x02960c905d08;
+            GUILD_ROLE_CREATE = function: 0x02960c906190;
+            GUILD_UPDATE = function: 0x02960c905cd8;
+          };
+          [18] = {
+            status = {};
+            since = "#Recursive detected#";
+            afk = "#Recursive detected#";
+            game = {
+              name = "'미나야 도움말' 을 이용해 도움말을 얻거나 '미나야 <할말>' 을 이용해 미나와 대화하세요!";
+              type = 0;
+            };
+          };
+          [19] = "#Recursive detected#";
+          [20] = "Bot ODI4ODk0NDgxMjg5OTY5NjY1.YGwOJA.UKTxDbmGaDah782PWD9SSDbkY-0";
+          [21] = "#Recursive detected#";
+          [22] = 1;
+          [23] = 1;
+        };
+        [2] = false;
+        [3] = "819762474348707850";
+        [4] = "#Recursive detected#";
+        [5] = "#Recursive detected#";
+        [6] = "#Recursive detected#";
+        [7] = "#Recursive detected#";
+        [8] = "#Recursive detected#";
+        [9] = "#Recursive detected#";
+        [10] = {
+          828894481289969665 = {
+            self_video = false;
+            member = {
+              is_pending = false;
+              mute = false;
+              user = {
+                discriminator = "6938";
+                id = "828894481289969665";
+                username = "미나";
+                avatar = "48aae1de0adbf0a8e9b16350add0f3a2";
+                bot = true;
+              };
+              avatar = "#Recursive detected#";
+              premium_since = "#Recursive detected#";
+              deaf = false;
+              nick = "#Recursive detected#";
+              pending = false;
+              hoisted_role = "820547375633793046";
+              joined_at = "2021-06-05T03:24:53.405689+00:00";
+              roles = {
+                [1] = "827213936625582100";
+                [2] = "820547375633793046";
+                [3] = "827212824320802856";
+                [4] = "850575882719854633";
+                [5] = "840888485338546186";
+              };
+            };
+            session_id = "04b5731363ef3d6063aaa939bc535131";
+            request_to_speak_timestamp = "#Recursive detected#";
+            token = "01785e0ec5b7712e";
+            channel_id = "829228170926489630";
+            deaf = false;
+            suppress = false;
+            self_deaf = false;
+            self_mute = false;
+            user_id = "828894481289969665";
+            guild_id = "819762474348707850";
+            mute = false;
+            endpoint = "south-korea1049.discord.media:443";
+          };
+          367946917197381644 = {
+            self_video = false;
+            member = {
+              is_pending = false;
+              mute = false;
+              user = {
+                discriminator = "1234";
+                public_flags = 64;
+                id = "367946917197381644";
+                username = "므야야ㅑㅑㅑ";
+                avatar = "9475979bf6842d64148d1344ffacdc5d";
+              };
+              avatar = "#Recursive detected#";
+              premium_since = "#Recursive detected#";
+              deaf = false;
+              nick = "#Recursive detected#";
+              pending = false;
+              hoisted_role = "824955839525421116";
+              joined_at = "2021-03-12T02:43:24.359000+00:00";
+              roles = {
+                [1] = "827210415398322176";
+                [2] = "827215368182562817";
+                [3] = "827200254063542342";
+                [4] = "827200241371316234";
+                [5] = "827200876472041482";
+                [6] = "833246221803061258";
+                [7] = "827201306354909264";
+                [8] = "827211406155710544";
+                [9] = "819780697635029012";
+                [10] = "827200754728435733";
+                [11] = "827201590728458261";
+                [12] = "827211138650341396";
+                [13] = "827212586373611550";
+                [14] = "827199450774372382";
+                [15] = "827201147977859103";
+                [16] = "827212824320802856";
+                [17] = "833877360549560360";
+                [18] = "827200443267678258";
+                [19] = "827201489180557362";
+                [20] = "827205383902068788";
+                [21] = "827215453805477938";
+                [22] = "828614761687416893";
+                [23] = "827211309305036861";
+                [24] = "824955839525421116";
+                [25] = "827204685844185149";
+              };
+            };
+            session_id = "38c924b0b11f4db142d81c5b1d3c435c";
+            guild_id = "819762474348707850";
+            channel_id = "829228170926489630";
+            suppress = false;
+            self_deaf = false;
+            self_mute = false;
+            user_id = "367946917197381644";
+            deaf = false;
+            request_to_speak_timestamp = "#Recursive detected#";
+            mute = false;
+          };
+        };
+        [12] = 0;
+        [13] = false;
+        [15] = 37;
+        [16] = "south-korea";
+        [17] = "819765068203819038";
+        [18] = "819805193767354398";
+        [19] = "2021-06-05T03:24:53.405689+00:00";
+        [20] = 23;
+        [21] = 25;
+        [22] = 0;
+        [23] = 250000;
+        [24] = 0;
+        [27] = 0;
+        [29] = 300;
+        [30] = "415804982764371969";
+        [31] = false;
+        [32] = "fe959779eef1e989234d7ea3df1afcfe";
+        [33] = 0;
+        [34] = 0;
+        [35] = 0;
+        [36] = "en-US";
+        [37] = 0;
+        [40] = false;
+        [42] = "정상 모임";
+        [43] = true;
+        [44] = {};
+        [45] = {
+          [1] = {
+            [1] = "#Recursive detected#";
+            [2] = "829228170926489630";
+            [4] = 0;
+            [5] = "819763571117916160";
+            [6] = 64000;
+            [7] = 2;
+            [8] = "《🎵》음악깡통";
+            [9] = 6;
+            [10] = "#Recursive detected#";
+            [13] = false;
+            [14] = "#Recursive detected#";
+          };
+          [2] = {};
+          [4] = "cdata<const unsigned char [32]>: 0x02960e1b9900";
+          [5] = {
+            [1] = {};
+            [2] = "#Recursive detected#";
+            [3] = "#Recursive detected#";
+            [4] = {
+              [1] = 4.956254129713e+14;
+            };
+            [5] = "#Recursive detected#";
+            [6] = "#Recursive detected#";
+            [7] = "#Recursive detected#";
+            [8] = "#Recursive detected#";
+            [9] = "04b5731363ef3d6063aaa939bc535131";
+            [10] = function: 0x02960c8b92d8;
+            [11] = function: 0x02960e408e08;
+            [13] = uv_timer_t: 0x02960e4e54b0;
+            [14] = "xsalsa20_poly1305";
+            [15] = 549602;
+            [16] = uv_udp_t: 0x02960c71ad00;
+            [17] = "35.216.95.68";
+            [18] = 50004;
+          };
+          [6] = "35.216.95.68";
+          [7] = 50004;
+          [8] = uv_udp_t: 0x02960c71ad00;
+          [9] = 549602;
+          [10] = "xsalsa20_poly1305";
+          [11] = "#Recursive detected#";
+          [12] = "#Recursive detected#";
+          [13] = 11021;
+          [14] = 199323840;
+          [15] = "cdata<struct OpusEncoder *>: 0x02960e54c9d0";
+          [16] = true;
+          [17] = true;
+        };
+      };
+      [2] = 0;
+      [3] = 6;
+      [4] = "819764858912243753";
+      [5] = "819764632323358790";
+      [6] = 0;
+      [7] = "893693534673199104";
+      [8] = "《🎶》음악틀기방";
+      [9] = "음악 틀 때 사용하는 곳";
+      [10] = "#Recursive detected#";
+      [11] = "#Recursive detected#";
+      [12] = false;
+      [13] = "2021-04-07T13:36:36+00:00";
+    };
+    [2] = "893734785527214090";
+    [3] = "2021-10-02T05:42:57.659000+00:00";
+    [4] = "819762474348707850";
+    [5] = "893734774013689856";
+    [6] = false;
+    [7] = false;
+    [8] = "미나 음악추가 https://www.youtube.com/watch?v=B61nm9OHt5A&list=OLAK5uy_kjU_Ihp99kophJDOzeqLFAnVL52UsbA_s&index=8&ab_channel=AHNYEEUN-Topic";
+    [9] = "819764858912243753";
+    [10] = 0;
+    [11] = 0;
+    [13] = false;
+    [15] = "#Recursive detected#";
+    [17] = {
+      [1] = {
+        thumbnail = {
+          url = "https://i.ytimg.com/vi/B61nm9OHt5A/maxresdefault.jpg";
+          proxy_url = "https://images-ext-2.discordapp.net/external/Ga46Zg8tz0B8bGBAuH4evXIoYeXSTsBcy4zV1MeuzEY/https/i.ytimg.com/vi/B61nm9OHt5A/maxresdefault.jpg";
+          height = 720;
+          width = 1280;
+        };
+        provider = {
+          name = "YouTube";
+          url = "https://www.youtube.com";
+        };
+        color = 16711680;
+        title = "The Red Knot";
+        description = "Provided to YouTube by Sony Music Entertainment\n\nThe Red Knot · Ahn Ye Eun\n\nAhn Ye Eun\n\n℗ 2016 Pandawhale Company\n\nAuto-generated by YouTube.";
+        type = "video";
+        url = "https://www.youtube.com/watch?v=B61nm9OHt5A";
+        video = {
+          url = "https://www.youtube.com/embed/B61nm9OHt5A";
+          width = 720;
+          height = 720;
+        };
+        author = {
+          name = "AHN YE EUN - Topic";
+          url = "https://www.youtube.com/channel/UCM2oAe3ljJp2MvoRbI7BbaA";
+        };
+      };
+    };
+  };
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 14:46:21 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 14:50:52 2021";
+  title = "playing music";
+}
+{
+  timestemp = "Sat Oct  2 14:51:43 2021";
+  info = "{\"id\": \"39Yf0LcjyLA\", \"title\": \"\uc0c1\uc0ac\ud654\", \"formats\": [{\"asr\": 48000, \"filesize\": 2362337, \"format_id\": \"249\", \"format_note\": \"tiny\", \"fps\": null, \"height\": null, \"quality\": 0, \"tbr\": 57.832, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=249&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=audio%2Fwebm&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=2362337&dur=326.781&lmt=1587285632141806&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5531432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIgVK5-FHyASUq4E5J3sZfxTFnaz79J5viLIoIzFNaEpvECIQCvhFi5Od258m_tDPEWw-v2X9Mp5V97mQIDBPBBfT0MSQ%3D%3D&sig=AOq0QJ8wRgIhAPTAHNmxRqta3MkTk5RyVyo5DL2U-SvDXeMQBkthRrOlAiEAjkHPNBCqM3_BQRqeD7A_8dFqA6e9NWIdCvVkZkdrVTg=\", \"width\": null, \"ext\": \"webm\", \"vcodec\": \"none\", \"acodec\": \"opus\", \"abr\": 57.832, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"webm_dash\", \"format\": \"249 - audio only (tiny)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": 48000, \"filesize\": 3094681, \"format_id\": \"250\", \"format_note\": \"tiny\", \"fps\": null, \"height\": null, \"quality\": 0, \"tbr\": 75.761, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=250&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=audio%2Fwebm&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=3094681&dur=326.781&lmt=1587285633842118&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5531432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRAIgeEVmYQqxtjOD9X8W_91WL8fhhs_zYPCbYUtmRRSabBMCIDaYE_qEzVQennpJ4992ztRk9FalDVILual-0hpqtzOT&sig=AOq0QJ8wRgIhAMfHJlRv4lRZ78Dk4D7Dgn8tlTkjrvBJzGC1X8ahxy_9AiEA2qzypAuSsKW1qfswutQCOmjtcYpmM1tRGe_mAPt7SqE=\", \"width\": null, \"ext\": \"webm\", \"vcodec\": \"none\", \"acodec\": \"opus\", \"abr\": 75.761, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"webm_dash\", \"format\": \"250 - audio only (tiny)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": 44100, \"filesize\": 5291551, \"format_id\": \"140\", \"format_note\": \"tiny\", \"fps\": null, \"height\": null, \"quality\": 0, \"tbr\": 129.548, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=140&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=audio%2Fmp4&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=5291551&dur=326.768&lmt=1587285634341654&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5531432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRgIhAJevI2G27iuOhgrPJXRRYlzMwOaQ8JcK1_CfloaziY42AiEAtK2CBNbaIRs3_FDYAaS1bR42sgVPzIdMWDuvMgxOAD0%3D&sig=AOq0QJ8wRgIhAKmKnfhS3jwfNQdu0KbJ7Y1sFI6aaZ6ziwA7RDyZByHdAiEAzzkrwirhHGgfwJ9AI8uCruXoLxTZG6gr6uju_VD3mRQ=\", \"width\": null, \"ext\": \"m4a\", \"vcodec\": \"none\", \"acodec\": \"mp4a.40.2\", \"abr\": 129.548, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"m4a_dash\", \"format\": \"140 - audio only (tiny)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": 48000, \"filesize\": 5916562, \"format_id\": \"251\", \"format_note\": \"tiny\", \"fps\": null, \"height\": null, \"quality\": 0, \"tbr\": 144.844, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=251&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=audio%2Fwebm&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=5916562&dur=326.781&lmt=1587285638142591&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5531432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIhAOaE179ypAQNlMmKXKu3Rxu2AtG4LN7FSd95lveVv4y4AiA20HSohVosfLCWEUzmHRpCiNxXMubI5FsRGOfgY6kUCg%3D%3D&sig=AOq0QJ8wRgIhANiWOR2-dTelkE00hs11P_7B3A__lQkA9KuAFXudKucCAiEAkV1gvS9lb3XPkEUYmijzxRAWYQc0SfuPGrWbVtwpLnk=\", \"width\": null, \"ext\": \"webm\", \"vcodec\": \"none\", \"acodec\": \"opus\", \"abr\": 144.844, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"webm_dash\", \"format\": \"251 - audio only (tiny)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 384372, \"format_id\": \"160\", \"format_note\": \"144p\", \"fps\": 25, \"height\": 144, \"quality\": 0, \"tbr\": 9.41, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=160&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=video%2Fmp4&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=384372&dur=326.760&lmt=1587285647444244&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5532432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRgIhANS4na1EpLnZgftsT_89cRoaoWT-oi64ujLbx6E5S4j8AiEAu3w4OdopzcWlOKpGES1c1Um0hi2iiAW692gBmbm-UrI%3D&sig=AOq0QJ8wRQIgZf0x6LYbUkBfQQwA2nTP6LXjFLEM_NKTcWwZ8OLrSNwCIQDCXG7whM9hl7eKybLsIM1yLhxBzS4GEVSUbWBLsjQUUA==\", \"width\": 144, \"ext\": \"mp4\", \"vcodec\": \"avc1.4d400b\", \"acodec\": \"none\", \"vbr\": 9.41, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"160 - 144x144 (144p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 901706, \"format_id\": \"278\", \"format_note\": \"144p\", \"fps\": 25, \"height\": 144, \"quality\": 0, \"tbr\": 22.076, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=278&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=video%2Fwebm&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=901706&dur=326.760&lmt=1587285678685023&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5532432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRAIgV2YHyjWUxnYEfWx33Qtu8xogDSFFM7GDRAzQKWfG93ECIEGuVyJx5mG5jgE6yVJe2-EsZ97yq9u3GFhGUEvB6Nui&sig=AOq0QJ8wRgIhAMPWh2lyFT1tI3GEyIgxF0tJO3U0hjvdTy-Xzy7usSGmAiEAteBqiGlqvCsnPtzEMOSIm9ikOndLkzbCbDILavAFpDk=\", \"width\": 144, \"ext\": \"webm\", \"vcodec\": \"vp9\", \"acodec\": \"none\", \"vbr\": 22.076, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"webm_dash\", \"format\": \"278 - 144x144 (144p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 967097, \"format_id\": \"394\", \"format_note\": \"144p\", \"fps\": 25, \"height\": 144, \"quality\": 0, \"tbr\": 23.677, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=394&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=video%2Fmp4&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=967097&dur=326.760&lmt=1602391840198700&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5531432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIgO4WwlsjrztTkRoU_lSjrDtq0mCcFt2ot9pfSDGBkDgECIQDlpdd6vo83cy_UOGIFgcluzwnYCvKFwtmzUh6tPhEILQ%3D%3D&sig=AOq0QJ8wRgIhANRMaocrVi5XX7sghcxFuIqe5pg2jFZkB2u3u4GvYpUCAiEA4DD1vXWUn1cVwqlqVR_qBlpQy4754u_2-EHEunkpHcg=\", \"width\": 144, \"ext\": \"mp4\", \"vcodec\": \"av01.0.00M.08\", \"acodec\": \"none\", \"vbr\": 23.677, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"394 - 144x144 (144p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 552115, \"format_id\": \"133\", \"format_note\": \"240p\", \"fps\": 25, \"height\": 240, \"quality\": 1, \"tbr\": 13.517, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=133&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=video%2Fmp4&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=552115&dur=326.760&lmt=1587285647443409&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5532432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIgXH2olumprP2R40M4QOPOISp3bsZJbl8P59SocJTC79gCIQDeKCPe0olAiqUhoNwjg8HY4cro63BAKL6Z04s0MDSiyA%3D%3D&sig=AOq0QJ8wRAIgTZjRwU3UnWqsEEJfYZIwYs0_OT_xmobv9p0QZ7azeD8CIFQdIcN-yIIFtyGLoETYO9c7gwZWrYYnmgJojNgntn5Q\", \"width\": 240, \"ext\": \"mp4\", \"vcodec\": \"avc1.4d400c\", \"acodec\": \"none\", \"vbr\": 13.517, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"133 - 240x240 (240p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 1625869, \"format_id\": \"395\", \"format_note\": \"240p\", \"fps\": 25, \"height\": 240, \"quality\": 1, \"tbr\": 39.805, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=395&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=video%2Fmp4&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=1625869&dur=326.760&lmt=1602391863142975&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5531432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRAIgEdaQWsk0H00dSsPh7CBvKQy-iCfqA_RnxAYd7qnM9UgCIHABVhOEFooNPAwi6TIHfcNrN9U02NiiS6S9bPZGKmiV&sig=AOq0QJ8wRQIhAKaeALRa9NyYzRZ8E2va08P-PoKUi_EH-_BL-ETT9E8BAiBx_7mGEhvyr7CjUbH2c-6rWm7R45KOgDA_9hahOG6hIw==\", \"width\": 240, \"ext\": \"mp4\", \"vcodec\": \"av01.0.00M.08\", \"acodec\": \"none\", \"vbr\": 39.805, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"395 - 240x240 (240p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 1766870, \"format_id\": \"242\", \"format_note\": \"240p\", \"fps\": 25, \"height\": 240, \"quality\": 1, \"tbr\": 43.257, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=242&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=video%2Fwebm&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=1766870&dur=326.760&lmt=1587285678683308&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5532432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIgIQoewtEm6pxnt9-uD1A3RAM9m_ziWDXpzaJ0o4ejaxkCIQDkWP7Rn-ilJOklBIWVxi7M2l03hCSX2d1NaW_rLjm7HA%3D%3D&sig=AOq0QJ8wRQIhAI1juG09Q788YUoUBFvS0KvlJSdsNxKW5oDdbq0ME_KFAiBWhHuJo4yKW-H0eJjDrFTEtuA6O1k5VEbViviaAEH0xw==\", \"width\": 240, \"ext\": \"webm\", \"vcodec\": \"vp9\", \"acodec\": \"none\", \"vbr\": 43.257, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"webm_dash\", \"format\": \"242 - 240x240 (240p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 973313, \"format_id\": \"134\", \"format_note\": \"360p\", \"fps\": 25, \"height\": 360, \"quality\": 2, \"tbr\": 23.829, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=134&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=video%2Fmp4&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=973313&dur=326.760&lmt=1587285647444297&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5532432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIgS-E2I1yUOfAzIurziTo4SsAiOqVTLIhJKAXn978sxTMCIQDDahCFdIiYBZgDgjGic__-I29aBTueWKLH2JP6bs8Ceg%3D%3D&sig=AOq0QJ8wRAIgB2NR-GvxyicKXaBmgTH1hsssn1tu-plQCsis5LqHur4CIByvXAyXVzR-RA3gl7cS8IY7OiRhjNalEsHUGX-aMbdX\", \"width\": 360, \"ext\": \"mp4\", \"vcodec\": \"avc1.4d4015\", \"acodec\": \"none\", \"vbr\": 23.829, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"134 - 360x360 (360p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 2195359, \"format_id\": \"396\", \"format_note\": \"360p\", \"fps\": 25, \"height\": 360, \"quality\": 2, \"tbr\": 53.748, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=396&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=video%2Fmp4&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=2195359&dur=326.760&lmt=1602391884851201&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5531432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIgT1CeFw8Rjui2D6RzkbYLowAqjcWD-zf0kGrxVH0Qo4MCIQDS3Xn62MHHHY2MuOh9ypovGk_3bH-LjeOdU3zrCmoY4g%3D%3D&sig=AOq0QJ8wRAIgRZ-65WTEFivzcldx-tIN4X1_M9pSaWI8D3W3CfCSm2ICIHyNZfr87XoIHIs5asDfo0BBIMzpqHorihZMdl08alVo\", \"width\": 360, \"ext\": \"mp4\", \"vcodec\": \"av01.0.00M.08\", \"acodec\": \"none\", \"vbr\": 53.748, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"396 - 360x360 (360p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 2554537, \"format_id\": \"243\", \"format_note\": \"360p\", \"fps\": 25, \"height\": 360, \"quality\": 2, \"tbr\": 62.542, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=243&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=video%2Fwebm&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=2554537&dur=326.760&lmt=1587285678684774&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5531432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIgLMli2-WlIBA-702aB1F27zmBPJwaw0jxK_V7aFgGVQ8CIQCePfwFp3eC-U0NB-9GLImlpimSzWnx5paHllGHz-ussQ%3D%3D&sig=AOq0QJ8wRgIhAIdPohxiSu1KGOve1cwfz3agN-6BHyVEP6nIhsEdOMZCAiEAqUHc11inm1r-Q58wRn1x_H8tqMW_o02xRmGO_PnQ-o4=\", \"width\": 360, \"ext\": \"webm\", \"vcodec\": \"vp9\", \"acodec\": \"none\", \"vbr\": 62.542, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"webm_dash\", \"format\": \"243 - 360x360 (360p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 1504111, \"format_id\": \"135\", \"format_note\": \"480p\", \"fps\": 25, \"height\": 480, \"quality\": 3, \"tbr\": 36.824, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=135&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=video%2Fmp4&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=1504111&dur=326.760&lmt=1587285647446966&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5532432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRgIhAKboeHv3SI3w3bd83nmIhRjGCkPhYd1GhiK4euSr56vMAiEAyF3pTYNbnY2wJpD0kJGBm0IV7wv_qmD8y5R_nhhR3-w%3D&sig=AOq0QJ8wRAIgW84g-SIgv5ukbunj7S0eTv7zWkGiEVQYB9S1m-bqv4ACIH-MTNRNpLBF0CTr_oSk357Mzwgs9wUxHZVU-PzLxBYs\", \"width\": 480, \"ext\": \"mp4\", \"vcodec\": \"avc1.4d401e\", \"acodec\": \"none\", \"vbr\": 36.824, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"135 - 480x480 (480p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 3168527, \"format_id\": \"397\", \"format_note\": \"480p\", \"fps\": 25, \"height\": 480, \"quality\": 3, \"tbr\": 77.574, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=397&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=video%2Fmp4&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=3168527&dur=326.760&lmt=1602391914680258&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5531432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRAIgP5dsa7pUcqddnYh4DLxkHFLiU-EHg6oKCTUjCXZZu6QCIF-0v6J-q5DUSt2wwRqKZ0Kqe77JHEVMtXIot7xV0j7B&sig=AOq0QJ8wRAIgdH_-TVUecU2ECHOGvJGYZ6Xnjl069Bpc5nOk49NSpCYCIBaz7B_HFM0A7J64nNfqogLhsKefTMFCd-roqTbD3g5g\", \"width\": 480, \"ext\": \"mp4\", \"vcodec\": \"av01.0.01M.08\", \"acodec\": \"none\", \"vbr\": 77.574, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"397 - 480x480 (480p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 3840280, \"format_id\": \"244\", \"format_note\": \"480p\", \"fps\": 25, \"height\": 480, \"quality\": 3, \"tbr\": 94.02, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=244&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=video%2Fwebm&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=3840280&dur=326.760&lmt=1587285678686642&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5531432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIhAL8MTuxG2w0Zua-d5lrbXryxZ9XqRXDnxaEPDF699javAiBfjkTTqS-9Hs9_RNiIFmD3AQnY1KqjzbfRH3Zj50rjdA%3D%3D&sig=AOq0QJ8wRQIhANtsrH0kMKURpN8FkQHKe9Tk-66WAkXnab8--_nvOq-EAiBRf2DlaJyZC_j8gWRULBY6OrgjezcFYY5UEM24M25Jjg==\", \"width\": 480, \"ext\": \"webm\", \"vcodec\": \"vp9\", \"acodec\": \"none\", \"vbr\": 94.02, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"webm_dash\", \"format\": \"244 - 480x480 (480p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 2433989, \"format_id\": \"136\", \"format_note\": \"720p\", \"fps\": 25, \"height\": 720, \"quality\": 4, \"tbr\": 59.59, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=136&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=video%2Fmp4&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=2433989&dur=326.760&lmt=1587285647444109&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5532432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRgIhAMm4H2WEvKggv7OpHhEEK_dloSUm4WsLoy2GzVlG0ZmDAiEAn2IXLVMlisBXKgHKcnlNuZfjNnwqiopAw5fd63R0bBU%3D&sig=AOq0QJ8wRQIhAKDUJ1qf8tPKvg-oz72TWKhtMvSgY-JrMR0td3ISsBp3AiBXd8lxgW8qgJvw-fOadVdb7ro56iErjzfoLX-HTav0ZQ==\", \"width\": 720, \"ext\": \"mp4\", \"vcodec\": \"avc1.4d401f\", \"acodec\": \"none\", \"vbr\": 59.59, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"136 - 720x720 (720p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 5739680, \"format_id\": \"398\", \"format_note\": \"720p\", \"fps\": 25, \"height\": 720, \"quality\": 4, \"tbr\": 140.523, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=398&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=video%2Fmp4&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=5739680&dur=326.760&lmt=1602391881248699&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5531432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIhAPNtuZ53-Os05zBGvx-EfZXBirBtTxp6YGrAYooUj3CmAiBMi2FZSIPlcP1Iy8UY3tcoVZBSkHg34D8GAUUXBGLK8Q%3D%3D&sig=AOq0QJ8wRgIhANWFBWujlZLxOHl3RfkUZ6pdwmyc-Lujj1s3CpMynaH4AiEAspPqR8YK2qr5rjW5GUXOpZFgL1ea9fcIDiLJSr3d4tU=\", \"width\": 720, \"ext\": \"mp4\", \"vcodec\": \"av01.0.04M.08\", \"acodec\": \"none\", \"vbr\": 140.523, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"398 - 720x720 (720p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 6768840, \"format_id\": \"247\", \"format_note\": \"720p\", \"fps\": 25, \"height\": 720, \"quality\": 4, \"tbr\": 165.72, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=247&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=video%2Fwebm&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=6768840&dur=326.760&lmt=1587285678686719&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5532432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIhALcmxbHniFcRd0LgtiAlgygenxkmVuDMAzWb5cv8MHrTAiBM1FKtqbs9iKosL4-xPEwFFtcq0UzwizDW-W1BvbOTGw%3D%3D&sig=AOq0QJ8wRgIhALJHJpHYpu_A3f8cjIezsV0CkH43RkIqkdNVa6rqAPKJAiEAoVFDVcDmx42JJ_LZpchPklCIJbVrgYs3hHEYr9p4l5E=\", \"width\": 720, \"ext\": \"webm\", \"vcodec\": \"vp9\", \"acodec\": \"none\", \"vbr\": 165.72, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"webm_dash\", \"format\": \"247 - 720x720 (720p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 3751565, \"format_id\": \"137\", \"format_note\": \"1080p\", \"fps\": 25, \"height\": 1080, \"quality\": 5, \"tbr\": 91.848, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=137&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=video%2Fmp4&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=3751565&dur=326.760&lmt=1587285631636118&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5532432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRgIhAKD3gC-qwsDdwZTsAAOuTaafBJkgQqjksWlBuXxK2GYNAiEA66tLFA6dWYg9x2Cvfg81qXgunsFtFM_QoHmPE2GL4VU%3D&sig=AOq0QJ8wRQIgf5FoTGxHWhZKeasjV-gffLu4jXhT_c4DfcGnUZm2nrkCIQCt0106RVr383mHAji7nWiIZjkk2AaP1aUxurUQSFjSZQ==\", \"width\": 1080, \"ext\": \"mp4\", \"vcodec\": \"avc1.640020\", \"acodec\": \"none\", \"vbr\": 91.848, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"137 - 1080x1080 (1080p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 11475418, \"format_id\": \"248\", \"format_note\": \"1080p\", \"fps\": 25, \"height\": 1080, \"quality\": 5, \"tbr\": 280.95, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=248&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=video%2Fwebm&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=11475418&dur=326.760&lmt=1587285654556389&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5532432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIgQWH-BkCBmuukNRJpOyi5862DezFuepgpDkNSyUWGEBACIQCBS0VRAUuI3DjiM2eDxvelruiCqI9Aws53gryfnrIbHA%3D%3D&sig=AOq0QJ8wRgIhAMjtTfktYBUDRMx84RvBezVDqAVouUBeGCJUdufohSN2AiEAs8DmuW5OPrmSiXAHBPWNqQXgl_vwF3ZpeE2wmXCJvBs=\", \"width\": 1080, \"ext\": \"webm\", \"vcodec\": \"vp9\", \"acodec\": \"none\", \"vbr\": 280.95, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"webm_dash\", \"format\": \"248 - 1080x1080 (1080p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": null, \"filesize\": 13049625, \"format_id\": \"399\", \"format_note\": \"1080p\", \"fps\": 25, \"height\": 1080, \"quality\": 5, \"tbr\": 319.491, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=399&aitags=133%2C134%2C135%2C136%2C137%2C160%2C242%2C243%2C244%2C247%2C248%2C278%2C394%2C395%2C396%2C397%2C398%2C399&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=video%2Fmp4&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=13049625&dur=326.760&lmt=1602391939110697&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5531432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Caitags%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIgbxAEy2W8owC5kBhz7efbBcjnjLUxiDZhDKjXwU2ev6QCIQCCAeR4Rnat8pB20Klk2pFNsTqWWVBL-wrrA3pDC-tUuw%3D%3D&sig=AOq0QJ8wRAIgNPTdTnVzc0zd3tb6wpGOkedLcTaZTJAkCsCPh6rQ0OwCIC2aquzwg3ubOjMBtLTvLb3E8K7potimHdSXNCQTfFBi\", \"width\": 1080, \"ext\": \"mp4\", \"vcodec\": \"av01.0.08M.08\", \"acodec\": \"none\", \"vbr\": 319.491, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"mp4_dash\", \"format\": \"399 - 1080x1080 (1080p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}, {\"asr\": 44100, \"filesize\": 9253086, \"format_id\": \"18\", \"format_note\": \"360p\", \"fps\": 25, \"height\": 360, \"quality\": 2, \"tbr\": 226.499, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=18&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=video%2Fmp4&ns=4voEhgZKC-R4-Sl1CdT85PAG&gir=yes&clen=9253086&ratebypass=yes&dur=326.820&lmt=1587285635534613&mt=1633153489&fvip=1&fexp=24001373%2C24007246&c=WEB&txp=5531432&n=Ly3ouCFi--drcVP2&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cratebypass%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRAIgXqTqwwVjqarNSoOQIqY1kXqdlJEYxvoqME2x-UEhsfoCIFdiLTN7K25QIOhhiT4Iwt_ggnh7eAtcWXpmfJgfrWgr&sig=AOq0QJ8wRQIhAIRAS9ALzGzfBDa4J3j5dP0fGV7XidLuwEgw60t4AUS_AiA58nstPRpn_TYMrF7-Hy--su7rJptBEU9sYN33kIIuAQ==\", \"width\": 360, \"ext\": \"mp4\", \"vcodec\": \"avc1.42001E\", \"acodec\": \"mp4a.40.2\", \"format\": \"18 - 360x360 (360p)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}}], \"thumbnails\": [{\"height\": 94, \"url\": \"https://i.ytimg.com/vi/39Yf0LcjyLA/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLCyFni_aIHm4DJd9AaOP9UrqQZ8JA\", \"width\": 168, \"resolution\": \"168x94\", \"id\": \"0\"}, {\"height\": 110, \"url\": \"https://i.ytimg.com/vi/39Yf0LcjyLA/hqdefault.jpg?sqp=-oaymwEbCMQBEG5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLBJKg9coUeIeRQjR1xHvKO17MHUpQ\", \"width\": 196, \"resolution\": \"196x110\", \"id\": \"1\"}, {\"height\": 138, \"url\": \"https://i.ytimg.com/vi/39Yf0LcjyLA/hqdefault.jpg?sqp=-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCb3UOf1NH4D2CHSCd8Fr1C2f5MnA\", \"width\": 246, \"resolution\": \"246x138\", \"id\": \"2\"}, {\"height\": 188, \"url\": \"https://i.ytimg.com/vi/39Yf0LcjyLA/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBpI6wDgZcYajdasogxXTDedzMsqA\", \"width\": 336, \"resolution\": \"336x188\", \"id\": \"3\"}, {\"height\": 1080, \"url\": \"https://i.ytimg.com/vi_webp/39Yf0LcjyLA/maxresdefault.webp\", \"width\": 1920, \"resolution\": \"1920x1080\", \"id\": \"4\"}], \"description\": \"Provided to YouTube by IOKI\n\n\uc0c1\uc0ac\ud654 \u00b7 \uc548\uc608\uc740 (Yeeun Ahn)\n\n\uc5ed\uc801 : \ubc31\uc131\uc744 \ud6d4\uce5c \ub3c4\uc801 pt. 5 (Original Television Soundtrack) (Rebel: Thief Who Stole the People Pt. 5 (Original Television Soundtrack)\n\n\u2117 (\uc8fc)\ube14\ub80c\ub529\n\nReleased on: 2017-03-13\n\nAuto-generated by YouTube.\", \"upload_date\": \"20190416\", \"uploader\": \"AHN YE EUN - Topic\", \"uploader_id\": \"UCM2oAe3ljJp2MvoRbI7BbaA\", \"uploader_url\": \"http://www.youtube.com/channel/UCM2oAe3ljJp2MvoRbI7BbaA\", \"channel_id\": \"UCM2oAe3ljJp2MvoRbI7BbaA\", \"channel_url\": \"https://www.youtube.com/channel/UCM2oAe3ljJp2MvoRbI7BbaA\", \"duration\": 327, \"view_count\": 4209630, \"average_rating\": 4.6137328, \"age_limit\": 0, \"webpage_url\": \"https://www.youtube.com/watch?v=39Yf0LcjyLA\", \"categories\": [\"Music\"], \"tags\": [\"\uc548\uc608\uc740\", \"(Yeeun\", \"Ahn)\", \"\uc5ed\uc801\", \"\ubc31\uc131\uc744\", \"\ud6d4\uce5c\", \"\ub3c4\uc801\", \"pt.\", \"(Original\", \"Television\", \"Soundtrack)\", \"(Rebel:\", \"Thief\", \"Who\", \"Stole\", \"the\", \"People\", \"Pt.\", \"Soundtrack))\", \"\uc0c1\uc0ac\ud654\"], \"is_live\": null, \"album\": \"\uc5ed\uc801 : \ubc31\uc131\uc744 \ud6d4\uce5c \ub3c4\uc801 pt. 5 (Original Television Soundtrack) (Rebel: Thief Who Stole the People Pt. 5 (Original Television Soundtrack)\", \"artist\": \"\uc548\uc608\uc740 (Yeeun Ahn)\", \"track\": \"\uc0c1\uc0ac\ud654\", \"release_date\": \"20170313\", \"release_year\": 2017, \"like_count\": 18131, \"dislike_count\": 1938, \"channel\": \"AHN YE EUN - Topic\", \"creator\": \"\uc548\uc608\uc740 (Yeeun Ahn)\", \"alt_title\": \"\uc0c1\uc0ac\ud654\", \"extractor\": \"youtube\", \"webpage_url_basename\": \"watch\", \"extractor_key\": \"Youtube\", \"playlist\": null, \"playlist_index\": null, \"thumbnail\": \"https://i.ytimg.com/vi_webp/39Yf0LcjyLA/maxresdefault.webp\", \"display_id\": \"39Yf0LcjyLA\", \"requested_subtitles\": null, \"asr\": 48000, \"filesize\": 5916562, \"format_id\": \"251\", \"format_note\": \"tiny\", \"fps\": null, \"height\": null, \"quality\": 0, \"tbr\": 144.844, \"url\": \"https://r1---sn-ab02a0nfpgxapox-u5xl.googlevideo.com/videoplayback?expire=1633175505&ei=cfNXYb67FsOD2roP9raowAI&ip=115.138.195.111&id=o-ACl5i5CPTqGGTj6JcSTdWlr0uS7X83tcezMcPq8qmGw5&itag=251&source=youtube&requiressl=yes&mh=-m&mm=31%2C29&mn=sn-ab02a0nfpgxapox-u5xl%2Csn-ab02a0nfpgxapox-bh2z6&ms=au%2Crdu&mv=m&mvi=1&pl=24&gcr=kr&initcwndbps=2788750&vprv=1&mime=audio%2Fwebm&ns=lF6Zsw16ZqCT1Cu2rY_nyT0G&gir=yes&clen=5916562&dur=326.781&lmt=1587285638142591&mt=1633153489&fvip=1&keepalive=yes&fexp=24001373%2C24007246&c=WEB&txp=5531432&n=U5mpSyo-RIzucFMJ&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cgcr%2Cvprv%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&lsparams=mh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AG3C_xAwRQIhAOaE179ypAQNlMmKXKu3Rxu2AtG4LN7FSd95lveVv4y4AiA20HSohVosfLCWEUzmHRpCiNxXMubI5FsRGOfgY6kUCg%3D%3D&sig=AOq0QJ8wRgIhANiWOR2-dTelkE00hs11P_7B3A__lQkA9KuAFXudKucCAiEAkV1gvS9lb3XPkEUYmijzxRAWYQc0SfuPGrWbVtwpLnk=\", \"width\": null, \"ext\": \"webm\", \"vcodec\": \"none\", \"acodec\": \"opus\", \"abr\": 144.844, \"downloader_options\": {\"http_chunk_size\": 10485760}, \"container\": \"webm_dash\", \"format\": \"251 - audio only (tiny)\", \"protocol\": \"https\", \"http_headers\": {\"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.34 Safari/537.36\", \"Accept-Charset\": \"ISO-8859-1,utf-8;q=0.7,*;q=0.7\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\", \"Accept-Encoding\": \"gzip, deflate\", \"Accept-Language\": \"en-us,en;q=0.5\"}, \"fulltitle\": \"\uc0c1\uc0ac\ud654\", \"_filename\": \"data\\youtubeFiles\\39Yf0LcjyLA.webm\"}\n";
+  trace = {
+    stdout = {
+      read = function: 0x02960e6eea48;
+      handle = uv_pipe_t: 0x02960e58ecc0;
+    };
+    waitExit = function: 0x02960e16cde0;
+    stderr = {
+      read = function: 0x02960e6eed88;
+      handle = uv_pipe_t: 0x02960e58e5d0;
+    };
+    handle = uv_process_t: 0x02960e58c640;
+    pid = 21912;
+  };
+  status = "error";
+  vid = "39Yf0LcjyLA";
+  title = "failed to download video from youtube";
+}
+{
+  traceback = ".\commands\music\init.lua:100: attempt to index field 'info' (a nil value)";
+  command = {
+    func = function: 0x02960e3cba38;
+    reply = "처리중입니다";
+    name = "add music";
+    alias = {
+      [1] = "곡 추가";
+      [2] = "곡추가";
+      [3] = "음악추가";
+      [4] = "음악 추가";
+      [5] = "음악 add";
+      [6] = "music add";
+      [7] = "music 추가";
+      [8] = "음악 재생";
+      [9] = "음악재생";
+    };
+  };
+  title = "an error occurred on running command function";
+  timestemp = "Sat Oct  2 14:51:43 2021";
+  originalMsg = "미나 음악추가 https://www.youtube.com/watch?v=39Yf0LcjyLA&ab_channel=AHNYEEUN-Topic";
+  this = {
+    [1] = {
+      [1] = {
+        [1] = {
+          [1] = {
+            messageCreate = {
+              [1] = {
+                fn = function: 0x02960e269108;
+              };
+            };
+          };
+          [2] = {
+            maxRetries = 5;
+            gatewayFile = "gateway.json";
+            firstShard = 0;
+            autoReconnect = true;
+            cacheAllMembers = false;
+            shardCount = 0;
+            syncGuilds = false;
+            compress = true;
+            dateTime = "%F %T";
+            logLevel = 3;
+            bitrate = 64000;
+            routeDelay = 250;
+            logFile = "discordia.log";
+            largeThreshold = 100;
+            lastShard = -1;
+          };
+          [3] = {
+            [0] = {
+              [1] = {};
+              [2] = "#Recursive detected#";
+              [3] = {
+                [1] = {};
+                [2] = 0;
+                [3] = -1;
+                [4] = false;
+              };
+              [4] = {
+                [1] = 4.961373808074e+14;
+              };
+              [5] = 0;
+              [6] = "#Recursive detected#";
+              [7] = 1000;
+              [8] = function: 0x02960e2fec88;
+              [9] = function: 0x02960e210e70;
+              [11] = uv_timer_t: 0x02960e55a3f0;
+              [12] = 1150;
+              [13] = "04b5731363ef3d6063aaa939bc535131";
+              [14] = true;
+            };
+          };
+          [4] = {
+            [1] = "#Recursive detected#";
+            [2] = {};
+            [3] = "Bot ODI4ODk0NDgxMjg5OTY5NjY1.YGwOJA.UKTxDbmGaDah782PWD9SSDbkY-0";
+          };
+          [5] = "#Recursive detected#";
+          [6] = {
+            745985317240307762 = {
+              [1] = "#Recursive detected#";
+              [2] = "7825";
+              [4] = "745985317240307762";
+              [6] = true;
+              [7] = "a38c5a76edf75abf53390bccbaffd9ae";
+              [14] = "잌 (장난감 봇)";
+            };
+            415804982764371969 = {
+              [1] = "#Recursive detected#";
+              [2] = "5140";
+              [4] = "415804982764371969";
+              [7] = "f2f50cc3ccf247f206d501def3012323";
+              [14] = "세제 원샷";
+            };
+            654245768055619584 = {
+              [1] = "#Recursive detected#";
+              [2] = "5252";
+              [4] = "654245768055619584";
+              [7] = "be6669a2b4ba0478c2412c232d50c632";
+              [10] = 256;
+              [14] = "12302a";
+            };
+            684324201536290923 = {
+              [1] = "#Recursive detected#";
+              [2] = "5017";
+              [4] = "684324201536290923";
+              [7] = "191a714d5abdab8ffb107533655bd567";
+              [10] = 64;
+              [14] = "이상욱";
+            };
+            235088799074484224 = {
+              [1] = "#Recursive detected#";
+              [2] = "3722";
+              [4] = "235088799074484224";
+              [6] = true;
+              [7] = "9b29bfc497a70b6cc85bb2087936f8fd";
+              [10] = 65536;
+              [14] = "Rythm";
+            };
+            414925323197612032 = {
+              [1] = "#Recursive detected#";
+              [2] = "9735";
+              [4] = "414925323197612032";
+              [6] = true;
+              [7] = "5903cdb6377fc799f08c16f9f2dbe75a";
+              [10] = 65536;
+              [14] = "KDBot";
+            };
+            797445655563993099 = {
+              [1] = "#Recursive detected#";
+              [2] = "9532";
+              [4] = "797445655563993099";
+              [14] = "기록봇";
+              [6] = true;
+            };
+            545032348597485578 = {
+              [1] = "#Recursive detected#";
+              [2] = "9488";
+              [4] = "545032348597485578";
+              [7] = "a_743d44ba9815a2a72adf8dc25c0b25e3";
+              [10] = 256;
+              [14] = "이승헌";
+            };
+            647101613047152640 = {
+              [1] = "#Recursive detected#";
+              [2] = "9961";
+              [4] = "647101613047152640";
+              [7] = "a4a256cda49eef204a7a2d26bbde242c";
+              [10] = 128;
+              [14] = "눈송이";
+            };
+            664505196969328652 = {
+              [1] = "#Recursive detected#";
+              [2] = "2178";
+              [4] = "664505196969328652";
+              [7] = "1f3910eb8b63ac59478483cc6bcd8dcc";
+              [14] = "고추니";
+            };
+            870241583184887849 = {
+              [1] = "#Recursive detected#";
+              [2] = "8414";
+              [4] = "870241583184887849";
+              [6] = true;
+              [7] = "96703505773c97ea5654ad8065bfc392";
+              [14] = "Satgod Entertainment Bot";
+            };
+            855704481135460362 = {
+              [1] = "#Recursive detected#";
+              [2] = "1883";
+              [4] = "855704481135460362";
+              [7] = "e5ba8661984777f6d08d0d44c5761f74";
+              [14] = "furan";
+            };
+            218010938807287808 = {
+              [1] = "#Recursive detected#";
+              [2] = "1657";
+              [4] = "218010938807287808";
+              [6] = true;
+              [7] = "be6672594da87c2c8d33d09c63d7351d";
+              [10] = 65536;
+              [14] = "마냥";
+            };
+            449177180606300160 = {
+              [1] = "#Recursive detected#";
+              [2] = "8287";
+              [4] = "449177180606300160";
+              [7] = "df8896e106e4c8fbd8db87c794584135";
+              [14] = "혀니";
+            };
+            480318544693821450 = {
+              [1] = "#Recursive detected#";
+              [2] = "9441";
+              [4] = "480318544693821450";
+              [7] = "58d85ae857ec68ff02e2f0bcbefe88ee";
+              [10] = 64;
+              [14] = "Ruža";
+            };
+            367946917197381644 = {
+              [1] = "#Recursive detected#";
+              [2] = "1234";
+              [4] = "367946917197381644";
+              [7] = "9475979bf6842d64148d1344ffacdc5d";
+              [10] = 64;
+              [12] = 64;
+              [14] = "므야야ㅑㅑㅑ";
+            };
+            479774031185313807 = {
+              [1] = "#Recursive detected#";
+              [2] = "2206";
+              [4] = "479774031185313807";
+              [7] = "2df200649a56589dce56de3b6e8729f6";
+              [14] = "알파카";
+            };
+            353501674670653441 = {
+              [1] = "#Recursive detected#";
+              [2] = "5877";
+              [4] = "353501674670653441";
+              [7] = "1ad17126afb44222a3ba61a3b2cf697e";
+              [10] = 128;
+              [14] = "ㄱㅁㄱ";
+            };
+            533678855257325568 = {
+              [1] = "#Recursive detected#";
+              [2] = "4634";
+              [4] = "533678855257325568";
+              [7] = "af4cd3810eb00162566741fd42fd1b1e";
+              [14] = "Love was people";
+            };
+            711769311387058238 = {
+              [1] = "#Recursive detected#";
+              [2] = "7250";
+              [4] = "711769311387058238";
+              [6] = true;
+              [7] = "b6d815a450ad47beae8551ced7e26d64";
+              [10] = 65536;
+              [14] = "하나";
+            };
+            559313466641612830 = {
+              [1] = "#Recursive detected#";
+              [2] = "1263";
+              [4] = "559313466641612830";
+              [7] = "3d0d650aa038f923d156c64a8d1ad1b3";
+              [14] = "황정수";
+            };
+            754620012450414682 = {
+              [1] = "#Recursive detected#";
+              [2] = "9565";
+              [14] = "RABBIT__TURTLE";
+              [4] = "754620012450414682";
+            };
+            756035861250048031 = {
+              [1] = "#Recursive detected#";
+              [2] = "6366";
+              [4] = "756035861250048031";
+              [10] = 0;
+              [14] = "꺄얍";
+            };
+            494474648419958788 = {
+              [1] = "#Recursive detected#";
+              [2] = "1082";
+              [4] = "494474648419958788";
+              [7] = "ca4627c71ea3bd4ee49d1c385f9f27b4";
+              [14] = "김동민";
+            };
+            853947057562714133 = {
+              [1] = "#Recursive detected#";
+              [2] = "6394";
+              [4] = "853947057562714133";
+              [6] = true;
+              [7] = "1ad94c5a4683d207df4e593070586317";
+              [14] = "DUSK's Bot";
+            };
+            827428530559254589 = {
+              [1] = "#Recursive detected#";
+              [2] = "0462";
+              [4] = "827428530559254589";
+              [6] = true;
+              [7] = "0057c770696149efa509985ff3c54e31";
+              [14] = "Bun";
+            };
+            234395307759108106 = {
+              [1] = "#Recursive detected#";
+              [2] = "7254";
+              [4] = "234395307759108106";
+              [6] = true;
+              [7] = "0e7adc5d634d957b7725021c067bfd87";
+              [10] = 65536;
+              [14] = "Groovy";
+            };
+            755378215907885116 = {
+              [1] = "#Recursive detected#";
+              [2] = "4189";
+              [4] = "755378215907885116";
+              [7] = "59bd4cc90aa3e0e80356d125df0401c5";
+              [10] = 64;
+              [14] = "SATGOD";
+            };
+            686077975392944156 = {
+              [1] = "#Recursive detected#";
+              [2] = "3902";
+              [4] = "686077975392944156";
+              [7] = "a_db7543054a2f1f08bf079a4f8e722fee";
+              [10] = 64;
+              [14] = "Doge";
+            };
+            864089849933070346 = {
+              [1] = "#Recursive detected#";
+              [2] = "8470";
+              [14] = "모바일_래빗";
+              [4] = "864089849933070346";
+            };
+            701402995484655697 = {
+              [1] = "#Recursive detected#";
+              [2] = "8187";
+              [4] = "701402995484655697";
+              [7] = "e266aa5c22456a2d6ab779cef477df94";
+              [14] = "용용";
+            };
+            419476138331602946 = {
+              [1] = "#Recursive detected#";
+              [2] = "3872";
+              [4] = "419476138331602946";
+              [6] = true;
+              [7] = "34ab6aa91af582699a1ebd8057dbcf51";
+              [10] = 65536;
+              [14] = "크시";
+            };
+            828894481289969665 = {
+              [1] = "#Recursive detected#";
+              [2] = "6938";
+              [4] = "828894481289969665";
+              [5] = true;
+              [6] = true;
+              [7] = "48aae1de0adbf0a8e9b16350add0f3a2";
+              [10] = 0;
+              [12] = 0;
+              [13] = true;
+              [14] = "미나";
+              [15] = "en-US";
+              [16] = "";
+            };
+            465767189375483907 = {
+              [1] = "#Recursive detected#";
+              [2] = "4432";
+              [4] = "465767189375483907";
+              [7] = "b81d91cac1d64948bdea35e641e4cef0";
+              [14] = "ㅇ0ㅇ";
+            };
+            889791736270974976 = {
+              [1] = "#Recursive detected#";
+              [2] = "4729";
+              [14] = "김치";
+              [4] = "889791736270974976";
+            };
+            349181518456815626 = {
+              [1] = "#Recursive detected#";
+              [2] = "9235";
+              [4] = "349181518456815626";
+              [7] = "0c1a7d3b70db64d3420e17abdea68484";
+              [10] = 128;
+              [14] = "GukJin";
+            };
+            769154913766080543 = {
+              [1] = "#Recursive detected#";
+              [2] = "0485";
+              [4] = "769154913766080543";
+              [7] = "2463939f152d9487483d51005b2a1afb";
+              [14] = "seop";
+            };
+          };
+          [7] = "#Recursive detected#";
+          [8] = "#Recursive detected#";
+          [9] = "#Recursive detected#";
+          [10] = "#Recursive detected#";
+          [11] = {};
+          [12] = {
+            [1] = 3;
+            [2] = "%F %T";
+            [3] = 3;
+          };
+          [13] = {
+            [1] = {};
+            [2] = "#Recursive detected#";
+          };
+          [14] = {
+            877038377118081036 = {
+              [1] = "#Recursive detected#";
+              [2] = false;
+              [3] = "870243263825707018";
+              [4] = "#Recursive detected#";
+              [5] = "#Recursive detected#";
+              [6] = "#Recursive detected#";
+              [7] = "#Recursive detected#";
+              [8] = "#Recursive detected#";
+              [9] = "#Recursive detected#";
+              [10] = {};
+              [12] = 0;
+              [13] = false;
+              [15] = 0;
+              [16] = "south-korea";
+              [18] = "870243263825707021";
+              [19] = "2021-09-26T10:16:53.069486+00:00";
+              [20] = 8;
+              [21] = 25;
+              [22] = 0;
+              [23] = 250000;
+              [24] = 0;
+              [27] = 0;
+              [29] = 300;
+              [30] = "755378215907885116";
+              [31] = false;
+              [33] = 0;
+              [34] = 0;
+              [35] = 0;
+              [36] = "en-US";
+              [37] = 0;
+              [40] = false;
+              [42] = "테스트 서버";
+              [43] = true;
+              [44] = {};
+            };
+            827199450774372382 = "#Recursive detected#";
+            827211779930718209 = "#Recursive detected#";
+            827214987743068211 = "#Recursive detected#";
+            819762474348707850 = "#Recursive detected#";
+            827212586373611550 = "#Recursive detected#";
+            891629393280106497 = "#Recursive detected#";
+            824949557602942986 = "#Recursive detected#";
+            827215618184708106 = "#Recursive detected#";
+            832163847275413534 = {
+              [1] = "#Recursive detected#";
+              [2] = false;
+              [3] = "754620784986685472";
+              [4] = "#Recursive detected#";
+              [5] = "#Recursive detected#";
+              [6] = "#Recursive detected#";
+              [7] = "#Recursive detected#";
+              [8] = "#Recursive detected#";
+              [9] = "#Recursive detected#";
+              [10] = {};
+              [12] = 0;
+              [13] = false;
+              [15] = 0;
+              [16] = "south-korea";
+              [18] = "754620785426956351";
+              [19] = "2021-09-22T12:43:09.020000+00:00";
+              [20] = 8;
+              [21] = 25;
+              [22] = 0;
+              [23] = 250000;
+              [24] = 0;
+              [27] = 0;
+              [29] = 300;
+              [30] = "754620012450414682";
+              [31] = false;
+              [32] = "257602e77e4f3cfed020edd275e03d4a";
+              [33] = 0;
+              [34] = 0;
+              [35] = 0;
+              [36] = "en-US";
+              [37] = 0;
+              [40] = false;
+              [42] = "4명모임 ㅋㅋ";
+              [43] = true;
+              [44] = {};
+            };
+            831901563470741556 = {
+              [1] = "#Recursive detected#";
+              [2] = false;
+              [3] = "772816335859089420";
+              [4] = "#Recursive detected#";
+              [5] = "#Recursive detected#";
+              [6] = "#Recursive detected#";
+              [7] = "#Recursive detected#";
+              [8] = "#Recursive detected#";
+              [9] = "#Recursive detected#";
+              [10] = {};
+              [12] = 0;
+              [13] = false;
+              [15] = 0;
+              [16] = "south-korea";
+              [19] = "2021-04-12T14:24:10.702000+00:00";
+              [20] = 7;
+              [21] = 25;
+              [22] = 0;
+              [23] = 250000;
+              [24] = 0;
+              [27] = 0;
+              [29] = 300;
+              [30] = "756035861250048031";
+              [31] = false;
+              [33] = 0;
+              [34] = 0;
+              [35] = 0;
+              [36] = "en-US";
+              [37] = 0;
+              [40] = false;
+              [42] = "테스트 하는곳";
+              [43] = true;
+              [44] = {};
+            };
+            819794709400387584 = "#Recursive detected#";
+            837628664211439666 = "#Recursive detected#";
+            754620784986685472 = "#Recursive detected#";
+            828272433089085490 = "#Recursive detected#";
+            836985971240206386 = "#Recursive detected#";
+            889438990153941002 = "#Recursive detected#";
+            827199883152588860 = "#Recursive detected#";
+            827211529950199879 = "#Recursive detected#";
+            840888485338546186 = "#Recursive detected#";
+            847125355848138812 = "#Recursive detected#";
+            828614761687416893 = "#Recursive detected#";
+            830737930515120128 = "#Recursive detected#";
+            833877360549560360 = "#Recursive detected#";
+            820547375633793046 = "#Recursive detected#";
+            827204407627218996 = "#Recursive detected#";
+            832163751448412181 = "#Recursive detected#";
+            842970190017855509 = "#Recursive detected#";
+            827214508921192518 = "#Recursive detected#";
+            833905546100342834 = "#Recursive detected#";
+            890216650744418306 = "#Recursive detected#";
+            827212726458777660 = "#Recursive detected#";
+            830779346591154196 = "#Recursive detected#";
+            827201590728458261 = "#Recursive detected#";
+            827200443267678258 = "#Recursive detected#";
+            832163412335001631 = "#Recursive detected#";
+            797469591244767262 = "#Recursive detected#";
+            828614685137436692 = "#Recursive detected#";
+            827213936625582100 = "#Recursive detected#";
+            843860051248414740 = "#Recursive detected#";
+            827215106399404052 = "#Recursive detected#";
+            827212302670757978 = "#Recursive detected#";
+            820547941751717951 = "#Recursive detected#";
+            877037154612690964 = "#Recursive detected#";
+            819794412686540810 = "#Recursive detected#";
+            831563270406012940 = "#Recursive detected#";
+            874444935682728027 = "#Recursive detected#";
+            870243263825707018 = "#Recursive detected#";
+            819902159733915679 = "#Recursive detected#";
+            864001689493307442 = "#Recursive detected#";
+            772816335859089420 = "#Recursive detected#";
+            836986778254442536 = "#Recursive detected#";
+            827211406155710544 = "#Recursive detected#";
+            827200876472041482 = "#Recursive detected#";
+            827215230399414352 = "#Recursive detected#";
+            827211654235291699 = "#Recursive detected#";
+            827205130544742470 = "#Recursive detected#";
+            838938463390138398 = "#Recursive detected#";
+            827215368182562817 = "#Recursive detected#";
+            820547203700883466 = "#Recursive detected#";
+            827210690644279352 = "#Recursive detected#";
+            827211309305036861 = "#Recursive detected#";
+            831172853234663495 = "#Recursive detected#";
+            827211138650341396 = "#Recursive detected#";
+            819776535367122944 = "#Recursive detected#";
+            827210415398322176 = "#Recursive detected#";
+            827199780442734632 = "#Recursive detected#";
+            833246221803061258 = "#Recursive detected#";
+            827213593086525531 = "#Recursive detected#";
+            827215453805477938 = "#Recursive detected#";
+            827201147977859103 = "#Recursive detected#";
+            827201306354909264 = "#Recursive detected#";
+            825272974701101056 = "#Recursive detected#";
+            844775961463095356 = "#Recursive detected#";
+            827215586865971200 = "#Recursive detected#";
+            846087127451303996 = "#Recursive detected#";
+            827204685844185149 = "#Recursive detected#";
+            824955839525421116 = "#Recursive detected#";
+            842059252230914119 = "#Recursive detected#";
+            850575882719854633 = "#Recursive detected#";
+            827201489180557362 = "#Recursive detected#";
+            827212824320802856 = "#Recursive detected#";
+            827205515897077800 = "#Recursive detected#";
+            827200241371316234 = "#Recursive detected#";
+            847498131586154536 = "#Recursive detected#";
+            827212183363780640 = "#Recursive detected#";
+            833337171624722493 = "#Recursive detected#";
+            827205182240456796 = "#Recursive detected#";
+            832163652916346901 = "#Recursive detected#";
+            871341242632511518 = "#Recursive detected#";
+            827213831188905994 = "#Recursive detected#";
+            797669760485031966 = "#Recursive detected#";
+            847498144258457690 = "#Recursive detected#";
+            827200754728435733 = "#Recursive detected#";
+            827214269586210876 = "#Recursive detected#";
+            826149287658127411 = "#Recursive detected#";
+            827200254063542342 = "#Recursive detected#";
+            829344351271387136 = "#Recursive detected#";
+            843479263382732801 = "#Recursive detected#";
+            827213693527523339 = "#Recursive detected#";
+            819794054304628767 = "#Recursive detected#";
+            827205383902068788 = "#Recursive detected#";
+            835057924736679936 = "#Recursive detected#";
+            830747775184142356 = "#Recursive detected#";
+            819780697635029012 = "#Recursive detected#";
+          };
+          [15] = {
+            844617279807291432 = "#Recursive detected#";
+            830419196247539752 = "#Recursive detected#";
+            841972215658708993 = "#Recursive detected#";
+            844617394625183804 = "#Recursive detected#";
+            872644807821000764 = "#Recursive detected#";
+            830732467434422282 = "#Recursive detected#";
+            872645119105437716 = "#Recursive detected#";
+            872645418905919498 = "#Recursive detected#";
+            872644861730390016 = "#Recursive detected#";
+            844617509347786802 = "#Recursive detected#";
+            844617111288807474 = "#Recursive detected#";
+            872644618708205619 = "#Recursive detected#";
+            872644930860879872 = "#Recursive detected#";
+            841972315972960266 = "#Recursive detected#";
+            830419151079211028 = "#Recursive detected#";
+            841972275392806942 = "#Recursive detected#";
+            872644765311701012 = "#Recursive detected#";
+          };
+          [16] = {
+            889442998990028810 = "#Recursive detected#";
+            829977731545825300 = "#Recursive detected#";
+            819763541460254721 = "#Recursive detected#";
+            772816336749461535 = "#Recursive detected#";
+            828807746270920704 = "#Recursive detected#";
+            829228170926489630 = "#Recursive detected#";
+            833921431477420043 = "#Recursive detected#";
+            830395166945968129 = "#Recursive detected#";
+            829977563685978203 = "#Recursive detected#";
+            870243263825707021 = "#Recursive detected#";
+            772816336749461536 = "#Recursive detected#";
+            836747891694501909 = "#Recursive detected#";
+            819833872987455498 = "#Recursive detected#";
+            819805193767354398 = "#Recursive detected#";
+            819763571117916160 = "#Recursive detected#";
+            829977268452982826 = "#Recursive detected#";
+            754620785426956349 = "#Recursive detected#";
+            754620785426956350 = "#Recursive detected#";
+            842041669750882311 = "#Recursive detected#";
+            833588321463828490 = "#Recursive detected#";
+            772816336749461539 = "#Recursive detected#";
+            835782189069238292 = "#Recursive detected#";
+            819766398599299164 = "#Recursive detected#";
+            819763503795404810 = "#Recursive detected#";
+            842041735387021332 = "#Recursive detected#";
+            850947178218127360 = "#Recursive detected#";
+            870243263825707019 = "#Recursive detected#";
+            835796172328796182 = "#Recursive detected#";
+            870243263825707020 = "#Recursive detected#";
+            819764858912243753 = "#Recursive detected#";
+            838950914668232714 = "#Recursive detected#";
+            833921581230325781 = "#Recursive detected#";
+            870243263825707022 = "#Recursive detected#";
+            829546628830199808 = "#Recursive detected#";
+            819764250766999563 = "#Recursive detected#";
+            835771021126008852 = "#Recursive detected#";
+            829977619830276196 = "#Recursive detected#";
+            796349439958319125 = "#Recursive detected#";
+            754620785426956352 = "#Recursive detected#";
+            819765068203819038 = "#Recursive detected#";
+            819764632323358790 = "#Recursive detected#";
+            754620785426956351 = "#Recursive detected#";
+            828533666299904030 = "#Recursive detected#";
+          };
+          [17] = {
+            PRESENCE_UPDATE = function: 0x02960c9064b8;
+            RELATIONSHIP_REMOVE = function: 0x02960c906520;
+            GUILD_MEMBERS_CHUNK = function: 0x02960c905838;
+            CHANNEL_DELETE = function: 0x02960c905aa0;
+            MESSAGE_CREATE = function: 0x02960c906238;
+            MESSAGE_UPDATE = function: 0x02960c9062b0;
+            WEBHOOKS_UPDATE = function: 0x02960c9066a0;
+            GUILD_CREATE = function: 0x02960c905ca0;
+            READY = function: 0x02960c9056e0;
+            GUILD_SYNC = function: 0x02960c905918;
+            GUILD_MEMBER_REMOVE = function: 0x02960c906158;
+            MESSAGE_DELETE_BULK = function: 0x02960c906330;
+            RESUMED = function: 0x02960c905808;
+            GUILD_ROLE_DELETE = function: 0x02960c906200;
+            CHANNEL_UPDATE = function: 0x02960c905a60;
+            RELATIONSHIP_ADD = function: 0x02960c9064f0;
+            MESSAGE_REACTION_REMOVE_ALL = function: 0x02960c906438;
+            MESSAGE_REACTION_REMOVE = function: 0x02960c9063f0;
+            GUILD_EMOJIS_UPDATE = function: 0x02960c905da8;
+            CHANNEL_PINS_UPDATE = function: 0x02960c906478;
+            GUILD_MEMBER_ADD = function: 0x02960c905de0;
+            TYPING_START = function: 0x02960c906550;
+            CHANNEL_RECIPIENT_ADD = function: 0x02960c9057d0;
+            VOICE_SERVER_UPDATE = function: 0x02960c906660;
+            VOICE_STATE_UPDATE = function: 0x02960c9065e0;
+            GUILD_MEMBER_UPDATE = function: 0x02960c905e18;
+            CHANNEL_CREATE = function: 0x02960c905958;
+            MESSAGE_REACTION_ADD = function: 0x02960c906370;
+            GUILD_BAN_ADD = function: 0x02960c905d38;
+            GUILD_ROLE_UPDATE = function: 0x02960c9061c8;
+            USER_UPDATE = function: 0x02960c906580;
+            CHANNEL_RECIPIENT_REMOVE = function: 0x02960c905ae0;
+            MESSAGE_DELETE = function: 0x02960c9062f0;
+            GUILD_BAN_REMOVE = function: 0x02960c905d70;
+            GUILD_DELETE = function: 0x02960c905d08;
+            GUILD_ROLE_CREATE = function: 0x02960c906190;
+            GUILD_UPDATE = function: 0x02960c905cd8;
+          };
+          [18] = {
+            status = {};
+            since = "#Recursive detected#";
+            afk = "#Recursive detected#";
+            game = {
+              name = "'미나야 도움말' 을 이용해 도움말을 얻거나 '미나야 <할말>' 을 이용해 미나와 대화하세요!";
+              type = 0;
+            };
+          };
+          [19] = "#Recursive detected#";
+          [20] = "Bot ODI4ODk0NDgxMjg5OTY5NjY1.YGwOJA.UKTxDbmGaDah782PWD9SSDbkY-0";
+          [21] = "#Recursive detected#";
+          [22] = 1;
+          [23] = 1;
+        };
+        [2] = false;
+        [3] = "819762474348707850";
+        [4] = "#Recursive detected#";
+        [5] = "#Recursive detected#";
+        [6] = "#Recursive detected#";
+        [7] = "#Recursive detected#";
+        [8] = "#Recursive detected#";
+        [9] = "#Recursive detected#";
+        [10] = {
+          828894481289969665 = {
+            self_video = false;
+            member = {
+              is_pending = false;
+              mute = false;
+              user = {
+                discriminator = "6938";
+                id = "828894481289969665";
+                username = "미나";
+                avatar = "48aae1de0adbf0a8e9b16350add0f3a2";
+                bot = true;
+              };
+              avatar = "#Recursive detected#";
+              premium_since = "#Recursive detected#";
+              deaf = false;
+              nick = "#Recursive detected#";
+              pending = false;
+              hoisted_role = "820547375633793046";
+              joined_at = "2021-06-05T03:24:53.405689+00:00";
+              roles = {
+                [1] = "827213936625582100";
+                [2] = "820547375633793046";
+                [3] = "827212824320802856";
+                [4] = "850575882719854633";
+                [5] = "840888485338546186";
+              };
+            };
+            session_id = "04b5731363ef3d6063aaa939bc535131";
+            request_to_speak_timestamp = "#Recursive detected#";
+            token = "01785e0ec5b7712e";
+            channel_id = "829228170926489630";
+            deaf = false;
+            suppress = false;
+            self_deaf = false;
+            self_mute = false;
+            user_id = "828894481289969665";
+            guild_id = "819762474348707850";
+            mute = false;
+            endpoint = "south-korea1049.discord.media:443";
+          };
+          367946917197381644 = {
+            self_video = false;
+            member = {
+              is_pending = false;
+              mute = false;
+              user = {
+                discriminator = "1234";
+                public_flags = 64;
+                id = "367946917197381644";
+                username = "므야야ㅑㅑㅑ";
+                avatar = "9475979bf6842d64148d1344ffacdc5d";
+              };
+              avatar = "#Recursive detected#";
+              premium_since = "#Recursive detected#";
+              deaf = false;
+              nick = "#Recursive detected#";
+              pending = false;
+              hoisted_role = "824955839525421116";
+              joined_at = "2021-03-12T02:43:24.359000+00:00";
+              roles = {
+                [1] = "827210415398322176";
+                [2] = "827215368182562817";
+                [3] = "827200254063542342";
+                [4] = "827200241371316234";
+                [5] = "827200876472041482";
+                [6] = "833246221803061258";
+                [7] = "827201306354909264";
+                [8] = "827211406155710544";
+                [9] = "819780697635029012";
+                [10] = "827200754728435733";
+                [11] = "827201590728458261";
+                [12] = "827211138650341396";
+                [13] = "827212586373611550";
+                [14] = "827199450774372382";
+                [15] = "827201147977859103";
+                [16] = "827212824320802856";
+                [17] = "833877360549560360";
+                [18] = "827200443267678258";
+                [19] = "827201489180557362";
+                [20] = "827205383902068788";
+                [21] = "827215453805477938";
+                [22] = "828614761687416893";
+                [23] = "827211309305036861";
+                [24] = "824955839525421116";
+                [25] = "827204685844185149";
+              };
+            };
+            session_id = "38c924b0b11f4db142d81c5b1d3c435c";
+            channel_id = "829228170926489630";
+            deaf = false;
+            suppress = false;
+            self_deaf = false;
+            self_mute = false;
+            user_id = "367946917197381644";
+            guild_id = "819762474348707850";
+            mute = false;
+            request_to_speak_timestamp = "#Recursive detected#";
+          };
+        };
+        [12] = 0;
+        [13] = false;
+        [15] = 37;
+        [16] = "south-korea";
+        [17] = "819765068203819038";
+        [18] = "819805193767354398";
+        [19] = "2021-06-05T03:24:53.405689+00:00";
+        [20] = 23;
+        [21] = 25;
+        [22] = 0;
+        [23] = 250000;
+        [24] = 0;
+        [27] = 0;
+        [29] = 300;
+        [30] = "415804982764371969";
+        [31] = false;
+        [32] = "fe959779eef1e989234d7ea3df1afcfe";
+        [33] = 0;
+        [34] = 0;
+        [35] = 0;
+        [36] = "en-US";
+        [37] = 0;
+        [40] = false;
+        [42] = "정상 모임";
+        [43] = true;
+        [44] = {};
+        [45] = {
+          [1] = {
+            [1] = "#Recursive detected#";
+            [2] = "829228170926489630";
+            [4] = 0;
+            [5] = "819763571117916160";
+            [6] = 64000;
+            [7] = 2;
+            [8] = "《🎵》음악깡통";
+            [9] = 6;
+            [10] = "#Recursive detected#";
+            [13] = false;
+            [14] = "#Recursive detected#";
+          };
+          [2] = {};
+          [4] = "cdata<const unsigned char [32]>: 0x02960e1b9900";
+          [5] = {
+            [1] = {};
+            [2] = "#Recursive detected#";
+            [3] = "#Recursive detected#";
+            [4] = {
+              [1] = 4.96120465662e+14;
+            };
+            [5] = "#Recursive detected#";
+            [6] = "#Recursive detected#";
+            [7] = "#Recursive detected#";
+            [8] = "#Recursive detected#";
+            [9] = "04b5731363ef3d6063aaa939bc535131";
+            [10] = function: 0x02960c8b92d8;
+            [11] = function: 0x02960e408e08;
+            [13] = uv_timer_t: 0x02960e4e54b0;
+            [14] = "xsalsa20_poly1305";
+            [15] = 549602;
+            [16] = uv_udp_t: 0x02960c71ad00;
+            [17] = "35.216.95.68";
+            [18] = 50004;
+          };
+          [6] = "35.216.95.68";
+          [7] = 50004;
+          [8] = uv_udp_t: 0x02960c71ad00;
+          [9] = 549602;
+          [10] = "xsalsa20_poly1305";
+          [11] = "#Recursive detected#";
+          [12] = "#Recursive detected#";
+          [13] = 34595;
+          [14] = 221954880;
+          [15] = "cdata<struct OpusEncoder *>: 0x02960e54c9d0";
+          [16] = true;
+          [17] = true;
+        };
+      };
+      [2] = 0;
+      [3] = 6;
+      [4] = "819764858912243753";
+      [5] = "819764632323358790";
+      [6] = 0;
+      [7] = "893693534673199104";
+      [8] = "《🎶》음악틀기방";
+      [9] = "음악 틀 때 사용하는 곳";
+      [10] = "#Recursive detected#";
+      [11] = "#Recursive detected#";
+      [12] = false;
+      [13] = "2021-04-07T13:36:36+00:00";
+    };
+    [2] = "893736972156276787";
+    [3] = "2021-10-02T05:51:38.992000+00:00";
+    [4] = "819762474348707850";
+    [5] = "893736960680525824";
+    [6] = false;
+    [7] = false;
+    [8] = "미나 음악추가 https://www.youtube.com/watch?v=39Yf0LcjyLA&ab_channel=AHNYEEUN-Topic";
+    [9] = "819764858912243753";
+    [10] = 0;
+    [11] = 0;
+    [13] = false;
+    [15] = "#Recursive detected#";
+    [17] = {
+      [1] = {
+        thumbnail = {
+          url = "https://i.ytimg.com/vi/39Yf0LcjyLA/maxresdefault.jpg";
+          proxy_url = "https://images-ext-1.discordapp.net/external/tx-QRaFkFE3P4nenkBb1q6ZR6-rleyY59qFCze1XAuk/https/i.ytimg.com/vi/39Yf0LcjyLA/maxresdefault.jpg";
+          height = 720;
+          width = 1280;
+        };
+        provider = {
+          name = "YouTube";
+          url = "https://www.youtube.com";
+        };
+        color = 16711680;
+        title = "상사화";
+        description = "Provided to YouTube by IOKI\n\n상사화 · 안예은 (Yeeun Ahn)\n\n역적 : 백성을 훔친 도적 pt. 5 (Original Television Soundtrack) (Rebel: Thief Who Stole the People Pt. 5 (Original Television Soundtrack)\n\n℗ (주)블렌딩\n\nReleased on: 2017-03-13\n\nAuto-generated by YouTube.";
+        type = "video";
+        url = "https://www.youtube.com/watch?v=39Yf0LcjyLA";
+        video = {
+          url = "https://www.youtube.com/embed/39Yf0LcjyLA";
+          width = 720;
+          height = 720;
+        };
+        author = {
+          name = "AHN YE EUN - Topic";
+          url = "https://www.youtube.com/channel/UCM2oAe3ljJp2MvoRbI7BbaA";
+        };
+      };
+    };
+  };
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 14:56:12 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 14:59:37 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 15:03:23 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 15:08:50 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 15:14:32 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 15:19:34 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 15:23:03 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 15:27:18 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 15:31:44 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 15:34:51 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 15:40:11 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 15:44:25 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 15:48:52 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 15:54:45 2021";
+  title = "playing music";
+}
+{
+  channelID = "829228170926489630";
+  timestemp = "Sat Oct  2 15:59:12 2021";
+  title = "playing music";
+}
+{
+  channelID = "873420418038513694";
+  timestemp = "Sat Oct  2 18:02:46 2021";
+  title = "playing music";
+}

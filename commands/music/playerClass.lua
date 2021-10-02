@@ -37,7 +37,7 @@ function this:__play(thing) -- PRIVATE
 	coroutine.wrap(function()
 		self.handler:playFFmpeg(thing.audio);
 		self.nowPlaying = nil; -- remove song
-		timer.sleep(20);
+		-- timer.sleep(20);
 		self:remove(1);
 	end)();
 end
@@ -104,11 +104,38 @@ function this:kill()
 	end
 end
 
+local itemPerPage = 0;
+function this:embedfiyList(page)
+	page = page or 1;
+	local fields = {};
+	for index = itemPerPage * (page-1) + 1,page * itemPerPage do
+		
+	end
+	if #fields == 0 then
+		if page == 1 then
+			return {
+				footer = {
+					text = "1 페이지";
+				};
+				title = "재생 목록이 비어있습니다";
+				color = 16040191;
+			};
+		end
+		return {
+			footer = {
+				text = ("%d");
+			};
+			title = "페이지가 비어있습니다";
+			color = 16040191;
+		};
+	end
+end
+
 function this:embedfiy()
 	local fields = {};
 	for i,song in ipairs(self) do
 		insert(fields,{
-			name = ("%d 번째 곡"):format(i);
+			name = (i == 1) and "현재 재생중" or (("%d 번째 곡"):format(i));
 			value = ("[%s](%s)"):format(song.info.title:gsub("\"","\\\""),song.url);
 		});
 	end

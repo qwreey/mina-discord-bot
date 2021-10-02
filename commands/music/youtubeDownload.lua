@@ -40,7 +40,7 @@ function module.download(vid)
 	end
 
 	-- video was not found from youtube? or something want wrongly
-	iLogger.errorf("something want wrong! video was not found from youtube or youtube-dl process was terminated with exit!");
+	logger.errorf("something want wrong! video was not found from youtube or youtube-dl process was terminated with exit!");
 	qDebug {
 		title = "failed to download video from youtube";
 		trace = newProcess;

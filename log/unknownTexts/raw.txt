@@ -1009,3 +1009,6 @@ https:/purr.objects-us-east-1.dream.io/i/hq0bq.jpg
 미나야 가입
 미나야 123
 미나 곡추가
+미나야 곡 현재재생
+미나야 곡 총길이
+미나 방이 없어요

@@ -44,7 +44,7 @@ local exitCodes = require("app.exitCodes"); _G.exitCodes = exitCodes;
 -- load modules
 local prettyPrint = require "pretty-print"; _G.prettyPrint = prettyPrint;-- 터미널에 여러 자료형 프린팅
 local readline = require "readline"; _G.readline = readline;-- 터미널 라인 읽기
-local iLogger = require "log"; _G.iLogger = iLogger; -- log 핸들링
+local logger = require "log"; _G.logger = logger; -- log 핸들링
 local json = require "json"; _G.json = json;-- json 핸들링
 local corohttp = require "coro-http"; _G.corohttp = corohttp;-- http 핸들링
 local timer = require "timer"; _G.timer = timer;-- 타임아웃 핸들링
@@ -67,50 +67,50 @@ local function runSchedule(time,func)
 end
 _G.timeout = runSchedule;
 
-iLogger.info("------------------------ [CLEAN  UP] ------------------------");
+logger.info("------------------------ [CLEAN  UP] ------------------------");
 --#endregion : Luvit 모듈 / 주요 모듈 임포트
 --#region : 커맨드 라인 인자 받아오기
 local RunOption = {}; -- 인자 옵션 받는곳
-iLogger.info("find command line args ...");
+logger.info("find command line args ...");
 for i,v in pairs(args) do ---@diagnostic disable-line
 	if i > 1 then
-		iLogger.info((" |- args[%d] : %s"):format(i-1,v));
+		logger.info((" |- args[%d] : %s"):format(i-1,v));
 		RunOption[v] = true;
 	end
 end
 if RunOption["Background"] then
-	iLogger.info("Background mode Detected! turn off logging..");
-	iLogger.disable = true;
+	logger.info("Background mode Detected! turn off logging..");
+	logger.disable = true;
 end
 --#endregion : 커맨드 라인 인자 받아오기
 --#region : 디코 모듈 임포트
-iLogger.info("wait for discordia ...");
+logger.info("wait for discordia ...");
 local discordia = require "discordia"; _G.discordia = discordia; -- 디스코드 lua 봇 모듈 불러오기
 local discordia_class = require "discordia/libs/class"; _G.discordia_class = discordia_class; -- 디스코드 클레스 가져오기
-local discordia_Logger = discordia_class.classes.Logger; _G.discordia_Logger = discordia_Logger; -- 로거부분 가져오기 (통합을 위해 수정)
+local discordia_Logger = discordia_class.classes.Logger; -- 로거부분 가져오기 (통합을 위해 수정)
 local enums = discordia.enums; _G.enums = enums; -- 디스코드 enums 가져오기
 local client = discordia.Client(); _G.client = client; -- 디스코드 클라이언트 만들기
 function discordia_Logger:log(level, msg, ...) -- 디스코드 모듈 로거부분 편집
 	if self._level < level then return end
 	msg = string.format(msg, ...);
 	local logFn =
-		(level == 3 and iLogger.debug) or
-		(level == 2 and iLogger.info) or
-		(level == 1 and iLogger.warn) or
-		(level == 0 and iLogger.error);
+		(level == 3 and logger.debug) or
+		(level == 2 and logger.info) or
+		(level == 1 and logger.warn) or
+		(level == 0 and logger.error);
 	logFn(msg);
 	return msg;
 end
 
 local function startBot(botToken) -- 봇 시작시키는 함수
 	-- 토큰주고 시작
-	iLogger.debug("starting bot ...");
+	logger.debug("starting bot ...");
 	client:run(("Bot %s"):format(botToken));
 	client:setGame("'미나야 도움말' 을 이용해 도움말을 얻거나 '미나야 <할말>' 을 이용해 미나와 대화하세요!");
 	return;
 end
 local function reloadBot() -- 봇 종료 함수
-	iLogger.info("try restarting ...");
+	logger.info("try restarting ...");
 	client:setGame("재시작중...");
 end
 local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
@@ -118,12 +118,12 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		message:reply('> 프로그램 죽이는중 . . .');
 		os.exit(exitCodes.exit); -- 프로그램 킬
 	elseif (Text == "!!!restart" or Text == "!!!reload") then
-		iLogger.info("Restarting ...");
+		logger.info("Restarting ...");
 		message:reply('> 재시작중 . . . (2초 내로 완료됩니다)');
 		reloadBot();
 		os.exit(exitCodes.reload); -- 프로그램 다시시작
 	elseif (Text == "!!!pull" or Text == "!!!download") then
-		iLogger.info("Download codes ...");
+		logger.info("Download codes ...");
 		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . .');
 		_G.livereloadEnabled = false;
 		os.execute("git -C src pull"); -- git 에서 변동사항 가져와 적용하기
@@ -132,7 +132,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		reloadBot();
 		os.exit(exitCodes.reload); -- 다운로드 (리로드)
 	elseif (Text == "!!!push" or Text == "!!!upload") then
-		iLogger.info("Upload codes ...");
+		logger.info("Upload codes ...");
 		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 코드를 업로드중 . . .');
 		_G.livereloadEnabled = false;
 		os.execute("git -C src add .&&git -C src commit -m 'MINA : Upload in main code (bot.lua)'&&git -C src push");
@@ -140,7 +140,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		msg:setContent('> 완료!');
 		return; -- 업로드
 	elseif (Text == "!!!sync") then
-		iLogger.info("Sync codes ...");
+		logger.info("Sync codes ...");
 		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 동기화중 . . . (8초 내로 완료됩니다)');
 		_G.livereloadEnabled = false;
 		os.execute('git -C src add .&&git -C src commit -m "MINA : Sync in main code (Bot.lua)"&&git -C src pull&&git -C src push');
@@ -161,7 +161,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 end
 --#endregion : Discord Module
 --#region : 부분 모듈 임포팅
-iLogger.info("load modules ...");
+logger.info("load modules ...");
 local commandHandler = require "commandHandler"; _G.commandHandler = commandHandler; -- 커맨드 구조 처리기
 local cRandom = require "cRandom"; _G.cRandom = cRandom; -- LUA 렌덤 핸들러
 local strSplit = require "stringSplit"; _G.strSplit = strSplit; -- 글자 분해기
@@ -176,19 +176,19 @@ data:setJson(json);
 
 -- 유저 데이터 핸들링
 local userData = require "userData"; _G.userData = userData;
-userData:setJson(json):setILogger(iLogger):setMakeId(makeId);
+userData:setJson(json):setILogger(logger):setMakeId(makeId);
 
 --#endregion : 부분 모듈 임포팅
 --#region : 설정파일 불러오기
-iLogger.info("load files ...");
+logger.info("load files ...");
 local ACCOUNTData = data.load("data/ACCOUNT.json"); _G.ACCOUNTData = ACCOUNTData;
 local loveLeaderstats = data.load("data/loveLeaderstats.json");
 local EULA = data.loadRaw("data/EULA.txt"); _G.EULA = EULA;
 --#endregion : load settings from data file
 --#region : 반응, 프리픽스, 설정, 커맨드 등등
-iLogger.info("---------------------- [LOAD SETTINGS] ----------------------");
-iLogger.info("load settings ...");
-iLogger.info(" |- load admins, prefixs, prefix reply, unknown reply, command env");
+logger.info("---------------------- [LOAD SETTINGS] ----------------------");
+logger.info("load settings ...");
+logger.info(" |- load admins, prefixs, prefix reply, unknown reply, command env");
 local disableDm = "이 반응은 DM 에서 사용 할 수 없어요! 서버에서 이용해 주세요";
 local eulaComment_love = "\n" .. -- 약관 동의 안할때 호감도 표시
 	"\n> 호감도 기능을 사용할 수 없어요!" ..
@@ -239,16 +239,16 @@ do -- 글로벌에 loveRang 함수 추가
 	_G.defaultLove = loveRang(2,8);
 	_G.rmLove = loveRang(-2,-8);
 end
-iLogger.info(" |- load commands from ./commands");
+logger.info(" |- load commands from ./commands");
 local otherCommands = {} -- commands 폴더에서 커맨드 불러오기
 for dir in fs.scandirSync("commands") do
 	dir = string.gsub(dir,"%.lua$","");
-	iLogger.info(" |  |- load command dict from : commands/" .. dir .. ".lua");
+	logger.info(" |  |- load command dict from : commands/" .. dir .. ".lua");
 	otherCommands[#otherCommands+1] = require("commands." .. dir);
 end
-iLogger.info("settings loaded!");
+logger.info("settings loaded!");
 -- 커맨드 색인파일 만들기
-iLogger.info("encoding commands...");
+logger.info("encoding commands...");
 local commands,commandsLen;
 commands,commandsLen = commandHandler.encodeCommands({
 	-- 특수기능
@@ -285,8 +285,7 @@ commands,commandsLen = commandHandler.encodeCommands({
 				return "**{#:UserName:#}** 님은 이미 약관을 동의하셨어요!";
 			end
 			local userId = tostring(message.author.id);
-			local file = io.open(("data/userData/%s.json"):format(userId),"w");
-			file:write(
+			fs.writeFileSync(("data/userData/%s.json"):format(userId),
 				("{" ..
 					('"latestName":"%s",'):format(message.author.name) ..
 					'"love":0,' ..
@@ -294,7 +293,6 @@ commands,commandsLen = commandHandler.encodeCommands({
 					'"lastCommand":{}' ..
 				"}")
 			);
-			file:close();
 			return "안녕하세요 {#:UserName:#} 님!\n사용 약관에 동의해주셔서 감사합니다!\n사용 약관을 동의하였기 때문에 다음 기능을 사용 할 수 있게 되었습니다!\n\n> 미나야 배워 (미출시 기능)\n";
 		end;
 	};
@@ -371,10 +369,10 @@ commands,commandsLen = commandHandler.encodeCommands({
 	-- 	end;
 	-- };
 },unpack(otherCommands));
-iLogger.info("command encode end!");
+logger.info("command encode end!");
 --#endregion : 반응, 프리픽스, 설정
 --#region : 메인 파트
-iLogger.info("----------------------- [SET UP BOT ] -----------------------");
+logger.info("----------------------- [SET UP BOT ] -----------------------");
 client:on('messageCreate', function(message) -- 메시지 생성됨
 
 	-- get base information from message object
@@ -571,11 +569,11 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 		args = strSplit(rawArgs,"\32");
 		local passed,ret = pcall(func,replyMsg,message,args,contents);
 		if not passed then
-			iLogger.error("an error occurred on running function");
-			iLogger.errorf(" | original message : %s",tostring(Text));
-			iLogger.error(" | error traceback was");
-			iLogger.error(tostring(ret));
-			iLogger.error(" | more information was saved on log/debug.log");
+			logger.error("an error occurred on running function");
+			logger.errorf(" | original message : %s",tostring(Text));
+			logger.error(" | error traceback was");
+			logger.error(tostring(ret));
+			logger.error(" | more information was saved on log/debug.log");
 			qDebug {
 				title = "an error occurred on running command function";
 				traceback = tostring(ret);

@@ -155,7 +155,7 @@ return function ()
             end,runEnv) -- 명령어 분석
             local pass,dat = pcall(envfunc); -- 보호 모드로 명령어를 실행
             if not pass then -- 오류 나면
-                iLogger.error("LUA | error : " .. dat);
+                logger.error("LUA | error : " .. dat);
             else
                 prettyPrint.stdout:write{"\27[2K\r → ",prettyPrint.dump(dat),"\n",buildPrompt()};
             end
