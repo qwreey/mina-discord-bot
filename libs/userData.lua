@@ -12,9 +12,9 @@ function module:setJson(newJson)
 end
 
 -- 로거 가져오기
-local iLogger;
-function module:setILogger(newILogger)
-	iLogger = newILogger;
+local logger;
+function module:setlogger(newlogger)
+	logger = newlogger;
 	return self;
 end
 
@@ -36,8 +36,8 @@ function module:saveData(userId)
 	-- userData 가져오기
 	local userData = userDatas[userId];
 	if not userData then
-		iLogger.warn("something want wrong... (load user data first and save data!)");
-		iLogger.errorf("un error occur on save user data (file or userData was not found), UserId : %s",tostring(userId));
+		logger.warn("something want wrong... (load user data first and save data!)");
+		logger.errorf("un error occur on save user data (file or userData was not found), UserId : %s",tostring(userId));
 		return;
 	end
 	local raw = json.encode(userData);
@@ -51,7 +51,7 @@ function module:saveData(userId)
 
 	-- 오류 처리 (백업 시키기)
 	if not isPass then
-		iLogger.errorf("un error occur on save data! (%s) : data = %s",userId,raw);
+		logger.errorf("un error occur on save data! (%s) : data = %s",userId,raw);
 		local now = os.date("*t");
 		local errFile = io.open("data/crash/" .. ("er%s.uid%s.tm%dm%dd%dh%dm%ds"):format(
 			makeId(),userId,now.month,now.day,now.hour,now.min,now.sec

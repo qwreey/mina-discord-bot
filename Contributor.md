@@ -177,7 +177,7 @@ cRandom : 여러 난수를 섞은 렌덤함수, cRandom(최소값,최대값)
 client : discordia 모듈중 client 부분 => https://github.com/SinisterRectus/Discordia/wiki/Client  
 enums : discordia 모듈중 enums 부분 => https://github.com/SinisterRectus/Discordia/wiki/Enumerations  
 discordia : discordia 모듈 참조 => https://github.com/SinisterRectus/Discordia  
-iLogger : 로거용 모듈  
+logger : 로거용 모듈  
     + trace : 추적 (디버깅)  
     + debug : 디버그  
     + info : 정보 (기본적으로 이거 쓰는걸 추천)  

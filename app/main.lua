@@ -176,7 +176,7 @@ data:setJson(json);
 
 -- 유저 데이터 핸들링
 local userData = require "userData"; _G.userData = userData;
-userData:setJson(json):setILogger(logger):setMakeId(makeId);
+userData:setJson(json):setlogger(logger):setMakeId(makeId);
 
 --#endregion : 부분 모듈 임포팅
 --#region : 설정파일 불러오기
