@@ -61,9 +61,37 @@ return {
 	-------------------------------------------------
 	-- 특수 반응 (함수를 쓰거나 여러 의도가 담긴 반응)
 	-------------------------------------------------
+	["미나초대"] = {
+		alias = {"초대링크","미나 초대","초대 링크"};
+		reply = {"쨘!"};
+		func = function(replyMsg,message,args,Content)
+			replyMsg:setEmbed {
+				color = 10026831;
+				fields = {{
+					name = "아래의 버튼을 누르면 미나를 다른 서버에 추가 할 수 있어요!";
+					value = ("[초대하기](%s)"):format(ACCOUNTData.InvLink);
+				}};
+			};
+		end;
+	};
+	["뽑기"] = {
+		alias = {"선택해","선택","추첨","뽑아","추첨해","골라","골라봐"};
+		reply = "결과는?! **(두구두구두구두구)**";
+		func = function(replyMsg,message,args,Content)
+			timeout(2000,function ()
+				local items = {};
+				for str in Content.rawArgs:gmatch("[^,]+") do
+					table.insert(items,str);
+				end
+				replyMsg:setContent(("%s (이)가 뽑혔어요!"):format(
+					tostring(items[cRandom(1,#items)]))
+				);
+			end);
+		end;
+	};
 	["시간"] = {
 		alias = {
-			"안녕 몇시야","안녕 지금 시간 알려줘","지금 시간","몇시야",
+			"안녕 몇시야","안녕 지금 시간 알려줘","지금 시간","몇시야","몇시",
 			"안녕 몇시야?","몇시야?","지금시간","알려줘 시간","what time is",
 			"what time is?","지금은 몇시","지금은 몇시?"
 		};
@@ -95,7 +123,7 @@ return {
 	["검열"] = {
 		reply = "검-열";
 		func = function (message)
-			runSchedule(100,function ()
+			timeout(100,function ()
 				message:delete();
 			end);
 		end;
@@ -133,7 +161,7 @@ return {
 			"대굴 대굴... **6** 나왔당!";
 			function (msg)
 				local newMsg = msg:reply("대굴 대굴... 어? 0? 이게 왜 나왔지?");
-				runSchedule(500,function ()
+				timeout(500,function ()
 					newMsg:delete();
 				end);
 			end;
@@ -148,7 +176,7 @@ return {
 		alias = {"쯧...","쯧.","쯧..","쯔읏","ㅉ","쯧","쯧쯧"};
 		reply = function (msg)
 			local newMsg = msg:reply("~~저저 꼰대 쉨~~");
-				runSchedule(500,function ()
+				timeout(500,function ()
 				newMsg:setContent("아! 아무것도 아니야 ㅎㅎ");
 			end);
 		end;
@@ -327,7 +355,7 @@ return {
 		love = rmLove;
 	};
 	["죽어"] = {
-		alias = {"주거","디져","디져라","왜사냐","뒤져","디저","디저랏","디저!","주거!","죽어!"};
+		alias = {"주거","디져","디져라","왜사냐","뒤져","디저","디저랏","디저!","주거!","죽어!","죽을래?"};
 		reply = {"너나 주거! ㅠㅠㅠ","~~넌 왜그렇게 사냐?~~ 나한태 왜그래 ㅠㅠㅠㅠ"};
 		love = rmLove;
 	};

@@ -1,8 +1,8 @@
-local pi3 = math.pi^13/10000000;
+local piP = math.pi^14/10101010;
+local time = os.clock;
+local floor = math.floor
 return function (min,max)
-	local rm = (collectgarbage("count")*pi3)^2 * 1000000;
-	local ts = (os.clock()*pi3)^2;
-	local seed = math.floor(ts*((((min/13)^2+(max/11)^2)*pi3)^2+rm));
-
-	return seed;
+	local rm = collectgarbage("count")^2%1*piP;
+	local ts = time()%1^2*piP*10;
+	return floor((rm+ts)*10000000000000)%100000000000000000000000;
 end;

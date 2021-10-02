@@ -11,11 +11,11 @@ for _,path in pairs({
         recursive = true;
     },function (err,fname,status)
         if(err) then
-            iLogger.debug("Error ", err);
+            logger.debug("Error ", err);
         else
-            iLogger.infof("Some file was changed : %s", fname);
+            logger.infof("Some file was changed : %s", fname);
             if _G.livereloadEnabled then
-                iLogger.infof("Try to do live reloading . . .");
+                logger.infof("Try to do live reloading . . .");
                 os.exit(require("app.exitCodes").reload);
             end
         end

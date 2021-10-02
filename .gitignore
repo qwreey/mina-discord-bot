@@ -12,3 +12,8 @@ deps/*
 
 # vscode files
 .vscode/*
+
+# bin libs
+ffmpeg.exe
+ffplay.exe
+ffprobe.exe

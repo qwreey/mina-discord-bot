@@ -17,7 +17,11 @@
 --#region : Luvit 모듈 / 주요 모듈 임포트
 
 -- set title of terminal
-os.execute("title DISCBOT");
+_G.app = {
+	name = "DiscordBot";
+	fullname = "discord_mina_bot";
+};
+os.execute("title " .. _G.app.name);
 
 -- set utf-8 terminal
 do
@@ -40,7 +44,7 @@ local exitCodes = require("app.exitCodes"); _G.exitCodes = exitCodes;
 -- load modules
 local prettyPrint = require "pretty-print"; _G.prettyPrint = prettyPrint;-- 터미널에 여러 자료형 프린팅
 local readline = require "readline"; _G.readline = readline;-- 터미널 라인 읽기
-local iLogger = require "log"; _G.iLogger = iLogger; -- log 핸들링
+local logger = require "log"; _G.logger = logger; -- log 핸들링
 local json = require "json"; _G.json = json;-- json 핸들링
 local corohttp = require "coro-http"; _G.corohttp = corohttp;-- http 핸들링
 local timer = require "timer"; _G.timer = timer;-- 타임아웃 핸들링
@@ -49,58 +53,64 @@ local fs = require "fs"; _G.fs = fs;-- 파일 시스템
 local ffi = require "ffi"; _G.ffi = ffi;-- C 동적 상호작용
 local utf8 = utf8 or require "utf8"; _G.utf8 = utf; -- 유니코드8 라이브러리 불러오기
 local term = require "app.term"; -- terminal settings
+local utils = require "utils"; _G.utils = utils;
+local adapt = utils.adapt; _G.adapt = adapt;
+local uv = require "uv"; _G.uv = uv;
+local qDebug = require "app.debug"; _G.qDebug = qDebug;
+local dumpTable = require "libs.dumpTable";
+local spawn = require "coro-spawn"; _G.spawn = spawn;
+local split = require "coro-split"; _G.split = split;
 
 -- same with js's timeout function
 local function runSchedule(time,func)
 	timer.setTimeout(time,coroutine.wrap(func));
 end
-_G.runSchedule = runSchedule;
+_G.timeout = runSchedule;
 
-iLogger.info("------------------------ [CLEAN  UP] ------------------------");
-iLogger.info("luvit loaded");
+logger.info("------------------------ [CLEAN  UP] ------------------------");
 --#endregion : Luvit 모듈 / 주요 모듈 임포트
 --#region : 커맨드 라인 인자 받아오기
 local RunOption = {}; -- 인자 옵션 받는곳
-iLogger.info("find command line args . . .");
+logger.info("find command line args ...");
 for i,v in pairs(args) do ---@diagnostic disable-line
 	if i > 1 then
-		iLogger.info((" |- args[%d] : %s"):format(i-1,v));
+		logger.info((" |- args[%d] : %s"):format(i-1,v));
 		RunOption[v] = true;
 	end
 end
 if RunOption["Background"] then
-	iLogger.info("Background mode Detected! turn off logging..");
-	iLogger.disable = true;
+	logger.info("Background mode Detected! turn off logging..");
+	logger.disable = true;
 end
 --#endregion : 커맨드 라인 인자 받아오기
 --#region : 디코 모듈 임포트
-iLogger.info("wait for discordia . . .");
+logger.info("wait for discordia ...");
 local discordia = require "discordia"; _G.discordia = discordia; -- 디스코드 lua 봇 모듈 불러오기
 local discordia_class = require "discordia/libs/class"; _G.discordia_class = discordia_class; -- 디스코드 클레스 가져오기
-local discordia_Logger = discordia_class.classes.Logger; _G.discordia_Logger = discordia_Logger; -- 로거부분 가져오기 (통합을 위해 수정)
+local discordia_Logger = discordia_class.classes.Logger; -- 로거부분 가져오기 (통합을 위해 수정)
 local enums = discordia.enums; _G.enums = enums; -- 디스코드 enums 가져오기
 local client = discordia.Client(); _G.client = client; -- 디스코드 클라이언트 만들기
 function discordia_Logger:log(level, msg, ...) -- 디스코드 모듈 로거부분 편집
 	if self._level < level then return end
 	msg = string.format(msg, ...);
 	local logFn =
-		(level == 3 and iLogger.debug) or
-		(level == 2 and iLogger.info) or
-		(level == 1 and iLogger.warn) or
-		(level == 0 and iLogger.error);
+		(level == 3 and logger.debug) or
+		(level == 2 and logger.info) or
+		(level == 1 and logger.warn) or
+		(level == 0 and logger.error);
 	logFn(msg);
 	return msg;
 end
 
 local function startBot(botToken) -- 봇 시작시키는 함수
 	-- 토큰주고 시작
-	iLogger.debug("starting bot ...");
+	logger.debug("starting bot ...");
 	client:run(("Bot %s"):format(botToken));
 	client:setGame("'미나야 도움말' 을 이용해 도움말을 얻거나 '미나야 <할말>' 을 이용해 미나와 대화하세요!");
 	return;
 end
 local function reloadBot() -- 봇 종료 함수
-	iLogger.info("Try restarting ...");
+	logger.info("try restarting ...");
 	client:setGame("재시작중...");
 end
 local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
@@ -108,12 +118,12 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		message:reply('> 프로그램 죽이는중 . . .');
 		os.exit(exitCodes.exit); -- 프로그램 킬
 	elseif (Text == "!!!restart" or Text == "!!!reload") then
-		iLogger.info("Restarting ...");
+		logger.info("Restarting ...");
 		message:reply('> 재시작중 . . . (2초 내로 완료됩니다)');
 		reloadBot();
 		os.exit(exitCodes.reload); -- 프로그램 다시시작
 	elseif (Text == "!!!pull" or Text == "!!!download") then
-		iLogger.info("Download codes ...");
+		logger.info("Download codes ...");
 		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . .');
 		_G.livereloadEnabled = false;
 		os.execute("git -C src pull"); -- git 에서 변동사항 가져와 적용하기
@@ -122,7 +132,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		reloadBot();
 		os.exit(exitCodes.reload); -- 다운로드 (리로드)
 	elseif (Text == "!!!push" or Text == "!!!upload") then
-		iLogger.info("Upload codes ...");
+		logger.info("Upload codes ...");
 		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 코드를 업로드중 . . .');
 		_G.livereloadEnabled = false;
 		os.execute("git -C src add .&&git -C src commit -m 'MINA : Upload in main code (bot.lua)'&&git -C src push");
@@ -130,7 +140,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		msg:setContent('> 완료!');
 		return; -- 업로드
 	elseif (Text == "!!!sync") then
-		iLogger.info("Sync codes ...");
+		logger.info("Sync codes ...");
 		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 동기화중 . . . (8초 내로 완료됩니다)');
 		_G.livereloadEnabled = false;
 		os.execute('git -C src add .&&git -C src commit -m "MINA : Sync in main code (Bot.lua)"&&git -C src pull&&git -C src push');
@@ -151,7 +161,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 end
 --#endregion : Discord Module
 --#region : 부분 모듈 임포팅
-iLogger.info("load modules . . .");
+logger.info("load modules ...");
 local commandHandler = require "commandHandler"; _G.commandHandler = commandHandler; -- 커맨드 구조 처리기
 local cRandom = require "cRandom"; _G.cRandom = cRandom; -- LUA 렌덤 핸들러
 local strSplit = require "stringSplit"; _G.strSplit = strSplit; -- 글자 분해기
@@ -166,19 +176,19 @@ data:setJson(json);
 
 -- 유저 데이터 핸들링
 local userData = require "userData"; _G.userData = userData;
-userData:setJson(json):setILogger(iLogger):setMakeId(makeId);
+userData:setJson(json):setILogger(logger):setMakeId(makeId);
 
 --#endregion : 부분 모듈 임포팅
 --#region : 설정파일 불러오기
-iLogger.info("load files . . .");
+logger.info("load files ...");
 local ACCOUNTData = data.load("data/ACCOUNT.json"); _G.ACCOUNTData = ACCOUNTData;
 local loveLeaderstats = data.load("data/loveLeaderstats.json");
 local EULA = data.loadRaw("data/EULA.txt"); _G.EULA = EULA;
 --#endregion : load settings from data file
 --#region : 반응, 프리픽스, 설정, 커맨드 등등
-iLogger.info("---------------------- [LOAD SETTINGS] ----------------------");
-iLogger.info("load settings ...");
-iLogger.info(" |- admins, prefixs, prefix reply, unknown reply, command env");
+logger.info("---------------------- [LOAD SETTINGS] ----------------------");
+logger.info("load settings ...");
+logger.info(" |- load admins, prefixs, prefix reply, unknown reply, command env");
 local disableDm = "이 반응은 DM 에서 사용 할 수 없어요! 서버에서 이용해 주세요";
 local eulaComment_love = "\n" .. -- 약관 동의 안할때 호감도 표시
 	"\n> 호감도 기능을 사용할 수 없어요!" ..
@@ -229,32 +239,19 @@ do -- 글로벌에 loveRang 함수 추가
 	_G.defaultLove = loveRang(2,8);
 	_G.rmLove = loveRang(-2,-8);
 end
-iLogger.info(" |- load commands from ./commands");
+logger.info(" |- load commands from ./commands");
 local otherCommands = {} -- commands 폴더에서 커맨드 불러오기
 for dir in fs.scandirSync("commands") do
 	dir = string.gsub(dir,"%.lua$","");
-	iLogger.info(" |  |- load command dict from : commands/" .. dir .. ".lua");
+	logger.info(" |  |- load command dict from : commands/" .. dir .. ".lua");
 	otherCommands[#otherCommands+1] = require("commands." .. dir);
 end
-iLogger.info("settings loaded!");
+logger.info("settings loaded!");
 -- 커맨드 색인파일 만들기
-iLogger.info("encoding commands...");
+logger.info("encoding commands...");
 local commands,commandsLen;
 commands,commandsLen = commandHandler.encodeCommands({
 	-- 특수기능
-	["미나초대"] = {
-		alias = {"초대링크","미나 초대","초대 링크"};
-		reply = {"쨘!"};
-		func = function(replyMsg,message,args,Content)
-			replyMsg:setEmbed {
-				color = 10026831;
-				fields = {{
-					name = "아래의 버튼을 누르면 미나를 다른 서버에 추가 할 수 있어요!";
-					value = ("[초대하기](%s)"):format(ACCOUNTData.InvLink);
-				}};
-			};
-		end;
-	};
 	["호감도"] = {
 		reply = function (message,args,c)
 			if message.author.id == "480318544693821450" then
@@ -288,8 +285,7 @@ commands,commandsLen = commandHandler.encodeCommands({
 				return "**{#:UserName:#}** 님은 이미 약관을 동의하셨어요!";
 			end
 			local userId = tostring(message.author.id);
-			local file = io.open(("data/userData/%s.json"):format(userId),"w");
-			file:write(
+			fs.writeFileSync(("data/userData/%s.json"):format(userId),
 				("{" ..
 					('"latestName":"%s",'):format(message.author.name) ..
 					'"love":0,' ..
@@ -297,8 +293,7 @@ commands,commandsLen = commandHandler.encodeCommands({
 					'"lastCommand":{}' ..
 				"}")
 			);
-			file:close();
-			--"안녕하세요 {#:UserName:#} 님!\n사용 약관에 동의해주셔서 감사합니다!\n사용 약관을 동의하였기 때문에 다음 기능을 사용 할 수 있게 되었습니다!\n\n> 미나야 배워 (미출시 기능)\n"
+			return "안녕하세요 {#:UserName:#} 님!\n사용 약관에 동의해주셔서 감사합니다!\n사용 약관을 동의하였기 때문에 다음 기능을 사용 할 수 있게 되었습니다!\n\n> 미나야 배워 (미출시 기능)\n";
 		end;
 	};
 	["지워"] = {
@@ -374,26 +369,30 @@ commands,commandsLen = commandHandler.encodeCommands({
 	-- 	end;
 	-- };
 },unpack(otherCommands));
-iLogger.info("command encode end!");
+logger.info("command encode end!");
 --#endregion : 반응, 프리픽스, 설정
 --#region : 메인 파트
-iLogger.info("----------------------- [SET UP BOT ] -----------------------");
+logger.info("----------------------- [SET UP BOT ] -----------------------");
 client:on('messageCreate', function(message) -- 메시지 생성됨
+
+	-- get base information from message object
 	local User = message.author;
 	local Text = message.content;
 	local Channel = message.channel;
 	local IsDm = Channel.type == enums.channelType.private;
 
-	-- 유저가 봇인경우
+	-- check user that is bot; if it is bot, then return (ignore call)
 	if User.bot then
 		return;
 	end
-	-- 하드코딩된 관리 명령어)
+
+	-- run admin command if exist
 	if Admins[User.id] then
 		adminCmd(Text,message);
 	end
 
-	-- 명령어
+	-- LOCAL VARIABLES
+	-- Text : 들어온 텍스트 (lower cased)
 	-- prefix : 접두사
 	-- rawCommandText : 접두사 뺀 커맨드 전채
 	-- splitCommandText : rawCommandText 를 \32 로 분해한 array
@@ -402,36 +401,37 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	-- | 찾은 후 (for 루프 뒤)
 	-- Command : 커맨드 개체 (찾은경우)
 
-	Text = string.lower(Text);
-
+	
+	
 	-- 접두사 구문 분석하기
 	local prefix;
+	local TextL = string.lower(Text); -- make sure text is lower case
 	for _,nprefix in pairs(prefixs) do
-		-- 만약 접두사와 글자가 일치하는경우 반응 달기
-		if nprefix == Text then
+		if nprefix == TextL then -- 만약 접두사와 글자가 일치하는경우 반응 달기
 			message:reply {
 				content = prefixReply[cRandom(1,#prefixReply)];
 				reference = {message = message, mention = false};
 			};
 			return;
 		end
-		local nprefix = nprefix .. "\32"; -- 맨 앞 실행 접두사
-		if string.sub(Text,1,#nprefix) == nprefix then -- 만약에 접두가사 일치하면
+		nprefix = nprefix .. "\32"; -- 맨 앞 실행 접두사
+		if TextL:sub(1,#nprefix) == nprefix then -- 만약에 접두가사 일치하면
 			prefix = nprefix;
 			break;
 		end
 	end
-	if not prefix then
+	if (not prefix) and (not IsDm) then
 		return;
 	end
+	prefix = prefix or "";
 
 	-- 알고리즘 작성
 	-- 커맨드 찾기
 	-- 단어 분해 후 COMMAND DICT 에 색인시도
 	-- 못찾으면 다시 넘겨서 뒷단어로 넘김
 	-- 찾으면 넘겨서 COMMAND RUN 에 TRY 던짐
-	local rawCommandText = string.sub(Text,#prefix+1,-1); -- 접두사 뺀 글자
-	local splitCommandText = strSplit(rawCommandText,"\32");
+	local rawCommandText = Text:sub(#prefix+1,-1); -- 접두사 뺀 글자
+	local splitCommandText = strSplit(rawCommandText:lower(),"\32");
 	local CommandName,Command,rawCommandName;
 
 	-- (커맨드 색인 1 차시도) 띄어쓰기를 포함한 명령어를 검사할 수 있도록 for 루프 실행
@@ -466,11 +466,11 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	-- 찾기 찾기 찾기
 	-- 부분부분 다 나눠서 찾기
 	if not Command then
-		for FindPos,Text in pairs(splitCommandText) do
-			Command = commandHandler.findCommandFrom(commands,Text);
+		for FindPos,Textn in pairs(splitCommandText) do
+			Command = commandHandler.findCommandFrom(commands,Textn);
 			if Command then
 				CommandName = "";
-				rawCommandName = Text;
+				rawCommandName = Textn;
 				for Index = 1,FindPos do
 					CommandName = CommandName .. splitCommandText[Index];
 				end
@@ -497,15 +497,15 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 		(love > 0 and ("\n` ❤ + %d `"):format(love)) or -- 만약 love 가 + 면
 		(love < 0 and ("\n` 💔 - %d `"):format(math.abs(love))) -- 만약 love 가 - 면
 	) or "";
-
 	local func = Command.func; -- 커맨드 함수 가져오기
 	local replyText = Command.reply; -- 커맨드 리플(답변) 가져오기
 	local rawArgs,args; -- 인수 (str,띄어쓰기 단위로 나눔 array)
-	replyText = (
+	replyText = ( -- reply 하나 가져오기
 		(type(replyText) == "table") -- 커맨드 답변이 여러개면 하나 뽑기
 		and (replyText[cRandom(1,#replyText)])
 		or replyText
 	);
+
 	-- 만약 호감도가 있으면 올려주기
 	if love then
 		local thisUserDat = userData:loadData(User.id);
@@ -516,35 +516,34 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 			loveText = eulaComment_love;
 		end
 	end
+
+	-- 함수 실행을 위한 콘탠츠 만들기
+	local contents = {
+		rawCommandText = rawCommandText; -- 접두사를 지운 커맨드 스트링
+		prefix = prefix; -- 접두사(확인된)
+		rawArgs = rawArgs; -- args 를 str 로 받기 (직접 분석용)
+		rawCommandName = rawCommandName;
+		self = Command;
+		commandName = CommandName;
+		saveUserData = function ()
+			return userData:saveData(User.id);
+		end;
+		getUserData = function ()
+			return userData:loadData(User.id);
+		end;
+		loveText = loveText;
+	};
+
 	-- 만약 답변글이 함수면 (지금은 %s 시에요 처럼 쓸 수 있도록) 실행후 결과 가져오기
 	if type(replyText) == "function" then
-		rawArgs = string.sub(rawCommandText,#CommandName+2,-1);
+		rawArgs = rawCommandText:sub(#CommandName+2,-1);
 		args = strSplit(rawArgs,"\32");
-		replyText = replyText(
-			message,args,{
-				rawCommandText = rawCommandText; -- 접두사를 지운 커맨드 스트링
-				prefix = prefix; -- 접두사(확인된)
-				rawArgs = rawArgs; -- args 를 str 로 받기 (직접 분석용)
-				rawCommandName = rawCommandName;
-				self = Command;
-				commandName = CommandName;
-				saveUserData = function ()
-					return userData:saveData(User.id);
-				end;
-				getUserData = function ()
-					return userData:loadData(User.id);
-				end;
-			}
-		);
+		contents.rawArgs = rawArgs;
+		replyText = replyText(message,args,contents);
 	end
-	--replyText = (
-	--	type(replyText) == "function" and
-	--	replyText(message,args,{
-	--	}) or replyText
-	--);
+
 	local replyMsg; -- 답변 오브잭트를 담을 변수
-	if replyText then -- 만약 답변글이 있으면
-		-- 답변 주기
+	if replyText then -- 만약 답변글이 있으면 답변 주기
 		local replyTextType = type(replyText);
 		if replyTextType == "string" then
 			replyText = replyText .. loveText;
@@ -560,19 +559,32 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 			reference = {message = message, mention = false};
 		};
 	end
+
+	-- 명령어에 담긴 함수를 실행합니다
 	-- func (replyMsg,message,args,EXTENDTable);
 	if func then -- 만약 커맨드 함수가 있으면
 		-- 커맨드 함수 실행
-		rawArgs = rawArgs or string.sub(rawCommandText,#CommandName+2,-1);
+		rawArgs = rawArgs or rawCommandText:sub(#CommandName+2,-1);
+		contents.rawArgs = rawArgs;
 		args = strSplit(rawArgs,"\32");
-		func(replyMsg,message,args,{
-			rawCommandText = rawCommandText; -- 접두사를 지운 커맨드 스트링
-			prefix = prefix; -- 접두사(확인된)
-			rawArgs = rawArgs; -- args 를 str 로 받기 (직접 분석용)
-			rawCommandName = rawCommandName;
-			self = Command;
-			loveText = loveText;
-		});
+		local passed,ret = pcall(func,replyMsg,message,args,contents);
+		if not passed then
+			logger.error("an error occurred on running function");
+			logger.errorf(" | original message : %s",tostring(Text));
+			logger.error(" | error traceback was");
+			logger.error(tostring(ret));
+			logger.error(" | more information was saved on log/debug.log");
+			qDebug {
+				title = "an error occurred on running command function";
+				traceback = tostring(ret);
+				originalMsg = tostring(Text);
+				command = Command;
+				this = message;
+			};
+			replyMsg:setContent(("명령어 처리중에 오류가 발생하였습니다\n```%s```")
+				:format(tostring(ret))
+			);
+		end
 	end
 end);
 

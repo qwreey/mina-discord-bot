@@ -370,7 +370,7 @@ return {
 	["패륜"] = {
 		reply = function (msg)
 			local newMsg = msg:reply("~~하면 안돼지만 저는 버그라는 명목으로 하고 있어요~~");
-				runSchedule(500,function ()
+				timeout(500,function ()
 				newMsg:setContent("하면 안돼는 것!");
 			end);
 		end;
@@ -406,7 +406,7 @@ return {
 	["던져"] = {
 		reply = function (msg)
 			local newMsg = msg:reply("헤드샷 각인가?");
-				runSchedule(500,function ()
+				timeout(500,function ()
 				newMsg:setContent("던져? 어쩌라는 거지?");
 			end);
 		end;

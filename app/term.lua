@@ -59,7 +59,7 @@ end
 _G.buildPrompt = buildPrompt;
 
 local runEnv = { -- 명령어 실행 환경 만들기
-    runSchedule = runSchedule;
+    runSchedule = timeout;
 };
 function runEnv.clear() -- 화면 지우기 명령어
     os.execute("cls");
@@ -123,8 +123,9 @@ return function ()
                 local lastStatus = _G.livereloadEnabled;
                 _G.livereloadEnabled = false;
                 local _,_,returncode = os.execute(line:sub(2,-1));
-                _G.livereloadEnabled = lastStatus;
                 prettyPrint.stdout:write{" → ",prettyPrint.dump(returncode),"\n"};
+                uv.sleep(20);
+                _G.livereloadEnabled = lastStatus;
             end
 
             -- first, decoding lua
@@ -154,7 +155,7 @@ return function ()
             end,runEnv) -- 명령어 분석
             local pass,dat = pcall(envfunc); -- 보호 모드로 명령어를 실행
             if not pass then -- 오류 나면
-                iLogger.error("LUA | error : " .. dat);
+                logger.error("LUA | error : " .. dat);
             else
                 prettyPrint.stdout:write{"\27[2K\r → ",prettyPrint.dump(dat),"\n",buildPrompt()};
             end
