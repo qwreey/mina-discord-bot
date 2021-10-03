@@ -21,3 +21,5 @@ ffprobe.exe
 # dll
 opus.dll
 sodium.dll
+
+log/debug.log

@@ -580,7 +580,6 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 				traceback = tostring(ret);
 				originalMsg = tostring(Text);
 				command = Command;
-				this = message;
 			};
 			replyMsg:setContent(("명령어 처리중에 오류가 발생하였습니다\n```%s```")
 				:format(tostring(ret))

@@ -127,7 +127,6 @@ return {
 					qDebug {
 						title = "music adding failed";
 						arg = rawArgs;
-						this = player;
 						voiceChannelID = voiceChannelID;
 					};
 					return;

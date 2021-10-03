@@ -44,7 +44,6 @@ function module.download(vid)
 		title = "failed to download video from youtube";
 		trace = newProcess;
 		vid = vid;
-        info = info;
 		status = "error";
 	};
 	error("something want wrong! video was not found from youtube or youtube-dl process was terminated with exit!");
