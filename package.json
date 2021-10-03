@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "figlet": "^1.5.2",
+    "figlet-cli": "^0.1.1"
+  }
+}
