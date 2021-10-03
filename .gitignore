@@ -17,3 +17,8 @@ deps/*
 ffmpeg.exe
 ffplay.exe
 ffprobe.exe
+
+# dll
+opus.dll
+sodium.dll
+
