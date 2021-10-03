@@ -36,6 +36,9 @@ do
 	end
 end
 
+-- add bin libs path
+process.env.PATH = process.env.PATH .. ";.\\bin"
+
 -- set require path
 package.path = require("app.path")(package.path);
 _G.require = require;
@@ -188,7 +191,6 @@ local EULA = data.loadRaw("data/EULA.txt"); _G.EULA = EULA;
 --#region : 반응, 프리픽스, 설정, 커맨드 등등
 logger.info("---------------------- [LOAD SETTINGS] ----------------------");
 logger.info("load settings ...");
-logger.info(" |- load admins, prefixs, prefix reply, unknown reply, command env");
 local disableDm = "이 반응은 DM 에서 사용 할 수 없어요! 서버에서 이용해 주세요";
 local eulaComment_love = "\n" .. -- 약관 동의 안할때 호감도 표시
 	"\n> 호감도 기능을 사용할 수 없어요!" ..
@@ -239,16 +241,15 @@ do -- 글로벌에 loveRang 함수 추가
 	_G.defaultLove = loveRang(2,8);
 	_G.rmLove = loveRang(-2,-8);
 end
-logger.info(" |- load commands from ./commands");
+logger.info(" |- load commands from commands");
 local otherCommands = {} -- commands 폴더에서 커맨드 불러오기
 for dir in fs.scandirSync("commands") do
 	dir = string.gsub(dir,"%.lua$","");
-	logger.info(" |  |- load command dict from : commands/" .. dir .. ".lua");
+	logger.info(" |  |- load command dict from : commands." .. dir);
 	otherCommands[#otherCommands+1] = require("commands." .. dir);
 end
 logger.info("settings loaded!");
 -- 커맨드 색인파일 만들기
-logger.info("encoding commands...");
 local commands,commandsLen;
 commands,commandsLen = commandHandler.encodeCommands({
 	-- 특수기능
@@ -369,7 +370,7 @@ commands,commandsLen = commandHandler.encodeCommands({
 	-- 	end;
 	-- };
 },unpack(otherCommands));
-logger.info("command encode end!");
+logger.info("command indexing end!");
 --#endregion : 반응, 프리픽스, 설정
 --#region : 메인 파트
 logger.info("----------------------- [SET UP BOT ] -----------------------");

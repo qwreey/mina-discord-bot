@@ -35,11 +35,14 @@ function this:__play(thing) -- PRIVATE
 		self:__stop();
 	end
 	self.nowPlaying = thing;
+	self.isPaused = false;
 	coroutine.wrap(function()
 		self.handler:playFFmpeg(thing.audio);
 		self.nowPlaying = nil; -- remove song
 		-- timer.sleep(20);
-		self:remove(1);
+		if self[1] == thing then
+			self:remove(1);
+		end
 	end)();
 end
 function this:__stop() -- PRIVATE
@@ -47,6 +50,7 @@ function this:__stop() -- PRIVATE
 		return;
 	end
 	self.nowPlaying = nil;
+	self.isPaused = false;
 	self.handler:stopStream();
 end
 function this:resume()
@@ -63,17 +67,12 @@ function this:apply()
 	if self.nowPlaying == self[1] then
 		return;
 	end
-	qDebug {
-		title = "playing music";
-		channelID = self.voiceChannelID;
-		file = self.url;
-	};
 	self:__play(self[1]);
 end
 
 local insert = table.insert;
 --- insert new song
-function this:add(thing,onIndex,callback)
+function this:add(thing,onIndex)
 	local audio,info = ytDown.download(thing.url);
 	if not audio then
 		return nil;
@@ -97,7 +96,7 @@ function this:remove(index)
 	end
 	local poped = remove(self,index);
 	self:apply();
-	return poped;
+	return poped,index;
 end
 
 function this:kill()

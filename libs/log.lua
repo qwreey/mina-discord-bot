@@ -34,7 +34,7 @@ local function runLog(thisName,thisLevel,color,debugInfo,...)
 	if string.sub(src,1,rootLen) == root then
 		src = string.sub(src,rootLen+2,-1);
 	end
-	src = src:gsub("%.lua$","");
+	src = src:gsub("%.lua$",""):gsub("^%.[/\\]",""):gsub("[\\//]",".");
 	local line = tostring(debugInfo.currentline);
 	local lineinfo = src .. ":" .. line .. string.rep(" ",4-#line);
 
