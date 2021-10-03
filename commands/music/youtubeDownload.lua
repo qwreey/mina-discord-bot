@@ -44,14 +44,13 @@ function module.download(vid)
 		title = "failed to download video from youtube";
 		trace = newProcess;
 		vid = vid;
-        info = info;
 		status = "error";
 	};
-	return nil;
+	error("something want wrong! video was not found from youtube or youtube-dl process was terminated with exit!");
 end
 
 function module.getVID(url)
-	return url:match("watch%?v=(...........)") or url:match("https://youtu%.be/(...........)") or url;
+	return url:match("watch%?v=(...........)") or url:match("https://youtu%.be/(...........)") or (url:gsub("^ +",""):gsub(" +$",""));
 end
 
 return module;

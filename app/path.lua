@@ -6,10 +6,16 @@ return function (path)
         path = path .. newPath .. ";";
     end
 
+    add(".\\?.lua");
+    add(".\\?\\init.lua");
     add(".\\libs\\?.lua");
+    add(".\\libs\\?\\init.lua");
     add(".\\deps\\?.lua");
+    add(".\\deps\\?\\init.lua");
     add(".\\app\\?.lua");
+    add(".\\app\\?\\init.lua");
     add(".\\bin\\?.lua");
+    add(".\\bin\\?\\init.lua");
 
     return path;
 end;
