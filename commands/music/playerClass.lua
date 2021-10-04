@@ -73,13 +73,14 @@ end
 local insert = table.insert;
 --- insert new song
 function this:add(thing,onIndex)
-	local audio,info,url = ytDown.download(thing.url);
+	local audio,info,url,vid = ytDown.download(thing.url);
 	if not audio then
 		return nil;
 	end
 	thing.url = url or thing.url;
 	thing.audio = audio;
 	thing.info = info;
+	thing.vid = vid;
 	if onIndex then
 		insert(self,onIndex,thing);
 	else

@@ -12,7 +12,7 @@ function module.download(vid)
 	for _,str in ipairs(exts) do
 		local this = filePath:format(str);
 		if fs.existsSync(this) then
-			return this,json.decode(info),url;
+			return this,json.decode(info),url,vid;
 		end
 	end
 
@@ -35,7 +35,7 @@ function module.download(vid)
 	for _,str in ipairs(exts) do
 		local this = filePath:format(str);
 		if fs.existsSync(this) then
-			return this,json.decode(info),url;
+			return this,json.decode(info),url,vid;
 		end
 	end
 
