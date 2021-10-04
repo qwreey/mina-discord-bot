@@ -54,7 +54,7 @@ local timer = require "timer"; _G.timer = timer;-- 타임아웃 핸들링
 local thread = require "thread"; _G.thread = thread-- 스레드 조정
 local fs = require "fs"; _G.fs = fs;-- 파일 시스템
 local ffi = require "ffi"; _G.ffi = ffi;-- C 동적 상호작용
-local utf8 = utf8 or require "utf8"; _G.utf8 = utf; -- 유니코드8 라이브러리 불러오기
+local utf8 = utf8 or require "utf8"; _G.utf8 = utf8; -- 유니코드8 라이브러리 불러오기
 local term = require "app.term"; -- terminal settings
 local utils = require "utils"; _G.utils = utils;
 local adapt = utils.adapt; _G.adapt = adapt;
@@ -170,7 +170,7 @@ local cRandom = require "cRandom"; _G.cRandom = cRandom; -- LUA 렌덤 핸들러
 local strSplit = require "stringSplit"; _G.strSplit = strSplit; -- 글자 분해기
 local urlCode = require "urlCode"; _G.urlCode = urlCode; -- 한글 URL 인코더/디코더
 local makeId = require "makeId"; _G.makeId = makeId; -- ID 만드는거
-local makeSeed = require "makeSeed"; _G.makeSeed = makeSeed;
+local makeSeed = require "libs.makeSeed"; _G.makeSeed = makeSeed;
 local myXMl = require "myXML"; _G.myXMl = myXMl;
 
 -- 데이터
