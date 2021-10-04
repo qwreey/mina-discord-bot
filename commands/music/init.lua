@@ -59,7 +59,8 @@ return {
 			end
 
 			-- get already exist connection
-			local guildConnection = message.guild.connection;
+			local guild = message.guild;
+			local guildConnection = guild.connection;
 			if guildConnection and (guildConnection.channel ~= voiceChannel) then
 				replyMsg:setContent("다른 음성채팅방에서 봇을 사용중입니다, 각 서버당 한 채널만 이용할 수 있습니다!");
 				return;
@@ -74,6 +75,7 @@ return {
 					replyMsg:setContent("채널에 참가할 수 없습니다, 봇이 유효한 권한을 가지고 있는지 확인해주세요!");
 					return;
 				end
+				guild.me:deafen(); -- deafen it selfs
 				player = playerClass.new {
 					voiceChannel = voiceChannel;
 					voiceChannelID = voiceChannelID;
