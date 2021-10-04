@@ -685,6 +685,10 @@ return {
 		reply = "{#:U+2605:#}";
 		love = defaultLove;
 	};
+	-- ["귀여어"] = {
+	-- 	reply = "{#:U+2605:#}";
+	-- 	love = defaultLove;
+	-- };
 	-- ["쿼리"] = {
 	-- 	alias = {"큐리","냥냥이","고양이조아","므야야ㅑㅑㅑ"};
 	-- 	reply = "";
