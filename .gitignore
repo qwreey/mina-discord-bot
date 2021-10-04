@@ -1,4 +1,4 @@
-# 테스팅 파일
+﻿# 테스팅 파일
 test.lua
 lit-temp
 
@@ -22,4 +22,5 @@ ffprobe.exe
 opus.dll
 sodium.dll
 
-log/debug.log
+# 로그 파일
+log/*
