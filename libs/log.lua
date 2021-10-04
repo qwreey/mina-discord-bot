@@ -8,7 +8,10 @@
 --
 
 local log = {_version = "0.1.0"};
-log.root = io.popen("cd"):read("*l")
+log.root = process.env.PWD;
+if not log.root then
+	log.root = io.popen("cd"):read("*l");
+end
 log.usecolor = true;
 log.outfile = nil;
 log.minLevel = 1;

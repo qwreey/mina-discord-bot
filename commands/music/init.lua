@@ -277,7 +277,8 @@ return {
 			"song 스킵","song 넘어가기","song 넘기기","song 넘겨줘","song 넘어가","song 다음","song 다음으로","song 다음곡",
 			"song skip","skip song","skip music","music skip",
 			"next skip","next song","next music","music next",
-			"skip 음악","skip 곡","skip 노래"
+			"skip 음악","skip 곡","skip 노래",
+			"곡 넘어 가기","음악 넘어 가기","노래 넘어 가기"
 		};
 		reply = "처리중입니다 . . .";
 		func = function(replyMsg,message,args,Content)
