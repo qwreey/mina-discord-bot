@@ -1,4 +1,4 @@
-local playerForChannels = {};
+local playerForChannels = {}; _G.playerForChannels = playerForChannels;
 local playerClass = require "commands.music.playerClass";
 
 local help = [[
