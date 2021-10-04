@@ -63,6 +63,8 @@ local qDebug = require "app.debug"; _G.qDebug = qDebug;
 local dumpTable = require "libs.dumpTable";
 local spawn = require "coro-spawn"; _G.spawn = spawn;
 local split = require "coro-split"; _G.split = split;
+local sha1 = require "sha1"; _G.sha1 = sha1;
+local osTime = os.time;
 
 -- same with js's timeout function
 local function runSchedule(time,func)
@@ -191,6 +193,7 @@ local EULA = data.loadRaw("data/EULA.txt"); _G.EULA = EULA;
 --#region : 반응, 프리픽스, 설정, 커맨드 등등
 logger.info("---------------------- [LOAD SETTINGS] ----------------------");
 logger.info("load settings ...");
+local loveCooltime = 3600;
 local disableDm = "이 반응은 DM 에서 사용 할 수 없어요! 서버에서 이용해 주세요";
 local eulaComment_love = "\n" .. -- 약관 동의 안할때 호감도 표시
 	"\n> 호감도 기능을 사용할 수 없어요!" ..
@@ -220,8 +223,7 @@ local prefixs = { -- 명령어 맨앞 글자 (접두사)
 local prefixReply = { -- 그냥 미나야 하면 답
 	"미나는 여기 있어요!","부르셨나요?","넹?",
 	"왜요 왜요 왜요?","심심해요?","네넹","미나에요",
-	"~~어쩌라고~~","Zzz... 아! 안졸았어요",
-	"Zzz... 아! 안졸았어요 ~~아 나도 좀 잠좀 자자 인간아~~","네!"
+	"Zzz... 아! 안졸았어요","네!"
 };
 local unknownReply = { -- 반응 없을때 띄움
 	"(갸우뚱?)","무슨 말이에요?","네?","으에?"--,"먕?",":thinking: 먀?"
@@ -510,9 +512,23 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	-- 만약 호감도가 있으면 올려주기
 	if love then
 		local thisUserDat = userData:loadData(User.id);
+		local CommandID = Command.id;
+
 		if thisUserDat then
-			thisUserDat.love = thisUserDat.love + love;
-			userData:saveData(User.id);
+			-- get last command used status
+			local lastCommand = thisUserDat.lastCommand;
+			if not lastCommand then
+				lastCommand = {};
+				thisUserDat.lastCommand = lastCommand;
+			end
+			local lastTime = lastCommand[CommandID];
+			if lastTime and (lastTime+loveCooltime > osTime()) then -- need more sleep . . .
+				loveText = "";
+			else
+				thisUserDat.love = thisUserDat.love + love;
+				lastCommand[CommandID] = osTime();
+				userData:saveData(User.id);
+			end
 		else
 			loveText = eulaComment_love;
 		end

@@ -24,14 +24,15 @@ local function indexingCommand(IndexTable,CommandName,CommandInfo)
 	local len = 1;
 
 	CommandInfo.name = CommandName;
+	CommandInfo.id = sha1(CommandName);
 	IndexTable[CommandName] = CommandInfo;
 	if type(alias) == "table" then
 		for _,Name in pairs(alias) do
-			IndexTable[Name] = CommandInfo;
+			IndexTable[Name:lower()] = CommandInfo;
 			len = len + 1;
 		end
 	elseif type(alias) == "string" then
-		IndexTable[alias] = CommandInfo;
+		IndexTable[alias:lower()] = CommandInfo;
 		len = len + 1;
 	end
 

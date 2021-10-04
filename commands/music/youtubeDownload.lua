@@ -4,14 +4,15 @@ local exts = {"opus", "m4a", "mp3", "wav", "best", "aac", "flac", "vorbis"};
 
 function module.download(vid)
 	vid = module.getVID(vid);
+	local url = ('https://www.youtube.com/watch?v=%s'):format(vid);
 
 	-- if is exist already, just return it
 	local filePath = ("data/youtubeFiles/%s.%%s"):format(vid);
-    local info = fs.readFileSync(("data/youtubeFiles/%s.info"):format(vid)) or "";
+	local info = fs.readFileSync(("data/youtubeFiles/%s.info"):format(vid)) or "";
 	for _,str in ipairs(exts) do
 		local this = filePath:format(str);
 		if fs.existsSync(this) then
-			return this,json.decode(info);
+			return this,json.decode(info),url;
 		end
 	end
 
@@ -19,7 +20,7 @@ function module.download(vid)
 	local newProcess = spawn("youtube-dl",{
 		args = {
 			'-q','-x','--audio-quality','0','--print-json','--write-thumbnail','--geo-bypass','-o','./data/youtubeFiles/%(id)s.%(ext)s','--cache-dir','./data/youtube.Cache',
-			('https://www.youtube.com/watch?v=%s'):format(vid)
+			url
 		};
 		hide = true;
 		cwd = "./";
@@ -34,7 +35,7 @@ function module.download(vid)
 	for _,str in ipairs(exts) do
 		local this = filePath:format(str);
 		if fs.existsSync(this) then
-			return this,json.decode(info);
+			return this,json.decode(info),url;
 		end
 	end
 

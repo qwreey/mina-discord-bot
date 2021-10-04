@@ -73,10 +73,11 @@ end
 local insert = table.insert;
 --- insert new song
 function this:add(thing,onIndex)
-	local audio,info = ytDown.download(thing.url);
+	local audio,info,url = ytDown.download(thing.url);
 	if not audio then
 		return nil;
 	end
+	thing.url = url or thing.url;
 	thing.audio = audio;
 	thing.info = info;
 	if onIndex then
@@ -90,14 +91,30 @@ end
 
 local remove = table.remove;
 -- remove song and check
-function this:remove(index)
-	if not index then
-		index = #self;
+function this:remove(start,counts)
+	counts = counts or 1;
+	if not start then -- get last index
+		start = #self;
+		counts = 1; -- THIS IS MUST BE 1, other value will make errors
 	end
-	local poped = remove(self,index);
+	local popedLast,indexLast;
+	for index = start,start+counts-1 do
+		popedLast = remove(self,start);
+		indexLast = index;
+	end
 	self:apply();
-	return poped,index;
+	return popedLast,indexLast;
 end
+
+-- 진심 이겈ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ 버그 미친거 아냐?
+-- function this:remove(index)
+-- 	if not index then
+-- 		index = #self;
+-- 	end
+-- 	local poped = remove(self,index);
+-- 	self:apply();
+-- 	return poped,index;
+-- end
 
 function this:kill()
 	local handler = self.handler;
@@ -106,32 +123,32 @@ function this:kill()
 	end
 end
 
--- local itemPerPage = 0;
--- function this:embedfiyList(page)
--- 	page = page or 1;
--- 	local fields = {};
--- 	for index = itemPerPage * (page-1) + 1,page * itemPerPage do
+local itemPerPage = 0;
+function this:embedfiyList(page)
+	page = page or 1;
+	local fields = {};
+	for index = itemPerPage * (page-1) + 1,page * itemPerPage do
 		
--- 	end
--- 	if #fields == 0 then
--- 		if page == 1 then
--- 			return {
--- 				footer = {
--- 					text = "1 페이지";
--- 				};
--- 				title = "재생 목록이 비어있습니다";
--- 				color = 16040191;
--- 			};
--- 		end
--- 		return {
--- 			footer = {
--- 				text = ("%d");
--- 			};
--- 			title = "페이지가 비어있습니다";
--- 			color = 16040191;
--- 		};
--- 	end
--- end
+	end
+	if #fields == 0 then
+		if page == 1 then
+			return {
+				footer = {
+					text = "1 페이지";
+				};
+				title = "재생 목록이 비어있습니다";
+				color = 16040191;
+			};
+		end
+		return {
+			footer = {
+				text = ("%d");
+			};
+			title = "페이지가 비어있습니다";
+			color = 16040191;
+		};
+	end
+end
 
 function this:embedfiy()
 	local fields = {};

@@ -94,23 +94,23 @@ for i,v in pairs(modes) do
 	end;
 end
 
-log.cmd    = log.cmd;
-log.cmdf   = log.cmdf;
-log.exit   = log.exit;
-log.exitf  = log.exitf;
-log.setup  = log.setup;
-log.setupf = log.setupf;
-log.trace  = log.trace;
-log.tracef = log.trace;
-log.debug  = log.debug;
-log.debugf = log.debugf;
-log.info   = log.info;
-log.infof  = log.infof;
-log.warn   = log.warn;
-log.warnf  = log.warnf;
-log.error  = log.error;
-log.errorf = log.errorf;
-log.fatal  = log.fatal;
-log.fatalf = log.fatalf;
+log.cmd		= log.cmd;
+log.cmdf	= log.cmdf;
+log.exit	= log.exit;
+log.exitf	= log.exitf;
+log.setup	= log.setup;
+log.setupf	= log.setupf;
+log.trace	= log.trace;
+log.tracef	= log.trace;
+log.debug	= log.debug;
+log.debugf	= log.debugf;
+log.info	= log.info;
+log.infof	= log.infof;
+log.warn	= log.warn;
+log.warnf	= log.warnf;
+log.error	= log.error;
+log.errorf	= log.errorf;
+log.fatal	= log.fatal;
+log.fatalf	= log.fatalf;
 
 return log;

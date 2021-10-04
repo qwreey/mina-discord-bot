@@ -12,7 +12,7 @@ local help = [[
 번째 란을 비워두면 자동으로 가장 뒤에 추가합니다
 , 을 이용해 여러곡을 한꺼번에 추가할 수도 있습니다
 
-> 미나 **곡빼기 [번째 또는 이름 또는 공백, a~b 와 같은 범위선택자]**
+> 미나 **곡빼기 [번째 또는 이름 또는 a~b 와 같은 범위 또는 공백]**
 음악을 리스트에서 뺍니다, 아무런 목표를 주지 않으면 가장 마지막에 추가한 곡을 제거합니다
 
 > 미나 **곡리스트 [공백 또는 페이지]**
@@ -33,8 +33,8 @@ return {
 			"노래 틀어","노래 틀어줘","노래 추가해","노래 추가해줘","노래 추가하기","노래 추가해봐","노래 추가해라","노래 추가","노래 재생","노래 실행",
 			"음악틀어","음악틀어줘","음악추가해","음악추가해줘","음악추가하기","음악추가해봐","음악추가해라","음악추가","음악재생","음악실행",
 			"음악 틀어","음악 틀어줘","음악 추가해","음악 추가해줘","음악 추가하기","음악 추가해봐","음악 추가해라","음악 추가","음악 재생","음악 실행",
-			"곡틀어","곡틀어줘","곡추가해","곡추가해줘","곡추가하기","곡추가해봐","곡추가해라","곡추가","곡실행",
-			"곡 틀어","곡 틀어줘","곡 추가해","곡 추가해줘","곡 추가하기","곡 추가해봐","곡 추가해라","곡 추가","곡 실행",
+			"곡틀어","곡틀어줘","곡추가해","곡추가해줘","곡추가하기","곡추가해봐","곡추가해라","곡추가","곡재생","곡실행",
+			"곡 틀어","곡 틀어줘","곡 추가해","곡 추가해줘","곡 추가하기","곡 추가해봐","곡 추가해라","곡 추가","곡 재생","곡 실행",
 			"음악 add","music add","music 추가",
 			"음악 insert","music insert",
 			"음악 play","music play","mucis 재생",
@@ -129,12 +129,12 @@ return {
 	};
 	["list music"] = {
 		alias = {
-			"노래대기열","노래리스트","노래순번","노래페이지",
-			"노래 대기열","노래 리스트","노래 순번","노래 페이지",
-			"곡대기열","곡리스트","곡순번","곡페이지",
-			"곡 대기열","곡 리스트","곡 순번","곡 페이지",
-			"음악대기열","음악리스트","음악순번","음악페이지",
-			"음악 대기열","음악 리스트","음악 순번","음악 페이지",
+			"노래페이지","노래대기열","노래리스트","노래순번","노래페이지",
+			"노래 페이지","노래 대기열","노래 리스트","노래 순번","노래 페이지",
+			"곡페이지","곡대기열","곡리스트","곡순번","곡페이지",
+			"곡 페이지","곡 대기열","곡 리스트","곡 순번","곡 페이지",
+			"음악페이지","음악대기열","음악리스트","음악순번","음악페이지",
+			"음악 페이지","음악 대기열","음악 리스트","음악 순번","음악 페이지",
 			"재생목록","재생 목록","신청 목록","신청목록","플리",
 			"플레이리스트","플레이 리스트",
 			"list music","queue music","music queue","music list",
@@ -234,11 +234,13 @@ return {
 				atStart,atEnd = rawArgs:match("(%d+) -~ -(%d+)");
 				atStart,atEnd = tonumber(atStart),tonumber(atEnd);
 				if atEnd and atStart then
-					local min = math.min(atStart,atEnd);
-					local max = math.max(atStart,atEnd);
-					for _ = 1,max-min+1 do
-						player:remove(min);
-					end
+					player:remove(
+						math.min(atStart,atEnd),
+						math.max(atStart,atEnd)
+					);
+					-- for _ = 1,max-min+1 do
+					-- 	player:remove(min);
+					-- end
 					replyMsg:setContent(("성공적으로 %d 번째 곡부터 %d 번째 곡 까지 삭제했습니다!"):format(min,max));
 					return;
 				end
@@ -249,7 +251,7 @@ return {
 					if info then
 						local title = info.title;
 						if title then
-							if title:match(rawArgs) then
+							if title:find(rawArgs,1,true) then
 								player:remove(i);
 								replyMsg:setContent(("%d 번째 곡 '%s' 를 삭제하였습니다"):format(i,info and info.title or "알 수 없음"));
 								return;
@@ -310,9 +312,10 @@ return {
 
 			-- skip!
 			local lastOne;
-			for _ = 1,rawArgs do
-				lastOne = player:remove(1);
-			end
+			lastOne = player:remove(1,rawArgs);
+			-- for _ = 1,rawArgs do
+			-- 	lastOne = player:remove(1);
+			-- end
 			replyMsg:setContent( -- !!REVIEW NEEDED!!
 				rawArgs == 1 and
 				(("성공적으로 곡 '%s' 를 스킵하였습니다"):format(tostring(lastOne and lastOne.info and lastOne.info.title))) or
