@@ -1,4 +1,4 @@
-local covid19Embed = {};
+local module = {};
 
 local function makeError()
 	return {
@@ -30,7 +30,7 @@ local view = {
 	{"accDefRate","누적 확진률"}
 };
 
-function covid19Embed:embed(today,yesterday)
+function module:embed(today,yesterday)
 	local fields = {};
 
 	if (not yesterday) or (not today) then
@@ -68,4 +68,4 @@ function covid19Embed:embed(today,yesterday)
 	};
 end
 
-return covid19Embed;
+return module;
