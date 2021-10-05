@@ -2,6 +2,10 @@ local module = {};
 
 local exts = {"opus", "m4a", "mp3", "wav", "best", "aac", "flac", "vorbis"};
 
+local function isExistString(str)
+    return str and str ~= "" and str ~= " " and str ~= "\n";
+end
+
 function module.download(vid)
 	vid = module.getVID(vid);
 	local url = ('https://www.youtube.com/watch?v=%s'):format(vid);
@@ -30,7 +34,7 @@ function module.download(vid)
 	for str in newProcess.stdout.read do
 		info = info .. str;
 	end
-	if info and info ~= "" and info ~= " " and info ~= "\n" then
+	if isExistString(info) then
 		fs.writeFile(("data/youtubeFiles/%s.info"):format(vid),info);
 	end
 	newProcess.waitExit();
