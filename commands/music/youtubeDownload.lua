@@ -30,7 +30,9 @@ function module.download(vid)
 	for str in newProcess.stdout.read do
 		info = info .. str;
 	end
-	fs.writeFile(("data/youtubeFiles/%s.info"):format(vid),info);
+	if info and info ~= "" and info ~= " " and info ~= "\n" then
+		fs.writeFile(("data/youtubeFiles/%s.info"):format(vid),info);
+	end
 	newProcess.waitExit();
 	for _,str in ipairs(exts) do
 		local this = filePath:format(str);
