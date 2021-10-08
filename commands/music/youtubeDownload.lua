@@ -2,6 +2,10 @@ local module = {};
 
 local exts = {"opus", "m4a", "mp3", "wav", "best", "aac", "flac", "vorbis"};
 
+local function isExistString(str)
+    return str and str ~= "" and str ~= " " and str ~= "\n";
+end
+
 function module.download(vid)
 	vid = module.getVID(vid);
 	local url = ('https://www.youtube.com/watch?v=%s'):format(vid);
@@ -19,7 +23,7 @@ function module.download(vid)
 	-- if not exist already, create new it
 	local newProcess = spawn("youtube-dl",{
 		args = {
-			'-q','-x','--audio-quality','0','--print-json','--write-thumbnail','--geo-bypass','-o','./data/youtubeFiles/%(id)s.%(ext)s','--cache-dir','./data/youtube.Cache',
+			'-q','-x','--audio-quality','0','--print-json','--write-thumbnail','--geo-bypass','-o','./data/youtubeFiles/%(id)s.%(ext)s','--cache-dir','./data/youtubeCache',
 			url
 		};
 		hide = true;
@@ -30,7 +34,9 @@ function module.download(vid)
 	for str in newProcess.stdout.read do
 		info = info .. str;
 	end
-	fs.writeFile(("data/youtubeFiles/%s.info"):format(vid),info);
+	if isExistString(info) then
+		fs.writeFile(("data/youtubeFiles/%s.info"):format(vid),info);
+	end
 	newProcess.waitExit();
 	for _,str in ipairs(exts) do
 		local this = filePath:format(str);

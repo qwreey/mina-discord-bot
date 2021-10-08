@@ -41,15 +41,3 @@ return {
 		end;
 	};
 };
-
--- adapt(function (callback)
---	 print(callback);
---	 replyMsg:setContent("```\n" .. callback .. "```");
--- end,coroutine.wrap(function ()
---	 print("calling figlet");
---	 local proc = io.popen(("figlet -f \"Soft\" \"%s\""):format(raw));
---	 local ret = proc:read("*a");
---	 proc:close();
---	 print("closed, return data",ret);
---	 return ret;
--- end));

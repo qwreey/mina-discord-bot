@@ -1,4 +1,4 @@
-local youtubeEmbed = {};
+local module = {};
 
 -- class : youtubeEmbed
 -- embed youtube search with youtube api's returns
@@ -8,12 +8,12 @@ local youtubeEmbed = {};
 -- 2021 / 07 / 04
 
 local myXML;
-function youtubeEmbed:setMyXML(nMyXML)
+function module:setMyXML(nMyXML)
 	myXML = nMyXML;
 	return self;
 end
 
-function youtubeEmbed:embed(searchKeyword,body,queryStr)
+function module:embed(searchKeyword,body,queryStr)
 	local fields = {};
 
 	for index,thing in pairs(body.items) do
@@ -58,4 +58,4 @@ function youtubeEmbed:embed(searchKeyword,body,queryStr)
 	};
 end
 
-return youtubeEmbed;
+return module;
