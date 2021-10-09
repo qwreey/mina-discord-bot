@@ -19,37 +19,49 @@ Cpu 에 더 좋다 그래서 이렇게 나눠놓는거
 
 local module = {};
 
-local function indexingCommand(IndexTable,CommandName,CommandInfo)
-	local alias = CommandInfo.alias;
+local function indexingReact(indexTable,cmds,commandName,reactInfo)
+	local alias = reactInfo.alias;
+	local aliasType = type(alias);
 	local len = 1;
 
-	CommandInfo.name = CommandName;
-	CommandInfo.id = sha1(CommandName);
-	IndexTable[CommandName] = CommandInfo;
-	if type(alias) == "table" then
+	reactInfo.name = commandName;
+	reactInfo.id = sha1(commandName);
+	indexTable[commandName] = reactInfo;
+
+	if aliasType == "table" then
 		for _,Name in pairs(alias) do
-			IndexTable[Name:lower()] = CommandInfo;
+			indexTable[Name:lower()] = reactInfo;
 			len = len + 1;
 		end
-	elseif type(alias) == "string" then
-		IndexTable[alias:lower()] = CommandInfo;
+	elseif aliasType == "string" then
+		indexTable[alias:lower()] = reactInfo;
 		len = len + 1;
+	end
+
+	local command = reactInfo.command;
+	local commandType = type(aliasType)
+	if commandType == "table" then
+		for _,index in ipairs(command) do
+			cmds[index] = reactInfo;
+		end
+	elseif commandType == "string" then
+		cmds[command] = reactInfo;
 	end
 
 	return len;
 end
 
 function module.encodeCommands(...)
-	local this = {};
+	local this,cmds = {},{};
 	local len = 0;
 
 	for _,commandPackage in pairs({...}) do
 		for commandName,commandInfo in pairs(commandPackage) do
-			len = len + indexingCommand(this,commandName,commandInfo);
+			len = len + indexingReact(this,cmds,commandName,commandInfo);
 		end
 	end
 
-	return this,len;
+	return this,cmds,len;
 end
 
 function module.findCommandFrom(encodedTable,commandName)

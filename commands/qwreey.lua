@@ -113,6 +113,7 @@ return {
 	["약관"] = {
 		alias = {"EULA","사용계약"};
 		reply = EULA;
+		sendToDm = "개인 메시지로 도움말이 전송되었습니다!";
 		love = defaultLove;
 	};
 	["몸무계"] = {

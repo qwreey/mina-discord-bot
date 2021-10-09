@@ -135,31 +135,61 @@ function this:setLooping(looping)
 	self.isLooping = looping;
 end
 
-local itemPerPage = 0;
+function this:getStatusText()
+	return {
+		text = ("총 곡 수 : %d"):format(#self)
+		 .. (self.isLooping and "\n플레이리스트 루프중" or "")
+		 .. (self.isPaused and "\n재생 멈춤" or "");
+	};
+end
+
+local itemPerPage = 10;
 function this:embedfiyList(page)
 	page = page or 1;
+	local atStart,atEnd = itemPerPage * (page-1) + 1,page * itemPerPage
 	local fields = {};
-	for index = itemPerPage * (page-1) + 1,page * itemPerPage do
-
+	for index = atStart,atEnd do
+		local song = self[index];
+		if song then
+			insert(fields,{
+				name = (index == 1) and "현재 재생중" or (("%d 번째 곡"):format(i));
+				value = ("[%s](%s)"):format(song.info.title:gsub("\"","\\\""),song.url);
+			});
+		end
 	end
+
 	if #fields == 0 then
 		if page == 1 then
 			return {
-				footer = {
-					text = "1 페이지";
-				};
-				title = "재생 목록이 비어있습니다";
+				footer = self:getStatusText();
+				fields = fields;
+				title = "1 페이지";
+				description = "재생 목록이 비어있습니다";
 				color = 16040191;
 			};
 		end
 		return {
-			footer = {
-				text = ("%d");
-			};
-			title = "페이지가 비어있습니다";
+			footer = self:getStatusText();
+			fields = fields;
+			title = ("%d 페이지"):format(page);
+			description = "페이지가 비어있습니다";
 			color = 16040191;
 		};
 	end
+
+	if #self > atEnd then
+		insert(fields,{
+			name = "더 많은 곡이 있습니다!";
+			value = ("다음 페이지를 보려면\n`미나 곡리스트 %d`\n를 입력해주세요"):format(page + 1);
+		});
+	end
+
+	return {
+		fields = fields;
+		footer = self:getStatusText();
+		title = ("%d 번째 페이지"):format(page);
+		color = 16040191;
+	}
 end
 
 function this:embedfiy()
@@ -173,11 +203,7 @@ function this:embedfiy()
 
 	return {
 		fields = fields;
-		footer = {
-			text = ("총 곡 수 : %d"):format(#self)
-			 .. (self.isLooping and "\n플레이리스트 루프중" or "")
-			 .. (self.isPaused and "\n재생 멈춤" or "");
-		};
+		footer = self:getStatusText();
 		title = "재생 목록에 있는 곡들은 다음과 같습니다";
 		color = 16040191;
 	};

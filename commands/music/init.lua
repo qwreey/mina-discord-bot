@@ -303,9 +303,9 @@ return {
 				atStart,atEnd = rawArgs:match("(%d+) -~ -(%d+)");
 				atStart,atEnd = tonumber(atStart),tonumber(atEnd);
 				if atEnd and atStart then
+					local min,max = math.min(atStart,atEnd),math.max(atStart,atEnd);
 					player:remove(
-						math.min(atStart,atEnd),
-						math.max(atStart,atEnd)
+						min,max
 					);
 					-- for _ = 1,max-min+1 do
 					-- 	player:remove(min);
