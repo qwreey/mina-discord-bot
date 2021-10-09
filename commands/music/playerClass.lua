@@ -203,6 +203,23 @@ function this:embedfiyList(page)
 	}
 end
 
+-- seekbar object
+local seekbarForward = "━";
+local seekbarBackward = "─";
+local seekbarString = "%s %s⬤%s %s";
+local seekbarLen = 18;
+local function seekbar(now,atEnd)
+	local per = now / atEnd;
+	local forward = math.floor(seekbarLen * per + 0.5);
+	local backward = math.floor(seekbarLen - forward);
+	return seekbarString:format(
+		formatTime(now),
+		seekbarForward:rep(forward),
+		seekbarBackward:rep(backward),
+		formatTime(atEnd)
+	);
+end
+
 -- display now playing
 function this:embedfiyNowplaying(index)
 	index = tonumber(index) or 1;
@@ -226,12 +243,13 @@ function this:embedfiyNowplaying(index)
 	local handler = self.handler;
 	local getElapsed = handler.getElapsed;
 	local elapsed = getElapsed() / 1000;
+	local duration = info.duration;
 	return {
 		footer = self:getStatusText();
 		title = info.title;
-		description = ("%s\n곡 길이 : %s | 조회수 : %d | 좋아요 : %d\n업로더 : %s\n[영상으로 이동](%s) | [채널로 이동](%s)"):format(
-			getElapsed and ("재생중 : " .. formatTime(getElapsed()) .. "\n") or "",
-			formatTime(info.duration),
+		description = ("%s%s조회수 : %d | 좋아요 : %d\n업로더 : %s\n[영상으로 이동](%s) | [채널로 이동](%s)"):format(
+			getElapsed and ("%s %s %s\n"):format(seekbar(elapsed,duration)) or "",
+			(not getElapsed) and ("곡 길이 : %s | "):format(formatTime(duration)) or "",
 			info.view_count,
 			info.like_count,
 			info.uploader,
