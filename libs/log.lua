@@ -8,7 +8,10 @@
 --
 
 local log = {_version = "0.1.0"};
-log.root = io.popen("cd"):read("*l")
+log.root = process.env.PWD;
+if not log.root then
+	log.root = io.popen("cd"):read("*l");
+end
 log.usecolor = true;
 log.outfile = nil;
 log.minLevel = 1;
@@ -94,23 +97,23 @@ for i,v in pairs(modes) do
 	end;
 end
 
-log.cmd    = log.cmd;
-log.cmdf   = log.cmdf;
-log.exit   = log.exit;
-log.exitf  = log.exitf;
-log.setup  = log.setup;
-log.setupf = log.setupf;
-log.trace  = log.trace;
-log.tracef = log.trace;
-log.debug  = log.debug;
-log.debugf = log.debugf;
-log.info   = log.info;
-log.infof  = log.infof;
-log.warn   = log.warn;
-log.warnf  = log.warnf;
-log.error  = log.error;
-log.errorf = log.errorf;
-log.fatal  = log.fatal;
-log.fatalf = log.fatalf;
+log.cmd		= log.cmd;
+log.cmdf	= log.cmdf;
+log.exit	= log.exit;
+log.exitf	= log.exitf;
+log.setup	= log.setup;
+log.setupf	= log.setupf;
+log.trace	= log.trace;
+log.tracef	= log.trace;
+log.debug	= log.debug;
+log.debugf	= log.debugf;
+log.info	= log.info;
+log.infof	= log.infof;
+log.warn	= log.warn;
+log.warnf	= log.warnf;
+log.error	= log.error;
+log.errorf	= log.errorf;
+log.fatal	= log.fatal;
+log.fatalf	= log.fatalf;
 
 return log;

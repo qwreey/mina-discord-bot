@@ -2,6 +2,8 @@ local this = {};
 this.__index = this;
 
 local ytDown = require("commands.music.youtubeDownload");
+local remove = table.remove;
+local insert = table.insert;
 
 -- 이 코드는 신과 나만 읽을 수 있게 만들었습니다
 -- 만약 편집을 기꺼히 원한다면... 그렇게 하도록 하세요
@@ -17,12 +19,17 @@ new.playIndex
 ]]
 function this.new(props)
 	local new = {};
-	new.voiceChannelID = props.voiceChannelID;
-	new.nowPlaying = nil;
-	new.handler = props.handler;
-	new.isPaused = false;
 	setmetatable(new,this);
+	new:__init(props);
 	return new;
+end
+
+function this:__init(props)
+	self.voiceChannelID = props.voiceChannelID;
+	self.nowPlaying = nil;
+	self.handler = props.handler;
+	self.isPaused = false;
+	self.isLooping = false;
 end
 
 --#region : Stream handling methods
@@ -40,6 +47,9 @@ function this:__play(thing) -- PRIVATE
 		self.handler:playFFmpeg(thing.audio);
 		self.nowPlaying = nil; -- remove song
 		-- timer.sleep(20);
+		if self.isLooping then
+			insert(self,thing);
+		end
 		if self[1] == thing then
 			self:remove(1);
 		end
@@ -53,14 +63,7 @@ function this:__stop() -- PRIVATE
 	self.isPaused = false;
 	self.handler:stopStream();
 end
-function this:resume()
-	self.isPaused = false;
-	self.handler:resumeStream();
-end
-function this:pause()
-	self.isPaused = true;
-	self.handler:pauseStream();
-end
+
 --#endregion : Stream handling methods
 
 function this:apply()
@@ -70,35 +73,45 @@ function this:apply()
 	self:__play(self[1]);
 end
 
-local insert = table.insert;
 --- insert new song
 function this:add(thing,onIndex)
-	local audio,info = ytDown.download(thing.url);
+	local audio,info,url,vid = ytDown.download(thing.url);
 	if not audio then
 		return nil;
 	end
+	thing.url = url or thing.url;
 	thing.audio = audio;
 	thing.info = info;
+	thing.vid = vid;
 	if onIndex then
 		insert(self,onIndex,thing);
 	else
 		insert(self,thing);
 	end
+	if onIndex == 1 then
+		this:__stop();
+	end
 	self:apply();
 	return audio;
 end
 
-local remove = table.remove;
--- remove song and check
-function this:remove(index)
-	if not index then
-		index = #self;
+-- remove song and checkout
+function this:remove(start,counts)
+	counts = counts or 1;
+	if not start then -- get last index
+		start = #self;
+		counts = 1; -- THIS IS MUST BE 1, other value will make errors
 	end
-	local poped = remove(self,index);
+	local popedLast,indexLast;
+	for index = start,start+counts-1 do
+		popedLast = remove(self,start);
+		indexLast = index;
+	end
 	self:apply();
-	return poped,index;
+	return popedLast,indexLast;
 end
 
+-- kill bot
 function this:kill()
 	local handler = self.handler;
 	if handler then
@@ -106,32 +119,48 @@ function this:kill()
 	end
 end
 
--- local itemPerPage = 0;
--- function this:embedfiyList(page)
--- 	page = page or 1;
--- 	local fields = {};
--- 	for index = itemPerPage * (page-1) + 1,page * itemPerPage do
-		
--- 	end
--- 	if #fields == 0 then
--- 		if page == 1 then
--- 			return {
--- 				footer = {
--- 					text = "1 페이지";
--- 				};
--- 				title = "재생 목록이 비어있습니다";
--- 				color = 16040191;
--- 			};
--- 		end
--- 		return {
--- 			footer = {
--- 				text = ("%d");
--- 			};
--- 			title = "페이지가 비어있습니다";
--- 			color = 16040191;
--- 		};
--- 	end
--- end
+-- set resume, pause
+function this:setPaused(paused)
+	if paused then
+		self.isPaused = true;
+		self.handler:pauseStream();
+	else
+		self.isPaused = false;
+		self.handler:resumeStream();
+	end
+end
+
+-- set looping
+function this:setLooping(looping)
+	self.isLooping = looping;
+end
+
+local itemPerPage = 0;
+function this:embedfiyList(page)
+	page = page or 1;
+	local fields = {};
+	for index = itemPerPage * (page-1) + 1,page * itemPerPage do
+
+	end
+	if #fields == 0 then
+		if page == 1 then
+			return {
+				footer = {
+					text = "1 페이지";
+				};
+				title = "재생 목록이 비어있습니다";
+				color = 16040191;
+			};
+		end
+		return {
+			footer = {
+				text = ("%d");
+			};
+			title = "페이지가 비어있습니다";
+			color = 16040191;
+		};
+	end
+end
 
 function this:embedfiy()
 	local fields = {};
@@ -145,7 +174,9 @@ function this:embedfiy()
 	return {
 		fields = fields;
 		footer = {
-			 text = "제발 되라 버그 안나고 - 개발중 작성";
+			text = ("총 곡 수 : %d"):format(#self)
+			 .. (self.isLooping and "\n플레이리스트 루프중" or "")
+			 .. (self.isPaused and "\n재생 멈춤" or "");
 		};
 		title = "재생 목록에 있는 곡들은 다음과 같습니다";
 		color = 16040191;

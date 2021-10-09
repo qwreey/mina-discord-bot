@@ -1,10 +1,20 @@
 local function drawAscii(font,text)
 	text = text:gsub("\"","\\\"");
-	local proc = io.popen(("figlet -f \"%s\" \"%s\""):format(font,text));
-	local ret = proc:read("*a");
-	proc:close();
+
+	local newProcess = spawn("youtube-dl",{
+		args = {
+			'-f',font,text
+		};
+		hide = true;
+		stdio = {nil,true,true};
+	});
+	local this = "";
+	for str in newProcess.stdout.read do
+		this = this .. str;
+	end
+	newProcess.waitExit();
 	os.execute("title " .. _G.app.name);
-	return ret;
+	return this;
 end
 
 return {
@@ -31,15 +41,3 @@ return {
 		end;
 	};
 };
-
--- adapt(function (callback)
---	 print(callback);
---	 replyMsg:setContent("```\n" .. callback .. "```");
--- end,coroutine.wrap(function ()
---	 print("calling figlet");
---	 local proc = io.popen(("figlet -f \"Soft\" \"%s\""):format(raw));
---	 local ret = proc:read("*a");
---	 proc:close();
---	 print("closed, return data",ret);
---	 return ret;
--- end));

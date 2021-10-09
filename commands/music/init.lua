@@ -1,18 +1,4 @@
--- client.voice:loadOpus('libopus-x86');
--- client.voice:loadSodium('libsodium-x86');
-
--- local spawn = require('coro-spawn');
--- local split = require('coro-split');
--- local parse = require('url').parse;
--- local http = require('http');
-
--- local connection;
--- local msg = '';
--- local channel;
--- local playingURL = '';
--- local playingTrack = 0;
-
-local playerForChannels = {};
+local playerForChannels = {}; _G.playerForChannels = playerForChannels;
 local playerClass = require "commands.music.playerClass";
 
 local help = [[
@@ -26,7 +12,7 @@ local help = [[
 번째 란을 비워두면 자동으로 가장 뒤에 추가합니다
 , 을 이용해 여러곡을 한꺼번에 추가할 수도 있습니다
 
-> 미나 **곡빼기 [번째 또는 이름 또는 공백, a~b 와 같은 범위선택자]**
+> 미나 **곡빼기 [번째 또는 이름 또는 a~b 와 같은 범위 또는 공백]**
 음악을 리스트에서 뺍니다, 아무런 목표를 주지 않으면 가장 마지막에 추가한 곡을 제거합니다
 
 > 미나 **곡리스트 [공백 또는 페이지]**
@@ -35,36 +21,23 @@ local help = [[
 > 미나 **곡스킵 [공백 또는 넘어갈 음악 수]**
 넘어갈 음악 수 만큼 넘어갑니다, 비워두면 지금 듣고 있는 곡 하나만 넘어갑니다
 
+> 미나 **곡반복 [공백 또는 끄기/켜기 등등]**
+곡 반복을 끄거나 켭니다, 공백으로 두면 상태를 반전 (꺼진 경우 켜기, 켜진 경우 끄기) 합니다
+
 > 미나 **곡정보**
 
 이외에도, 곡을 음악/노래 등으로 바꾸는것 처럼 비슷한 말로 불러도 학습되어 있기 때문에 작동합니다
 ]];
 
---[[
-음악도움말 대신 다음과 같이 쓸 수도 있습니다
-`'음악' '음악 도움말' '음악 help' '음악' 'music help' 'help music' 'music 도움말'`
-
-음악추가 대신 다음과 같이 쓸 수도 있습니다
-`'곡 추가' '곡추가' 'add music' '음악 추가' '음악 add' 'music add' 'music 추가' '음악 재생' '음악재생'`
-
-이 명령어는 또한 다음과 같이 쓸 수도 있습니다
-`"곡 빼기","곡 없에기","곡 지우기","곡 삭제","곡 지워","곡 빼","곡 없에","곡 지워줘","곡 없에줘","곡 날리기" 등등등`
-
-이 명령어는 또한 다음과 같이 쓸 수도 있습니다
-`'곡 리스트' '곡리스트' '음악 리스트' '음악리스트' 'list music' 'queue music' 'music queue' '음악 queue'`
-
-현재 재생, 정보, 지금재생, 지금, 현재, 실행중, 실행곡, ...
-]]
-
 return {
 	["add music"] = {
 		alias = {
-			"노래추가","노래재생","노래실행",
-			"노래 추가","노래 재생","노래 실행",
-			"음악추가","음악재생","음악실행",
-			"음악 추가","음악 재생","음악 실행",
-			"곡추가","곡실행","음악재생",
-			"곡 추가","곡 실행","음악 재생",
+			"노래틀어","노래틀어줘","노래추가해","노래추가해줘","노래추가하기","노래추가해봐","노래추가해라","노래추가","노래재생","노래실행",
+			"노래 틀어","노래 틀어줘","노래 추가해","노래 추가해줘","노래 추가하기","노래 추가해봐","노래 추가해라","노래 추가","노래 재생","노래 실행",
+			"음악틀어","음악틀어줘","음악추가해","음악추가해줘","음악추가하기","음악추가해봐","음악추가해라","음악추가","음악재생","음악실행",
+			"음악 틀어","음악 틀어줘","음악 추가해","음악 추가해줘","음악 추가하기","음악 추가해봐","음악 추가해라","음악 추가","음악 재생","음악 실행",
+			"곡틀어","곡틀어줘","곡추가해","곡추가해줘","곡추가하기","곡추가해봐","곡추가해라","곡추가","곡재생","곡실행",
+			"곡 틀어","곡 틀어줘","곡 추가해","곡 추가해줘","곡 추가하기","곡 추가해봐","곡 추가해라","곡 추가","곡 재생","곡 실행",
 			"음악 add","music add","music 추가",
 			"음악 insert","music insert",
 			"음악 play","music play","mucis 재생",
@@ -89,7 +62,8 @@ return {
 			end
 
 			-- get already exist connection
-			local guildConnection = message.guild.connection;
+			local guild = message.guild;
+			local guildConnection = guild.connection;
 			if guildConnection and (guildConnection.channel ~= voiceChannel) then
 				replyMsg:setContent("다른 음성채팅방에서 봇을 사용중입니다, 각 서버당 한 채널만 이용할 수 있습니다!");
 				return;
@@ -104,6 +78,7 @@ return {
 					replyMsg:setContent("채널에 참가할 수 없습니다, 봇이 유효한 권한을 가지고 있는지 확인해주세요!");
 					return;
 				end
+				guild.me:deafen(); -- deafen it selfs
 				player = playerClass.new {
 					voiceChannel = voiceChannel;
 					voiceChannelID = voiceChannelID;
@@ -159,12 +134,13 @@ return {
 	};
 	["list music"] = {
 		alias = {
-			"노래대기열","노래리스트","노래순번","노래페이지",
-			"노래 대기열","노래 리스트","노래 순번","노래 페이지",
-			"곡대기열","곡리스트","곡순번","곡페이지",
-			"곡 대기열","곡 리스트","곡 순번","곡 페이지",
-			"음악대기열","음악리스트","음악순번","음악페이지",
-			"음악 대기열","음악 리스트","음악 순번","음악 페이지",
+			"노래페이지","노래대기열","노래리스트","노래순번","노래페이지",
+			"노래 페이지","노래 대기열","노래 리스트","노래 순번","노래 페이지",
+			"곡페이지","곡대기열","곡리스트","곡순번","곡페이지",
+			"곡 페이지","곡 대기열","곡 리스트","곡 순번","곡 페이지",
+			"음악페이지","음악대기열","음악리스트","음악순번","음악페이지",
+			"음악 페이지","음악 대기열","음악 리스트","음악 순번","음악 페이지",
+			"재생목록","재생 목록","신청 목록","신청목록","플리",
 			"플레이리스트","플레이 리스트",
 			"list music","queue music","music queue","music list",
 			"list song","queue song","song queue","song list",
@@ -181,22 +157,85 @@ return {
 			if not player then
 				return replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
 			end
-			replyMsg:setEmbed(player:embedfiy());
-			replyMsg:setContent("현재 이 서버의 플레이리스트입니다");
+			replyMsg:update {
+				embed = player:embedfiy();
+				content = "현재 이 서버의 플레이리스트입니다";
+			};
 		end;
 	};
-	["music"] = {
-		alias = {"음악","음악 도움말","음악 help","음악도움말","music help","help music","music 도움말"};
+	["loop"] = {
+		alias = {
+			"looping","looping toggle","toggle looping","플레이리스트반복","플레이 리스트 반복","플리 반복",
+			"플리반복","플리루프","플리 루프","플리반복하기","플리 반복하기",
+			"재생목록 반복하기","재생목록반복하기","재생목록반복","재생목록 반복","재생목록루프","재생목록 루프",
+			"노래반복","노래루프","노래반복하기","노래 반복","노래 루프","노래 반복하기",
+			"음악반복","음악루프","음악반복하기","음악 반복","음악 루프","음악 반복하기",
+			"곡반복","곡루프","곡반복하기","곡 반복","곡 루프","곡 반복하기",
+		};
+		reply = "처리중입니다 . . .";
+		func = function(replyMsg,message,args,Content)
+			-- check users voice channel
+			local voiceChannel = message.member.voiceChannel;
+			if not voiceChannel then
+				replyMsg:setContent("음성 채팅방에 있지 않습니다! 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다.");
+				return;
+			end
+
+			-- get already exist connection
+			local guildConnection = message.guild.connection;
+			if guildConnection and (guildConnection.channel ~= voiceChannel) then
+				replyMsg:setContent("다른 음성채팅방에서 봇을 사용중입니다, 봇이 있는 음성 채팅방에서 사용해주세요!");
+				return;
+			elseif not guildConnection then
+				replyMsg:setContent("봇이 음성채팅방에 있지 않습니다, 봇이 음성채팅방에 있을때 사용해주세요!");
+				return;
+			end
+
+			-- get player object from playerClass
+			local voiceChannelID = voiceChannel:__hash();
+			local player = playerForChannels[voiceChannelID];
+			if not player then
+				replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
+				return;
+			elseif not player.nowPlaying then -- if it is not playing then
+				replyMsg:setContent("실행중인 음악이 없습니다!");
+				return;
+			end
+
+			-- pause!
+			local rawArgs = Content.rawArgs;
+			local setTo = not player.isLooping;
+			if onKeywords[rawArgs] then
+				setTo = true;
+			elseif onKeywords[rawArgs] then
+				setTo = false;
+			end
+
+			if setTo then
+				player:setLooping(true);
+				replyMsg:setContent("성공적으로 플레이리스트 반복을 켰습니다!");
+			else
+				player:setLooping(false);
+				replyMsg:setContent("성공적으로 플레이리스트 반복을 멈췄습니다!");
+			end
+		end;
+	};
+	["음악"] = {
+		reply = "명령어를 처리하지 못했어요!\n> 음악 기능 도움이 필요하면 '미나 음악 도움말' 을 입력해주세요";
+	};
+	["음악 도움말"] = {
+		alias = {"음악 사용법","음악 사용법 알려줘","음악사용법","음악 도움말 보여줘","음악 help","음악도움말","music help","help music","music 도움말"};
 		reply = help;
+		sendToDm = "개인 메시지로 도움말이 전송되었습니다!";
 	};
 	["remove music"] = {
 		alias = {
-			"곡제거","곡빼기","곡없에기","곡지우기","곡삭제","곡지워","곡빼","곡없에","곡지워줘","곡없에줘","곡날리기",
-			"곡 제거","곡 빼기","곡 없에기","곡 지우기","곡 삭제","곡 지워","곡 빼","곡 없에","곡 지워줘","곡 없에줘","곡 날리기",
-			"음악제거","음악빼기","음악없에기","음악지우기","음악삭제","음악지워","음악빼","음악없에","음악지워줘","음악없에줘","음악날리기",
-			"음악 제거","음악 빼기","음악 없에기","음악 지우기","음악 삭제","음악 지워","음악 빼","음악 없에","음악 지워줘","음악 없에줘","음악 날리기",
-			"노래제거","노래빼기","노래없에기","노래지우기","노래삭제","노래지워","노래빼","노래없에","노래지워줘","노래없에줘","노래날리기",
-			"노래 제거","노래 빼기","노래 없에기","노래 지우기","노래 삭제","노래 지워","노래 빼","노래 없에","노래 지워줘","노래 없에줘","노래 날리기",
+			"곡빼줘","곡제거","곡빼기","곡없에기","곡지우기","곡삭제","곡지워","곡빼","곡없에","곡지워줘","곡없에줘","곡날리기",
+			"곡 빼줘","곡 제거","곡 빼기","곡 없에기","곡 지우기","곡 삭제","곡 지워","곡 빼","곡 없에","곡 지워줘","곡 없에줘","곡 날리기",
+			"음악빼줘","음악제거","음악빼기","음악없에기","음악지우기","음악삭제","음악지워","음악빼","음악없에","음악지워줘","음악없에줘","음악날리기",
+			"음악 빼줘","음악 제거","음악 빼기","음악 없에기","음악 지우기","음악 삭제","음악 지워","음악 빼","음악 없에","음악 지워줘","음악 없에줘","음악 날리기",
+			"노래빼줘","노래제거","노래빼기","노래없에기","노래지우기","노래삭제","노래지워","노래빼","노래없에","노래지워줘","노래없에줘","노래날리기",
+			"노래 빼줘","노래 제거","노래 빼기","노래 없에기","노래 지우기","노래 삭제","노래 지워","노래 빼","노래 없에","노래 지워줘","노래 없에줘","노래 날리기",
 			"music 빼기","music 없에기","music 지우기","music 삭제","music 지워","music 빼","music 없에","music 지워줘","music 없에줘","music 날리기",
 			"song 빼기","song 없에기","song 지우기","song 삭제","song 지워","song 빼","song 없에","song 지워줘","song 없에줘","song 날리기",
 			"song remove","remove song","remove music","music remove",
@@ -260,11 +299,13 @@ return {
 				atStart,atEnd = rawArgs:match("(%d+) -~ -(%d+)");
 				atStart,atEnd = tonumber(atStart),tonumber(atEnd);
 				if atEnd and atStart then
-					local min = math.min(atStart,atEnd);
-					local max = math.max(atStart,atEnd);
-					for _ = 1,max-min+1 do
-						player:remove(min);
-					end
+					player:remove(
+						math.min(atStart,atEnd),
+						math.max(atStart,atEnd)
+					);
+					-- for _ = 1,max-min+1 do
+					-- 	player:remove(min);
+					-- end
 					replyMsg:setContent(("성공적으로 %d 번째 곡부터 %d 번째 곡 까지 삭제했습니다!"):format(min,max));
 					return;
 				end
@@ -275,7 +316,7 @@ return {
 					if info then
 						local title = info.title;
 						if title then
-							if title:match(rawArgs) then
+							if title:find(rawArgs,1,true) then
 								player:remove(i);
 								replyMsg:setContent(("%d 번째 곡 '%s' 를 삭제하였습니다"):format(i,info and info.title or "알 수 없음"));
 								return;
@@ -289,17 +330,18 @@ return {
 	};
 	["skip music"] = {
 		alias = {
-			"곡스킵","곡넘어가기","곡넘기기","곡넘겨줘","곡넘어가","곡다음","곡다음으로","곡다음곡",
-			"곡 스킵","곡 넘어가기","곡 넘기기","곡 넘겨줘","곡 넘어가","곡 다음","곡 다음으로","곡 다음곡",
-			"음악스킵","음악넘어가기","음악넘기기","음악넘겨줘","음악넘어가","음악다음","음악다음으로","음악다음곡",
-			"음악 스킵","음악 넘어가기","음악 넘기기","음악 넘겨줘","음악 넘어가","음악 다음","음악 다음으로","음악 다음곡",
-			"노래스킵","노래넘어가기","노래넘기기","노래넘겨줘","노래넘어가","노래다음","노래다음으로","노래다음곡",
-			"노래 스킵","노래 넘어가기","노래 넘기기","노래 넘겨줘","노래 넘어가","노래 다음","노래 다음으로","노래 다음곡",
+			"곡 넘겨","곡건너뛰기","곡스킵","곡넘어가기","곡넘기기","곡넘겨줘","곡넘어가","곡다음","곡다음으로","곡다음곡",
+			"곡넘겨","곡 건너뛰기","곡 스킵","곡 넘어가기","곡 넘기기","곡 넘겨줘","곡 넘어가","곡 다음","곡 다음으로","곡 다음곡",
+			"음악넘겨","음악건너뛰기","음악스킵","음악넘어가기","음악넘기기","음악넘겨줘","음악넘어가","음악다음","음악다음으로","음악다음곡",
+			"음악 넘겨","음악 건너뛰기","음악 스킵","음악 넘어가기","음악 넘기기","음악 넘겨줘","음악 넘어가","음악 다음","음악 다음으로","음악 다음곡",
+			"노래넘겨","노래건너뛰기","노래스킵","노래넘어가기","노래넘기기","노래넘겨줘","노래넘어가","노래다음","노래다음으로","노래다음곡",
+			"노래 넘겨","노래 건너뛰기","노래 스킵","노래 넘어가기","노래 넘기기","노래 넘겨줘","노래 넘어가","노래 다음","노래 다음으로","노래 다음곡",
 			"music 스킵","music 넘어가기","music 넘기기","music 넘겨줘","music 넘어가","music 다음","music 다음으로","music 다음곡",
 			"song 스킵","song 넘어가기","song 넘기기","song 넘겨줘","song 넘어가","song 다음","song 다음으로","song 다음곡",
 			"song skip","skip song","skip music","music skip",
 			"next skip","next song","next music","music next",
-			"skip 음악","skip 곡","skip 노래"
+			"skip 음악","skip 곡","skip 노래",
+			"곡 넘어 가기","음악 넘어 가기","노래 넘어 가기"
 		};
 		reply = "처리중입니다 . . .";
 		func = function(replyMsg,message,args,Content)
@@ -335,10 +377,16 @@ return {
 			end
 
 			-- skip!
-			for _ = 1,rawArgs do
-				player:remove(1);
-			end
-			replyMsg:setContent("성공적으로 곡 %d 개를 스킵하였습니다!");
+			local lastOne;
+			lastOne = player:remove(1,rawArgs);
+			-- for _ = 1,rawArgs do
+			-- 	lastOne = player:remove(1);
+			-- end
+			replyMsg:setContent( -- !!REVIEW NEEDED!!
+				rawArgs == 1 and
+				(("성공적으로 곡 '%s' 를 스킵하였습니다"):format(tostring(lastOne and lastOne.info and lastOne.info.title))) or
+				(("성공적으로 곡 %s 개를 스킵하였습니다!"):format(tostring(rawArgs)))
+			);
 		end;
 	};
 	["pause music"] = {
@@ -349,6 +397,15 @@ return {
 			"노래 일시중단","노래 일시중단","노래일시중단","노래일시중단",
 			"음악 일시중단","음악 일시중단","음악일시중단","음악일시중단",
 			"노래 일시중단","노래 일시중단","노래일시중단","노래일시중단",
+			"노래 일시 중단","노래 일시 중단","노래일시 중단","노래일시 중단",
+			"음악 일시 중단","음악 일시 중단","음악일시 중단","음악일시 중단",
+			"노래 일시 중단","노래 일시 중단","노래일시 중단","노래일시 중단",
+			"노래 일시중지","노래 일시중지","노래일시중지","노래일시중지",
+			"음악 일시중지","음악 일시중지","음악일시중지","음악일시중지",
+			"노래 일시중지","노래 일시중지","노래일시중지","노래일시중지",
+			"노래 일시 중지","노래 일시 중지","노래일시 중지","노래일시 중지",
+			"음악 일시 중지","음악 일시 중지","음악일시 중지","음악일시 중지",
+			"노래 일시 중지","노래 일시 중지","노래일시 중지","노래일시 중지",
 			"music 멈추기","music 멈춰","song 멈추기","song 멈춰",
 			"song pause","pause song","pause music","music pause",
 			"pause 곡","pause 음악","pause 노래"
@@ -387,7 +444,7 @@ return {
 			end
 
 			-- pause!
-			player:pause();
+			player:setPaused(true);
 			replyMsg:setContent("성공적으로 음악을 멈췄습니다!");
 		end;
 	};
@@ -484,8 +541,40 @@ return {
 			end
 
 			-- pause!
-			player:resume();
+			player:setPaused(false);
 			replyMsg:setContent("성공적으로 음악을 재개했습니다!");
+		end;
+	};
+	["export music"] = {
+		alias = {
+			"노래리스트저장하기","노래리스트저장","노래내보내기","노래출력","노래저장","노래저장하기","노래기록","노래기록하기","노래나열하기",
+			"노래 리스트 저장하기","노래 리스트 저장","노래 내보내기","노래 출력","노래 저장","노래 저장하기","노래 기록","노래 기록하기","노래 나열하기",
+			"음악리스트저장하기","음악리스트저장","음악내보내기","음악출력","음악저장","음악저장하기","음악기록","음악기록하기","음악나열하기",
+			"음악 리스트 저장하기","음악 리스트 저장","음악 내보내기","음악 출력","음악 저장","음악 저장하기","음악 기록","음악 기록하기","음악 나열하기",
+			"곡리스트저장하기","곡리스트저장","곡내보내기","곡출력","곡저장","곡저장하기","곡기록","곡기록하기","곡나열하기",
+			"곡 리스트 저장하기","곡 리스트 저장","곡 내보내기","곡 출력","곡 저장","곡 저장하기","곡 기록","곡 기록하기","곡 나열하기",
+			"곡 리스트저장하기","곡 리스트저장","음악 리스트저장하기","음악 리스트저장","노래 리스트저장하기","노래 리스트저장",
+			"플리내보내기","플리 내보내기","플리 저장","플리 킵","음악 리스트 킵","노래 리스트 킵","곡 리스트 킵",
+			"음악 대기열 킵","음악 대기열 킵","곡 대기열 킵","export music","music export","song export","export song",
+			"music 내보내기","song 내보내기","내보내기 song","내보내기 music","export 음악","음악 export","곡 export","export 곡","노래 export","export 노래"
+		};
+		reply = "처리중입니다 . . .";
+		func = function(replyMsg,message,args,Content)
+			local guildConnection = message.guild.connection;
+			if not guildConnection then
+				return replyMsg:setContent("현재 이 서버에서는 음악 기능을 사용하고 있지 않습니다\n> 음악 실행중이 아님");
+			end
+			local player = playerForChannels[guildConnection.channel:__hash()];
+			if not player then
+				return replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
+			end
+			local export = "";
+			for _,item in ipairs(player) do
+				export = export .. item.vid .. ",";
+			end
+			replyMsg:setContent(("```미나 곡추가 %s```")
+				:format(export:sub(1,-2))
+			);
 		end;
 	};
 };

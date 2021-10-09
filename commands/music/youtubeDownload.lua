@@ -2,24 +2,29 @@ local module = {};
 
 local exts = {"opus", "m4a", "mp3", "wav", "best", "aac", "flac", "vorbis"};
 
+local function isExistString(str)
+    return str and str ~= "" and str ~= " " and str ~= "\n";
+end
+
 function module.download(vid)
 	vid = module.getVID(vid);
+	local url = ('https://www.youtube.com/watch?v=%s'):format(vid);
 
 	-- if is exist already, just return it
 	local filePath = ("data/youtubeFiles/%s.%%s"):format(vid);
-    local info = fs.readFileSync(("data/youtubeFiles/%s.info"):format(vid)) or "";
+	local info = fs.readFileSync(("data/youtubeFiles/%s.info"):format(vid)) or "";
 	for _,str in ipairs(exts) do
 		local this = filePath:format(str);
 		if fs.existsSync(this) then
-			return this,json.decode(info);
+			return this,json.decode(info),url,vid;
 		end
 	end
 
 	-- if not exist already, create new it
 	local newProcess = spawn("youtube-dl",{
 		args = {
-			'-q','-x','--audio-quality','0','--print-json','--write-thumbnail','--geo-bypass','-o','./data/youtubeFiles/%(id)s.%(ext)s','--cache-dir','./data/youtube.Cache',
-			('https://www.youtube.com/watch?v=%s'):format(vid)
+			'-q','-x','--audio-quality','0','--print-json','--write-thumbnail','--geo-bypass','-o','./data/youtubeFiles/%(id)s.%(ext)s','--cache-dir','./data/youtubeCache',
+			url
 		};
 		hide = true;
 		cwd = "./";
@@ -29,12 +34,14 @@ function module.download(vid)
 	for str in newProcess.stdout.read do
 		info = info .. str;
 	end
-	fs.writeFile(("data/youtubeFiles/%s.info"):format(vid),info);
+	if isExistString(info) then
+		fs.writeFile(("data/youtubeFiles/%s.info"):format(vid),info);
+	end
 	newProcess.waitExit();
 	for _,str in ipairs(exts) do
 		local this = filePath:format(str);
 		if fs.existsSync(this) then
-			return this,json.decode(info);
+			return this,json.decode(info),url,vid;
 		end
 	end
 

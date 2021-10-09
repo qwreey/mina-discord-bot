@@ -27,6 +27,7 @@ end
 
 function module.searchFromYoutube(Keyword,ClientData)
 	local KeywordURL = urlCode.urlEncode(Keyword);
+	p(KeywordURL);
 	local Header,Body = corohttp.request("GET",
 		searchURLTemp:format(ClientData.GoogleAPIKey,KeywordURL)
 	);
