@@ -225,8 +225,7 @@ function this:embedfiyNowplaying(index)
 	local thumbnails = info.thumbnails;
 	local handler = self.handler;
 	local getElapsed = handler.getElapsed;
-	local elapsed = getElapsed();
-	logger.info(elapsed);
+	local elapsed = getElapsed() / 1000;
 	return {
 		footer = self:getStatusText();
 		title = info.title;
