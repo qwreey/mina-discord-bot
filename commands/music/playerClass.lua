@@ -8,7 +8,7 @@ local insert = table.insert;
 local function formatTime(time)
 	local sec = time % 60;
 	local min = math.floor(time / 60);
-	return ("%d:%d"):format(sec,min);
+	return ("%d:%d"):format(min,sec);
 end
 
 -- 이 코드는 신과 나만 읽을 수 있게 만들었습니다
@@ -224,9 +224,9 @@ function this:embedfiyNowplaying(index)
 
 	return {
 		footer = self:getStatusText();
-		title = ("[%s](%s)"):format(info.title:gsub("\"","\\\""),song.url);
+		title = info.title;
 		description = ("%s\n곡 길이 : %s\n조회수 : %d\n좋아요 : %d\n[영상으로 이동](%s) | [채널로 이동](%s)"):format(
-			getElapsed and "재생중 : " .. formatTime(getElapsed()) .. "\n" or "",formatTime(info.duration),info.view_count,info.like_count,song.url or info.webpage_url,info.uploader_url or info.channel_url
+			getElapsed and ("재생중 : " .. formatTime(getElapsed()) .. "\n") or "",formatTime(info.duration),info.view_count,info.like_count,song.url or info.webpage_url,info.uploader_url or info.channel_url
 		);
 		thumbnail = thumbnails and {
 			url = thumbnails[#thumbnails].url;
