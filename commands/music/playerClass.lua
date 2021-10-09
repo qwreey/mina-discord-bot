@@ -59,10 +59,10 @@ function this:__play(thing) -- PRIVATE
 		if self.isLooping and self.nowPlaying then
 			insert(self,thing);
 		end
+		self.nowPlaying = nil; -- remove song
 		if self[1] == thing then
 			self:remove(1);
 		end
-		self.nowPlaying = nil; -- remove song
 	end)();
 end
 function this:__stop() -- PRIVATE
@@ -97,9 +97,6 @@ function this:add(thing,onIndex)
 		insert(self,onIndex,thing);
 	else
 		insert(self,thing);
-	end
-	if onIndex == 1 then
-		this:__stop();
 	end
 	self:apply();
 	return audio;
