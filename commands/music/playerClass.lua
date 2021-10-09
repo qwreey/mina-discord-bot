@@ -248,14 +248,14 @@ function this:embedfiyNowplaying(index)
 	return {
 		footer = self:getStatusText();
 		title = info.title;
-		description = ("%s%s조회수 : %d | 좋아요 : %d\n업로더 : %s\n[영상으로 이동](%s) | [채널로 이동](%s)"):format(
+		description = ("%s%s조회수 : %s | 좋아요 : %s\n업로더 : %s\n[영상으로 이동](%s) | [채널로 이동](%s)"):format(
 			getElapsed and seekbar(elapsed,duration) or "",
 			(not getElapsed) and ("곡 길이 : %s | "):format(formatTime(duration)) or "",
-			info.view_count,
-			info.like_count,
-			info.uploader,
-			song.url or info.webpage_url,
-			info.uploader_url or info.channel_url
+			tostring(info.view_count),
+			tostring(info.like_count),
+			tostring(info.uploader),
+			tostring(song.url or info.webpage_url),
+			tostring(info.uploader_url or info.channel_url)
 		);
 		thumbnail = thumbnails and {
 			url = thumbnails[#thumbnails].url;
