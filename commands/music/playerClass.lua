@@ -142,8 +142,12 @@ function this:setLooping(looping)
 end
 
 function this:getStatusText()
+	local len = 0;
+	for _,song in ipairs(self) do
+		len = len + song.info.duration;
+	end
 	return {
-		text = ("총 곡 수 : %d"):format(#self)
+		text = ("총 곡 수 : %d | 총 길이 : %s"):format(#self,formatTime(len))
 		 .. (self.isLooping and "\n플레이리스트 루프중" or "")
 		 .. (self.isPaused and "\n재생 멈춤" or "");
 	};
@@ -225,8 +229,14 @@ function this:embedfiyNowplaying(index)
 	return {
 		footer = self:getStatusText();
 		title = info.title;
-		description = ("%s\n곡 길이 : %s\n조회수 : %d\n좋아요 : %d\n[영상으로 이동](%s) | [채널로 이동](%s)"):format(
-			getElapsed and ("재생중 : " .. formatTime(getElapsed()) .. "\n") or "",formatTime(info.duration),info.view_count,info.like_count,song.url or info.webpage_url,info.uploader_url or info.channel_url
+		description = ("%s\n곡 길이 : %s | 조회수 : %d | 좋아요 : %d\n업로더 : %s\n[영상으로 이동](%s) | [채널로 이동](%s)"):format(
+			getElapsed and ("재생중 : " .. formatTime(getElapsed()) .. "\n") or "",
+			formatTime(info.duration),
+			info.uploader,
+			info.view_count,
+			info.like_count,
+			song.url or info.webpage_url,
+			info.uploader_url or info.channel_url
 		);
 		thumbnail = thumbnails and {
 			url = thumbnails[#thumbnails].url;
