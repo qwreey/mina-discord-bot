@@ -207,6 +207,7 @@ return {
 			elseif onKeywords[rawArgs] then
 				setTo = false;
 			end
+
 			if setTo then
 				player:setLooping(true);
 				replyMsg:setContent("성공적으로 플레이리스트 반복을 켰습니다!");

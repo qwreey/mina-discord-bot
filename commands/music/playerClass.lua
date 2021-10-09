@@ -19,13 +19,17 @@ new.playIndex
 ]]
 function this.new(props)
 	local new = {};
-	new.voiceChannelID = props.voiceChannelID;
-	new.nowPlaying = nil;
-	new.handler = props.handler;
-	new.isPaused = false;
-	new.isLooping = false;
 	setmetatable(new,this);
+	new:__init(props);
 	return new;
+end
+
+function this:__init(props)
+	self.voiceChannelID = props.voiceChannelID;
+	self.nowPlaying = nil;
+	self.handler = props.handler;
+	self.isPaused = false;
+	self.isLooping = false;
 end
 
 --#region : Stream handling methods
@@ -167,7 +171,9 @@ function this:embedfiy()
 	return {
 		fields = fields;
 		footer = {
-			 text = "제발 되라 버그 안나고 - 개발중 작성";
+			text = "곡 수 : %d"
+			 .. (self.isLooping and "\n플레이리스트 루프중" or "")
+			 .. (self.isPaused and "\n재생 멈춤" or "");
 		};
 		title = "재생 목록에 있는 곡들은 다음과 같습니다";
 		color = 16040191;
