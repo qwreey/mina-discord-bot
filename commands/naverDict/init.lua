@@ -22,8 +22,10 @@ return {
 
 			local body,url = naverDictSearch.searchFromNaverDirt(Content.rawArgs,ACCOUNTData);
 			local embed = json.decode(naverDictEmbed:embed(Content.rawArgs,url,body));
-			replyMsg:setEmbed(embed.embed);
-			replyMsg:setContent(embed.content);
+			replyMsg:update {
+				embed = embed.embed;
+				content = embed.content;
+			};
 			return;
 		end;
 	};

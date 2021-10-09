@@ -88,6 +88,9 @@ function this:add(thing,onIndex)
 	else
 		insert(self,thing);
 	end
+	if onIndex == 1 then
+		this:__stop();
+	end
 	self:apply();
 	return audio;
 end

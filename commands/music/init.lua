@@ -21,7 +21,8 @@ local help = [[
 > 미나 **곡스킵 [공백 또는 넘어갈 음악 수]**
 넘어갈 음악 수 만큼 넘어갑니다, 비워두면 지금 듣고 있는 곡 하나만 넘어갑니다
 
-> 미나 **곡반복**
+> 미나 **곡반복 [공백 또는 끄기/켜기 등등]**
+곡 반복을 끄거나 켭니다, 공백으로 두면 상태를 반전 (꺼진 경우 켜기, 켜진 경우 끄기) 합니다
 
 > 미나 **곡정보**
 
@@ -156,8 +157,10 @@ return {
 			if not player then
 				return replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
 			end
-			replyMsg:setEmbed(player:embedfiy());
-			replyMsg:setContent("현재 이 서버의 플레이리스트입니다");
+			replyMsg:update {
+				embed = player:embedfiy();
+				content = "현재 이 서버의 플레이리스트입니다";
+			};
 		end;
 	};
 	["loop"] = {
@@ -223,6 +226,7 @@ return {
 	["음악 도움말"] = {
 		alias = {"음악 사용법","음악 사용법 알려줘","음악사용법","음악 도움말 보여줘","음악 help","음악도움말","music help","help music","music 도움말"};
 		reply = help;
+		sendToDm = "개인 메시지로 도움말이 전송되었습니다!";
 	};
 	["remove music"] = {
 		alias = {

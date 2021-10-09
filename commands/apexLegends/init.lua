@@ -10,8 +10,10 @@ return {
 		func = function(replyMsg,message,args,Content)
 			local rawArgs = Content.rawArgs;
 			message:delete();
-			replyMsg:setEmbed(apexLegendsEmbed:embed(apexLegendsRequest.fetch(rawArgs,ACCOUNTData)));
-			replyMsg:setContent("Apex Legends Api 로 부터 가져온 결과입니다 (사용자 아이디는 개인정보 보호를 위해 제거되었습니다)");
+			replyMsg:update {
+				embed = apexLegendsEmbed:embed(apexLegendsRequest.fetch(rawArgs,ACCOUNTData));
+				content = "Apex Legends Api 로 부터 가져온 결과입니다 (사용자 아이디는 개인정보 보호를 위해 제거되었습니다)";
+			};
 		end;
 	};
 };

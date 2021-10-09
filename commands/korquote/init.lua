@@ -9,8 +9,10 @@ return {
 		alias = {"한국어명언","한글 명언","한국어 명언","명언","korean quote","kor quote","koreanquote","korquote"};
 		reply = "잠시만 기달려주세요... (확인중)";
 		func = function(replyMsg,message,args,Content)
-			replyMsg:setEmbed(korquoteEmbed:embed(korquoteRequest.fetch()));
-			replyMsg:setContent("한글 명언을 가져왔습니다");
+			replyMsg:update {
+				embed = korquoteEmbed:embed(korquoteRequest.fetch());
+				content = "한글 명언을 가져왔습니다";
+			};
 		end;
 	};
 };

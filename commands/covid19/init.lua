@@ -12,8 +12,10 @@ return {
 			local dat = body:getFirstChildByTag("body"):getFirstChildByTag("items");
 			local today = dat[1];
 			local yesterday = dat[2];
-			replyMsg:setContent("오늘 기준의 코로나 현황입니다");
-			replyMsg:setEmbed(covid19Embed:embed(today,yesterday))
+			replyMsg:update {
+				embed = covid19Embed:embed(today,yesterday);
+				content = "오늘 기준의 코로나 현황입니다";
+			};
 		end;
 	};
 };
