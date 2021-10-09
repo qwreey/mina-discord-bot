@@ -6,7 +6,7 @@ local remove = table.remove;
 local insert = table.insert;
 
 local function formatTime(time)
-	local sec = time % 60;
+	local sec = math.floor(time % 60);
 	local min = math.floor(time / 60);
 	sec = tostring(sec);
 	if #sec == 1 then
