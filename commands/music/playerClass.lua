@@ -2,6 +2,8 @@ local this = {};
 this.__index = this;
 
 local ytDown = require("commands.music.youtubeDownload");
+local remove = table.remove;
+local insert = table.insert;
 
 -- 이 코드는 신과 나만 읽을 수 있게 만들었습니다
 -- 만약 편집을 기꺼히 원한다면... 그렇게 하도록 하세요
@@ -21,6 +23,7 @@ function this.new(props)
 	new.nowPlaying = nil;
 	new.handler = props.handler;
 	new.isPaused = false;
+	new.isLooping = false;
 	setmetatable(new,this);
 	return new;
 end
@@ -40,6 +43,9 @@ function this:__play(thing) -- PRIVATE
 		self.handler:playFFmpeg(thing.audio);
 		self.nowPlaying = nil; -- remove song
 		-- timer.sleep(20);
+		if self.isLooping then
+			insert(self,thing);
+		end
 		if self[1] == thing then
 			self:remove(1);
 		end
@@ -53,14 +59,7 @@ function this:__stop() -- PRIVATE
 	self.isPaused = false;
 	self.handler:stopStream();
 end
-function this:resume()
-	self.isPaused = false;
-	self.handler:resumeStream();
-end
-function this:pause()
-	self.isPaused = true;
-	self.handler:pauseStream();
-end
+
 --#endregion : Stream handling methods
 
 function this:apply()
@@ -70,7 +69,6 @@ function this:apply()
 	self:__play(self[1]);
 end
 
-local insert = table.insert;
 --- insert new song
 function this:add(thing,onIndex)
 	local audio,info,url,vid = ytDown.download(thing.url);
@@ -90,8 +88,7 @@ function this:add(thing,onIndex)
 	return audio;
 end
 
-local remove = table.remove;
--- remove song and check
+-- remove song and checkout
 function this:remove(start,counts)
 	counts = counts or 1;
 	if not start then -- get last index
@@ -107,16 +104,7 @@ function this:remove(start,counts)
 	return popedLast,indexLast;
 end
 
--- 진심 이겈ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ 버그 미친거 아냐?
--- function this:remove(index)
--- 	if not index then
--- 		index = #self;
--- 	end
--- 	local poped = remove(self,index);
--- 	self:apply();
--- 	return poped,index;
--- end
-
+-- kill bot
 function this:kill()
 	local handler = self.handler;
 	if handler then
@@ -124,12 +112,28 @@ function this:kill()
 	end
 end
 
+-- set resume, pause
+function this:setPaused(paused)
+	if paused then
+		self.isPaused = true;
+		self.handler:pauseStream();
+	else
+		self.isPaused = false;
+		self.handler:resumeStream();
+	end
+end
+
+-- set looping
+function this:setLooping(looping)
+	self.isLooping = looping;
+end
+
 local itemPerPage = 0;
 function this:embedfiyList(page)
 	page = page or 1;
 	local fields = {};
 	for index = itemPerPage * (page-1) + 1,page * itemPerPage do
-		
+
 	end
 	if #fields == 0 then
 		if page == 1 then

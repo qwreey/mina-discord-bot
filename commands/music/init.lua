@@ -21,6 +21,8 @@ local help = [[
 > 미나 **곡스킵 [공백 또는 넘어갈 음악 수]**
 넘어갈 음악 수 만큼 넘어갑니다, 비워두면 지금 듣고 있는 곡 하나만 넘어갑니다
 
+> 미나 **곡반복**
+
 > 미나 **곡정보**
 
 이외에도, 곡을 음악/노래 등으로 바꾸는것 처럼 비슷한 말로 불러도 학습되어 있기 때문에 작동합니다
@@ -156,6 +158,62 @@ return {
 			end
 			replyMsg:setEmbed(player:embedfiy());
 			replyMsg:setContent("현재 이 서버의 플레이리스트입니다");
+		end;
+	};
+	["loop"] = {
+		alias = {
+			"looping","looping toggle","toggle looping","플레이리스트반복","플레이 리스트 반복","플리 반복",
+			"플리반복","플리루프","플리 루프","플리반복하기","플리 반복하기",
+			"재생목록 반복하기","재생목록반복하기","재생목록반복","재생목록 반복","재생목록루프","재생목록 루프",
+			"노래반복","노래루프","노래반복하기","노래 반복","노래 루프","노래 반복하기",
+			"음악반복","음악루프","음악반복하기","음악 반복","음악 루프","음악 반복하기",
+			"곡반복","곡루프","곡반복하기","곡 반복","곡 루프","곡 반복하기",
+		};
+		reply = "처리중입니다 . . .";
+		func = function(replyMsg,message,args,Content)
+			-- check users voice channel
+			local voiceChannel = message.member.voiceChannel;
+			if not voiceChannel then
+				replyMsg:setContent("음성 채팅방에 있지 않습니다! 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다.");
+				return;
+			end
+
+			-- get already exist connection
+			local guildConnection = message.guild.connection;
+			if guildConnection and (guildConnection.channel ~= voiceChannel) then
+				replyMsg:setContent("다른 음성채팅방에서 봇을 사용중입니다, 봇이 있는 음성 채팅방에서 사용해주세요!");
+				return;
+			elseif not guildConnection then
+				replyMsg:setContent("봇이 음성채팅방에 있지 않습니다, 봇이 음성채팅방에 있을때 사용해주세요!");
+				return;
+			end
+
+			-- get player object from playerClass
+			local voiceChannelID = voiceChannel:__hash();
+			local player = playerForChannels[voiceChannelID];
+			if not player then
+				replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
+				return;
+			elseif not player.nowPlaying then -- if it is not playing then
+				replyMsg:setContent("실행중인 음악이 없습니다!");
+				return;
+			end
+
+			-- pause!
+			local rawArgs = Content.rawArgs;
+			local setTo = not player.isLooping;
+			if onKeywords[rawArgs] then
+				setTo = true;
+			elseif onKeywords[rawArgs] then
+				setTo = false;
+			end
+			if setTo then
+				player:setLooping(true);
+				replyMsg:setContent("성공적으로 플레이리스트 반복을 켰습니다!");
+			else
+				player:setLooping(false);
+				replyMsg:setContent("성공적으로 플레이리스트 반복을 멈췄습니다!");
+			end
 		end;
 	};
 	["음악"] = {
@@ -381,7 +439,7 @@ return {
 			end
 
 			-- pause!
-			player:pause();
+			player:setPaused(true);
 			replyMsg:setContent("성공적으로 음악을 멈췄습니다!");
 		end;
 	};
@@ -478,7 +536,7 @@ return {
 			end
 
 			-- pause!
-			player:resume();
+			player:setPaused(false);
 			replyMsg:setContent("성공적으로 음악을 재개했습니다!");
 		end;
 	};

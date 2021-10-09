@@ -193,6 +193,38 @@ local EULA = data.loadRaw("data/EULA.txt"); _G.EULA = EULA;
 --#region : 반응, 프리픽스, 설정, 커맨드 등등
 logger.info("---------------------- [LOAD SETTINGS] ----------------------");
 logger.info("load settings ...");
+local onKeywords = {
+	["켜기"] = true;
+	["켜"] = true;
+	["켜줘"] = true;
+	["켜봐"] = true;
+	["켜라"] = true;
+	["켜줘라"] = true;
+	["켜봐라"] = true;
+	["켜주세요"] = true;
+	["온"] = true;
+	["on"] = true;
+	["ON"] = true;
+	["On"] = true;
+	["켜보세요"] = true;
+	["켜라고요"] = true;
+}; _G.onKeywords = onKeywords;
+local offKeywords = {
+	["끄기"] = true;
+	["꺼"] = true;
+	["꺼줘"] = true;
+	["꺼봐"] = true;
+	["꺼라"] = true;
+	["꺼줘라"] = true;
+	["꺼봐라"] = true;
+	["꺼주세요"] = true;
+	["오프"] = true;
+	["off"] = true;
+	["OFF"] = true;
+	["Off"] = true;
+	["꺼보세요"] = true;
+	["꺼라고요"] = true;
+}; _G.offKeywords = offKeywords;
 local loveCooltime = 3600;
 local disableDm = "이 반응은 DM 에서 사용 할 수 없어요! 서버에서 이용해 주세요";
 local eulaComment_love = "\n" .. -- 약관 동의 안할때 호감도 표시
