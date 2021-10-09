@@ -11,12 +11,13 @@ local help = [[
 음악을 리스트에 추가합니다, 음성 채팅방에 있어야 사용할 수 있는 명령어입니다.
 번째 란을 비워두면 자동으로 가장 뒤에 추가합니다
 , 을 이용해 여러곡을 한꺼번에 추가할 수도 있습니다
+예 : 미나 곡추가 wgcXvLdwkHg,vYw6-1znJ8o,325B1jWAPN8
 
 > 미나 **곡빼기 [번째 또는 이름 또는 a~b 와 같은 범위 또는 공백]**
 음악을 리스트에서 뺍니다, 아무런 목표를 주지 않으면 가장 마지막에 추가한 곡을 제거합니다
 
 > 미나 **곡리스트 [공백 또는 페이지]**
-지금 서버의 음악 리스트를 보여줍니다
+지금 서버의 음악 리스트를 보여줍니다, 아무런 목표를 주지 않으면 가장 첫 페이지를 보여줍니다
 
 > 미나 **곡스킵 [공백 또는 넘어갈 음악 수]**
 넘어갈 음악 수 만큼 넘어갑니다, 비워두면 지금 듣고 있는 곡 하나만 넘어갑니다
@@ -161,7 +162,7 @@ return {
 			end
 			local rawArgs = Content.rawArgs;
 			replyMsg:update {
-				embed = player:embedfiyList(tonumber(rawArgs) or rawArgs:match("%d+"));
+				embed = player:embedfiyList(tonumber(rawArgs) or tonumber(rawArgs:match("%d+")));
 				content = "현재 이 서버의 플레이리스트입니다";
 			};
 		end;
@@ -374,11 +375,17 @@ return {
 			-- get player object from playerClass
 			local voiceChannelID = voiceChannel:__hash();
 			local player = playerForChannels[voiceChannelID];
+			local lenPlayer = #player;
 			if not player then
 				replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
 				return;
 			elseif not player.nowPlaying then -- if it is not playing then
 				replyMsg:setContent("실행중인 음악이 없습니다!");
+				return;
+			elseif lenPlayer < rawArgs then
+				replyMsg:setContent(("스킵 하려는 곡 수가 전채 곡 수 보다 많습니다!\n> 참고 : 현재 곡 수는 %d 개 입니다")
+					:format(lenPlayer)
+				);
 				return;
 			end
 
@@ -511,7 +518,7 @@ return {
 			"노래 다시재생","노래다시재생",
 			"노래 재개","노래 재개","노래재개","노래재개",
 			"음악 재개","음악 재개","음악재개","음악재개",
-			"노래 재개","노래 재개","노래재개","노래재개",
+			"곡 재개","곡 재개","곡재개","곡재개",
 			"music 다시재생","music다시재생","song 재개","song재개",
 			"song resume","resume song","resume music","music resume",
 			"resume 곡","resume 노래","resume 음악"

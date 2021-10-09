@@ -5,6 +5,12 @@ local ytDown = require("commands.music.youtubeDownload");
 local remove = table.remove;
 local insert = table.insert;
 
+local function formatTime(time)
+	local sec = time % 60;
+	local min = math.floor(time / 60);
+	return ("%d:%d"):format(sec,min);
+end
+
 -- 이 코드는 신과 나만 읽을 수 있게 만들었습니다
 -- 만약 편집을 기꺼히 원한다면... 그렇게 하도록 하세요
 -- 다만 여기의 이 규칙을 따라주세요
@@ -45,14 +51,14 @@ function this:__play(thing) -- PRIVATE
 	self.isPaused = false;
 	coroutine.wrap(function()
 		self.handler:playFFmpeg(thing.audio);
-		self.nowPlaying = nil; -- remove song
 		-- timer.sleep(20);
-		if self.isLooping then
+		if self.isLooping and self.nowPlaying then
 			insert(self,thing);
 		end
 		if self[1] == thing then
 			self:remove(1);
 		end
+		self.nowPlaying = nil; -- remove song
 	end)();
 end
 function this:__stop() -- PRIVATE
@@ -144,6 +150,7 @@ function this:getStatusText()
 end
 
 local itemPerPage = 10;
+-- display list of songs
 function this:embedfiyList(page)
 	page = tonumber(page) or 1;
 	local atStart,atEnd = itemPerPage * (page-1) + 1,page * itemPerPage
@@ -180,7 +187,7 @@ function this:embedfiyList(page)
 	if #self > atEnd then
 		insert(fields,{
 			name = "더 많은 곡이 있습니다!";
-			value = ("다음 페이지를 보려면\n`미나 곡리스트 %d`\n를 입력해주세요"):format(page + 1);
+			value = ("다음 페이지를 보려면\n> 미나 곡리스트 %d\n를 입력해주세요"):format(page + 1);
 		});
 	end
 
@@ -190,6 +197,42 @@ function this:embedfiyList(page)
 		title = ("%d 번째 페이지"):format(page);
 		color = 16040191;
 	}
+end
+
+-- display now playing
+function this:embedfiyNowplaying(index)
+	index = tonumber(index) or 1;
+	local song = self[1];
+
+	if not song then
+		return {
+			title = "재생 목록이 비어있습니다";
+			color = 16040191;
+		};
+	end
+
+	local info = song.info;
+	if not info then
+		return {
+			title = "알 수 없는 곡";
+			color = 16040191;
+		};
+	end
+	local thumbnails = info.thumbnails;
+	local handler = self.handler;
+	local getElapsed = handler.getElapsed;
+
+	return {
+		footer = self:getStatusText();
+		title = ("[%s](%s)"):format(info.title:gsub("\"","\\\""),song.url);
+		description = ("%s\n곡 길이 : %s\n조회수 : %d\n좋아요 : %d\n[영상으로 이동](%s) | [채널로 이동](%s)"):format(
+			getElapsed and "재생중 : " .. formatTime(getElapsed()) .. "\n" or "",formatTime(info.duration),info.view_count,info.like_count,song.url or info.webpage_url,info.uploader_url or info.channel_url
+		);
+		thumbnail = thumbnails and {
+			url = thumbnails[#thumbnails].url;
+		} or nil;
+		color = 16040191;
+	};
 end
 
 ---@deprecated
