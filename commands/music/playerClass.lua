@@ -232,9 +232,9 @@ function this:embedfiyNowplaying(index)
 		description = ("%s\n곡 길이 : %s | 조회수 : %d | 좋아요 : %d\n업로더 : %s\n[영상으로 이동](%s) | [채널로 이동](%s)"):format(
 			getElapsed and ("재생중 : " .. formatTime(getElapsed()) .. "\n") or "",
 			formatTime(info.duration),
-			info.uploader,
 			info.view_count,
 			info.like_count,
+			info.uploader,
 			song.url or info.webpage_url,
 			info.uploader_url or info.channel_url
 		);
