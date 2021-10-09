@@ -23,7 +23,7 @@ function module.download(vid)
 	for str in newProcess.stdout.read do
         if index == 2 then
             audio = str:sub(1,-2);
-        else index == 3 then
+		elseif index == 3 then
             info = str;
         end
         index = index + 1;
