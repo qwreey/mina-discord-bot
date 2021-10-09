@@ -131,7 +131,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		logger.info("Download codes ...");
 		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . .');
 		_G.livereloadEnabled = false;
-		os.execute("git -C src pull"); -- git 에서 변동사항 가져와 적용하기
+		os.execute("git pull"); -- git 에서 변동사항 가져와 적용하기
 		_G.livereloadEnabled = true;
 		msg:setContent('> 적용중 . . . (3초 내로 완료됩니다)');
 		reloadBot();
@@ -140,7 +140,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		logger.info("Upload codes ...");
 		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 코드를 업로드중 . . .');
 		_G.livereloadEnabled = false;
-		os.execute("git -C src add .&&git -C src commit -m 'MINA : Upload in main code (bot.lua)'&&git -C src push");
+		os.execute("git add .&&git commit -m 'MINA : Upload in main code (bot.lua)'&&git push");
 		_G.livereloadEnabled = true;
 		msg:setContent('> 완료!');
 		return; -- 업로드
@@ -148,7 +148,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		logger.info("Sync codes ...");
 		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 동기화중 . . . (8초 내로 완료됩니다)');
 		_G.livereloadEnabled = false;
-		os.execute('git -C src add .&&git -C src commit -m "MINA : Sync in main code (Bot.lua)"&&git -C src pull&&git -C src push');
+		os.execute('git add .&&git commit -m "MINA : Sync in main code (Bot.lua)"&&git pull&&git push');
 		_G.livereloadEnabled = true;
 		msg:setContent('> 적용중 . . . (3초 내로 완료됩니다)');
 		reloadBot();
