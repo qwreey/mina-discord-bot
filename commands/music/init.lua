@@ -161,7 +161,7 @@ return {
 			end
 			local rawArgs = Content.rawArgs;
 			replyMsg:update {
-				embed = player:embedfiyList(rawArgs or rawArgs:match("%d+"));
+				embed = player:embedfiyList(tonumber(rawArgs) or rawArgs:match("%d+"));
 				content = "현재 이 서버의 플레이리스트입니다";
 			};
 		end;
