@@ -206,7 +206,7 @@ end
 -- seekbar object
 local seekbarForward = "━";
 local seekbarBackward = "─";
-local seekbarString = "%s %s⬤%s %s";
+local seekbarString = "%s %s⬤%s %s\n";
 local seekbarLen = 18;
 local function seekbar(now,atEnd)
 	local per = now / atEnd;
@@ -248,7 +248,7 @@ function this:embedfiyNowplaying(index)
 		footer = self:getStatusText();
 		title = info.title;
 		description = ("%s%s조회수 : %d | 좋아요 : %d\n업로더 : %s\n[영상으로 이동](%s) | [채널로 이동](%s)"):format(
-			getElapsed and ("%s %s %s\n"):format(seekbar(elapsed,duration)) or "",
+			getElapsed and seekbar(elapsed,duration) or "",
 			(not getElapsed) and ("곡 길이 : %s | "):format(formatTime(duration)) or "",
 			info.view_count,
 			info.like_count,
