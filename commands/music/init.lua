@@ -163,7 +163,7 @@ return {
 			local rawArgs = Content.rawArgs;
 			replyMsg:update {
 				embed = player:embedfiyList(tonumber(rawArgs) or tonumber(rawArgs:match("%d+")));
-				content = "현재 이 서버의 플레이리스트입니다";
+				content = "현재 이 서버의 플레이리스트입니다!";
 			};
 		end;
 	};
@@ -508,6 +508,29 @@ return {
 			-- pause!
 			player:kill();
 			replyMsg:setContent("성공적으로 음악을 종료하였습니다!");
+		end;
+	};
+	["now music"] = {
+		command = {"n","np","nowplay","nowplaying","nplay","nplaying","nowp"};
+		alias = {
+			"현재재생","지금재생","현재 재생","지금 재생","현재 곡","현재 음악","현재 노래","지금 곡","지금 음악","지금 노래",
+			"지금 재생중","now playing","music now","song now","playing now","now play","nowplaying"
+		};
+		reply = "처리중입니다 . . .";
+		func = function(replyMsg,message,args,Content)
+			local guildConnection = message.guild.connection;
+			if not guildConnection then
+				return replyMsg:setContent("현재 이 서버에서는 음악 기능을 사용하고 있지 않습니다\n> 음악 실행중이 아님");
+			end
+			local player = playerForChannels[guildConnection.channel:__hash()];
+			if not player then
+				return replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
+			end
+			local rawArgs = Content.rawArgs;
+			replyMsg:update {
+				embed = player:embedfiyNowplaying();
+				content = "지금 재생중인 곡입니다!";
+			};
 		end;
 	};
 	["resume music"] = {
