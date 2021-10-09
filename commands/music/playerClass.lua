@@ -211,7 +211,7 @@ end
 local seekbarForward = "━";
 local seekbarBackward = "─";
 local seekbarString = "%s %s⬤%s %s\n";
-local seekbarLen = 18;
+local seekbarLen = 26;
 local function seekbar(now,atEnd)
 	local per = now / atEnd;
 	local forward = math.floor(seekbarLen * per + 0.5);
