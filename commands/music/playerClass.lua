@@ -264,22 +264,4 @@ function this:embedfiyNowplaying(index)
 	};
 end
 
----@deprecated
--- function this:embedfiy()
--- 	local fields = {};
--- 	for i,song in ipairs(self) do
--- 		insert(fields,{
--- 			name = (i == 1) and "현재 재생중" or (("%d 번째 곡"):format(i));
--- 			value = ("[%s](%s)"):format(song.info.title:gsub("\"","\\\""),song.url);
--- 		});
--- 	end
-
--- 	return {
--- 		fields = fields;
--- 		footer = self:getStatusText();
--- 		title = "재생 목록에 있는 곡들은 다음과 같습니다";
--- 		color = 16040191;
--- 	};
--- end
-
 return this;
