@@ -8,7 +8,11 @@ local insert = table.insert;
 local function formatTime(time)
 	local sec = time % 60;
 	local min = math.floor(time / 60);
-	return ("%d:%d"):format(min,sec);
+	sec = tostring(sec);
+	if #sec == 1 then
+		sec = "0" .. sec;
+	end
+	return ("%d:%s"):format(min,sec);
 end
 
 -- 이 코드는 신과 나만 읽을 수 있게 만들었습니다
