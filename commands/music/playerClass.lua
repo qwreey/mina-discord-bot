@@ -171,7 +171,7 @@ function this:embedfiy()
 	return {
 		fields = fields;
 		footer = {
-			text = "곡 수 : %d"
+			text = ("총 곡 수 : %d"):format(#self)
 			 .. (self.isLooping and "\n플레이리스트 루프중" or "")
 			 .. (self.isPaused and "\n재생 멈춤" or "");
 		};
