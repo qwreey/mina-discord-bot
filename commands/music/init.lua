@@ -48,7 +48,7 @@ return {
 		reply = "처리중입니다";
 		func = function(replyMsg,message,args,Content)
 			local nth,rawArgs; do
-				local contentRaw = Content.rawArgs
+				local contentRaw = Content.rawArgs;
 				rawArgs = contentRaw;
 				rawArgs,nth = rawArgs:match("(.-) (%d-)$");
 				nth = tonumber(nth);
@@ -159,8 +159,9 @@ return {
 			if not player then
 				return replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
 			end
+			local rawArgs = Content.rawArgs;
 			replyMsg:update {
-				embed = player:embedfiy();
+				embed = player:embedfiyList(rawArgs or rawArgs:match("%d+"));
 				content = "현재 이 서버의 플레이리스트입니다";
 			};
 		end;

@@ -39,7 +39,7 @@ local function indexingReact(indexTable,cmds,commandName,reactInfo)
 	end
 
 	local command = reactInfo.command;
-	local commandType = type(aliasType)
+	local commandType = type(command);
 	if commandType == "table" then
 		for _,index in ipairs(command) do
 			cmds[index] = reactInfo;
