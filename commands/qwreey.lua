@@ -690,15 +690,15 @@ return {
 	-- 	reply = "{#:U+2605:#}";
 	-- 	love = defaultLove;
 	-- };
-	-- ["쿼리"] = {
-	-- 	alias = {"큐리","냥냥이","고양이조아","므야야ㅑㅑㅑ"};
-	-- 	reply = "";
-	-- 	love = function()
-	-- 		return cRandom(18,24);
-	-- 	end;
-	-- };
+	["쿼리"] = {
+		alias = {"큐리","냥냥이","고양이조아","므야야ㅑㅑㅑ"};
+		reply = {"기엽고 사랑스럽고 이뻐ㅓ","귀여운 고먐미!!!"};
+		love = function()
+			return cRandom(18,24);
+		end;
+	};
 	["익상"] = {
-		alias = "익명";
+		alias = {"익명상어","익명"};
 		reply = {"우주최고기여미","귀여움으로 지구뿌셔 우주뿌셔 다뿌셔!!!!!!","익명은 귀엽다"};
 		love = function()
 			return cRandom(18,24);
@@ -735,6 +735,9 @@ return {
 	["하린"] = {
 		alias = {"하리니","댭댭","댭댭이","댜비"};
 		reply = "귀엽고 노래 잘 부르고 예쁜 누나";
+	    love = function()
+			return cRandom(18,24);
+		end;
 	};
 
 	--["생일"] = {
