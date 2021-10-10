@@ -37,6 +37,7 @@ local function runLog(thisName,thisLevel,color,debugInfo,...)
 
 	-- 파일명 : 라인 번호 를 가져옴
 	local src = debugInfo.short_src;
+	print("\n",src,"\n");
 	if string.sub(src,1,rootLen) == root then
 		src = string.sub(src,rootLen+2,-1);
 	end
