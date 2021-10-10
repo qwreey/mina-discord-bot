@@ -55,7 +55,6 @@ function this:__play(thing) -- PRIVATE
 	self.isPaused = false;
 	coroutine.wrap(function()
 		self.handler:playFFmpeg(thing.audio);
-		-- timer.sleep(20);
 		if self.isLooping and self.nowPlaying then
 			insert(self,thing);
 		end
@@ -77,10 +76,14 @@ end
 --#endregion : Stream handling methods
 
 function this:apply()
-	if self.nowPlaying == self[1] then
+	local song = self[1];
+	if self.nowPlaying == song then
 		return;
 	end
-	self:__play(self[1]);
+	if not song then
+		this:__stop();
+	end
+	self:__play(song);
 end
 
 --- insert new song
@@ -111,7 +114,6 @@ function this:remove(start,counts)
 	end
 	local popedLast,indexLast;
 	for index = start,start+counts-1 do
-		p(index)
 		popedLast = remove(self,start);
 		indexLast = index;
 	end

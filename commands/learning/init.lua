@@ -29,7 +29,7 @@ return {
                 userData.learned = learned;
             end
 
-            insert(learned,{});
+            insert(learned);
 
             Content.saveUserData();
 
