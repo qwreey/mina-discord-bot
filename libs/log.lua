@@ -18,7 +18,6 @@ if not root then
 	root = new:read("*l");
 	new:close();
 end
-root = root:gsub("\\","/");
 log.root = root;
 local rootLen = #root;
 
@@ -37,7 +36,6 @@ local function runLog(thisName,thisLevel,color,debugInfo,...)
 
 	-- 파일명 : 라인 번호 를 가져옴
 	local src = debugInfo.short_src;
-	print("\n",src,"\n");
 	if string.sub(src,1,rootLen) == root then
 		src = string.sub(src,rootLen+2,-1);
 	end
