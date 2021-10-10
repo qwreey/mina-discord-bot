@@ -111,6 +111,7 @@ function this:remove(start,counts)
 	end
 	local popedLast,indexLast;
 	for index = start,start+counts-1 do
+		p(index)
 		popedLast = remove(self,start);
 		indexLast = index;
 	end
@@ -197,6 +198,7 @@ function this:embedfiyList(page)
 	end
 
 	return {
+		description = "팁 : **미나 곡정보 [번째]** 를 이용하면 해당 곡에 대한 더 자세한 정보를 얻을 수 있습니다";
 		fields = fields;
 		footer = self:getStatusText();
 		title = ("%d 번째 페이지"):format(page);
@@ -208,7 +210,7 @@ end
 local seekbarForward = "━";
 local seekbarBackward = "─";
 local seekbarString = "%s %s⬤%s %s\n";
-local seekbarLen = 26;
+local seekbarLen = 18;
 local function seekbar(now,atEnd)
 	local per = now / atEnd;
 	local forward = math.floor(seekbarLen * per + 0.5);

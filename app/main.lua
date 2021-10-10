@@ -389,19 +389,6 @@ reacts,commands,commandsLen = commandHandler.encodeCommands({
 			replyMsg:setContent(("미나가 아는 반응은 %d개 이에요!"):format(commandsLen));
 		end;
 	};
-	["배워"] = {
-		alias = {"배워봐","배워라","배우세요"};
-		func = function (replyMsg,message,args,Content)
-
-		end;
-	};
-	-- ["잊어"] = {
-	-- 	alias = {"지워","까먹어"};
-	-- 	func = function (replyMsg,message,args,Content)
-	-- 		Content.rawArgs
-	-- 		return replyMsg:setContent()
-	-- 	end;
-	-- };
 },unpack(otherCommands));
 logger.info("command indexing end!");
 --#endregion : 반응, 프리픽스, 설정
@@ -410,19 +397,19 @@ logger.info("----------------------- [SET UP BOT ] -----------------------");
 client:on('messageCreate', function(message) -- 메시지 생성됨
 
 	-- get base information from message object
-	local User = message.author;
-	local Text = message.content;
-	local Channel = message.channel;
-	local IsDm = Channel.type == enums.channelType.private;
+	local user = message.author;
+	local text = message.content;
+	local channel = message.channel;
+	local isDm = channel.type == enums.channelType.private;
 
 	-- check user that is bot; if it is bot, then return (ignore call)
-	if User.bot then
+	if user.bot then
 		return;
 	end
 
 	-- run admin command if exist
-	if Admins[User.id] then
-		adminCmd(Text,message);
+	if Admins[user.id] then
+		adminCmd(text,message);
 	end
 
 	-- LOCAL VARIABLES
@@ -437,7 +424,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 
 	-- 접두사 구문 분석하기
 	local prefix;
-	local TextL = string.lower(Text); -- make sure text is lower case
+	local TextL = string.lower(text); -- make sure text is lower case
 	for _,nprefix in pairs(prefixs) do
 		if nprefix == TextL then -- 만약 접두사와 글자가 일치하는경우 반응 달기
 			message:reply {
@@ -452,7 +439,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 			break;
 		end
 	end
-	if (not prefix) and (not IsDm) then
+	if (not prefix) and (not isDm) then
 		return;
 	end
 	prefix = prefix or "";
@@ -462,7 +449,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	-- 단어 분해 후 COMMAND DICT 에 색인시도
 	-- 못찾으면 다시 넘겨서 뒷단어로 넘김
 	-- 찾으면 넘겨서 COMMAND RUN 에 TRY 던짐
-	local rawCommandText = Text:sub(#prefix+1,-1); -- 접두사 뺀 글자
+	local rawCommandText = text:sub(#prefix+1,-1); -- 접두사 뺀 글자
 	local splitCommandText = strSplit(rawCommandText:lower(),"\32");
 	local CommandName,Command,rawCommandName;
 
@@ -515,9 +502,9 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	if not Command then
 		message:reply(unknownReply[cRandom(1,#unknownReply)]);
 		-- 반응 없는거 기록하기
-		fs.appendFile("log/unknownTexts/raw.txt","\n" .. Text);
+		fs.appendFile("log/unknownTexts/raw.txt","\n" .. text);
 		return;
-	elseif IsDm and Command.disableDm then
+	elseif isDm and Command.disableDm then
 		message:reply(disableDm);
 		return;
 	end
@@ -540,7 +527,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 
 	-- 만약 호감도가 있으면 올려주기
 	if love then
-		local thisUserDat = userData:loadData(User.id);
+		local thisUserDat = userData:loadData(user.id);
 		local CommandID = Command.id;
 
 		if thisUserDat then
@@ -556,7 +543,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 			else
 				thisUserDat.love = thisUserDat.love + love;
 				lastCommand[CommandID] = osTime();
-				userData:saveData(User.id);
+				userData:saveData(user.id);
 			end
 		else
 			loveText = eulaComment_love;
@@ -565,6 +552,9 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 
 	-- 함수 실행을 위한 콘탠츠 만들기
 	local contents = {
+		user = user;
+		channel = channel;
+		isDm = isDm;
 		rawCommandText = rawCommandText; -- 접두사를 지운 커맨드 스트링
 		prefix = prefix; -- 접두사(확인된)
 		rawArgs = rawArgs; -- args 를 str 로 받기 (직접 분석용)
@@ -572,10 +562,10 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 		self = Command;
 		commandName = CommandName;
 		saveUserData = function ()
-			return userData:saveData(User.id);
+			return userData:saveData(user.id);
 		end;
 		getUserData = function ()
-			return userData:loadData(User.id);
+			return userData:loadData(user.id);
 		end;
 		loveText = loveText;
 	};
@@ -599,8 +589,8 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 		replyMsg = message:reply{
 			content = commandHandler.formatReply(replyText,{
 				Msg = message;
-				User = User;
-				Channel = Channel;
+				user = user;
+				channel = channel;
 			});
 			reference = {message = message, mention = false};
 		};
@@ -616,14 +606,14 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 		local passed,ret = pcall(func,replyMsg,message,args,contents);
 		if not passed then
 			logger.error("an error occurred on running function");
-			logger.errorf(" | original message : %s",tostring(Text));
+			logger.errorf(" | original message : %s",tostring(text));
 			logger.error(" | error traceback was");
 			logger.error(tostring(ret));
 			logger.error(" | more information was saved on log/debug.log");
 			qDebug {
 				title = "an error occurred on running command function";
 				traceback = tostring(ret);
-				originalMsg = tostring(Text);
+				originalMsg = tostring(text);
 				command = Command;
 			};
 			replyMsg:setContent(("명령어 처리중에 오류가 발생하였습니다\n```%s```")
