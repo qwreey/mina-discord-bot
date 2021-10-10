@@ -295,11 +295,11 @@ reacts,commands,commandsLen = commandHandler.encodeCommands({
 				return "니 약관동의 안할 거잔아";
 			end
 			if c.rawArgs == "" then -- 내 호감도 불러오기
-				local muserData = c.getUserData();
-				if muserData == nil then -- 약관 동의하지 않았으면 리턴
+				local userData = c.getUserData();
+				if userData == nil then -- 약관 동의하지 않았으면 리턴
 					return eulaComment_love;
 				end
-				local numLove = tonumber(muserData.love);
+				local numLove = tonumber(userData.love);
 				if numLove == nil then
 					return "미나는 **{#:UserName:#}** 님을 **NULL (nil)** 만큼 좋아해요!\n\n오류가 발생하였습니다...\n```json : Userdata / love ? NULL```";	
 				elseif numLove > 0 then
@@ -315,8 +315,8 @@ reacts,commands,commandsLen = commandHandler.encodeCommands({
 	["약관동의"] = {
 		alias = {"EULA동의","약관 동의","사용계약 동의"};
 		reply = function (message,args,c)
-			local muserData = c.getUserData(); -- 내 호감도 불러오기
-			if muserData then -- 약관 동의하지 않았으면 리턴
+			local userData = c.getUserData(); -- 내 호감도 불러오기
+			if userData then -- 약관 동의하지 않았으면 리턴
 				return "**{#:UserName:#}** 님은 이미 약관을 동의하셨어요!";
 			end
 			local userId = tostring(message.author.id);
