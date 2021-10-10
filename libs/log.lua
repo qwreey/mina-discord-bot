@@ -15,7 +15,7 @@ log.disable = false;
 local root = process.env.PWD;
 if not root then
 	local new = io.popen("cd");
-	log.root = new:read("*l");
+	root = new:read("*l");
 	new:close();
 end
 root = root:gsub("\\","/");
