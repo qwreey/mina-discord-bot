@@ -284,8 +284,8 @@ for dir in fs.scandirSync("commands") do
 end
 logger.info("settings loaded!");
 -- 커맨드 색인파일 만들기
-local commands,commandsLen;
-commands,commandsLen = commandHandler.encodeCommands({
+local reacts,commands,commandsLen;
+reacts,commands,commandsLen = commandHandler.encodeCommands({
 	-- 특수기능
 	["호감도"] = {
 		reply = function (message,args,c)
@@ -392,14 +392,13 @@ commands,commandsLen = commandHandler.encodeCommands({
 	["배워"] = {
 		alias = {"배워봐","배워라","배우세요"};
 		func = function (replyMsg,message,args,Content)
-			
+
 		end;
 	};
 	-- ["잊어"] = {
 	-- 	alias = {"지워","까먹어"};
 	-- 	func = function (replyMsg,message,args,Content)
 	-- 		Content.rawArgs
-			
 	-- 		return replyMsg:setContent()
 	-- 	end;
 	-- };
@@ -436,8 +435,6 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	-- | 찾은 후 (for 루프 뒤)
 	-- Command : 커맨드 개체 (찾은경우)
 
-	
-	
 	-- 접두사 구문 분석하기
 	local prefix;
 	local TextL = string.lower(Text); -- make sure text is lower case
@@ -481,14 +478,14 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 			spText = spText .. (index ~= 1 and " " or "") .. thisText;
 			text = text .. thisText;
 		end
-		local spTempCommand = commandHandler.findCommandFrom(commands,spText);
+		local spTempCommand = commandHandler.findCommandFrom(reacts,spText);
 		if spTempCommand then
 			CommandName = spText;
 			rawCommandName = spText;
 			Command = spTempCommand;
 			break;
 		end
-		local tempCommand = commandHandler.findCommandFrom(commands,spText);
+		local tempCommand = commandHandler.findCommandFrom(reacts,spText);
 		if tempCommand then
 			CommandName = text;
 			rawCommandName = text;
@@ -502,7 +499,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	-- 부분부분 다 나눠서 찾기
 	if not Command then
 		for FindPos,Textn in pairs(splitCommandText) do
-			Command = commandHandler.findCommandFrom(commands,Textn);
+			Command = commandHandler.findCommandFrom(reacts,Textn);
 			if Command then
 				CommandName = "";
 				rawCommandName = Textn;
@@ -640,6 +637,6 @@ startBot(ACCOUNTData.botToken); -- init bot (init discordia)
 if not RunOption.Background then -- check this service is not on background; if this service is on background; ignore calling terminal REPL system
 	term(); -- loads terminal read - execute - print - loop (AKA REPL) system; it will allows us make debug easy
 end
-_G.livereloadEnabled = true; -- enable live reload
+_G.livereloadEnabled = false; -- enable live reload
 require("app.livereload"); -- loads livereload system; it will make uv event and take file changed signal
 --#endregion : 메인 파트

@@ -5,6 +5,16 @@ local ytDown = require("commands.music.youtubeDownload");
 local remove = table.remove;
 local insert = table.insert;
 
+local function formatTime(time)
+	local sec = math.floor(time % 60);
+	local min = math.floor(time / 60);
+	sec = tostring(sec);
+	if #sec == 1 then
+		sec = "0" .. sec;
+	end
+	return ("%d:%s"):format(min,sec);
+end
+
 -- 이 코드는 신과 나만 읽을 수 있게 만들었습니다
 -- 만약 편집을 기꺼히 원한다면... 그렇게 하도록 하세요
 -- 다만 여기의 이 규칙을 따라주세요
@@ -45,11 +55,11 @@ function this:__play(thing) -- PRIVATE
 	self.isPaused = false;
 	coroutine.wrap(function()
 		self.handler:playFFmpeg(thing.audio);
-		self.nowPlaying = nil; -- remove song
 		-- timer.sleep(20);
-		if self.isLooping then
+		if self.isLooping and self.nowPlaying then
 			insert(self,thing);
 		end
+		self.nowPlaying = nil; -- remove song
 		if self[1] == thing then
 			self:remove(1);
 		end
@@ -87,9 +97,6 @@ function this:add(thing,onIndex)
 		insert(self,onIndex,thing);
 	else
 		insert(self,thing);
-	end
-	if onIndex == 1 then
-		this:__stop();
 	end
 	self:apply();
 	return audio;
@@ -135,50 +142,124 @@ function this:setLooping(looping)
 	self.isLooping = looping;
 end
 
-local itemPerPage = 0;
-function this:embedfiyList(page)
-	page = page or 1;
-	local fields = {};
-	for index = itemPerPage * (page-1) + 1,page * itemPerPage do
-
+function this:getStatusText()
+	local len = 0;
+	for _,song in ipairs(self) do
+		len = len + song.info.duration;
 	end
+	return {
+		text = ("총 곡 수 : %d | 총 길이 : %s"):format(#self,formatTime(len))
+		 .. (self.isLooping and "\n플레이리스트 루프중" or "")
+		 .. (self.isPaused and "\n재생 멈춤" or "");
+	};
+end
+
+local itemPerPage = 10;
+-- display list of songs
+function this:embedfiyList(page)
+	page = tonumber(page) or 1;
+	local atStart,atEnd = itemPerPage * (page-1) + 1,page * itemPerPage
+	local fields = {};
+	for index = atStart,atEnd do
+		local song = self[index];
+		if song then
+			insert(fields,{
+				name = (index == 1) and "현재 재생중" or (("%d 번째 곡"):format(index));
+				value = ("[%s](%s)"):format(song.info.title:gsub("\"","\\\""),song.url);
+			});
+		end
+	end
+
 	if #fields == 0 then
 		if page == 1 then
 			return {
-				footer = {
-					text = "1 페이지";
-				};
-				title = "재생 목록이 비어있습니다";
+				footer = self:getStatusText();
+				fields = fields;
+				title = "1 페이지";
+				description = "재생 목록이 비어있습니다";
 				color = 16040191;
 			};
 		end
 		return {
-			footer = {
-				text = ("%d");
-			};
-			title = "페이지가 비어있습니다";
+			footer = self:getStatusText();
+			fields = fields;
+			title = ("%d 페이지"):format(page);
+			description = "페이지가 비어있습니다";
 			color = 16040191;
 		};
 	end
-end
 
-function this:embedfiy()
-	local fields = {};
-	for i,song in ipairs(self) do
+	if #self > atEnd then
 		insert(fields,{
-			name = (i == 1) and "현재 재생중" or (("%d 번째 곡"):format(i));
-			value = ("[%s](%s)"):format(song.info.title:gsub("\"","\\\""),song.url);
+			name = "더 많은 곡이 있습니다!";
+			value = ("다음 페이지를 보려면\n> 미나 곡리스트 %d\n를 입력해주세요"):format(page + 1);
 		});
 	end
 
 	return {
 		fields = fields;
-		footer = {
-			text = ("총 곡 수 : %d"):format(#self)
-			 .. (self.isLooping and "\n플레이리스트 루프중" or "")
-			 .. (self.isPaused and "\n재생 멈춤" or "");
+		footer = self:getStatusText();
+		title = ("%d 번째 페이지"):format(page);
+		color = 16040191;
+	}
+end
+
+-- seekbar object
+local seekbarForward = "━";
+local seekbarBackward = "─";
+local seekbarString = "%s %s⬤%s %s\n";
+local seekbarLen = 26;
+local function seekbar(now,atEnd)
+	local per = now / atEnd;
+	local forward = math.floor(seekbarLen * per + 0.5);
+	local backward = math.floor(seekbarLen - forward);
+	return seekbarString:format(
+		formatTime(now),
+		seekbarForward:rep(forward),
+		seekbarBackward:rep(backward),
+		formatTime(atEnd)
+	);
+end
+
+-- display now playing
+function this:embedfiyNowplaying(index)
+	index = tonumber(index) or 1;
+	local song = self[1];
+
+	if not song then
+		return {
+			title = "재생 목록이 비어있습니다";
+			color = 16040191;
 		};
-		title = "재생 목록에 있는 곡들은 다음과 같습니다";
+	end
+
+	local info = song.info;
+	if not info then
+		return {
+			title = "알 수 없는 곡";
+			color = 16040191;
+		};
+	end
+	local thumbnails = info.thumbnails;
+	local handler = self.handler;
+	local getElapsed = handler.getElapsed;
+	local elapsed = getElapsed() / 1000;
+	local duration = info.duration;
+	return {
+		footer = self:getStatusText();
+		title = info.title;
+		description = ("%s%s조회수 : %s | 좋아요 : %s\n업로더 : %s\n[영상으로 이동](%s) | [채널로 이동](%s)"):format(
+			getElapsed and seekbar(elapsed,duration) or "",
+			(not getElapsed) and ("곡 길이 : %s | "):format(formatTime(duration)) or "",
+			tostring(info.view_count),
+			tostring(info.like_count),
+			tostring(info.uploader),
+			tostring(song.url or info.webpage_url),
+			tostring(info.uploader_url or info.channel_url)
+		);
+		thumbnail = thumbnails and {
+			url = thumbnails[#thumbnails].url;
+		} or nil;
 		color = 16040191;
 	};
 end
