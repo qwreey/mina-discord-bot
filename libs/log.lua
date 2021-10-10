@@ -8,15 +8,18 @@
 --
 
 local log = {_version = "0.1.0"};
-log.root = process.env.PWD;
-if not log.root then
-	log.root = io.popen("cd"):read("*l");
-end
 log.usecolor = true;
 log.outfile = nil;
 log.minLevel = 1;
 log.disable = false;
-local root = log.root;
+local root = process.env.PWD;
+if not root then
+	local new = io.popen("cd");
+	log.root = new:read("*l");
+	new:close();
+end
+root = root:gsub("\\","/");
+log.root = root;
 local rootLen = #root;
 
 -- 베이스 함수
