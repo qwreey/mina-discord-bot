@@ -1,7 +1,7 @@
 local root = "data/userLearn/%s";
 local indexedFile = "data/userLearn/index";
 local indexedCache = json.decode(
-	("{%s}"):format(fs.readFileSync(indexedFile))
+	("{%s}"):format(fs.readFileSync(indexedFile):sub(1,-2))
 );
 local module = {};
 
@@ -68,7 +68,7 @@ function module.put(name,value,author,when,userData)
 	if not id then -- write new
 		id = makeId(); -- make new identifier
 		indexedCache[hash] = id;
-		fs.appendFileSync(indexedFile,('"%s":"%s"\n'):format(hash,id));
+		fs.appendFileSync(indexedFile,('"%s":"%s",\n'):format(hash,id));
 		path = root:format(id);
 		fs.mkdirSync(path);
 		fs.writeFile(path .. "/name",name);
