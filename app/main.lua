@@ -474,7 +474,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	local Command,CommandName,rawCommandName = findCommandFrom(reacts,splited);
 	if not Command then
 		-- Solve user learn commands
-		local userReact = findCommandFrom(userLearn,splited);
+		local userReact = findCommandFrom(userLearn.get,splited);
 		if userReact then
 			message:reply {
 				content = formatUserLearnReact(userReact);

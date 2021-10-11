@@ -71,14 +71,8 @@ function module.put(name,value,author,when,userData)
 		fs.appendFileSync(indexedFile,('"%s":"%s"\n'):format(hash,id));
 		path = root:format(id);
 		fs.mkdirSync(path);
-		split( -- write two files with same time
-			coroutine.wrap(function ()
-				fs.writeFileSync(path .. "/name",name);
-			end),
-			coroutine.wrap(function ()
-				fs.writeFileSync(path .. "/index","1");
-			end)
-		);
+		fs.writeFile(path .. "/name",name);
+		fs.writeFile(path .. "/index","1");
 		index = 1;
 	else
 		path = root:format(id);
@@ -89,7 +83,7 @@ function module.put(name,value,author,when,userData)
 
 	-- save to file
 	fs.writeFileSync(("%s/%d"):format(path,index),json.encode({
-		author = tonumber(author);
+		author = tostring(author);
 		when = tonumber(when);
 		content = value;
 	}));

@@ -51,13 +51,15 @@ return {
 					:format(tostring(nameIs))
 				);
 			end
+
+			-- set user name
 			local username = user.name;
 			userData.latestName = username;
 			local lastNames = userData.lastName;
 			if lastNames[#lastNames] ~= username then
 				insert(lastNames,username);
 			end
-			Content.saveUserData();
+			Content.saveUserData(); -- save everything
 
 			replyMsg:setContent(("'%s' 는 '%s'! 다 외웠어요!\n`호감도 20 을 소모했어요 (현재 호감도는 %d 이에요)`"):format(what,react,userData.love));
 		end;
