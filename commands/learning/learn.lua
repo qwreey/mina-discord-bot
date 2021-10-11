@@ -1,7 +1,7 @@
 local root = "data/userLearn/%s";
-local indexedFile = "data/userLearn/index.json";
+local indexedFile = "data/userLearn/index";
 local indexedCache = json.decode(
-	("{%s}"):format(fs.readFileSync(indexedFile))
+	("{%s}"):format(fs.readFileSync(indexedFile):sub(1,-2))
 );
 local module = {};
 
@@ -60,7 +60,7 @@ function module.put(name,value,author,when,userData)
 		return errorType.tooLongName;
 	end
 	name = name:lower();
-	userData.love = love + costLove;
+	userData.love = love - costLove;
 	if name:find("https://",1,true) or
 	name:find("http://","1",true) or
 	name:match(".-%.org") or
@@ -80,14 +80,8 @@ function module.put(name,value,author,when,userData)
 		fs.appendFileSync(indexedFile,('"%s":"%s",\n'):format(hash,id));
 		path = root:format(id);
 		fs.mkdirSync(path);
-		split( -- write two files with same time
-			coroutine.wrap(function ()
-				fs.writeFileSync(path .. "/name",name);
-			end),
-			coroutine.wrap(function ()
-				fs.writeFileSync(path .. "/index","1");
-			end)
-		);
+		fs.writeFile(path .. "/name",name);
+		fs.writeFile(path .. "/index","1");
 		index = 1;
 	else
 		path = root:format(id);
@@ -98,7 +92,7 @@ function module.put(name,value,author,when,userData)
 
 	-- save to file
 	fs.writeFileSync(("%s/%d"):format(path,index),json.encode({
-		author = tonumber(author);
+		author = tostring(author);
 		when = tonumber(when);
 		content = value;
 	}));
