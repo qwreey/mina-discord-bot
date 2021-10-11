@@ -91,7 +91,7 @@ function module.findCommandFrom(reacts,text)
 			local thisText = splitCommandText[index];
 			spText = thisText .. (index == 1 and "" or " ") .. spText;
 			textn = thisText .. textn;
-			print("\n",spText);
+			io.write("\n",spText,"\n");
 			local spTempCommand = findCommand(reacts,spText);
 			if spTempCommand then
 				return spTempCommand,spText,spText;
