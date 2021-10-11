@@ -21,22 +21,22 @@ return {
 			local rawArgs = Content.rawArgs;
 
 			local what,react = rawArgs:match(".+=.+");
-			what = (what or ""):match(" -.- -");
-			react = (react or ""):match(" -.- -");
+			what = (what or ""):gsub("^ +",""):gsub(" +$","");
+			react = (react or ""):gsub("^ +",""):gsub(" +$","");
 
 			local userData = Content.getUserData();
 			local result = learn.put(what,react,Content.user.id,time(),userData);
 			if result then
 				if result == errorType.nullName then
-					replyMsg:setContent("가르치려는 이름이 비어 있으면 안돼요!");
+					return replyMsg:setContent("가르치려는 이름이 비어 있으면 안돼요!");
 				elseif result == errorType.nullValue then
-					replyMsg:setContent("가르치려는 내용이 비어 있으면 안돼요!");
+					return replyMsg:setContent("가르치려는 내용이 비어 있으면 안돼요!");
 				elseif result == errorType.tooLongName then
-					replyMsg:setContent(("'%s' 는 너무 길어요! 가르치려는 이름은 100 자보다 길면 안돼요!"):format(what));
+					return replyMsg:setContent(("'%s' 는 너무 길어요! 가르치려는 이름은 100 자보다 길면 안돼요!"):format(what));
 				elseif result == errorType.tooLongValue then
-					replyMsg:setContent(("'%s' 는 너무 길어요! 가르치려는 내용은 200 자보다 길면 안돼요!"):format(react));
+					return replyMsg:setContent(("'%s' 는 너무 길어요! 가르치려는 내용은 200 자보다 길면 안돼요!"):format(react));
 				elseif result == errorType.notEnoughLove then
-					replyMsg:setContent(("호감도가 부족해요! 미나에게 가르치려면 20 의 호감도가 필요해요!\n(현재 호감도는 %d 이에요)"):format(userData.love));
+					return replyMsg:setContent(("호감도가 부족해요! 미나에게 가르치려면 20 의 호감도가 필요해요!\n(현재 호감도는 %d 이에요)"):format(userData.love));
 				end
 				local nameIs;
 				for i,v in pairs(errorType) do
