@@ -20,7 +20,7 @@ return {
 		func = function (replyMsg,message,args,Content)
 			local rawArgs = Content.rawArgs;
 
-			local what,react = rawArgs:match(".+=.+");
+			local what,react = rawArgs:match("(.+)=(.+)");
 			what = (what or ""):gsub("^ +",""):gsub(" +$","");
 			react = (react or ""):gsub("^ +",""):gsub(" +$","");
 

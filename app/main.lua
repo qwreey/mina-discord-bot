@@ -368,7 +368,7 @@ reacts,commands,commandsLen = commandHandler.encodeCommands({
 				message:reply("권한이 부족해요! 메시지 관리 권한이 있는 유저만 이 명령어를 사용 할 수 있어요");
 				return;
 			end
-			
+
 			message.channel:bulkDelete(message.channel:getMessagesBefore(message.id,RemoveNum));
 			local infoMsg = message:reply(("최근 메시지 %s개를 지웠어요!"):format(RemoveNum));
 			message:delete();
@@ -391,6 +391,7 @@ reacts,commands,commandsLen = commandHandler.encodeCommands({
 		end;
 	};
 },unpack(otherCommands));
+_G.reacts = reacts;
 logger.info("command indexing end!");
 local function formatUserLearnReact(userReact)
 	if not userReact then

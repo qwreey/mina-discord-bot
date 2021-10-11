@@ -11,6 +11,7 @@ local errorType = {
 	notEnoughLove = 3;
 	nullValue = 4;
 	nullName = 5;
+	devDefined = 6
 };
 module.errorType = errorType;
 
@@ -42,6 +43,9 @@ local utf8Len = utf8.len;
 local insert = table.insert;
 --- Add new react
 function module.put(name,value,author,when,userData)
+	if commandHandler.findCommandFrom(reacts,name) then
+		return errorType.devDefined;
+	end
 	local love = userData.love;
     if (not name) or name == "" or name == " " or name == "\n" then
         return errorType.nullName;
