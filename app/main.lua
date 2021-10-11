@@ -174,6 +174,7 @@ local urlCode = require "urlCode"; _G.urlCode = urlCode; -- 한글 URL 인코더
 local makeId = require "makeId"; _G.makeId = makeId; -- ID 만드는거
 local makeSeed = require "libs.makeSeed"; _G.makeSeed = makeSeed;
 local myXMl = require "myXML"; _G.myXMl = myXMl;
+local userLearn = require "commands.learning.learn";
 
 -- 데이터
 local data = require "data"; _G.data = data;
@@ -228,37 +229,37 @@ local offKeywords = {
 local loveCooltime = 3600;
 local disableDm = "이 반응은 DM 에서 사용 할 수 없어요! 서버에서 이용해 주세요";
 local eulaComment_love = "\n" .. -- 약관 동의 안할때 호감도 표시
-	"\n> 호감도 기능을 사용할 수 없어요!" ..
-	"\n> 호감도 기능을 사용하려면 '미나야 약관 동의' 를 입력해주세요!" ..
-	"\n> (약관의 세부정보를 보려면 '미나야 약관' 을 입력해주세요)";
+"\n> 호감도 기능을 사용할 수 없어요!" ..
+"\n> 호감도 기능을 사용하려면 '미나야 약관 동의' 를 입력해주세요!" ..
+"\n> (약관의 세부정보를 보려면 '미나야 약관' 을 입력해주세요)";
 local Admins = { -- 관리 명령어 권한
-	["367946917197381644"] = "쿼리";
-	["647101613047152640"] = "눈송이";
-	["415804982764371969"] = "상어";
-	["754620012450414682"] = "팥죽";
-	["756035861250048031"] = "내부계";
+["367946917197381644"] = "쿼리";
+["647101613047152640"] = "눈송이";
+["415804982764371969"] = "상어";
+["754620012450414682"] = "팥죽";
+["756035861250048031"] = "내부계";
 };
 local prefixs = { -- 명령어 맨앞 글자 (접두사)
-	[1] = "미나야";
-	[2] = "미나";
-	[3] = "미나야.";
-	[4] = "미나!";
-	[5] = "미나야!";
-	[6] = "미나야...";
-	[7] = "미나야..",
-	[8] = "미나...";
-	[9] = "미나는";
-	[10] = "미나의";
-	[11] = "mina";
-	[12] = "hey mina";
+[1] = "미나야";
+[2] = "미나";
+[3] = "미나야.";
+[4] = "미나!";
+[5] = "미나야!";
+[6] = "미나야...";
+[7] = "미나야..",
+[8] = "미나...";
+[9] = "미나는";
+[10] = "미나의";
+[11] = "mina";
+[12] = "hey mina";
 };
 local prefixReply = { -- 그냥 미나야 하면 답
-	"미나는 여기 있어요!","부르셨나요?","넹?",
-	"왜요 왜요 왜요?","심심해요?","네넹","미나에요",
-	"Zzz... 아! 안졸았어요","네!"
+"미나는 여기 있어요!","부르셨나요?","넹?",
+"왜요 왜요 왜요?","심심해요?","네넹","미나에요",
+"Zzz... 아! 안졸았어요","네!"
 };
 local unknownReply = { -- 반응 없을때 띄움
-	"(갸우뚱?)","무슨 말이에요?","네?","으에?"--,"먕?",":thinking: 먀?"
+"(갸우뚱?)","무슨 말이에요?","네?","으에?"--,"먕?",":thinking: 먀?"
 };
 do -- 글로벌에 loveRang 함수 추가
 	local cache = {};
@@ -322,17 +323,17 @@ reacts,commands,commandsLen = commandHandler.encodeCommands({
 			local userId = tostring(message.author.id);
 			fs.writeFileSync(("data/userData/%s.json"):format(userId),
 				("{" ..
-					('"latestName":"%s",'):format(message.author.name) ..
-					'"love":0,' ..
+				('"latestName":"%s",'):format(message.author.name) ..
+				'"love":0,' ..
 					('"lastName":["%s"],'):format(message.author.name) ..
 					'"lastCommand":{}' ..
-				"}")
-			);
-			return "안녕하세요 {#:UserName:#} 님!\n사용 약관에 동의해주셔서 감사합니다!\n사용 약관을 동의하였기 때문에 다음 기능을 사용 할 수 있게 되었습니다!\n\n> 미나야 배워 (미출시 기능)\n";
-		end;
-	};
-	["지워"] = {
-		disableDm = true;
+					"}")
+				);
+				return "안녕하세요 {#:UserName:#} 님!\n사용 약관에 동의해주셔서 감사합니다!\n사용 약관을 동의하였기 때문에 다음 기능을 사용 할 수 있게 되었습니다!\n\n> 미나야 배워 (미출시 기능)\n";
+			end;
+		};
+		["지워"] = {
+			disableDm = true;
 		alias = {"지우개","지워봐","지워라","지우기","삭제해","청소","삭제","청소해","clear"};
 		func = function(replyMsg,message,args,Content)
 			local RemoveNum = Content.rawArgs == "" and 5 or tonumber(Content.rawArgs);
@@ -367,7 +368,7 @@ reacts,commands,commandsLen = commandHandler.encodeCommands({
 				message:reply("권한이 부족해요! 메시지 관리 권한이 있는 유저만 이 명령어를 사용 할 수 있어요");
 				return;
 			end
-
+			
 			message.channel:bulkDelete(message.channel:getMessagesBefore(message.id,RemoveNum));
 			local infoMsg = message:reply(("최근 메시지 %s개를 지웠어요!"):format(RemoveNum));
 			message:delete();
@@ -391,9 +392,27 @@ reacts,commands,commandsLen = commandHandler.encodeCommands({
 	};
 },unpack(otherCommands));
 logger.info("command indexing end!");
+local function formatUserLearnReact(userReact)
+	if not userReact then
+		return "오류가 발생했어요!\n> 알 수 없는 유저 반응을 호출하려고 시도합니다\n```app.main : formatUserLearnReact(userReact) -> userReact == nil```";
+	end
+
+	local authorId = userReact.author;
+	local when = userReact.when;
+	local content = userReact.content;
+	local author = userData.loadData(authorId);
+
+	if (not authorId) or (not author) or (not when) or (not content) then
+		return "오류가 발생했어요!\n> 유저 반응이 잘못되었습니다\n```app.main : formatUserLearnReact(userReact) -> userReact has missing properties```";
+	end
+
+	return ("%s\n> '%s' 님이 가르쳐 주셨어요!"):format(content,author.latestName);
+end
 --#endregion : 반응, 프리픽스, 설정
 --#region : 메인 파트
 logger.info("----------------------- [SET UP BOT ] -----------------------");
+local findCommandFrom = commandHandler.findCommandFrom;
+local insert = table.insert;
 client:on('messageCreate', function(message) -- 메시지 생성됨
 
 	-- get base information from message object
@@ -424,9 +443,9 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 
 	-- 접두사 구문 분석하기
 	local prefix;
-	local TextL = string.lower(text); -- make sure text is lower case
+	local TextLower = string.lower(text); -- make sure text is lower case
 	for _,nprefix in pairs(prefixs) do
-		if nprefix == TextL then -- 만약 접두사와 글자가 일치하는경우 반응 달기
+		if nprefix == TextLower then -- 만약 접두사와 글자가 일치하는경우 반응 달기
 			message:reply {
 				content = prefixReply[cRandom(1,#prefixReply)];
 				reference = {message = message, mention = false};
@@ -434,7 +453,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 			return;
 		end
 		nprefix = nprefix .. "\32"; -- 맨 앞 실행 접두사
-		if TextL:sub(1,#nprefix) == nprefix then -- 만약에 접두가사 일치하면
+		if TextLower:sub(1,#nprefix) == nprefix then -- 만약에 접두가사 일치하면
 			prefix = nprefix;
 			break;
 		end
@@ -450,51 +469,16 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	-- 못찾으면 다시 넘겨서 뒷단어로 넘김
 	-- 찾으면 넘겨서 COMMAND RUN 에 TRY 던짐
 	local rawCommandText = text:sub(#prefix+1,-1); -- 접두사 뺀 글자
-	local splitCommandText = strSplit(rawCommandText:lower(),"\32");
-	local CommandName,Command,rawCommandName;
-
-	-- (커맨드 색인 1 차시도) 띄어쓰기를 포함한 명령어를 검사할 수 있도록 for 루프 실행
-	-- 찾기 찾기 찾기
-	-- 찾기 찾기
-	-- 찾기
-	-- 이런식으로 계단식 찾기를 수행
-	for len = #splitCommandText,1,-1 do
-		local spText,text = "",""; -- 띄어쓰기가 포함되도록 검색 / 띄어쓰기 없이 검색
-		for index = 1,len do
-			local thisText = splitCommandText[index];
-			spText = spText .. (index ~= 1 and " " or "") .. thisText;
-			text = text .. thisText;
-		end
-		local spTempCommand = commandHandler.findCommandFrom(reacts,spText);
-		if spTempCommand then
-			CommandName = spText;
-			rawCommandName = spText;
-			Command = spTempCommand;
-			break;
-		end
-		local tempCommand = commandHandler.findCommandFrom(reacts,spText);
-		if tempCommand then
-			CommandName = text;
-			rawCommandName = text;
-			Command = tempCommand;
-			break;
-		end
-	end
-
-	-- (커맨드 색인 2 차시도) 커맨드 못찾으면 단어별로 나눠서 찾기 시도
-	-- 찾기 찾기 찾기
-	-- 부분부분 다 나눠서 찾기
+	local splited = strSplit(text:lower(),"\32")
+	local Command,CommandName,rawCommandName = findCommandFrom(reacts,splited);
 	if not Command then
-		for FindPos,Textn in pairs(splitCommandText) do
-			Command = commandHandler.findCommandFrom(reacts,Textn);
-			if Command then
-				CommandName = "";
-				rawCommandName = Textn;
-				for Index = 1,FindPos do
-					CommandName = CommandName .. splitCommandText[Index];
-				end
-				break;
-			end
+		-- Solve user learn commands
+		local userReact = findCommandFrom(userLearn,splited);
+		if userReact then
+			message:reply {
+				content = formatUserLearnReact(userReact);
+				reference = {message = message, mention = false};
+			};
 		end
 	end
 
@@ -528,9 +512,15 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	-- 만약 호감도가 있으면 올려주기
 	if love then
 		local thisUserDat = userData:loadData(user.id);
-		local CommandID = Command.id;
 
 		if thisUserDat then
+			local username = user.name;
+			thisUserDat.latestName = username;
+			local lastNames = thisUserDat.lastName;
+			if lastNames[#lastNames] ~= username then
+				insert(lastNames,username);
+			end
+			local CommandID = Command.id;
 			-- get last command used status
 			local lastCommand = thisUserDat.lastCommand;
 			if not lastCommand then

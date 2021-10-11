@@ -64,8 +64,57 @@ function module.encodeCommands(...)
 	return this,cmds,len;
 end
 
-function module.findCommandFrom(encodedTable,commandName)
-	return encodedTable[commandName];
+local function findCommand(reacts,text)
+	if type(reacts) == "function" then
+		return reacts(text);
+	end
+	return reacts[text];
+end
+
+---find command from reacts array/function object
+---@param reacts function | table
+---@param text string
+---@return table | nil CommandObject Command or nil
+---@return string | nil CommandName Name of command
+---@return string | nil CommandRawName full of user inputed string
+function module.findCommandFrom(reacts,text)
+	local splitCommandText = (type(text) == "table") and text or strSplit(text:lower(),"\32");
+
+	do
+		-- (커맨드 색인 1 차시도) 띄어쓰기를 포함한 명령어를 검사할 수 있도록 for 루프 실행
+		-- 찾기 찾기 찾기
+		-- 찾기 찾기
+		-- 찾기
+		-- 이런식으로 계단식 찾기를 수행
+		local spText,textn = "",""; -- 띄어쓰기가 포함되도록 검색 / 띄어쓰기 없이 검색
+		for index = #splitCommandText,1,-1 do
+			local thisText = splitCommandText[index];
+			spText = thisText .. (index == 1 and "" or " ") .. spText;
+			textn = thisText .. textn;
+			local spTempCommand = findCommand(reacts,spText);
+			if spTempCommand then
+				return spTempCommand,spText,spText;
+			end
+			local tempCommand = findCommand(reacts,spText);
+			if tempCommand then
+				return tempCommand,textn,textn;
+			end
+		end
+	end
+
+	-- (커맨드 색인 2 차시도) 커맨드 못찾으면 단어별로 나눠서 찾기 시도
+	-- 찾기 찾기 찾기
+	-- 부분부분 다 나눠서 찾기
+	for findPos,textn in pairs(splitCommandText) do
+		local command = findCommand(reacts,textn);
+		if command then
+			local rawCommand = "";
+			for Index = 1,findPos do
+				rawCommand = rawCommand .. splitCommandText[Index];
+			end
+			return command,textn,rawCommand;
+		end
+	end
 end
 
 --[[

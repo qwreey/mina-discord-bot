@@ -31,6 +31,10 @@ end
 
 -- 데이터 저장하기 (로드를 먼저 해야 작동함)
 function module:saveData(userId)
+	if not userId then
+		return;
+	end
+
 	userId = tostring(userId);
 
 	-- userData 가져오기
@@ -61,6 +65,10 @@ end
 
 -- 데이터 읽어들이기
 function module:loadData(userId)
+	if not userId then
+		return;
+	end
+
 	userId = tostring(userId);
 	local data = userDatas[userId];
 	if data then -- 이미 데이터가 존재하면 반환
@@ -81,6 +89,7 @@ function module:loadData(userId)
 end
 
 -- 데이터 파일 지우고 데이터 초기화
+-- this is should be replaced with fs module
 function module:resetData(userId)
 	userDatas[userId] = nil;
 	return pcall(function ()
