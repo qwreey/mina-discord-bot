@@ -58,7 +58,7 @@ function module.put(name,value,author,when,userData)
 	elseif utf8Len(name) > maxNameLength then
 		return errorType.tooLongName;
 	end
-	userData.love = love + costLove;
+	userData.love = love - costLove;
 
 	-- setup database
 	local hash = sha1(name);
