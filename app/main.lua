@@ -403,7 +403,7 @@ local function formatUserLearnReact(userReact)
 	local content = userReact.content;
 	local author = userData:loadData(authorId);
 
-	p(author,authorId,when,content);
+	-- p(author,authorId,when,content);
 
 	if (not authorId) or (not author) or (not when) or (not content) then
 		return "오류가 발생했어요!\n> 유저 반응이 잘못되었습니다\n```app.main : formatUserLearnReact(userReact) -> userReact has missing properties```";
