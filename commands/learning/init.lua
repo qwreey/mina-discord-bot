@@ -25,9 +25,12 @@ return {
 			react = (react or ""):gsub("^ +",""):gsub(" +$","");
 
 			local userData = Content.getUserData();
-			local result = learn.put(what,react,Content.user.id,time(),userData);
+			local user = Content.user;
+			local result = learn.put(what,react,user.id,time(),userData);
 			if result then
-				if result == errorType.nullName then
+				if result == errorType.devDefined then
+					return replyMsg:setContent("개발자가 이미 가르친 내용이에요!");
+				elseif result == errorType.nullName then
 					return replyMsg:setContent("가르치려는 이름이 비어 있으면 안돼요!");
 				elseif result == errorType.nullValue then
 					return replyMsg:setContent("가르치려는 내용이 비어 있으면 안돼요!");
@@ -47,6 +50,12 @@ return {
 				replyMsg:setContent(("알 수 없는 오류가 발생했습니다.\n```commands.learing.learn.errorType.%s ? got unexpected error type```")
 					:format(tostring(nameIs))
 				);
+			end
+			local username = user.name;
+			userData.latestName = username;
+			local lastNames = userData.lastName;
+			if lastNames[#lastNames] ~= username then
+				insert(lastNames,username);
 			end
 			Content.saveUserData();
 
