@@ -479,6 +479,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 				content = formatUserLearnReact(userReact);
 				reference = {message = message, mention = false};
 			};
+			return;
 		end
 	end
 
