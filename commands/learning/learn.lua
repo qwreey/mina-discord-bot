@@ -77,7 +77,7 @@ function module.put(name,value,author,when,userData)
 	if not id then -- write new
 		id = makeId(); -- make new identifier
 		indexedCache[hash] = id;
-		fs.appendFileSync(indexedFile,('"%s":"%s"\n'):format(hash,id));
+		fs.appendFileSync(indexedFile,('"%s":"%s",\n'):format(hash,id));
 		path = root:format(id);
 		fs.mkdirSync(path);
 		split( -- write two files with same time
