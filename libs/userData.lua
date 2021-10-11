@@ -47,14 +47,10 @@ function module:saveData(userId)
 	local raw = json.encode(userData);
 
 	-- 파일 열고 쓰고 닫기
-	local isPass,err = pcall(function ()
-		local file = io.open(formatFileRoot(userId),"w");
-		file:write(raw);
-		file:close();
-	end)
+	local passed = fs.writeFileSync(formatFileRoot(userId),raw);
 
 	-- 오류 처리 (백업 시키기)
-	if not isPass then
+	if not passed then
 		logger.errorf("un error occur on save data! (%s) : data = %s",userId,raw);
 		local now = os.date("*t");
 		local errFile = io.open("data/crash/" .. ("er%s.uid%s.tm%dm%dd%dh%dm%ds"):format(
@@ -76,14 +72,12 @@ function module:loadData(userId)
 	end
 
 	-- 파일 열기
-	local file = io.open(formatFileRoot(userId),"r+");
+	local file = fs.readFileSync(formatFileRoot(userId));
 	if not file then
 		return; -- 파일이 없으면 (아에 약관 동의를 안했으면) 리턴
 	end
 
-	local raw = file:read("a"); -- 파일 읽기
-	file:close(); -- 파일 닫기
-	data = json.decode(raw); -- json 디코딩
+	data = json.decode(file); -- json 디코딩
 	userDatas[userId] = data; -- 유저 데이터 풀에 던짐
 	return data; -- 유저 데이터 리턴
 end
