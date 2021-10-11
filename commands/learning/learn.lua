@@ -1,5 +1,5 @@
 local root = "data/userLearn/%s";
-local indexedFile = "data/userLearn/index.json";
+local indexedFile = "data/userLearn/index";
 local indexedCache = json.decode(
 	("{%s}"):format(fs.readFileSync(indexedFile))
 );
