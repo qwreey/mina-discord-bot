@@ -89,7 +89,7 @@ function module.findCommandFrom(reacts,text)
 		local spText,textn = "",""; -- 띄어쓰기가 포함되도록 검색 / 띄어쓰기 없이 검색
 		for index = #splitCommandText,1,-1 do
 			local thisText = splitCommandText[index];
-			spText = thisText .. (index == 1 and "" or " ") .. spText;
+			spText = spText .. (index == 1 and "" or " ") .. thisText;
 			textn = thisText .. textn;
 			io.write("\n",spText,"\n");
 			local spTempCommand = findCommand(reacts,spText);
