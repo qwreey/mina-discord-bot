@@ -28,7 +28,9 @@ return {
 			local user = Content.user;
 			local result = learn.put(what,react,user.id,time(),userData);
 			if result then
-				if result == errorType.devDefined then
+				if result == errorType.linkDetected then
+					return replyMsg:setContent("링크를 포함한 반응은 가르칠 수 없어요!");
+				elseif result == errorType.devDefined then
 					return replyMsg:setContent("개발자가 이미 가르친 내용이에요!");
 				elseif result == errorType.nullName then
 					return replyMsg:setContent("가르치려는 이름이 비어 있으면 안돼요!");

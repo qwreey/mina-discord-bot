@@ -1,7 +1,7 @@
 local root = "data/userLearn/%s";
-local indexedFile = "data/userLearn/index";
+local indexedFile = "data/userLearn/index.json";
 local indexedCache = json.decode(
-	("{%s}"):format(fs.readFileSync(indexedFile):sub(1,-2))
+	("{%s}"):format(fs.readFileSync(indexedFile))
 );
 local module = {};
 
@@ -11,7 +11,8 @@ local errorType = {
 	notEnoughLove = 3;
 	nullValue = 4;
 	nullName = 5;
-	devDefined = 6
+	devDefined = 6;
+	linkDetected = 7;
 };
 module.errorType = errorType;
 
@@ -58,7 +59,15 @@ function module.put(name,value,author,when,userData)
 	elseif utf8Len(name) > maxNameLength then
 		return errorType.tooLongName;
 	end
-	userData.love = love - costLove;
+	name = name:lower();
+	userData.love = love + costLove;
+	if name:find("https://",1,true) or
+	name:find("http://","1",true) or
+	name:match(".-%.org") or
+	name:match(".-%.com") or
+	name:match(".-%.net") then
+		return errorType.linkDetected;
+	end
 
 	-- setup database
 	local hash = sha1(name);
@@ -68,11 +77,17 @@ function module.put(name,value,author,when,userData)
 	if not id then -- write new
 		id = makeId(); -- make new identifier
 		indexedCache[hash] = id;
-		fs.appendFileSync(indexedFile,('"%s":"%s",\n'):format(hash,id));
+		fs.appendFileSync(indexedFile,('"%s":"%s"\n'):format(hash,id));
 		path = root:format(id);
 		fs.mkdirSync(path);
-		fs.writeFile(path .. "/name",name);
-		fs.writeFile(path .. "/index","1");
+		split( -- write two files with same time
+			coroutine.wrap(function ()
+				fs.writeFileSync(path .. "/name",name);
+			end),
+			coroutine.wrap(function ()
+				fs.writeFileSync(path .. "/index","1");
+			end)
+		);
 		index = 1;
 	else
 		path = root:format(id);
@@ -83,7 +98,7 @@ function module.put(name,value,author,when,userData)
 
 	-- save to file
 	fs.writeFileSync(("%s/%d"):format(path,index),json.encode({
-		author = tostring(author);
+		author = tonumber(author);
 		when = tonumber(when);
 		content = value;
 	}));
