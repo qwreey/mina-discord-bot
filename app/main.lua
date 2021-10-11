@@ -401,7 +401,7 @@ local function formatUserLearnReact(userReact)
 	local authorId = userReact.author;
 	local when = userReact.when;
 	local content = userReact.content;
-	local author = userData.loadData(authorId);
+	local author = userData:loadData(authorId);
 
 	p(author,authorId,when,content);
 
