@@ -29,7 +29,7 @@ return {
 			local result = learn.put(what,react,user.id,time(),userData);
 			if result then
 				if result == errorType.onCooltime then
-					return reply:setContent("너무 빠르게 가르치고 있어요! 조금만 쉬엄쉬엄 가르켜 주세요!\n> 하나를 가르칠 때 마다 5초의 쿨타임이 있습니다!");
+					return replyMs:setContent("너무 빠르게 가르치고 있어요! 조금만 쉬엄쉬엄 가르켜 주세요!\n> 하나를 가르칠 때 마다 5초의 쿨타임이 있습니다!");
 				elseif result == errorType.alreadlyLearnByYou then
 					return replyMsg:setContent("이미 그 내용은 가르치셨어요!");
 				elseif result == errorType.mentionDetected then
