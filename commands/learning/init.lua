@@ -28,7 +28,9 @@ return {
 			local user = Content.user;
 			local result = learn.put(what,react,user.id,time(),userData);
 			if result then
-				if result == errorType.alreadlyLearnByYou then
+				if result == errorType.onCooltime then
+					return reply:setContent("너무 빠르게 가르치고 있어요! 조금만 쉬엄쉬엄 가르켜 주세요!\n> 하나를 가르칠 때 마다 5초의 쿨타임이 있습니다!");
+				elseif result == errorType.alreadlyLearnByYou then
 					return replyMsg:setContent("이미 그 내용은 가르치셨어요!");
 				elseif result == errorType.mentionDetected then
 					return replyMsg:setContent("유저 언급을 포함한 내용은 가르칠 수 없어요!");
