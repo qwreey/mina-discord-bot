@@ -6,6 +6,7 @@ local indexedCache = json.decode(
 local module = {};
 
 local errorType = {
+	unknown = 0;
 	tooLongValue = 1;
 	tooLongName = 2;
 	notEnoughLove = 3;
@@ -51,7 +52,7 @@ function module.put(name,value,author,when,userData)
 		return errorType.devDefined; -- if developers defined that
 	elseif value:match("@everyone") or -- when user used mention
 	value:match("@here") or
-	value:match("<@![^ ]+>") then
+	value:match("<@!?[^ \\]+>") then
 		return errorType.mentionDetected; -- user mention detected
 	elseif value:match("<#[^ ]+>") then
 		return errorType.channelDetected; -- channel mention detected
