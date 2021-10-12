@@ -106,7 +106,7 @@ return {
 		love = defaultLove;
 	};
 	["바보"] = {
-		reply = {"미나 아니야야야ㅑ!",":broken_heart: - 5"};
+		reply = {"미나 바보 아니야야야ㅑ!",":broken_heart: - 5"};
 		love = rmLove;
 	};
 	["왈도체"] = {

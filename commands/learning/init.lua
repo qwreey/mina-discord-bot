@@ -28,7 +28,13 @@ return {
 			local user = Content.user;
 			local result = learn.put(what,react,user.id,time(),userData);
 			if result then
-				if result == errorType.linkDetected then
+				if result == errorType.alreadlyLearnByYou then
+					return replyMsg:setContent("이미 그 내용은 가르치셨어요!");
+				elseif result == errorType.mentionDetected then
+					return replyMsg:setContent("유저 언급을 포함한 내용은 가르칠 수 없어요!");
+				elseif result == errorType.channelDetected then
+					return replyMsg:setContent("채널 언급을 포함한 내용은 가르칠 수 없어요!");
+				elseif result == errorType.linkDetected then
 					return replyMsg:setContent("링크를 포함한 반응은 가르칠 수 없어요!");
 				elseif result == errorType.devDefined then
 					return replyMsg:setContent("개발자가 이미 가르친 내용이에요!");

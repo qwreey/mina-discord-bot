@@ -1,7 +1,7 @@
 local root = "data/userLearn/%s";
 local indexedFile = "data/userLearn/index";
 local indexedCache = json.decode(
-	("{%s}"):format(fs.readFileSync(indexedFile):sub(1,-2))
+	("{%s}"):format(fs.readFileSync(indexedFile))
 );
 local module = {};
 
@@ -13,6 +13,9 @@ local errorType = {
 	nullName = 5;
 	devDefined = 6;
 	linkDetected = 7;
+	mentionDetected = 8;
+	channelDetected = 9;
+	alreadlyLearnByYou = 10;
 };
 module.errorType = errorType;
 
@@ -45,27 +48,33 @@ local insert = table.insert;
 --- Add new react
 function module.put(name,value,author,when,userData)
 	if commandHandler.findCommandFrom(reacts,name) then
-		return errorType.devDefined;
+		return errorType.devDefined; -- if developers defined that
+	elseif value:match("@everyone") or -- when user used mention
+	value:match("@here") or
+	value:match("<@![^ ]+>") then
+		return errorType.mentionDetected; -- user mention detected
+	elseif value:match("<#[^ ]+>") then
+		return errorType.channelDetected; -- channel mention detected
 	end
-	local love = userData.love;
+	local love = userData.love; -- get user love from userData
     if (not name) or name == "" or name == " " or name == "\n" then
-        return errorType.nullName;
+        return errorType.nullName; -- invalid name
     elseif (not value) or value == "" or value == " " or value == "\n" then
-        return errorType.nullValue;
+        return errorType.nullValue; -- invalid value
     elseif love < costLove then
-		return errorType.notEnoughLove;
+		return errorType.notEnoughLove; -- if user's love didn't enough
 	elseif utf8Len(value) > maxValueLength then
-		return errorType.tooLongValue;
+		return errorType.tooLongValue; -- if value is loner then max length
 	elseif utf8Len(name) > maxNameLength then
-		return errorType.tooLongName;
+		return errorType.tooLongName; -- if name is longer than max length
 	end
-	name = name:lower();
-	userData.love = love - costLove;
-	if name:find("https://",1,true) or
-	name:find("http://","1",true) or
-	name:match(".-%.org") or
-	name:match(".-%.com") or
-	name:match(".-%.net") then
+	name = name:lower(); -- make name into lower cased
+	userData.love = love - costLove; -- using love
+	if value:find("https://",1,true) or -- when link detected
+	value:find("http://","1",true) or
+	value:match(".-%.org") or
+	value:match(".-%.com") or
+	value:match(".-%.net") then
 		return errorType.linkDetected;
 	end
 
@@ -84,6 +93,24 @@ function module.put(name,value,author,when,userData)
 		fs.writeFile(path .. "/index","1");
 		index = 1;
 	else
+		-- check is exist already (learn by that user)
+		local already;
+		for _,this in pairs(userData.learned) do -- 최적화 필요
+			if this:sub(1,18) == id then
+				local file = fs.readFileSync(root:format(this));
+				if file then
+					file = json.decode(file);
+					if file and file.content == value then
+						already = true;
+						break;
+					end
+				end
+			end
+		end
+		if already then
+			return errorType.alreadlyLearnByYou;
+		end
+
 		path = root:format(id);
 		index = tonumber(fs.readFileSync(path .. "/index"):match("%d+"));
 		index = index + 1;
@@ -104,9 +131,7 @@ function module.put(name,value,author,when,userData)
 		userData.learned = learned;
 		userData.lenLearned = 0;
 	end
-	insert(learned,{
-		("%s/%d"):format(hash,index)
-	});
+	insert(learned,("%s/%d"):format(id,index));
 	userData.lenLearned = userData.lenLearned + 1;
 end
 
