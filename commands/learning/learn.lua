@@ -45,12 +45,15 @@ end
 local maxValueLength = 200;
 local maxNameLength = 100;
 local costLove = 20;
-local cooltimc = 2;
+local cooltime = 5;
 local utf8Len = utf8.len;
 local insert = table.insert;
 --- Add new react
 function module.put(name,value,author,when,userData)
-	if commandHandler.findCommandFrom(reacts,name) then
+	local lastTime = userData.lastLearnTime;
+	if lastTime and (lastTime + cooltime > when) then
+		return errorType.onCooltime;
+	elseif commandHandler.findCommandFrom(reacts,name) then
 		return errorType.devDefined; -- if developers defined that
 	elseif value:match("@everyone") or -- when user used mention
 	value:match("@here") or
@@ -128,6 +131,7 @@ function module.put(name,value,author,when,userData)
 	}));
 
 	-- save into user data
+	userData.lastLearnTime = when;
 	local learned = userData.learned;
 	if not learned then
 		learned = {};
