@@ -17,6 +17,7 @@ local errorType = {
 	mentionDetected = 8;
 	channelDetected = 9;
 	alreadlyLearnByYou = 10;
+	onCooltime = 11;
 };
 module.errorType = errorType;
 
@@ -44,6 +45,7 @@ end
 local maxValueLength = 200;
 local maxNameLength = 100;
 local costLove = 20;
+local cooltimc = 2;
 local utf8Len = utf8.len;
 local insert = table.insert;
 --- Add new react
