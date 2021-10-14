@@ -54,7 +54,7 @@ local timer = require "timer"; _G.timer = timer;-- 타임아웃 핸들링
 local thread = require "thread"; _G.thread = thread-- 스레드 조정
 local fs = require "fs"; _G.fs = fs;-- 파일 시스템
 local ffi = require "ffi"; _G.ffi = ffi;-- C 동적 상호작용
-local utf8 = utf8 or require "utf8"; _G.utf8 = utf; -- 유니코드8 라이브러리 불러오기
+local utf8 = utf8 or require "utf8"; _G.utf8 = utf8; -- 유니코드8 라이브러리 불러오기
 local term = require "app.term"; -- terminal settings
 local utils = require "utils"; _G.utils = utils;
 local adapt = utils.adapt; _G.adapt = adapt;
@@ -63,6 +63,8 @@ local qDebug = require "app.debug"; _G.qDebug = qDebug;
 local dumpTable = require "libs.dumpTable";
 local spawn = require "coro-spawn"; _G.spawn = spawn;
 local split = require "coro-split"; _G.split = split;
+local sha1 = require "sha1"; _G.sha1 = sha1;
+local osTime = os.time;
 
 -- same with js's timeout function
 local function runSchedule(time,func)
@@ -129,7 +131,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		logger.info("Download codes ...");
 		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . .');
 		_G.livereloadEnabled = false;
-		os.execute("git -C src pull"); -- git 에서 변동사항 가져와 적용하기
+		os.execute("git pull"); -- git 에서 변동사항 가져와 적용하기
 		_G.livereloadEnabled = true;
 		msg:setContent('> 적용중 . . . (3초 내로 완료됩니다)');
 		reloadBot();
@@ -138,7 +140,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		logger.info("Upload codes ...");
 		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 코드를 업로드중 . . .');
 		_G.livereloadEnabled = false;
-		os.execute("git -C src add .&&git -C src commit -m 'MINA : Upload in main code (bot.lua)'&&git -C src push");
+		os.execute("git add .&&git commit -m 'MINA : Upload in main code (bot.lua)'&&git push");
 		_G.livereloadEnabled = true;
 		msg:setContent('> 완료!');
 		return; -- 업로드
@@ -146,7 +148,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		logger.info("Sync codes ...");
 		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 동기화중 . . . (8초 내로 완료됩니다)');
 		_G.livereloadEnabled = false;
-		os.execute('git -C src add .&&git -C src commit -m "MINA : Sync in main code (Bot.lua)"&&git -C src pull&&git -C src push');
+		os.execute('git add .&&git commit -m "MINA : Sync in main code (Bot.lua)"&&git pull&&git push');
 		_G.livereloadEnabled = true;
 		msg:setContent('> 적용중 . . . (3초 내로 완료됩니다)');
 		reloadBot();
@@ -170,7 +172,7 @@ local cRandom = require "cRandom"; _G.cRandom = cRandom; -- LUA 렌덤 핸들러
 local strSplit = require "stringSplit"; _G.strSplit = strSplit; -- 글자 분해기
 local urlCode = require "urlCode"; _G.urlCode = urlCode; -- 한글 URL 인코더/디코더
 local makeId = require "makeId"; _G.makeId = makeId; -- ID 만드는거
-local makeSeed = require "makeSeed"; _G.makeSeed = makeSeed;
+local makeSeed = require "libs.makeSeed"; _G.makeSeed = makeSeed;
 local myXMl = require "myXML"; _G.myXMl = myXMl;
 
 -- 데이터
@@ -191,6 +193,39 @@ local EULA = data.loadRaw("data/EULA.txt"); _G.EULA = EULA;
 --#region : 반응, 프리픽스, 설정, 커맨드 등등
 logger.info("---------------------- [LOAD SETTINGS] ----------------------");
 logger.info("load settings ...");
+local onKeywords = {
+	["켜기"] = true;
+	["켜"] = true;
+	["켜줘"] = true;
+	["켜봐"] = true;
+	["켜라"] = true;
+	["켜줘라"] = true;
+	["켜봐라"] = true;
+	["켜주세요"] = true;
+	["온"] = true;
+	["on"] = true;
+	["ON"] = true;
+	["On"] = true;
+	["켜보세요"] = true;
+	["켜라고요"] = true;
+}; _G.onKeywords = onKeywords;
+local offKeywords = {
+	["끄기"] = true;
+	["꺼"] = true;
+	["꺼줘"] = true;
+	["꺼봐"] = true;
+	["꺼라"] = true;
+	["꺼줘라"] = true;
+	["꺼봐라"] = true;
+	["꺼주세요"] = true;
+	["오프"] = true;
+	["off"] = true;
+	["OFF"] = true;
+	["Off"] = true;
+	["꺼보세요"] = true;
+	["꺼라고요"] = true;
+}; _G.offKeywords = offKeywords;
+local loveCooltime = 3600;
 local disableDm = "이 반응은 DM 에서 사용 할 수 없어요! 서버에서 이용해 주세요";
 local eulaComment_love = "\n" .. -- 약관 동의 안할때 호감도 표시
 	"\n> 호감도 기능을 사용할 수 없어요!" ..
@@ -220,8 +255,7 @@ local prefixs = { -- 명령어 맨앞 글자 (접두사)
 local prefixReply = { -- 그냥 미나야 하면 답
 	"미나는 여기 있어요!","부르셨나요?","넹?",
 	"왜요 왜요 왜요?","심심해요?","네넹","미나에요",
-	"~~어쩌라고~~","Zzz... 아! 안졸았어요",
-	"Zzz... 아! 안졸았어요 ~~아 나도 좀 잠좀 자자 인간아~~","네!"
+	"Zzz... 아! 안졸았어요","네!"
 };
 local unknownReply = { -- 반응 없을때 띄움
 	"(갸우뚱?)","무슨 말이에요?","네?","으에?"--,"먕?",":thinking: 먀?"
@@ -250,8 +284,8 @@ for dir in fs.scandirSync("commands") do
 end
 logger.info("settings loaded!");
 -- 커맨드 색인파일 만들기
-local commands,commandsLen;
-commands,commandsLen = commandHandler.encodeCommands({
+local reacts,commands,commandsLen;
+reacts,commands,commandsLen = commandHandler.encodeCommands({
 	-- 특수기능
 	["호감도"] = {
 		reply = function (message,args,c)
@@ -358,14 +392,13 @@ commands,commandsLen = commandHandler.encodeCommands({
 	["배워"] = {
 		alias = {"배워봐","배워라","배우세요"};
 		func = function (replyMsg,message,args,Content)
-			
+
 		end;
 	};
 	-- ["잊어"] = {
 	-- 	alias = {"지워","까먹어"};
 	-- 	func = function (replyMsg,message,args,Content)
 	-- 		Content.rawArgs
-			
 	-- 		return replyMsg:setContent()
 	-- 	end;
 	-- };
@@ -402,8 +435,6 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	-- | 찾은 후 (for 루프 뒤)
 	-- Command : 커맨드 개체 (찾은경우)
 
-	
-	
 	-- 접두사 구문 분석하기
 	local prefix;
 	local TextL = string.lower(Text); -- make sure text is lower case
@@ -447,14 +478,14 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 			spText = spText .. (index ~= 1 and " " or "") .. thisText;
 			text = text .. thisText;
 		end
-		local spTempCommand = commandHandler.findCommandFrom(commands,spText);
+		local spTempCommand = commandHandler.findCommandFrom(reacts,spText);
 		if spTempCommand then
 			CommandName = spText;
 			rawCommandName = spText;
 			Command = spTempCommand;
 			break;
 		end
-		local tempCommand = commandHandler.findCommandFrom(commands,spText);
+		local tempCommand = commandHandler.findCommandFrom(reacts,spText);
 		if tempCommand then
 			CommandName = text;
 			rawCommandName = text;
@@ -468,7 +499,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	-- 부분부분 다 나눠서 찾기
 	if not Command then
 		for FindPos,Textn in pairs(splitCommandText) do
-			Command = commandHandler.findCommandFrom(commands,Textn);
+			Command = commandHandler.findCommandFrom(reacts,Textn);
 			if Command then
 				CommandName = "";
 				rawCommandName = Textn;
@@ -510,9 +541,23 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	-- 만약 호감도가 있으면 올려주기
 	if love then
 		local thisUserDat = userData:loadData(User.id);
+		local CommandID = Command.id;
+
 		if thisUserDat then
-			thisUserDat.love = thisUserDat.love + love;
-			userData:saveData(User.id);
+			-- get last command used status
+			local lastCommand = thisUserDat.lastCommand;
+			if not lastCommand then
+				lastCommand = {};
+				thisUserDat.lastCommand = lastCommand;
+			end
+			local lastTime = lastCommand[CommandID];
+			if lastTime and (lastTime+loveCooltime > osTime()) then -- need more sleep . . .
+				loveText = "";
+			else
+				thisUserDat.love = thisUserDat.love + love;
+				lastCommand[CommandID] = osTime();
+				userData:saveData(User.id);
+			end
 		else
 			loveText = eulaComment_love;
 		end
@@ -592,6 +637,6 @@ startBot(ACCOUNTData.botToken); -- init bot (init discordia)
 if not RunOption.Background then -- check this service is not on background; if this service is on background; ignore calling terminal REPL system
 	term(); -- loads terminal read - execute - print - loop (AKA REPL) system; it will allows us make debug easy
 end
-_G.livereloadEnabled = true; -- enable live reload
+_G.livereloadEnabled = false; -- enable live reload
 require("app.livereload"); -- loads livereload system; it will make uv event and take file changed signal
 --#endregion : 메인 파트

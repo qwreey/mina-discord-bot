@@ -22,7 +22,7 @@ seed 를 루아 기본 난수 생성기에 집어넣고 루아 기본 난수 생
 
 ]]
 
-local makeSeed = require("libs.makeSeed");
+local makeSeed = require "libs.makeSeed";
 return function (min,max)
 	math.randomseed(makeSeed(min,max));
 	return math.random(min,max);
