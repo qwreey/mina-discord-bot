@@ -142,7 +142,7 @@ end
 ]]
 
 local function formatRreplyText(Text,Data)
-	local Text = Text or "";
+	Text = Text or "";
 	Text = string.gsub(Text,"{#:UserName:#}",Data.user.name);
 	Text = string.gsub(Text,"{#:U%+(%x%x%x%x):#}",function (hex)
 		local pass,text = pcall(function ()

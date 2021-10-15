@@ -233,6 +233,8 @@ hook.__index = hook;
 hook.types = {after = 1; before = 2;};
 function hook.new(self)
 	self.id = makeId();
+	setmetatable(self,hook);
+	return self;
 end
 function hook:attach()
 	if self.isAttach then
@@ -268,6 +270,20 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	-- run admin command if exist
 	if admins[user.id] then
 		adminCmd(text,message);
+	end
+
+	-- run before hook
+	for _,thisHook in pairs(beforeHook) do
+		local isPassed,result = pcall(thisHook.func,thisHook,{
+			text = text;
+			user = user;
+			channel = channel;
+			isDm = isDm;
+			message = message;
+		});
+		if isPassed and result then
+			return;
+		end
 	end
 
 	-- LOCAL VARIABLES
@@ -417,6 +433,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 			replyText.content = replyText.content .. loveText;
 		end
 		replyMsg = message:reply{
+			embed = Command.embed;
 			content = commandHandler.formatReply(replyText,{
 				Msg = message;
 				user = user;
@@ -450,6 +467,11 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 				:format(tostring(ret))
 			);
 		end
+	end
+
+	-- run after hook
+	for _,thisHook in pairs(afterHook) do
+		pcall(thisHook.func,thisHook,contents);
 	end
 end);
 
