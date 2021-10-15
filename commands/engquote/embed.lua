@@ -7,7 +7,7 @@ function module:setUrlCode(newUrlCode)
 end
 
 function module:embed(body)
-	local author = body.author
+	local author = body.author;
 	return {
 		color = 16760299;
 		footer = {

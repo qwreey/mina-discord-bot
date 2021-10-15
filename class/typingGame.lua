@@ -26,7 +26,7 @@ function module.new(replyMsg,message,Content,text,title)
         replyMsg:setContent("이미 진행중인 게임이 있습니다!\n> 진행중인 게임을 멈추려면 `타자연습 멈춰` 를 입력해주세요");
     end
 
-    text = message:gsub("[^ ](%(.-%))",""):gsub(" +"," "); -- 한자를 지우기 위해서 패턴 매칭을 사용합니다
+    text = text:gsub("[^ ](%(.-%))",""):gsub(" +"," "); -- 한자를 지우기 위해서 패턴 매칭을 사용합니다
     local expected = text:gsub("[ %.,%(%)%[%]%*%-_%+=;:'\"]","");
     local lenText = utf8.len(text);
     local timeoutMS = lenText * 4500;
