@@ -1,7 +1,7 @@
 local function drawAscii(font,text)
 	text = text:gsub("\"","\\\"");
 
-	local newProcess = spawn("youtube-dl",{
+	local newProcess = spawn("figlet",{
 		args = {
 			'-f',font,text
 		};
@@ -33,7 +33,7 @@ return {
 			replyMsg:setContent(("```\n%s```"):format(drawAscii("Soft",Content.rawArgs)));
 		end;
 	};
-	["열차그리기"] = {
+	["	"] = {
 		alias = {"train"};
 		reply = "그리고 있어요 . . .";
 		func = function(replyMsg,message,args,Content)
