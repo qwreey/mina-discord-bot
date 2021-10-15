@@ -13,7 +13,7 @@ local zeroWidthSpace = utf8.char(tonumber("200B",16));
 
 return {
 	["한글명언"] = {
-		alias = {"한국어명언","한글 명언","한국어 명언","명언","korean quote","kor quote","koreanquote","korquote"};
+		alias = {"명언 한국어","명언 한글","한글명언","한국어명언","한글 명언","한국어 명언","명언","korean quote","kor quote","koreanquote","korquote"};
 		reply = "잠시만 기달려주세요 . . .";
 		func = function(replyMsg,message,args,Content)
 			replyMsg:update {
@@ -32,16 +32,16 @@ return {
 		reply = "잠시만 기달려주세요 . . .";
 		embed = "잠시 뒤에 보이는 문구를 재빠르게 입력하세요!";
 		func = function(replyMsg,message,args,Content)
-			local text = korquoteRequest.fetch()
-			:gsub("[^ ](%(.-%))","")
-			:gsub(" +"," "); -- 한자를 지우기 위해서 패턴 매칭을 사용합니다
+			local this = korquoteRequest.fetch()
+			local text = this.message:gsub("[^ ](%(.-%))",""):gsub(" +"," "); -- 한자를 지우기 위해서 패턴 매칭을 사용합니다
 			local expected = text:gsub("[%.,%(%)%[%]%*%-_%+=;:'\"]","");
 			local lenText = utf8.len(text);
 			local timeout = lenText * 10000;
 
 			replyMsg:update {
-				content = "아래의 문구를 따라 입력해주세요";
+				content = "아래의 문구를 따라 입력해주세요 (제목 미포함)";
 				embed = {
+					title = this.author;
 					description = text:gsub(" "," " .. zeroWidthSpace),
 					footer = {text = ("제한 시간 : %s"):format(formatTime(timeout))}
 				};
