@@ -12,6 +12,16 @@ end
 local zeroWidthSpace = utf8.char(tonumber("200B",16));
 local gameForUsers = {};
 
+local stopTypingGame = {
+	["멈춰 타자연습"] = true;
+	["멈춰타자연습"] = true;
+	["타자연습 멈춰"] = true;
+	["그만타자연습"] = true;
+	["그만 타자연습"] = true;
+	["끄기 타자연습"] = true;
+	["타자연습 끄기"] = true;
+};
+
 return {
 	["한글명언"] = {
 		alias = {"명언 한국어","명언 한글","한글명언","한국어명언","한글 명언","한국어 명언","명언","korean quote","kor quote","koreanquote","korquote"};
@@ -70,6 +80,7 @@ return {
 
 			local startTime = os.clock();
 			local isEnded = false;
+			local timer;
 			local newHook = hook.new {
 				type = hook.types.before;
 				func = function (self,contents)
@@ -89,6 +100,8 @@ return {
 							};
 							self:detach();
 							gameForUsers[userId] = nil;
+							isEnded = true;
+							pcall(timer.clearTimer,timer);
 							return true;
 						elseif userText:match(zeroWidthSpace) then
 							newMessage:reply {
@@ -97,13 +110,19 @@ return {
 							};
 							self:detach();
 							gameForUsers[userId] = nil;
+							isEnded = true;
+							pcall(timer.clearTimer,timer);
 							return true;
+						elseif stopTypingGame[userText] then
+							newMessage:reply {
+								content = "타자 연습을 멈췄습니다!";
+								reference = {message = newMessage, mention = true};
+							};
 						else
 							newMessage:reply {
 								content = "잘못된 글자가 있습니다!\n> 진행중인 게임을 멈추려면 `타자연습 멈춰` 를 입력해주세요";
 								reference = {message = newMessage, mention = true};
 							};
-							return true;
 						end
 					end
 				end;
@@ -111,7 +130,7 @@ return {
 			newHook:attach();
 			gameForUsers[userId] = newHook;
 
-			timeout(timeoutMS,function ()
+			timer = timeout(timeoutMS,function ()
 				if not isEnded then
 					newHook:detach();
 					gameForUsers[userId] = nil;

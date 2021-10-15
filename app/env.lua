@@ -104,10 +104,10 @@ _G.reloadBot = reloadBot;
 _G.startBot = startBot;
 
 -- js's timeout function that inspired by js's timeout function
-local function runSchedule(time,func)
+local function timeout(time,func)
 	timer.setTimeout(time,coroutine.wrap(func));
 end
-_G.timeout = runSchedule;
+_G.timeout = timeout;
 
 do -- normal love range
 	local cache = {};
