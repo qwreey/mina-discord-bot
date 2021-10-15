@@ -36,14 +36,14 @@ return {
 			local text = this.message:gsub("[^ ](%(.-%))",""):gsub(" +"," "); -- 한자를 지우기 위해서 패턴 매칭을 사용합니다
 			local expected = text:gsub("[ %.,%(%)%[%]%*%-_%+=;:'\"]","");
 			local lenText = utf8.len(text);
-			local timeout = lenText * 10000;
+			local timeoutMS = lenText * 10000;
 
 			replyMsg:update {
 				content = "아래의 문구를 따라 입력해주세요 (제목 미포함)";
 				embed = {
 					title = this.author;
 					description = text:gsub(" "," " .. zeroWidthSpace),
-					footer = {text = ("제한 시간 : %s"):format(formatTime(timeout / 1000))}
+					footer = {text = ("제한 시간 : %s"):format(formatTime(timeoutMS / 1000))}
 				};
 			};
 
@@ -84,7 +84,7 @@ return {
 			};
 			newHook:attach();
 
-			timeout(timeout,function ()
+			timeout(timeoutMS,function ()
 				if not isEnded then
 					newHook:detach();
 					message:reply {
