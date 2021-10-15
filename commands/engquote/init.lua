@@ -25,7 +25,8 @@ return {
 		reply = "잠시만 기달려주세요 . . .";
 		embed = "잠시 뒤에 보이는 문구를 재빠르게 입력하세요!";
 		func = function(replyMsg,message,args,Content)
-			typingGame.new(replyMsg,message,Content,engquoteRequest.fetch());
+			local this = engquoteRequest.fetch();
+			typingGame.new(replyMsg,message,Content,this.content,this.author);
 		end;
 	};
 };
