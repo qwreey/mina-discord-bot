@@ -233,6 +233,7 @@ hook.__index = hook;
 hook.types = {after = 1; before = 2;};
 function hook.new(self)
 	self.id = makeId();
+	self.type = self.type or self.types.before;
 	setmetatable(self,hook);
 	return self;
 end

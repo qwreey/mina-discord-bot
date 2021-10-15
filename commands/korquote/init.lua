@@ -50,6 +50,7 @@ return {
 			local startTime = os.clock();
 			local isEnded = false;
 			local newHook = hook.new {
+				type = hook.types.before;
 				func = function (self,contents)
 					local endTime = os.clock();
 					if contents.user.id == Content.user.id then
