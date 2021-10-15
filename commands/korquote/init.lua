@@ -30,9 +30,11 @@ return {
 			"타자한글","타자 한글","타자 한국어","타자연습한글"
 		};
 		reply = "잠시만 기달려주세요 . . .";
-		-- embed = "잠시 뒤에 보이는 문구를 재빠르게 입력하세요!";
+		embed = "잠시 뒤에 보이는 문구를 재빠르게 입력하세요!";
 		func = function(replyMsg,message,args,Content)
-			local text = korquoteRequest.fetch():gsub("[^ ](%(.-%))",""):gsub(" +"," "); -- 한자를 지우기 위해서 패턴 매칭을 사용합니다
+			local text = korquoteRequest.fetch()
+			:gsub("[^ ](%(.-%))","")
+			:gsub(" +"," "); -- 한자를 지우기 위해서 패턴 매칭을 사용합니다
 			local expected = text:gsub("[%.,%(%)%[%]%*%-_%+=;:'\"]","");
 			local lenText = utf8.len(text);
 			local timeout = lenText * 10000;
