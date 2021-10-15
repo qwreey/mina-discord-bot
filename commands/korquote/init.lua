@@ -73,7 +73,7 @@ return {
 				embed = {
 					title = this.author;
 					description = text:gsub(" "," " .. zeroWidthSpace),
-					footer = {text = ("제한 시간 : %s\n진행중인 게임을 멈추려면 **타자연습 멈춰** 를 입력해주세요"):format(formatTime(timeoutMS / 1000))}
+					footer = {text = ("제한 시간 : %s\n진행중인 게임을 멈추려면 '타자연습 멈춰' 를 입력해주세요"):format(formatTime(timeoutMS / 1000))}
 				};
 			};
 
