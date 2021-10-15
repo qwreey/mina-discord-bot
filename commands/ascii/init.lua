@@ -1,7 +1,7 @@
 local function drawAscii(font,text)
 	text = text:gsub("\"","\\\"");
 
-	local newProcess = spawn("figlet",{
+	local newProcess = spawn("figlet.cmd",{
 		args = {
 			'-f',font,text
 		};
