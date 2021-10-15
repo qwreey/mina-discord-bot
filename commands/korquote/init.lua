@@ -71,7 +71,7 @@ return {
 			local startTime = os.clock();
 			local isEnded = false;
 			local newHook = hook.new {
-				type = hook.types.after;
+				type = hook.types.before;
 				func = function (self,contents)
 					local endTime = os.clock();
 					if contents.user.id == userId then
@@ -89,6 +89,7 @@ return {
 							};
 							self:detach();
 							gameForUsers[userId] = nil;
+							return true;
 						elseif userText:match(zeroWidthSpace) then
 							newMessage:reply {
 								content = "복사/붇여넣기가 감지되었습니다!! 게임을 종료합니다";
@@ -96,11 +97,13 @@ return {
 							};
 							self:detach();
 							gameForUsers[userId] = nil;
+							return true;
 						else
 							newMessage:reply {
 								content = "잘못된 글자가 있습니다!\n> 진행중인 게임을 멈추려면 `타자연습 멈춰` 를 입력해주세요";
 								reference = {message = newMessage, mention = true};
 							};
+							return true;
 						end
 					end
 				end;
