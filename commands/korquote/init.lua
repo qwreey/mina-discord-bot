@@ -13,13 +13,12 @@ local zeroWidthSpace = utf8.char(tonumber("200B",16));
 local gameForUsers = {};
 
 local stopTypingGame = {
-	["멈춰 타자연습"] = true;
 	["멈춰타자연습"] = true;
-	["타자연습 멈춰"] = true;
+	["타자연습멈춰"] = true;
 	["그만타자연습"] = true;
-	["그만 타자연습"] = true;
-	["끄기 타자연습"] = true;
-	["타자연습 끄기"] = true;
+	["타자연습그만"] = true;
+	["끄기타자연습"] = true;
+	["타자연습끄기"] = true;
 };
 
 return {
@@ -34,7 +33,7 @@ return {
 		end;
 	};
 	["타자연습 그만"] = {
-		alias = {"멈춰 타자연습","멈춰타자연습","타자연습 멈춰","그만타자연습","그만 타자연습","끄기 타자연습","타자연습 끄기"};
+		alias = {"타자연습 그만","타자연습그만","타자연습멈춰","멈춰 타자연습","멈춰타자연습","타자연습 멈춰","그만타자연습","그만 타자연습","끄기 타자연습","타자연습 끄기"};
 		reply = "잠기만 기달려주세요 . . .";
 		func = function(replyMsg,message,args,Content)
 			local userId = Content.user.id;
@@ -118,6 +117,11 @@ return {
 								content = "타자 연습을 멈췄습니다!";
 								reference = {message = newMessage, mention = true};
 							};
+							self:detach();
+							gameForUsers[userId] = nil;
+							isEnded = true;
+							pcall(timer.clearTimer,timer);
+							return true;
 						else
 							newMessage:reply {
 								content = "잘못된 글자가 있습니다!\n> 진행중인 게임을 멈추려면 `타자연습 멈춰` 를 입력해주세요";
