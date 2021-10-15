@@ -98,7 +98,7 @@ logger.info("---------------------- [LOAD SETTINGS] ----------------------");
 -- load environments
 logger.info("load environments ...");
 require("app.env"); -- inject environments
-local adminCmd = require("app.adminCmd"); -- load admin commands
+local adminCmd = require("app.admin"); -- load admin commands
 
 -- load commands
 logger.info(" |- load commands from commands folder");
