@@ -87,9 +87,10 @@ function module.findCommandFrom(reacts,text)
 		-- 찾기
 		-- 이런식으로 계단식 찾기를 수행
 		local spText,textn = "",""; -- 띄어쓰기가 포함되도록 검색 / 띄어쓰기 없이 검색
-		for index = #splitCommandText,1,-1 do
+		local lenSplit = #splitCommandText;
+		for index = lenSplit,1,-1 do
 			local thisText = splitCommandText[index];
-			spText = spText .. (index == 1 and "" or " ") .. thisText;
+			spText = spText .. (index == lenSplit and "" or " ") .. thisText;
 			textn = textn .. thisText;
 			logger.infof("indexing for %s",spText);
 			logger.infof("indexing for %s",textn);
