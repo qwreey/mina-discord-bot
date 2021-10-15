@@ -34,7 +34,7 @@ return {
 		func = function(replyMsg,message,args,Content)
 			local this = korquoteRequest.fetch()
 			local text = this.message:gsub("[^ ](%(.-%))",""):gsub(" +"," "); -- 한자를 지우기 위해서 패턴 매칭을 사용합니다
-			local expected = text:gsub("[%.,%(%)%[%]%*%-_%+=;:'\"]","");
+			local expected = text:gsub("[ %.,%(%)%[%]%*%-_%+=;:'\"]","");
 			local lenText = utf8.len(text);
 			local timeout = lenText * 10000;
 
@@ -54,7 +54,7 @@ return {
 				func = function (self,contents)
 					local endTime = os.clock();
 					if contents.user.id == Content.user.id then
-						local userText = contents.text:gsub(" +"," "):gsub("[%.,%(%)%[%]%*%-_%+=;:'\"]","");
+						local userText = contents.text:gsub("[ %.,%(%)%[%]%*%-_%+=;:'\"]","");
 						local newMessage = contents.message;
 						if expected == userText then
 							newMessage:reply {
