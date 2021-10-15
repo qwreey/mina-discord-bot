@@ -83,11 +83,11 @@ function module.put(name,value,author,when,userData)
 		return errorType.channelDetected; -- channel mention detected
 	end
 	local love = userData.love; -- get user love from userData
-    if (not name) or name == "" or name == " " or name == "\n" then
-        return errorType.nullName; -- invalid name
-    elseif (not value) or value == "" or value == " " or value == "\n" then
-        return errorType.nullValue; -- invalid value
-    elseif love < costLove then
+	if (not name) or name == "" or name == " " or name == "\n" then
+		return errorType.nullName; -- invalid name
+	elseif (not value) or value == "" or value == " " or value == "\n" then
+		return errorType.nullValue; -- invalid value
+	elseif love < costLove then
 		return errorType.notEnoughLove; -- if user's love didn't enough
 	elseif utf8Len(value) > maxValueLength then
 		return errorType.tooLongValue; -- if value is loner then max length

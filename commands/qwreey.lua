@@ -743,7 +743,7 @@ return {
 	["하린"] = {
 		alias = {"하리니","댭댭","댭댭이","댜비"};
 		reply = "귀엽고 노래 잘 부르고 예쁜 누나";
-	    love = function()
+		love = function()
 			return cRandom(18,24);
 		end;
 	};
