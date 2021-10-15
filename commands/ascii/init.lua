@@ -33,7 +33,7 @@ return {
 			replyMsg:setContent(("```\n%s```"):format(drawAscii("Soft",Content.rawArgs)));
 		end;
 	};
-	["	"] = {
+	["열차그리기"] = {
 		alias = {"train"};
 		reply = "그리고 있어요 . . .";
 		func = function(replyMsg,message,args,Content)
