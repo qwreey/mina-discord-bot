@@ -45,14 +45,21 @@ function module.new(replyMsg,message,Content,text,title)
     local timer;
     local newHook = hook.new {
         type = hook.types.before;
+        destroy = function (self)
+            self:detach();
+            gameForUsers[userId] = nil;
+            isEnded = true;
+            pcall(timer.clearTimer,timer);
+        end;
         func = function (self,contents)
             local endTime = os.clock();
             if contents.user.id == userId then
-                if not contents.channel.id ~= channelId then
+                if contents.channel.id ~= channelId then
                     message:reply {
                         content = "다른 채널로 이동하여 타자연습 게임을 종료하였습니다!";
                         reference = {message = message, mention = true};
                     };
+                    self:destroy();
                     return;
                 end
                 local userText = contents.text:gsub("[ %.,%(%)%[%]%*%-_%+=;:'\"]","");
@@ -67,30 +74,21 @@ function module.new(replyMsg,message,Content,text,title)
                         };
                         reference = {message = newMessage, mention = true};
                     };
-                    self:detach();
-                    gameForUsers[userId] = nil;
-                    isEnded = true;
-                    pcall(timer.clearTimer,timer);
+                    self:destroy();
                     return true;
                 elseif userText:match(zeroWidthSpace) then
                     newMessage:reply {
                         content = "복사/붇여넣기가 감지되었습니다!! 게임을 종료합니다";
                         reference = {message = newMessage, mention = true};
                     };
-                    self:detach();
-                    gameForUsers[userId] = nil;
-                    isEnded = true;
-                    pcall(timer.clearTimer,timer);
+                    self:destroy();
                     return true;
                 elseif stopTypingGame[userText] then
                     newMessage:reply {
                         content = "타자 연습을 멈췄습니다!";
                         reference = {message = newMessage, mention = true};
                     };
-                    self:detach();
-                    gameForUsers[userId] = nil;
-                    isEnded = true;
-                    pcall(timer.clearTimer,timer);
+                    self:destroy();
                     return true;
                 else
                     newMessage:reply {
