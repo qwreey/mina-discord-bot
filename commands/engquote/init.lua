@@ -1,5 +1,4 @@
--- 영문 명언
-
+local typingGame = require "class.typingGame";
 local engquoteRequest = require "commands.engquote.request";
 local engquoteEmbed = require "commands.engquote.embed";
 engquoteRequest:setCoroHttp(corohttp):setJson(json);
@@ -14,6 +13,19 @@ return {
 				embed = engquoteEmbed:embed(engquoteRequest.fetch());
 				content = "영어 명언을 가져왔습니다";
 			};
+		end;
+	};
+	["타자연습 영문"] = {
+		alias = {
+			"영문 타자연습","영문타자연습","영문타자","영문 타자",
+			"영어 타자","영어타자","영어 타자연습",
+			"영어타자연습","타자연습 영어","타자연습영문",
+			"타자영문","타자 영문","타자 영어","타자연습영문"
+		};
+		reply = "잠시만 기달려주세요 . . .";
+		embed = "잠시 뒤에 보이는 문구를 재빠르게 입력하세요!";
+		func = function(replyMsg,message,args,Content)
+			typingGame.new(replyMsg,message,Content,engquoteRequest.fetch());
 		end;
 	};
 };

@@ -167,25 +167,25 @@ reacts,commands,commandsLen = commandHandler.encodeCommands({
 				return;
 			elseif (RemoveNum % 1) ~= 0 then -- 소숫점을 입력함
 				local Remsg = message:reply("~~메시지를 반으로 쪼개서 지우라는거야? ㅋㅋㅋ~~");
-				runSchedule(800,function()
+				timeout(800,function()
 					Remsg:setContent("<지울 수> 는 정수만 사용 가능해요!");
 				end);
 				return;
 			elseif RemoveNum < 0 then -- 마이너스를 입력함
 				local Remsg = message:reply("~~메시지를 더 늘려달라는거야? ㅋㅋㅋ~~");
-				runSchedule(800,function()
+				timeout(800,function()
 					Remsg:setContent("적어도 2개 이상부터 지울 수 있어요!");
 				end);
 				return;
 			elseif RemoveNum > 100 then -- 너무 많음
 				local Remsg = message:reply("~~미쳤나봐... 작작 일 시켜~~");
-				runSchedule(800,function()
+				timeout(800,function()
 					Remsg:setContent("100 개 이상의 메시지는 지울 수 없어요!");
 				end);
 				return;
 			elseif RemoveNum < 2 then -- 범위를 넘어감
 				local Remsg = message:reply("~~그정도는 니 손으로 좀 지워라~~");
-				runSchedule(800,function()
+				timeout(800,function()
 					Remsg:setContent("너무 적어요! 2개 이상부터 지울 수 있어요!");
 				end);
 				return;
@@ -198,7 +198,7 @@ reacts,commands,commandsLen = commandHandler.encodeCommands({
 			local infoMsg = message:reply(("최근 메시지 %s개를 지웠어요!"):format(RemoveNum));
 			message:delete();
 
-			runSchedule(1200,function ()
+			timeout(1200,function ()
 				infoMsg:delete();
 			end);
 			return;
