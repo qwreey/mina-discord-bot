@@ -433,7 +433,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 			replyText.content = replyText.content .. loveText;
 		end
 		replyMsg = message:reply{
-			embed = Command.embed;
+			-- embed = Command.embed;
 			content = commandHandler.formatReply(replyText,{
 				Msg = message;
 				user = user;
