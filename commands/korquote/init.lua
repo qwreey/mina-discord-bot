@@ -36,7 +36,7 @@ return {
 			local text = this.message:gsub("[^ ](%(.-%))",""):gsub(" +"," "); -- 한자를 지우기 위해서 패턴 매칭을 사용합니다
 			local expected = text:gsub("[ %.,%(%)%[%]%*%-_%+=;:'\"]","");
 			local lenText = utf8.len(text);
-			local timeoutMS = lenText * 10000;
+			local timeoutMS = lenText * 3500;
 
 			replyMsg:update {
 				content = "아래의 문구를 따라 입력해주세요 (제목 미포함)";
