@@ -21,6 +21,26 @@ local errorType = {
 };
 module.errorType = errorType;
 
+-- format
+function module.format(userReact)
+	if not userReact then
+		return "오류가 발생했어요!\n> 알 수 없는 유저 반응을 호출하려고 시도합니다\n```app.main : formatUserLearnReact(userReact) -> userReact == nil```";
+	end
+
+	local authorId = userReact.author;
+	local when = userReact.when;
+	local content = userReact.content;
+	local author = userData:loadData(authorId);
+
+	-- p(author,authorId,when,content);
+
+	if (not authorId) or (not author) or (not when) or (not content) then
+		return "오류가 발생했어요!\n> 유저 반응이 잘못되었습니다\n```app.main : formatUserLearnReact(userReact) -> userReact has missing properties```";
+	end
+
+	return ("%s\n> '%s' 님이 가르쳐 주셨어요!"):format(content,author.latestName);
+end
+
 --- get react
 function module.get(name)
 	local hash = sha1(name);

@@ -6,15 +6,12 @@
 	MINA Discord bot
 	https://github.com/qwreey75/MINA_DiscordBot/blob/faf29242b29302341d631513617810d9fe102587/bot.lua
 
-	TODO: DM 에다가 명령어 쓰기 막기
 	TODO: 도움말 만들기
 	TODO: 사전 Json 인코딩을 없에고 그냥 바로 테이블 넘기기
 	TODO: 지우기 명령,강퇴,채널잠금,밴 같은거 만들기
 	TODO: 다 못찾으면 !., 같은 기호 지우고 찾기
 	TODO: 그리고도 못찾으면 조사 다 지우고 찾기
-	TODO: 욕설 멈춰!! 욕 = 떨어짐
 ]]
---#region : Luvit 모듈 / 주요 모듈 임포트
 
 -- set title of terminal
 _G.app = {
@@ -36,59 +33,47 @@ do
 	end
 end
 
--- add bin libs path
-process.env.PATH = process.env.PATH .. ";.\\bin"
-
--- set require path
-package.path = require("app.path")(package.path);
-_G.require = require;
-local exitCodes = require("app.exitCodes"); _G.exitCodes = exitCodes;
+--#region : Luvit 모듈 / 주요 모듈 임포트
+-- setup require system
+process.env.PATH = process.env.PATH .. ";.\\bin"; -- add bin libs path
+package.path = require("app.path")(package.path); -- set require path
+_G.require = require; -- set global require function
 
 -- load modules
-local prettyPrint = require "pretty-print"; _G.prettyPrint = prettyPrint;-- 터미널에 여러 자료형 프린팅
-local readline = require "readline"; _G.readline = readline;-- 터미널 라인 읽기
-local logger = require "log"; _G.logger = logger; -- log 핸들링
-local json = require "json"; _G.json = json;-- json 핸들링
-local corohttp = require "coro-http"; _G.corohttp = corohttp;-- http 핸들링
-local timer = require "timer"; _G.timer = timer;-- 타임아웃 핸들링
-local thread = require "thread"; _G.thread = thread-- 스레드 조정
-local fs = require "fs"; _G.fs = fs;-- 파일 시스템
-local ffi = require "ffi"; _G.ffi = ffi;-- C 동적 상호작용
-local utf8 = utf8 or require "utf8"; _G.utf8 = utf8; -- 유니코드8 라이브러리 불러오기
-local term = require "app.term"; -- terminal settings
-local utils = require "utils"; _G.utils = utils;
-local adapt = utils.adapt; _G.adapt = adapt;
-local uv = require "uv"; _G.uv = uv;
-local qDebug = require "app.debug"; _G.qDebug = qDebug;
-local dumpTable = require "libs.dumpTable";
-local spawn = require "coro-spawn"; _G.spawn = spawn;
-local split = require "coro-split"; _G.split = split;
-local sha1 = require "sha1"; _G.sha1 = sha1;
-local osTime = os.time;
-
--- same with js's timeout function
-local function runSchedule(time,func)
-	timer.setTimeout(time,coroutine.wrap(func));
-end
-_G.timeout = runSchedule;
-
-logger.info("------------------------ [CLEAN  UP] ------------------------");
+local utf8 = utf8 or require "utf8"; _G.utf8 = utf8; -- unicode 8 library
+local uv = require "uv"; _G.uv = uv; -- load uv library
+local prettyPrint = require "pretty-print"; _G.prettyPrint = prettyPrint; -- print many typed object on terminal
+local readline = require "readline"; _G.readline = readline; -- reading terminal lines
+local json = require "json"; _G.json = json; -- json library
+local corohttp = require "coro-http"; _G.corohttp = corohttp; -- luvit's http library
+local timer = require "timer"; _G.timer = timer; -- luvit's timer library that include timeout, sleep, ...
+local thread = require "thread"; _G.thread = thread; -- luvit's thread library
+local fs = require "fs"; _G.fs = fs; -- luvit's fils system library
+local ffi = require "ffi"; _G.ffi = ffi; -- luajit's ffi library
+local utils = require "utils"; _G.utils = utils; -- luvit's utils library
+local adapt = utils.adapt; _G.adapt = adapt; -- adapt function alias
+local spawn = require "coro-spawn"; _G.spawn = spawn; -- spawn process (child process wrapper)
+local split = require "coro-split"; _G.split = split; -- run splitted coroutines
+local sha1 = require "sha1"; _G.sha1 = sha1; -- sha1
+local osTime = os.time; _G.osTime = osTime; -- time
+local logger = require "log"; _G.logger = logger; -- log library
+local dumpTable = require "libs.dumpTable"; -- table dump library, this is auto injecting dump function on global 'table'
+local exitCodes = require("app.exitCodes"); _G.exitCodes = exitCodes; -- get exit codes
+local qDebug = require "app.debug"; _G.qDebug = qDebug; -- my debug system
+local term = require "app.term"; -- setuping REPL terminal
+local commandHandler = require "commandHandler"; _G.commandHandler = commandHandler; -- command decoding-caching-indexing system
+local cRandom = require "cRandom"; _G.cRandom = cRandom; -- LUA random handler
+local strSplit = require "stringSplit"; _G.strSplit = strSplit; -- string split library
+local urlCode = require "urlCode"; _G.urlCode = urlCode; -- url encoder/decoder library
+local makeId = require "makeId"; _G.makeId = makeId; -- making id with cRandom library
+local makeSeed = require "libs.makeSeed"; _G.makeSeed = makeSeed; -- making seed library, this is used on cRandom llibrary
+local myXMl = require "myXML"; _G.myXMl = myXMl; -- myXML library
+local userLearn = require "commands.learning.learn"; -- user learning library
+local data = require "data"; data:setJson(json); _G.data = data; -- Data system
+local userData = require "userData"; userData:setJson(json):setlogger(logger):setMakeId(makeId); _G.userData = userData; -- Userdata system
 --#endregion : Luvit 모듈 / 주요 모듈 임포트
---#region : 커맨드 라인 인자 받아오기
-local RunOption = {}; -- 인자 옵션 받는곳
-logger.info("find command line args ...");
-for i,v in pairs(args) do ---@diagnostic disable-line
-	if i > 1 then
-		logger.info((" |- args[%d] : %s"):format(i-1,v));
-		RunOption[v] = true;
-	end
-end
-if RunOption["Background"] then
-	logger.info("Background mode Detected! turn off logging..");
-	logger.disable = true;
-end
---#endregion : 커맨드 라인 인자 받아오기
---#region : 디코 모듈 임포트
+--#region : Discordia Module
+logger.info("------------------------ [CLEAN  UP] ------------------------");
 logger.info("wait for discordia ...");
 local discordia = require "discordia"; _G.discordia = discordia; -- 디스코드 lua 봇 모듈 불러오기
 local discordia_class = require "discordia/libs/class"; _G.discordia_class = discordia_class; -- 디스코드 클레스 가져오기
@@ -106,184 +91,24 @@ function discordia_Logger:log(level, msg, ...) -- 디스코드 모듈 로거부�
 	logFn(msg);
 	return msg;
 end
-
-local function startBot(botToken) -- 봇 시작시키는 함수
-	-- 토큰주고 시작
-	logger.debug("starting bot ...");
-	client:run(("Bot %s"):format(botToken));
-	client:setGame("'미나야 도움말' 을 이용해 도움말을 얻거나 '미나야 <할말>' 을 이용해 미나와 대화하세요!");
-	return;
-end
-local function reloadBot() -- 봇 종료 함수
-	logger.info("try restarting ...");
-	client:setGame("재시작중...");
-end
-local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
-	if (Text == "!!!stop" or Text == "!!!kill") then
-		message:reply('> 프로그램 죽이는중 . . .');
-		os.exit(exitCodes.exit); -- 프로그램 킬
-	elseif (Text == "!!!restart" or Text == "!!!reload") then
-		logger.info("Restarting ...");
-		message:reply('> 재시작중 . . . (2초 내로 완료됩니다)');
-		reloadBot();
-		os.exit(exitCodes.reload); -- 프로그램 다시시작
-	elseif (Text == "!!!pull" or Text == "!!!download") then
-		logger.info("Download codes ...");
-		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . .');
-		_G.livereloadEnabled = false;
-		os.execute("git pull"); -- git 에서 변동사항 가져와 적용하기
-		_G.livereloadEnabled = true;
-		msg:setContent('> 적용중 . . . (3초 내로 완료됩니다)');
-		reloadBot();
-		os.exit(exitCodes.reload); -- 다운로드 (리로드)
-	elseif (Text == "!!!push" or Text == "!!!upload") then
-		logger.info("Upload codes ...");
-		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 코드를 업로드중 . . .');
-		_G.livereloadEnabled = false;
-		os.execute("git add .&&git commit -m 'MINA : Upload in main code (bot.lua)'&&git push");
-		_G.livereloadEnabled = true;
-		msg:setContent('> 완료!');
-		return; -- 업로드
-	elseif (Text == "!!!sync") then
-		logger.info("Sync codes ...");
-		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 동기화중 . . . (8초 내로 완료됩니다)');
-		_G.livereloadEnabled = false;
-		os.execute('git add .&&git commit -m "MINA : Sync in main code (Bot.lua)"&&git pull&&git push');
-		_G.livereloadEnabled = true;
-		msg:setContent('> 적용중 . . . (3초 내로 완료됩니다)');
-		reloadBot();
-		os.exit(exitCodes.reload); -- 동기화 (리로드)
-	elseif (Text == "!!!help" or Text == "!!!cmds") then
-		message:reply(
-			'!!!help 또는 !!!cmds : 이 창을 띄웁니다\n' ..
-			'!!!stop 또는 !!!kill : 봇을 멈춥니다\n' ..
-			'!!!restart 또는 !!!reload : 봇을 다시로드 시킵니다\n' ..
-			'!!!pull 또는 !!!download : 클라우드로부터 코드를 내려받고 다시 시작합니다\n' ..
-			'!!!push 또는 !!!upload : 클라우드로 코드를 올립니다\n' ..
-			'!!!sync : 클라우드와 코드를 동기화 시킵니다 (차이 비교후 병합)\n'
-		);
-	end
-end
---#endregion : Discord Module
---#region : 부분 모듈 임포팅
-logger.info("load modules ...");
-local commandHandler = require "commandHandler"; _G.commandHandler = commandHandler; -- 커맨드 구조 처리기
-local cRandom = require "cRandom"; _G.cRandom = cRandom; -- LUA 렌덤 핸들러
-local strSplit = require "stringSplit"; _G.strSplit = strSplit; -- 글자 분해기
-local urlCode = require "urlCode"; _G.urlCode = urlCode; -- 한글 URL 인코더/디코더
-local makeId = require "makeId"; _G.makeId = makeId; -- ID 만드는거
-local makeSeed = require "libs.makeSeed"; _G.makeSeed = makeSeed;
-local myXMl = require "myXML"; _G.myXMl = myXMl;
-local userLearn = require "commands.learning.learn";
-
--- 데이터
-local data = require "data"; _G.data = data;
-data:setJson(json);
-
--- 유저 데이터 핸들링
-local userData = require "userData"; _G.userData = userData;
-userData:setJson(json):setlogger(logger):setMakeId(makeId);
-
---#endregion : 부분 모듈 임포팅
---#region : 설정파일 불러오기
-logger.info("load files ...");
-local ACCOUNTData = data.load("data/ACCOUNT.json"); _G.ACCOUNTData = ACCOUNTData;
-local loveLeaderstats = data.load("data/loveLeaderstats.json");
-local EULA = data.loadRaw("data/EULA.txt"); _G.EULA = EULA;
---#endregion : load settings from data file
+--#endregion : Discordia Module
 --#region : 반응, 프리픽스, 설정, 커맨드 등등
 logger.info("---------------------- [LOAD SETTINGS] ----------------------");
-logger.info("load settings ...");
-local onKeywords = {
-	["켜기"] = true;
-	["켜"] = true;
-	["켜줘"] = true;
-	["켜봐"] = true;
-	["켜라"] = true;
-	["켜줘라"] = true;
-	["켜봐라"] = true;
-	["켜주세요"] = true;
-	["온"] = true;
-	["on"] = true;
-	["ON"] = true;
-	["On"] = true;
-	["켜보세요"] = true;
-	["켜라고요"] = true;
-}; _G.onKeywords = onKeywords;
-local offKeywords = {
-	["끄기"] = true;
-	["꺼"] = true;
-	["꺼줘"] = true;
-	["꺼봐"] = true;
-	["꺼라"] = true;
-	["꺼줘라"] = true;
-	["꺼봐라"] = true;
-	["꺼주세요"] = true;
-	["오프"] = true;
-	["off"] = true;
-	["OFF"] = true;
-	["Off"] = true;
-	["꺼보세요"] = true;
-	["꺼라고요"] = true;
-}; _G.offKeywords = offKeywords;
-local loveCooltime = 3600;
-local disableDm = "이 반응은 DM 에서 사용 할 수 없어요! 서버에서 이용해 주세요";
-local eulaComment_love = "\n" .. -- 약관 동의 안할때 호감도 표시
-"\n> 호감도 기능을 사용할 수 없어요!" ..
-"\n> 호감도 기능을 사용하려면 '미나야 약관 동의' 를 입력해주세요!" ..
-"\n> (약관의 세부정보를 보려면 '미나야 약관' 을 입력해주세요)";
-local Admins = { -- 관리 명령어 권한
-["367946917197381644"] = "쿼리";
-["647101613047152640"] = "눈송이";
-["415804982764371969"] = "상어";
-["754620012450414682"] = "팥죽";
-["756035861250048031"] = "내부계";
-};
-local prefixs = { -- 명령어 맨앞 글자 (접두사)
-[1] = "미나야";
-[2] = "미나";
-[3] = "미나야.";
-[4] = "미나!";
-[5] = "미나야!";
-[6] = "미나야...";
-[7] = "미나야..",
-[8] = "미나...";
-[9] = "미나는";
-[10] = "미나의";
-[11] = "mina";
-[12] = "hey mina";
-};
-local prefixReply = { -- 그냥 미나야 하면 답
-"미나는 여기 있어요!","부르셨나요?","넹?",
-"왜요 왜요 왜요?","심심해요?","네넹","미나에요",
-"Zzz... 아! 안졸았어요","네!"
-};
-local unknownReply = { -- 반응 없을때 띄움
-"(갸우뚱?)","무슨 말이에요?","네?","으에?"--,"먕?",":thinking: 먀?"
-};
-do -- 글로벌에 loveRang 함수 추가
-	local cache = {};
-	_G.loveRang = function (min,max)
-		local key = ("%dx%d"):format(min,max);
-		local incache = cache[key];
-		if incache then return incache; end
-		local new = function ()
-			return cRandom(min,max);
-		end;
-		cache[key] = new;
-		return new;
-	end;
-	_G.defaultLove = loveRang(2,8);
-	_G.rmLove = loveRang(-2,-8);
-end
-logger.info(" |- load commands from commands");
+
+-- load environments
+logger.info("load environments ...");
+require("app.env"); -- inject environments
+local adminCmd = require("app.adminCmd"); -- load admin commands
+
+-- load commands
+logger.info(" |- load commands from commands folder");
 local otherCommands = {} -- commands 폴더에서 커맨드 불러오기
 for dir in fs.scandirSync("commands") do
 	dir = string.gsub(dir,"%.lua$","");
 	logger.info(" |  |- load command dict from : commands." .. dir);
 	otherCommands[#otherCommands+1] = require("commands." .. dir);
 end
-logger.info("settings loaded!");
+
 -- 커맨드 색인파일 만들기
 local reacts,commands,commandsLen;
 reacts,commands,commandsLen = commandHandler.encodeCommands({
@@ -392,30 +217,41 @@ reacts,commands,commandsLen = commandHandler.encodeCommands({
 	};
 },unpack(otherCommands));
 _G.reacts = reacts;
-logger.info("command indexing end!");
-local function formatUserLearnReact(userReact)
-	if not userReact then
-		return "오류가 발생했어요!\n> 알 수 없는 유저 반응을 호출하려고 시도합니다\n```app.main : formatUserLearnReact(userReact) -> userReact == nil```";
-	end
+logger.info(" |- command indexing end!");
 
-	local authorId = userReact.author;
-	local when = userReact.when;
-	local content = userReact.content;
-	local author = userData:loadData(authorId);
-
-	-- p(author,authorId,when,content);
-
-	if (not authorId) or (not author) or (not when) or (not content) then
-		return "오류가 발생했어요!\n> 유저 반응이 잘못되었습니다\n```app.main : formatUserLearnReact(userReact) -> userReact has missing properties```";
-	end
-
-	return ("%s\n> '%s' 님이 가르쳐 주셨어요!"):format(content,author.latestName);
-end
 --#endregion : 반응, 프리픽스, 설정
 --#region : 메인 파트
 logger.info("----------------------- [SET UP BOT ] -----------------------");
 local findCommandFrom = commandHandler.findCommandFrom;
 local insert = table.insert;
+
+-- HOOK SYSTEM
+local beforeHook = {};
+local afterHook = {};
+local hook = {};
+hook.__index = hook;
+hook.types = {after = 1; before = 2;};
+function hook.new(self)
+	self.id = makeId();
+end
+function hook:attach()
+	if self.isAttach then
+		error("This hook already attached to message event!");
+	end
+	((self.type == self.types.after and afterHook) or (self.type == self.types.before and beforeHook))[self.id] = self;
+	self.isAttach = true;
+end
+function hook:detach()
+	if not self.isAttach then
+		error("couldn't detach this hook from message event, it seemed not attached yet!");
+	end
+	((self.type == self.types.after and afterHook) or (self.type == self.types.before and beforeHook))[self.id] = nil;
+	self.isAttach = false;
+end
+_G.hook = hook;
+_G.afterHook = afterHook;
+_G.beforeHook = beforeHook;
+
 client:on('messageCreate', function(message) -- 메시지 생성됨
 
 	-- get base information from message object
@@ -430,7 +266,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	end
 
 	-- run admin command if exist
-	if Admins[user.id] then
+	if admins[user.id] then
 		adminCmd(text,message);
 	end
 
@@ -479,7 +315,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 		local userReact = findCommandFrom(userLearn.get,splited);
 		if userReact then
 			message:reply {
-				content = formatUserLearnReact(userReact);
+				content = userLearn.format(userReact);
 				reference = {message = message, mention = false};
 			};
 			return;
@@ -618,9 +454,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 end);
 
 startBot(ACCOUNTData.botToken); -- init bot (init discordia)
-if not RunOption.Background then -- check this service is not on background; if this service is on background; ignore calling terminal REPL system
-	term(); -- loads terminal read - execute - print - loop (AKA REPL) system; it will allows us make debug easy
-end
+term(); -- load repl terminal system
 _G.livereloadEnabled = false; -- enable live reload
 require("app.livereload"); -- loads livereload system; it will make uv event and take file changed signal
 --#endregion : 메인 파트

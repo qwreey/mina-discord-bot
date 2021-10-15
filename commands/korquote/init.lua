@@ -1,4 +1,3 @@
--- 한글 명언
 local korquoteRequest = require "commands.korquote.request";
 local korquoteEmbed = require "commands.korquote.embed";
 korquoteRequest:setCRandom(cRandom):setJson(json);
