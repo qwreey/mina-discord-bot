@@ -92,8 +92,6 @@ function module.findCommandFrom(reacts,text)
 			local thisText = splitCommandText[index];
 			spText = spText .. (index == lenSplit and "" or " ") .. thisText;
 			textn = textn .. thisText;
-			logger.infof("indexing for %s",spText);
-			logger.infof("indexing for %s",textn);
 			local spTempCommand = findCommand(reacts,spText);
 			if spTempCommand then
 				return spTempCommand,spText,spText;
