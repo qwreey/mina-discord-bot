@@ -27,7 +27,7 @@ function module.new(replyMsg,message,Content,text,title)
     end
 
     text = text:gsub("[^ ](%(.-%))",""):gsub(" +"," "); -- 한자를 지우기 위해서 패턴 매칭을 사용합니다
-    local expected = text:gsub("[ %.,%(%)%[%]%*%-_%+=;:'\"]","");
+    local expected = text:gsub("[ %.,%(%)%[%]%*%-_%+=;:'\"]",""):lower();
     local lenText = utf8.len(text);
     local timeoutMS = lenText * 4500;
 
@@ -62,7 +62,7 @@ function module.new(replyMsg,message,Content,text,title)
                     self:destroy();
                     return;
                 end
-                local userText = contents.text:gsub("[ %.,%(%)%[%]%*%-_%+=;:'\"]","");
+                local userText = contents.text:gsub("[ %.,%(%)%[%]%*%-_%+=;:'\"]",""):lower();
                 local newMessage = contents.message;
                 if expected == userText then
                     newMessage:reply {
