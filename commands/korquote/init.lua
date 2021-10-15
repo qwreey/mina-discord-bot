@@ -43,7 +43,7 @@ return {
 				embed = {
 					title = this.author;
 					description = text:gsub(" "," " .. zeroWidthSpace),
-					footer = {text = ("제한 시간 : %s"):format(formatTime(timeout))}
+					footer = {text = ("제한 시간 : %s"):format(formatTime(timeout / 1000))}
 				};
 			};
 
