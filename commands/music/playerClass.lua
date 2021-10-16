@@ -118,10 +118,10 @@ end
 
 -- stop now playing
 function this:__stop() -- PRIVATE
-	self.handler:stopStream();
 	if not self.nowPlaying then
 		return;
 	end
+	self.handler:stopStream();
 	self.nowPlaying = nil;
 	self.isPaused = false;
 	return true;
@@ -136,7 +136,7 @@ function this:apply()
 		return;
 	end
 	if not song then
-		this:__stop();
+		self:__stop();
 	end
 	self:__play(song);
 	return true;
