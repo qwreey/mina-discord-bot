@@ -122,6 +122,7 @@ function this:apply()
 		this:__stop();
 	end
 	self:__play(song);
+	return true;
 end
 
 --- insert new song
@@ -141,7 +142,10 @@ function this:add(thing,onIndex)
 	end
 
 	-- apply this play queue
-	self:apply();
+	local startedPlaying = self:apply();
+	if not startedPlaying then
+		self.download(thing);
+	end
 	return true;
 end
 

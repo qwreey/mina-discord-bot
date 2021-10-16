@@ -77,35 +77,51 @@ end
 ---@return table | nil CommandObject Command or nil
 ---@return string | nil CommandName Name of command
 ---@return string | nil CommandRawName full of user inputed string
-function module.findCommandFrom(reacts,text)
-	local splitCommandText = (type(text) == "table") and text or strSplit(text:lower(),"\32");
+function module.findCommandFrom(reacts,text,splitCommandText)
+	splitCommandText = splitCommandText or ((type(text) == "table") and text or strSplit(text:lower(),"\32"));
 
+	-- rawText = "find thing like this"
+	-- indexing( "find thing like this" )
+	-- indexing( "find thing like" )
+	-- indexing( "find thing" )
+	-- indexing( "find" )
 	do
-		-- (커맨드 색인 1 차시도) 띄어쓰기를 포함한 명령어를 검사할 수 있도록 for 루프 실행
-		-- 찾기 찾기 찾기
-		-- 찾기 찾기
-		-- 찾기
-		-- 이런식으로 계단식 찾기를 수행
-		local spText,textn = "",""; -- 띄어쓰기가 포함되도록 검색 / 띄어쓰기 없이 검색
-		local lenSplit = #splitCommandText;
-		for index = lenSplit,1,-1 do
-			local thisText = splitCommandText[index];
-			spText = spText .. (index == lenSplit and "" or " ") .. thisText;
-			textn = textn .. thisText;
-			local spTempCommand = findCommand(reacts,spText);
-			if spTempCommand then
-				return spTempCommand,spText,spText;
+		local this = text;
+		while true do
+			local command = findCommand(reacts,this);
+			if command then
+				return command,this,this;
 			end
-			local tempCommand = findCommand(reacts,spText);
-			if tempCommand then
-				return tempCommand,textn,textn;
+			this = this:match("(.+) ");
+			if not this then
+				break;
 			end
 		end
 	end
 
-	-- (커맨드 색인 2 차시도) 커맨드 못찾으면 단어별로 나눠서 찾기 시도
-	-- 찾기 찾기 찾기
-	-- 부분부분 다 나눠서 찾기
+	-- do
+	-- 	local spText,textn = "",""; -- 띄어쓰기가 포함되도록 검색 / 띄어쓰기 없이 검색
+	-- 	local lenSplit = #splitCommandText;
+	-- 	for index = lenSplit,1,-1 do
+	-- 		local thisText = splitCommandText[index];
+	-- 		spText = spText .. (index == lenSplit and "" or " ") .. thisText;
+	-- 		textn = textn .. thisText;
+	-- 		local spTempCommand = findCommand(reacts,spText);
+	-- 		if spTempCommand then
+	-- 			return spTempCommand,spText,spText;
+	-- 		end
+	-- 		local tempCommand = findCommand(reacts,spText);
+	-- 		if tempCommand then
+	-- 			return tempCommand,textn,textn;
+	-- 		end
+	-- 	end
+	-- end
+
+	-- rawText = "find thing like this"
+	-- indexing( "find" )
+	-- indexing( "thing" )
+	-- indexing( "like" )
+	-- indexing( "this" )
 	for findPos,textn in pairs(splitCommandText) do
 		local command = findCommand(reacts,textn);
 		if command then

@@ -326,10 +326,10 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	-- 찾으면 넘겨서 COMMAND RUN 에 TRY 던짐
 	local rawCommandText = text:sub(#prefix+1,-1); -- 접두사 뺀 글자
 	local splited = strSplit(rawCommandText:lower(),"\32")
-	local Command,CommandName,rawCommandName = findCommandFrom(reacts,splited);
+	local Command,CommandName,rawCommandName = findCommandFrom(reacts,rawCommandText,splited);
 	if not Command then
 		-- Solve user learn commands
-		local userReact = findCommandFrom(userLearn.get,splited);
+		local userReact = findCommandFrom(userLearn.get,rawCommandText,splited);
 		if userReact then
 			message:reply {
 				content = userLearn.format(userReact);
