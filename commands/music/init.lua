@@ -569,9 +569,14 @@ return {
 			if not player then
 				return replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
 			end
-			local rawArgs = Content.rawArgs;
+			local this = Content.rawArgs;
+			this = tonumber(this) or tonumber(this:match("%d+"));
+			if not this then
+				replyMsg:setContent("확인할 곡의 번째를 입력해주세요!");
+				return;
+			end
 			replyMsg:update {
-				embed = player:embedfiyNowplaying();
+				embed = player:embedfiyNowplaying(this);
 				content = "지금 재생중인 곡입니다!";
 			};
 		end;

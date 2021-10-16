@@ -4,6 +4,7 @@ this.__index = this;
 local ytDownload = require("commands.music.youtubeStream");--require("commands.music.youtubeDownload");
 local remove = table.remove;
 local insert = table.insert;
+local time = os.time;
 
 local function formatTime(time)
 	local sec = math.floor(time % 60);
@@ -27,6 +28,8 @@ voiceChannelID : 그냥 식별용으로 쓰기 위해 만든 별거 없는 아�
 nowPlaying : 지금 플레이중인 곡
 new.playIndex
 ]]
+
+-- make new playerClass instnace
 function this.new(props)
 	local new = {};
 	setmetatable(new,this);
@@ -34,11 +37,13 @@ function this.new(props)
 	return new;
 end
 
+-- download music for prepare playing song
 function this.download(thing)
 	local audio,info,url,vid = ytDownload.download(thing.url);
 	if not audio then
 		return;
 	end
+	thing.whenDownloaded = time();
 	thing.url = url or thing.url;
 	thing.audio = audio;
 	thing.info = info;
@@ -46,6 +51,7 @@ function this.download(thing)
 	return true;
 end
 
+-- init player object
 function this:__init(props)
 	self.voiceChannelID = props.voiceChannelID;
 	self.nowPlaying = nil;
@@ -56,19 +62,29 @@ end
 
 --#region : Stream handling methods
 
+-- play thing
 function this:__play(thing) -- PRIVATE
-	if not thing then -- if thing is nil, return
+	-- if thing is nil, return
+	if not thing then
 		return;
 	end
-	if self.nowPlaying then -- if already playing something, kill it
+
+	-- if already playing something, kill it
+	if self.nowPlaying then
 		self:__stop();
 	end
+
+	-- set state to playing
 	self.nowPlaying = thing; -- set playing song
 	self.isPaused = false; -- set paused state to false
-	if not thing.audio then -- if there are no audio, load it now
+
+	-- if it needs redownload, try it now
+	if (ytDownload.redownload) and (time() - thing.whenDownloaded > 5) then
 		self.download(thing);
 	end
-	coroutine.wrap(function() -- run asynchronously task for playing song
+
+	-- run asynchronously task for playing song
+	coroutine.wrap(function()
 		-- play this song
 		local handler = self.handler;
 		local isPassed,result = pcall(handler.playFFmpeg,handler,thing.audio);
@@ -102,6 +118,8 @@ function this:__play(thing) -- PRIVATE
 		end
 	end)();
 end
+
+-- stop now playing
 function this:__stop() -- PRIVATE
 	if not self.nowPlaying then
 		return;
@@ -109,10 +127,12 @@ function this:__stop() -- PRIVATE
 	self.nowPlaying = nil;
 	self.isPaused = false;
 	self.handler:stopStream();
+	return true;
 end
 
 --#endregion : Stream handling methods
 
+-- apply play queue
 function this:apply()
 	local song = self[1];
 	if self.nowPlaying == song then
@@ -127,11 +147,9 @@ end
 
 --- insert new song
 function this:add(thing,onIndex)
-	-- if it requires preloading, do it now
-	if not ytDownload.disablePreloading then
-		if not self.download(thing) then
-			return;
-		end
+	self.download(thing);
+	if not self.audio then
+		return;
 	end
 
 	-- add into play queue
@@ -142,10 +160,7 @@ function this:add(thing,onIndex)
 	end
 
 	-- apply this play queue
-	local startedPlaying = self:apply();
-	if not startedPlaying then
-		self.download(thing);
-	end
+	self:apply();
 	return true;
 end
 

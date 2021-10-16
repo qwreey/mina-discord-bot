@@ -4,7 +4,7 @@ local function isExistString(str)
 	return str and str ~= "" and str ~= " " and str ~= "\n";
 end
 
-module.disablePreloading = true;
+module.redownload = true;
 
 function module.download(vid)
 	vid = module.getVID(vid);
