@@ -4,6 +4,8 @@ local function isExistString(str)
 	return str and str ~= "" and str ~= " " and str ~= "\n";
 end
 
+module.disablePreloading = true;
+
 function module.download(vid)
 	vid = module.getVID(vid);
 	local url = ('https://www.youtube.com/watch?v=%s'):format(vid);

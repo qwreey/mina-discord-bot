@@ -109,7 +109,7 @@ return {
 			end
 
 			if not rawArgs:match(",") then -- once
-				local this = {url = rawArgs};
+				local this = {message = message,url = rawArgs};
 				local passed,back = pcall(player.add,player,this,nth);
 
 				-- when failed to adding song into playlist
@@ -139,7 +139,7 @@ return {
 				end
 				local ok = 0;
 				for _,item in ipairs(list) do
-					local this = {url = item};
+					local this = {message = message,url = item};
 					local passed,back = pcall(player.add,player,this,nth);
 					if not passed then
 						message:reply(("곡 '%s' 를 추가하는데 실패하였습니다\n```%s```"):format(tostring(item),tostring(back)));

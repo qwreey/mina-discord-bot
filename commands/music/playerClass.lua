@@ -1,7 +1,7 @@
 local this = {};
 this.__index = this;
 
-local ytDown = require("commands.music.youtubeStream");--require("commands.music.youtubeDownload");
+local ytDownload = require("commands.music.youtubeStream");--require("commands.music.youtubeDownload");
 local remove = table.remove;
 local insert = table.insert;
 
@@ -34,6 +34,18 @@ function this.new(props)
 	return new;
 end
 
+function this.download(thing)
+	local audio,info,url,vid = ytDownload.download(thing.url);
+	if not audio then
+		return;
+	end
+	thing.url = url or thing.url;
+	thing.audio = audio;
+	thing.info = info;
+	thing.vid = vid;
+	return true;
+end
+
 function this:__init(props)
 	self.voiceChannelID = props.voiceChannelID;
 	self.nowPlaying = nil;
@@ -45,19 +57,45 @@ end
 --#region : Stream handling methods
 
 function this:__play(thing) -- PRIVATE
-	if not thing then -- if thing is none - song
+	if not thing then -- if thing is nil, return
 		return;
 	end
-	if self.nowPlaying then
+	if self.nowPlaying then -- if already playing something, kill it
 		self:__stop();
 	end
-	self.nowPlaying = thing;
-	self.isPaused = false;
-	coroutine.wrap(function()
-		self.handler:playFFmpeg(thing.audio);
-		if self.isLooping and self.nowPlaying then
-			insert(self,thing);
+	self.nowPlaying = thing; -- set playing song
+	self.isPaused = false; -- set paused state to false
+	if not thing.audio then -- if there are no audio, load it now
+		self.download(thing);
+	end
+	coroutine.wrap(function() -- run asynchronously task for playing song
+		-- play this song
+		local handler = self.handler;
+		local isPassed,result = pcall(handler.playFFmpeg,handler,thing.audio);
+		if not isPassed then
+			self.error = result;
+			logger.errorf("Play failed : %s",result);
+			local message = thing.message;
+			if message then -- display error message
+				message:reply {
+					content = ("곡 '%s' 를 실행하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
+						tostring((thing.info or {title = "unknown"}).title),
+						tostring(result)
+					);
+					reference = {message = message, mention = true};
+				};
+			end
 		end
+
+		-- when looping is enabled
+		if self.isLooping and self.nowPlaying then
+			insert(self,thing); -- insert this into end of queue
+			if ytDownload.disablePreloading then -- remove preloaded audio
+				self.audio = nil;
+			end
+		end
+
+		-- remove this song from queue
 		self.nowPlaying = nil; -- remove song
 		if self[1] == thing then
 			self:remove(1);
@@ -88,21 +126,23 @@ end
 
 --- insert new song
 function this:add(thing,onIndex)
-	local audio,info,url,vid = ytDown.download(thing.url);
-	if not audio then
-		return nil;
+	-- if it requires preloading, do it now
+	if not ytDownload.disablePreloading then
+		if not self.download(thing) then
+			return;
+		end
 	end
-	thing.url = url or thing.url;
-	thing.audio = audio;
-	thing.info = info;
-	thing.vid = vid;
+
+	-- add into play queue
 	if onIndex then
 		insert(self,onIndex,thing);
 	else
 		insert(self,thing);
 	end
+
+	-- apply this play queue
 	self:apply();
-	return audio;
+	return true;
 end
 
 -- remove song and checkout
