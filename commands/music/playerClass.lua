@@ -106,9 +106,6 @@ function this:__play(thing) -- PRIVATE
 		-- when looping is enabled
 		if self.isLooping and self.nowPlaying then
 			insert(self,thing); -- insert this into end of queue
-			if ytDownload.disablePreloading then -- remove preloaded audio
-				self.audio = nil;
-			end
 		end
 
 		-- remove this song from queue
@@ -172,12 +169,14 @@ function this:remove(start,counts)
 		counts = 1; -- THIS IS MUST BE 1, other value will make errors
 	end
 	local popedLast,indexLast;
+	local popedAll = {};
 	for index = start,start+counts-1 do
 		popedLast = remove(self,start);
 		indexLast = index;
+		insert(popedAll,popedLast);
 	end
 	self:apply();
-	return popedLast,indexLast;
+	return popedLast,indexLast,popedAll;
 end
 
 -- kill bot

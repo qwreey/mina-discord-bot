@@ -409,15 +409,18 @@ return {
 			end
 
 			-- skip!
-			local lastOne;
-			lastOne = player:remove(1,rawArgs);
-			-- for _ = 1,rawArgs do
-			-- 	lastOne = player:remove(1);
-			-- end
+			local lastOne,lastIndex,all = player:remove(1,rawArgs);
+			local looping = player.isLooping
+			if looping then
+				for _,thing in ipairs(all) do
+					player:add(thing);
+				end
+			end
+			local loopMsg = (looping and "\n(루프 모드가 켜져있어 스킵된 곡은 가장 뒤에 다시 추가되었습니다)" or "")
 			replyMsg:setContent( -- !!REVIEW NEEDED!!
 				rawArgs == 1 and
-				(("성공적으로 곡 '%s' 를 스킵하였습니다"):format(tostring(lastOne and lastOne.info and lastOne.info.title))) or
-				(("성공적으로 곡 %s 개를 스킵하였습니다!"):format(tostring(rawArgs)))
+				(("성공적으로 곡 '%s' 를 스킵하였습니다%s"):format(tostring(lastOne and lastOne.info and lastOne.info.title),loopMsg)) or
+				(("성공적으로 곡 %s 개를 스킵하였습니다!%s"):format(tostring(rawArgs),loopMsg))
 			);
 		end;
 	};
