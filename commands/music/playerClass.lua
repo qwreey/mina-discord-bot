@@ -148,8 +148,8 @@ end
 --- insert new song
 function this:add(thing,onIndex)
 	self.download(thing);
-	if not self.audio then
-		return;
+	if not thing.audio then
+		error("fail to download");
 	end
 
 	-- add into play queue
