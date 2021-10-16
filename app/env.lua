@@ -58,6 +58,7 @@ _G.admins = { -- 관리 명령어 권한
 	["367946917197381644"] = true; -- me
 	["756035861250048031"] = true; -- my sub account
 	["647101613047152640"] = true; -- 눈송이
+	["755378215907885116"] = true; -- 삿갓
 };
 
 -- the bot prefixs
@@ -85,7 +86,7 @@ _G.prefixReply = { -- 그냥 미나야 하면 답
 
 -- this is used on when user messaged texts that bot didn't know
 _G.unknownReply = { -- 반응 없을때 띄움
-	"(갸우뚱?)","무슨 말이에요?","네?","으에?"--,"먕?",":thinking: 먀?"
+	"**(갸우뚱?)**","무슨 말이에요?","네?","으에?"--,"먕?",":thinking: 먀?"
 };
 
 -- bot managing functions
