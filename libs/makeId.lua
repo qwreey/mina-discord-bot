@@ -3,13 +3,13 @@ local WORD = {
 	"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
 	"1","2","3","4","5","6","7","8","9","0"
 };
-local makeSeed = require "libs.makeSeed";
+local lWord = #WORD;
+local rand = require "cRandom";
 
 return function ()
 	local ID = "";
 	for i = 1,18 do
-		math.randomseed(makeSeed(math.pi^i,math.pi*i));
-		ID = ID .. WORD[math.random(1,#WORD)];
+		ID = ID .. WORD[rand(1,lWord)];
 	end
 	return ID;
 end;

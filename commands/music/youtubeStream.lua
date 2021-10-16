@@ -1,8 +1,10 @@
 local module = {};
 
 local function isExistString(str)
-    return str and str ~= "" and str ~= " " and str ~= "\n";
+	return str and str ~= "" and str ~= " " and str ~= "\n";
 end
+
+module.redownload = true;
 
 function module.download(vid)
 	vid = module.getVID(vid);
@@ -18,20 +20,20 @@ function module.download(vid)
 		cwd = "./";
 		stdio = {nil,true,true};
 	});
-    local audio,info;
-    local index = 1;
+	local audio,info;
+	local index = 1;
 	for str in newProcess.stdout.read do
-        if index == 2 then
-            audio = str:sub(1,-2);
+		if index == 2 then
+			audio = str:sub(1,-2);
 		elseif index == 3 then
-            info = str;
-        end
-        index = index + 1;
+			info = str;
+		end
+		index = index + 1;
 	end
-    newProcess.waitExit();
-    if isExistString(info) and isExistString(audio) then
-	    return audio,json.decode(info),url,vid;
-    end
+	newProcess.waitExit();
+	if isExistString(info) and isExistString(audio) then
+		return audio,json.decode(info),url,vid;
+	end
 
 	-- video was not found from youtube? or something want wrongly
 	logger.errorf("something want wrong! video was not found from youtube or youtube-dl process was terminated with exit!");

@@ -1,9 +1,10 @@
 local this = {};
 this.__index = this;
 
-local ytDown = require("commands.music.youtubeDownload");
+local ytDownload = require("commands.music.youtubeStream");--require("commands.music.youtubeDownload");
 local remove = table.remove;
 local insert = table.insert;
+local time = os.time;
 
 local function formatTime(time)
 	local sec = math.floor(time % 60);
@@ -27,6 +28,8 @@ voiceChannelID : 그냥 식별용으로 쓰기 위해 만든 별거 없는 아�
 nowPlaying : 지금 플레이중인 곡
 new.playIndex
 ]]
+
+-- make new playerClass instnace
 function this.new(props)
 	local new = {};
 	setmetatable(new,this);
@@ -34,6 +37,21 @@ function this.new(props)
 	return new;
 end
 
+-- download music for prepare playing song
+function this.download(thing)
+	local audio,info,url,vid = ytDownload.download(thing.url);
+	if not audio then
+		return;
+	end
+	thing.whenDownloaded = time();
+	thing.url = url or thing.url;
+	thing.audio = audio;
+	thing.info = info;
+	thing.vid = vid;
+	return true;
+end
+
+-- init player object
 function this:__init(props)
 	self.voiceChannelID = props.voiceChannelID;
 	self.nowPlaying = nil;
@@ -44,62 +62,103 @@ end
 
 --#region : Stream handling methods
 
+-- play thing
 function this:__play(thing) -- PRIVATE
-	if not thing then -- if thing is none - song
+	-- if thing is nil, return
+	if not thing then
 		return;
 	end
+
+	-- if already playing something, kill it
 	if self.nowPlaying then
 		self:__stop();
 	end
-	self.nowPlaying = thing;
-	self.isPaused = false;
+
+	-- set state to playing
+	self.nowPlaying = thing; -- set playing song
+	self.isPaused = false; -- set paused state to false
+
+	-- if it needs redownload, try it now
+	if (ytDownload.redownload) and (time() - thing.whenDownloaded > 5) then
+		self.download(thing);
+	end
+
+	-- run asynchronously task for playing song
 	coroutine.wrap(function()
-		self.handler:playFFmpeg(thing.audio);
-		-- timer.sleep(20);
-		if self.isLooping and self.nowPlaying then
-			insert(self,thing);
+		-- play this song
+		local handler = self.handler;
+		local isPassed,result = pcall(handler.playFFmpeg,handler,thing.audio);
+		if not isPassed then
+			self.error = result;
+			logger.errorf("Play failed : %s",result);
+			local message = thing.message;
+			if message then -- display error message
+				message:reply {
+					content = ("곡 '%s' 를 실행하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
+						tostring((thing.info or {title = "unknown"}).title),
+						tostring(result)
+					);
+					reference = {message = message, mention = true};
+				};
+			end
 		end
+
+		-- when looping is enabled
+		if self.isLooping and self.nowPlaying then
+			insert(self,thing); -- insert this into end of queue
+		end
+
+		-- remove this song from queue
 		self.nowPlaying = nil; -- remove song
 		if self[1] == thing then
 			self:remove(1);
 		end
 	end)();
 end
+
+-- stop now playing
 function this:__stop() -- PRIVATE
 	if not self.nowPlaying then
 		return;
 	end
+	self.handler:stopStream();
 	self.nowPlaying = nil;
 	self.isPaused = false;
-	self.handler:stopStream();
+	return true;
 end
 
 --#endregion : Stream handling methods
 
+-- apply play queue
 function this:apply()
-	if self.nowPlaying == self[1] then
+	local song = self[1];
+	if self.nowPlaying == song then
 		return;
 	end
-	self:__play(self[1]);
+	if not song then
+		self:__stop();
+	end
+	self:__play(song);
+	return true;
 end
 
 --- insert new song
 function this:add(thing,onIndex)
-	local audio,info,url,vid = ytDown.download(thing.url);
-	if not audio then
-		return nil;
+	self.download(thing);
+	if not thing.audio then
+		error("fail to download");
 	end
-	thing.url = url or thing.url;
-	thing.audio = audio;
-	thing.info = info;
-	thing.vid = vid;
+
+	-- add into play queue
 	if onIndex then
 		insert(self,onIndex,thing);
 	else
 		insert(self,thing);
 	end
+
+	-- apply this play queue
 	self:apply();
-	return audio;
+	return true;
 end
 
 -- remove song and checkout
@@ -110,12 +169,14 @@ function this:remove(start,counts)
 		counts = 1; -- THIS IS MUST BE 1, other value will make errors
 	end
 	local popedLast,indexLast;
+	local popedAll = {};
 	for index = start,start+counts-1 do
 		popedLast = remove(self,start);
 		indexLast = index;
+		insert(popedAll,popedLast);
 	end
 	self:apply();
-	return popedLast,indexLast;
+	return popedLast,indexLast,popedAll;
 end
 
 -- kill bot
@@ -197,6 +258,7 @@ function this:embedfiyList(page)
 	end
 
 	return {
+		description = "팁 : **미나 곡정보 [번째]** 를 이용하면 해당 곡에 대한 더 자세한 정보를 얻을 수 있습니다";
 		fields = fields;
 		footer = self:getStatusText();
 		title = ("%d 번째 페이지"):format(page);
@@ -208,7 +270,7 @@ end
 local seekbarForward = "━";
 local seekbarBackward = "─";
 local seekbarString = "%s %s⬤%s %s\n";
-local seekbarLen = 26;
+local seekbarLen = 18;
 local function seekbar(now,atEnd)
 	local per = now / atEnd;
 	local forward = math.floor(seekbarLen * per + 0.5);

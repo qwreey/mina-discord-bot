@@ -8,7 +8,7 @@ local help = [[
 이 메시지를 표시합니다
 
 > 미나 **곡추가 <음악URL 또는 검색어> [번째]**
-음악을 리스트에 추가합니다, 음성 채팅방에 있어야 사용할 수 있는 명령어입니다.
+음악을 리스트에 추가합니다, 음성 채팅방에 있어야 사용할 수 있는 명령어입니다
 번째 란을 비워두면 자동으로 가장 뒤에 추가합니다
 , 을 이용해 여러곡을 한꺼번에 추가할 수도 있습니다
 예 : 미나 곡추가 wgcXvLdwkHg,vYw6-1znJ8o,325B1jWAPN8
@@ -25,10 +25,29 @@ local help = [[
 > 미나 **곡반복 [공백 또는 끄기/켜기 등등]**
 곡 반복을 끄거나 켭니다, 공백으로 두면 상태를 반전 (꺼진 경우 켜기, 켜진 경우 끄기) 합니다
 
-> 미나 **곡정보**
+> 미나 **현재곡**
+현재 재생중인 곡의 정보를 표시합니다. 재생 위치, 조회수, 좋아요, 업로더(채널), 영상링크 등이 표시됩니다
 
-이외에도, 곡을 음악/노래 등으로 바꾸는것 처럼 비슷한 말로 불러도 학습되어 있기 때문에 작동합니다
+> 미나 **곡정보 <번째>**
+해당 번째에 있는 곡의 정보를 표시합니다, 현재곡 명령어와 비슷합니다
+
+> 미나 **곡멈춰**
+노래를 잠시 멈춰놓습니다.
+재개 명령어를 사용하면 다시 노래를 재생할 수 있습니다
+
+> 미나 **곡재개**
+노래를 다시 재생합니다. (멈춘 부분에서 바로 시작합니다)
+
+> 미나 **곡저장**
+지금 플레이리스트를 나중에 다시 불러올 수 있게 저장합니다
+
+> 미나 **곡끄기**
+음악봇을 완전히 종료합니다
 ]];
+--이외에도, 곡을 음악/노래 등으로 바꾸는것 처럼 비슷한 말로 명령어를 사용할 수도 있습니다
+
+-- make auto leave for none-using channels
+-- client:on("")
 
 return {
 	["add music"] = {
@@ -90,7 +109,7 @@ return {
 			end
 
 			if not rawArgs:match(",") then -- once
-				local this = {url = rawArgs};
+				local this = {message = message,url = rawArgs};
 				local passed,back = pcall(player.add,player,this,nth);
 
 				-- when failed to adding song into playlist
@@ -120,7 +139,7 @@ return {
 				end
 				local ok = 0;
 				for _,item in ipairs(list) do
-					local this = {url = item};
+					local this = {message = message,url = item};
 					local passed,back = pcall(player.add,player,this,nth);
 					if not passed then
 						message:reply(("곡 '%s' 를 추가하는데 실패하였습니다\n```%s```"):format(tostring(item),tostring(back)));
@@ -353,7 +372,7 @@ return {
 		reply = "처리중입니다 . . .";
 		func = function(replyMsg,message,args,Content)
 			local rawArgs = Content.rawArgs;
-			rawArgs = tonumber(rawArgs:match("%d+") or 1);
+			rawArgs = tonumber(rawArgs:match("%d+")) or 1;
 
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
@@ -390,15 +409,18 @@ return {
 			end
 
 			-- skip!
-			local lastOne;
-			lastOne = player:remove(1,rawArgs);
-			-- for _ = 1,rawArgs do
-			-- 	lastOne = player:remove(1);
-			-- end
+			local lastOne,lastIndex,all = player:remove(1,rawArgs);
+			local looping = player.isLooping
+			if looping then
+				for _,thing in ipairs(all) do
+					player:add(thing);
+				end
+			end
+			local loopMsg = (looping and "\n(루프 모드가 켜져있어 스킵된 곡은 가장 뒤에 다시 추가되었습니다)" or "")
 			replyMsg:setContent( -- !!REVIEW NEEDED!!
 				rawArgs == 1 and
-				(("성공적으로 곡 '%s' 를 스킵하였습니다"):format(tostring(lastOne and lastOne.info and lastOne.info.title))) or
-				(("성공적으로 곡 %s 개를 스킵하였습니다!"):format(tostring(rawArgs)))
+				(("성공적으로 곡 '%s' 를 스킵하였습니다%s"):format(tostring(lastOne and lastOne.info and lastOne.info.title),loopMsg)) or
+				(("성공적으로 곡 %s 개를 스킵하였습니다!%s"):format(tostring(rawArgs),loopMsg))
 			);
 		end;
 	};
@@ -514,6 +536,7 @@ return {
 		command = {"n","np","nowplay","nowplaying","nplay","nplaying","nowp"};
 		alias = {
 			"현재재생","지금재생","현재 재생","지금 재생","현재 곡","현재 음악","현재 노래","지금 곡","지금 음악","지금 노래",
+			"현재곡","현재음악","현재노래","지금곡","지금음악","지금노래","지금재생중",
 			"지금 재생중","now playing","music now","song now","playing now","now play","nowplaying"
 		};
 		reply = "처리중입니다 . . .";
@@ -529,6 +552,34 @@ return {
 			local rawArgs = Content.rawArgs;
 			replyMsg:update {
 				embed = player:embedfiyNowplaying();
+				content = "지금 재생중인 곡입니다!";
+			};
+		end;
+	};
+	["info music"] = {
+		command = {"i","info","nowplay","nowplaying","nplay","nplaying","nowp"};
+		alias = {
+			"곡정보","곡 정보","info song","song info","music info","info music","곡 자세히보기",
+			"곡자세히보기","곡설명","곡 설명","song description","description song"
+		};
+		reply = "처리중입니다 . . .";
+		func = function(replyMsg,message,args,Content)
+			local guildConnection = message.guild.connection;
+			if not guildConnection then
+				return replyMsg:setContent("현재 이 서버에서는 음악 기능을 사용하고 있지 않습니다\n> 음악 실행중이 아님");
+			end
+			local player = playerForChannels[guildConnection.channel:__hash()];
+			if not player then
+				return replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
+			end
+			local this = Content.rawArgs;
+			this = tonumber(this) or tonumber(this:match("%d+"));
+			if not this then
+				replyMsg:setContent("확인할 곡의 번째를 입력해주세요!");
+				return;
+			end
+			replyMsg:update {
+				embed = player:embedfiyNowplaying(this);
 				content = "지금 재생중인 곡입니다!";
 			};
 		end;

@@ -3,7 +3,7 @@ local module = {};
 local exts = {"opus", "m4a", "mp3", "wav", "best", "aac", "flac", "vorbis"};
 
 local function isExistString(str)
-    return str and str ~= "" and str ~= " " and str ~= "\n";
+	return str and str ~= "" and str ~= " " and str ~= "\n";
 end
 
 function module.download(vid)

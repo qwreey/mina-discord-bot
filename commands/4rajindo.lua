@@ -1,8 +1,4 @@
 --[[
-저자 : 
-[""] = {
-			reply = {""};
-		};
 편집 도움말은 이 링크 따라가면 세세하게 있음
 https://www.github.com/qwreey75/MINA_DiscordBot/tree/master/Contributor.md
 ]]
@@ -106,8 +102,8 @@ return {
 		love = defaultLove;
 	};
 	["바보"] = {
-		reply = {"바보는 크시 선배님이죠^^","미나 바부 아니라구!(울먹)",":broken_heart: - 5"};
-		love = defaultLove;
+		reply = {"미나 바보 아니야야야ㅑ!",":broken_heart: - 5"};
+		love = rmLove;
 	};
 	["왈도체"] = {
 		reply = {

@@ -64,8 +64,74 @@ function module.encodeCommands(...)
 	return this,cmds,len;
 end
 
-function module.findCommandFrom(encodedTable,commandName)
-	return encodedTable[commandName];
+local function findCommand(reacts,text)
+	if type(reacts) == "function" then
+		return reacts(text);
+	end
+	return reacts[text];
+end
+
+---find command from reacts array/function object
+---@param reacts function | table
+---@param text string
+---@return table | nil CommandObject Command or nil
+---@return string | nil CommandName Name of command
+---@return string | nil CommandRawName full of user inputed string
+function module.findCommandFrom(reacts,text,splitCommandText)
+	splitCommandText = splitCommandText or ((type(text) == "table") and text or strSplit(text:lower(),"\32"));
+
+	-- rawText = "find thing like this"
+	-- indexing( "find thing like this" )
+	-- indexing( "find thing like" )
+	-- indexing( "find thing" )
+	-- indexing( "find" )
+	do
+		local this = text;
+		while true do
+			local command = findCommand(reacts,this);
+			if command then
+				return command,this,this;
+			end
+			this = this:match("(.+) ");
+			if not this then
+				break;
+			end
+		end
+	end
+
+	-- do
+	-- 	local spText,textn = "",""; -- 띄어쓰기가 포함되도록 검색 / 띄어쓰기 없이 검색
+	-- 	local lenSplit = #splitCommandText;
+	-- 	for index = lenSplit,1,-1 do
+	-- 		local thisText = splitCommandText[index];
+	-- 		spText = spText .. (index == lenSplit and "" or " ") .. thisText;
+	-- 		textn = textn .. thisText;
+	-- 		local spTempCommand = findCommand(reacts,spText);
+	-- 		if spTempCommand then
+	-- 			return spTempCommand,spText,spText;
+	-- 		end
+	-- 		local tempCommand = findCommand(reacts,spText);
+	-- 		if tempCommand then
+	-- 			return tempCommand,textn,textn;
+	-- 		end
+	-- 	end
+	-- end
+
+	-- rawText = "find thing like this"
+	-- indexing( "find" )
+	-- indexing( "thing" )
+	-- indexing( "like" )
+	-- indexing( "this" )
+	for findPos,textn in pairs(splitCommandText) do
+		local command = findCommand(reacts,textn);
+		if command then
+			local rawCommand = "";
+			for Index = 1,findPos do
+				rawCommand = rawCommand .. splitCommandText[Index];
+			end
+			return command,textn,rawCommand;
+		end
+	end
 end
 
 --[[
@@ -93,8 +159,8 @@ end
 ]]
 
 local function formatRreplyText(Text,Data)
-	local Text = Text or "";
-	Text = string.gsub(Text,"{#:UserName:#}",Data.User.name);
+	Text = Text or "";
+	Text = string.gsub(Text,"{#:UserName:#}",Data.user.name);
 	Text = string.gsub(Text,"{#:U%+(%x%x%x%x):#}",function (hex)
 		local pass,text = pcall(function ()
 			return utf8.char(tonumber(hex,16));
