@@ -83,8 +83,8 @@ function this:__play(thing) -- PRIVATE
 	self.isPaused = false; -- set paused state to false
 
 	-- if it needs redownload, try it now
-	if (ytDownload.redownload) and (time() - thing.whenDownloaded > 5) then
-		self.download(thing);
+	if (ytDownload.redownload) and (time() - thing.whenDownloaded > 10) then
+		pcall(self.download,thing);
 	end
 
 	-- run asynchronously task for playing song

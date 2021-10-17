@@ -55,7 +55,7 @@ function module.download(vid)
 
 	-- video was not found from youtube? or something want wrongly
 	local errormsg = ("something want wrong! video was not found from youtube or youtube-dl process was terminated with exit!\n```log\n%s\n```"):format(traceback);
-	logger.errorf(errormsg);
+	logger.error(errormsg);
 	qDebug {
 		title = "failed to download video from youtube";
 		traceback = traceback;
