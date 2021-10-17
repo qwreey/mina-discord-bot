@@ -16,6 +16,7 @@ local function download(url)
 		stdio = {nil,true,true};
 	});
 	local audio,info;
+	local traceback = "";
 	local index = 1;
 	for str in newProcess.stdout.read do
 		if index == 2 then
@@ -23,10 +24,11 @@ local function download(url)
 		elseif index == 3 then
 			info = str;
 		end
+		traceback = traceback .. str;
 		index = index + 1;
 	end
 	newProcess.waitExit();
-	return audio, info;
+	return audio, info, traceback, newProcess;
 end
 
 local retrys = 3;
@@ -39,9 +41,9 @@ function module.download(vid)
 	end
 
 	-- if not exist already, create new it
-	local audio,info;
+	local audio,info,traceback,newProcess;
 	for _ = 1,retrys do
-		audio,info = download(url);
+		audio,info,traceback,newProcess = download(url);
 		if audio then
 			break;
 		end
@@ -52,14 +54,17 @@ function module.download(vid)
 	end
 
 	-- video was not found from youtube? or something want wrongly
-	logger.errorf("something want wrong! video was not found from youtube or youtube-dl process was terminated with exit!");
+	local errormsg = ("something want wrong! video was not found from youtube or youtube-dl process was terminated with exit!\n```log\n%s\n```"):format(traceback);
+	logger.errorf(errormsg);
 	qDebug {
 		title = "failed to download video from youtube";
-		trace = newProcess;
+		traceback = traceback;
+		process = newProcess;
 		vid = vid;
 		status = "error";
+		msg = errormsg;
 	};
-	error("something want wrong! video was not found from youtube or youtube-dl process was terminated with exit!");
+	error(errormsg);
 end
 
 function module.getVID(url)
