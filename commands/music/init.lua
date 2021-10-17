@@ -1,5 +1,5 @@
 local playerForChannels = {}; _G.playerForChannels = playerForChannels;
-local playerClass = require "commands.music.playerClass";
+local playerClass = require "class.music.playerClass";
 
 local help = [[
 '**음악**'에 대한 도움말입니다

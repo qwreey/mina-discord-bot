@@ -3,7 +3,9 @@
 local this = {};
 this.__index = this;
 
-local ytDownload = require("commands.music.youtubeStream");--require("commands.music.youtubeDownload");
+local ytDownload = require("class.music.youtubeStream");--require("commands.music.youtubeDownload");
+local ytSearch = require("class.music.youtubeSearch");
+
 local remove = table.remove;
 local insert = table.insert;
 local time = os.time;
