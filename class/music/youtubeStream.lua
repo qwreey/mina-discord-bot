@@ -6,15 +6,10 @@ end
 
 module.redownload = true;
 
-function module.download(vid)
-	vid = module.getVID(vid);
-	local url = ('https://www.youtube.com/watch?v=%s'):format(vid);
-
-	-- if not exist already, create new it
+local function download(url)
 	local newProcess = spawn("youtube-dl",{
 		args = {
-			'-q',"-g",'--print-json','--cache-dir','./data/youtubeCache',
-			url
+			'-q',"-g",'--print-json','--cache-dir','./data/youtubeCache',url
 		};
 		hide = true;
 		cwd = "./";
@@ -31,6 +26,27 @@ function module.download(vid)
 		index = index + 1;
 	end
 	newProcess.waitExit();
+	return audio, info;
+end
+
+local retrys = 3;
+function module.download(vid)
+	vid = module.getVID(vid);
+	local url = ('https://www.youtube.com/watch?v=%s'):format(vid);
+
+	if not vid then
+		error("You inputed invalid video id!");
+	end
+
+	-- if not exist already, create new it
+	local audio,info;
+	for _ = 1,retrys do
+		audio,info = download(url);
+		if audio then
+			break;
+		end
+	end
+
 	if isExistString(info) and isExistString(audio) then
 		return audio,json.decode(info),url,vid;
 	end
@@ -47,7 +63,7 @@ function module.download(vid)
 end
 
 function module.getVID(url)
-	return url:match("watch%?v=(...........)") or url:match("https://youtu%.be/(...........)") or (url:gsub("^ +",""):gsub(" +$",""));
+	return url:match("watch%?v=(...........)") or url:match("https://youtu%.be/(...........)") or (url:gsub("^ +",""):gsub(" +$",""):match("(...........)"));
 end
 
 return module;

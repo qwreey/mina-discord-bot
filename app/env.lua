@@ -109,7 +109,19 @@ _G.reloadBot = reloadBot;
 _G.startBot = startBot;
 
 -- js's timeout function that inspired by js's timeout function
-local function timeout(time,func)
+local remove = table.remove;
+local unpack = unpack or table.unpack;
+local pcallWrapper = function (func,promise,...)
+	local result = {pcall(func,...)};
+	local isPassed = remove(result,1);
+	if isPassed then
+		local andThen = promise.andThen;
+		if andThen then
+			andThen(unpack(result));
+		end
+	end
+end;
+local function timeout(time,func,...)
 	timer.setTimeout(time,coroutine.wrap(func));
 end
 _G.timeout = timeout;

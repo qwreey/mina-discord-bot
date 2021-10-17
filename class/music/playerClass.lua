@@ -1,3 +1,5 @@
+-- music channel player instance class for playing user's queued music
+
 local this = {};
 this.__index = this;
 
