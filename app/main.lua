@@ -7,7 +7,6 @@
 	https://github.com/qwreey75/MINA_DiscordBot/blob/faf29242b29302341d631513617810d9fe102587/bot.lua
 
 	TODO: 도움말 만들기
-	TODO: 사전 Json 인코딩을 없에고 그냥 바로 테이블 넘기기
 	TODO: 지우기 명령,강퇴,채널잠금,밴 같은거 만들기
 	TODO: 다 못찾으면 !., 같은 기호 지우고 찾기
 	TODO: 그리고도 못찾으면 조사 다 지우고 찾기
@@ -141,8 +140,8 @@ reacts,commands,commandsLen = commandHandler.encodeCommands({
 	["약관동의"] = {
 		alias = {"EULA동의","약관 동의","사용계약 동의"};
 		reply = function (message,args,c)
-			local userData = c.getUserData(); -- 내 호감도 불러오기
-			if userData then -- 약관 동의하지 않았으면 리턴
+			local this = c.getUserData(); -- 내 호감도 불러오기
+			if this then -- 약관 동의하지 않았으면 리턴
 				return "**{#:UserName:#}** 님은 이미 약관을 동의하셨어요!";
 			end
 			local userId = tostring(message.author.id);

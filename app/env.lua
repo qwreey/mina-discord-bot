@@ -1,3 +1,7 @@
+--[[
+This code will injects environments into _G
+]]
+
 -- google api key, discord token, game api key and more. this is should be protected
 _G.ACCOUNTData = data.load("data/ACCOUNT.json");
 

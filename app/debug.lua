@@ -1,6 +1,6 @@
--- 디버그 스테커
--- debug {테이블화 된 내용}
--- 하면 디버그 스텍에 쌓임
+--[[
+Custom debug system
+]]
 
 local insert = table.insert;
 _G.debugStack = {};

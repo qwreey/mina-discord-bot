@@ -1,3 +1,9 @@
+--[[
+Bot process spawner
+
+this is will enables live reload system and auto respawn process when process have exited with errors
+]]
+
 local uv = require("uv");
 local exitCodes = require("app.exitCodes");
 
