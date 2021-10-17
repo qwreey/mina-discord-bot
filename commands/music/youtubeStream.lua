@@ -13,7 +13,7 @@ function module.download(vid)
 	-- if not exist already, create new it
 	local newProcess = spawn("youtube-dl",{
 		args = {
-			'-q',"-g",'--print-json','--geo-bypass','--cache-dir','./data/youtubeCache',
+			'-q',"-g",'--print-json','--cache-dir','./data/youtubeCache',
 			url
 		};
 		hide = true;

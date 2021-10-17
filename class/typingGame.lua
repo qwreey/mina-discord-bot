@@ -104,7 +104,7 @@ function module.new(replyMsg,message,Content,text,title)
 
     timer = timeout(timeoutMS,function ()
         if not isEnded then
-            newHook:detach();
+        	pcall(newHook.detach,newHook);
             gameForUsers[userId] = nil;
             message:reply {
                 content = "시간 종료!! 제한 시간 내에 입력하지 못했어요";

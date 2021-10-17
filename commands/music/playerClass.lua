@@ -19,7 +19,7 @@ end
 -- 이 코드는 신과 나만 읽을 수 있게 만들었습니다
 -- 만약 편집을 기꺼히 원한다면... 그렇게 하도록 하세요
 -- 다만 여기의 이 규칙을 따라주세요
--- theHourOfAllOfSpentForEditingThis = 6; -- TYPE: number;hour
+-- local theHourOfAllOfSpentForEditingThis = 32; -- TYPE: number;hour
 -- 이 코드를 편집하기 위해 사용한 시간만큼 여기의
 -- 변수에 값을 추가해주세요.
 
