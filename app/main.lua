@@ -70,6 +70,7 @@ local myXMl = require "myXML"; _G.myXMl = myXMl; -- myXML library
 local userLearn = require "commands.learning.learn"; -- user learning library
 local data = require "data"; data:setJson(json); _G.data = data; -- Data system
 local userData = require "userData"; userData:setJson(json):setlogger(logger):setMakeId(makeId); _G.userData = userData; -- Userdata system
+local posixTime = require "libs.posixTime"; _G.posixTime = posixTime; -- get posixTime library
 --#endregion : Luvit 모듈 / 주요 모듈 임포트
 --#region : Discordia Module
 logger.info("------------------------ [CLEAN  UP] ------------------------");

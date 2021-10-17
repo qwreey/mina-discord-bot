@@ -9,29 +9,29 @@ module.redownload = true;
 local function download(url)
 	local newProcess = spawn("youtube-dl",{
 		args = {
-			'-q',"-g",'--print-json','--cache-dir','./data/youtubeCache',url
+			'-q','-s','-g','--print-json','--cache-dir','./data/youtubeCache',url
 		};
 		hide = true;
 		cwd = "./";
 		stdio = {nil,true,true};
 	});
-	local audio,info;
+	local audio;
+	local info = "";
 	local traceback = "";
 	local index = 1;
 	for str in newProcess.stdout.read do
 		if index == 2 then
-			audio = str:sub(1,-2);
-		elseif index == 3 then
-			info = str;
+			audio = str:gsub("\n","");
+		elseif index >= 3 then
+			info = info .. str;
 		end
 		traceback = traceback .. str;
 		index = index + 1;
 	end
-	newProcess.waitExit();
+	newProcess.waitExit(); -- ah... it ok? idk. i just think, it should be on top of stdout.read
 	return audio, info, traceback, newProcess;
 end
 
-local retrys = 3;
 function module.download(vid)
 	vid = module.getVID(vid);
 	local url = ('https://www.youtube.com/watch?v=%s'):format(vid);
@@ -41,14 +41,7 @@ function module.download(vid)
 	end
 
 	-- if not exist already, create new it
-	local audio,info,traceback,newProcess;
-	for _ = 1,retrys do
-		audio,info,traceback,newProcess = download(url);
-		if audio then
-			break;
-		end
-	end
-
+	local audio,info,traceback,newProcess = download(url);
 	if isExistString(info) and isExistString(audio) then
 		return audio,json.decode(info),url,vid;
 	end
@@ -67,8 +60,25 @@ function module.download(vid)
 	error(errormsg);
 end
 
+local vidFormat = ("[%w%-_]"):rep(11);
+local vidWatch = ("watch%%?v=(%s)"):format(vidFormat);
+local vidShort = ("https://youtu%%.be/(%s)"):format(vidFormat);
+local searchURLTemp = ("https://www.googleapis.com/youtube/v3/search?key=%s&part=snippet&maxResults=8&q=%%s"):format(ACCOUNTData.GoogleAPIKey);
+function module.search()
+	local Header,Body = corohttp.request("GET",
+		searchURLTemp:format(urlCode.urlEncode(Keyword))
+	);
+	if not Body then return end
+	Body = json.decode(Body);
+	if not Body then return end
+	local thing = Body[1];
+	if not thing then return end
+	local id = thing.id;
+	if not id then return end
+	return id.videoId;
+end
 function module.getVID(url)
-	return url:match("watch%?v=(...........)") or url:match("https://youtu%.be/(...........)") or (url:gsub("^ +",""):gsub(" +$",""):match("(...........)"));
+	return url:match(vidWatch) or url:match(vidShort) or (url:gsub("^ +",""):gsub(" +$",""):match(vidFormat)) or module.search(url);
 end
 
 return module;

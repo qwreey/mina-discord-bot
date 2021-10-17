@@ -4,15 +4,14 @@ local this = {};
 this.__index = this;
 
 local ytDownload = require("class.music.youtubeStream");--require("commands.music.youtubeDownload");
-local ytSearch = require("class.music.youtubeSearch");
 
 local remove = table.remove;
 local insert = table.insert;
 local time = os.time;
 
-local function formatTime(time)
-	local sec = math.floor(time % 60);
-	local min = math.floor(time / 60);
+local function formatTime(t)
+	local sec = math.floor(t % 60);
+	local min = math.floor(t / 60);
 	sec = tostring(sec);
 	if #sec == 1 then
 		sec = "0" .. sec;
@@ -52,6 +51,7 @@ function this.download(thing)
 	thing.audio = audio;
 	thing.info = info;
 	thing.vid = vid;
+	thing.exprie = tonumber(audio:match("expire=(%d+)&"));
 	return true;
 end
 
@@ -67,6 +67,7 @@ end
 --#region : Stream handling methods
 
 -- play thing
+local getPosixNow = posixTime.now;
 function this:__play(thing) -- PRIVATE
 	-- if thing is nil, return
 	if not thing then
@@ -83,8 +84,13 @@ function this:__play(thing) -- PRIVATE
 	self.isPaused = false; -- set paused state to false
 
 	-- if it needs redownload, try it now
-	if (ytDownload.redownload) and (time() - thing.whenDownloaded > 10) then
-		pcall(self.download,thing);
+	-- if (ytDownload.redownload) and (time() - thing.whenDownloaded > 10) then
+	-- 	pcall(self.download,thing);
+	-- end
+	local exprie = thing.exprie;
+	local info = thing.info;
+	if exprie and exprie <= (getPosixNow()+(info and info.duration or 0)) then
+		this.download();
 	end
 
 	-- run asynchronously task for playing song
