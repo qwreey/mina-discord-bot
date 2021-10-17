@@ -1,4 +1,4 @@
-
+---@diagnostic disable
 function findCommand(...)
     p(...);
 end
