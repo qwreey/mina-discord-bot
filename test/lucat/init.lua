@@ -18,7 +18,9 @@ local extensions = {
 
 local module = {};
 
-function module.compile(str)
+function module.compile(str,env)
+    env = env or {};
+
     -- parse string
     local strParsed = strParser(str);
     p(strParsed)
@@ -30,7 +32,7 @@ function module.compile(str)
         local tstr = this.s;
         if not m then
             for _,func in ipairs(extensions) do
-                tstr = func(tstr);
+                tstr = func(tstr,env);
             end
             out = out .. tstr;
         elseif m == 1 then
@@ -51,7 +53,7 @@ function module.compile(str)
         end
     end
 
-    return out;
+    return out,env;
 end
 
 --        print (]] .. [[asdf]] .. [[)
