@@ -22,6 +22,7 @@ local function timeAgo(old,now)
 	end
 	return "?";
 end
+_G.timeAgo = timeAgo;
 
 -- google api key, discord token, game api key and more. this is should be protected
 _G.ACCOUNTData = data.load("data/ACCOUNT.json");
