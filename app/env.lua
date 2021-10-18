@@ -2,11 +2,45 @@
 This code will injects environments into _G
 ]]
 
+-- displays --- ago
+local function timeAgo(old,now)
+	local sub = now - old;
+	if sub > 220752000 then
+		return ("%d 년전"):format(sub / 220752000);
+	elseif sub > 18446400 then
+		return ("%d 달전"):format(sub / 18446400);
+	elseif sub > 604800 then
+		return ("%d 주전"):format(sub / 604800);
+	elseif sub > 86400 then
+		return ("%d 일전"):format(sub / 86400);
+	elseif sub > 3600 then
+		return ("%d 시간전"):format(sub / 3600);
+	elseif sub > 60 then
+		return ("%d 분전"):format(sub / 60);
+	else
+		return ("%d 초전"):format(sub);
+	end
+	return "?";
+end
+
 -- google api key, discord token, game api key and more. this is should be protected
 _G.ACCOUNTData = data.load("data/ACCOUNT.json");
 
 -- EULA text
 _G.EULA = data.loadRaw("data/EULA.txt");
+
+-- the leaderstatus data that will save on server storage
+local loveLeaderstatusPath = "data/loveLeaderstatus.json";
+_G.loveLeaderstatus = data.love(loveLeaderstatusPath);
+_G.loveLeaderstatusPath = loveLeaderstatusPath;
+
+-- the words that means rank, this is useed on '미나 호감도 순위'
+_G.leaderstatusWords = {
+	["순위"] = true;
+	["순위판"] = true;
+	["랭크"] = true;
+	["전채"] = true;
+};
 
 -- Off keywords, used on 미나 음악 켜기 and more
 _G.onKeywords = {

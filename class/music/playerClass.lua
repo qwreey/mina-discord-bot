@@ -68,6 +68,7 @@ end
 
 -- play thing
 local getPosixNow = posixTime.now;
+local expireAtLast = 2 * 60;
 function this:__play(thing) -- PRIVATE
 	-- if thing is nil, return
 	if not thing then
@@ -89,7 +90,7 @@ function this:__play(thing) -- PRIVATE
 	-- end
 	local exprie = thing.exprie;
 	local info = thing.info;
-	if exprie and exprie <= (getPosixNow()+(info and info.duration or 0)) then
+	if exprie and exprie <= (getPosixNow()+(info and info.duration or 0)+expireAtLast) then
 		this.download();
 	end
 

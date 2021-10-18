@@ -3,6 +3,7 @@ local json;
 
 function module:setJson(newJson)
 	json = newJson;
+	return self;
 end
 
 function module.load(fileName)

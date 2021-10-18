@@ -11,6 +11,9 @@
 	TODO: 다 못찾으면 !., 같은 기호 지우고 찾기
 	TODO: 그리고도 못찾으면 조사 다 지우고 찾기
 ]]
+local insert = table.insert;
+local sort = table.sort;
+local remove = table.remove;
 
 -- set title of terminal
 _G.app = {
@@ -109,6 +112,29 @@ for dir in fs.scandirSync("commands") do
 	otherCommands[#otherCommands+1] = require("commands." .. dir);
 end
 
+local loveLeaderstatus = _G.loveLeaderstatus;
+local loveLeaderstatusPath = _G.loveLeaderstatusPath;
+local function sortingLeaderstatus(a,b)
+	return a.love > b.love;
+end
+-- registe user's love in to leaderstatus
+---Save user love into leaderstatus
+---@param this table userData the table that inclued the user's data
+local function registeLeaderstatus(userId,this)
+	insert(loveLeaderstatus,{
+		name = this.latestName;
+		love = this.love;
+		when = posixTime();
+		userId = userId;
+	});
+	sort(loveLeaderstatus,sortingLeaderstatus);
+	data.save(loveLeaderstatusPath,loveLeaderstatus);
+	return remove(loveLeaderstatus);
+end
+_G.registeLeaderstatus = registeLeaderstatus;
+local leaderstatusWords = _G.leaderstatusWords;
+local timeAgo = _G.timeAgo;
+
 -- 커맨드 색인파일 만들기
 local reacts,commands,commandsLen;
 reacts,commands,commandsLen = commandHandler.encodeCommands({
@@ -120,12 +146,14 @@ reacts,commands,commandsLen = commandHandler.encodeCommands({
 			elseif message.author.id == "647101613047152640" then
 				return "니 약관동의 안할 거잔아";
 			end
-			if c.rawArgs == "" then -- 내 호감도 불러오기
-				local userData = c.getUserData();
-				if userData == nil then -- 약관 동의하지 않았으면 리턴
+			local rawArgs = c.rawArgs;
+			rawArgs = rawArgs:gsub("^ +",""):gsub(" +$","");
+			if rawArgs == "" then -- 내 호감도 불러오기
+				local this = c.getUserData();
+				if this == nil then -- 약관 동의하지 않았으면 리턴
 					return eulaComment_love;
 				end
-				local numLove = tonumber(userData.love);
+				local numLove = tonumber(this.love);
 				if numLove == nil then
 					return "미나는 **{#:UserName:#}** 님을 **NULL (nil)** 만큼 좋아해요!\n\n오류가 발생하였습니다...\n```json : Userdata / love ? NULL```";	
 				elseif numLove > 0 then
@@ -135,6 +163,22 @@ reacts,commands,commandsLen = commandHandler.encodeCommands({
 				elseif numLove == 0 then
 					return "미나는 아직 **{#:UserName:#}** 님을 몰라요!";
 				end
+			elseif leaderstatusWords[rawArgs] then
+				local fields = {};
+				local now = posixTime.now();
+				for nth,this in ipairs(loveLeaderstatus) do
+					insert(fields,{
+						name = ("%d 등! **%s**"):format(nth,this.name);
+						value = ("❤ %d (%s)"):format(this.love,timeAgo(this.when,now));
+					});
+				end
+				message:reply {
+					content = ("호감도가 가장 높은 유저 %d 명입니다."):format(#leaderstatusWords);
+					embed = {
+						title = "호감도 순위";
+						fields = fields;
+					};
+				};
 			end
 		end
 	};
@@ -148,12 +192,12 @@ reacts,commands,commandsLen = commandHandler.encodeCommands({
 			local userId = tostring(message.author.id);
 			fs.writeFileSync(("data/userData/%s.json"):format(userId),
 				("{" ..
-				('"latestName":"%s",'):format(message.author.name) ..
-				'"love":0,' ..
+					('"latestName":"%s",'):format(message.author.name) ..
+					'"love":0,' ..
 					('"lastName":["%s"],'):format(message.author.name) ..
 					'"lastCommand":{}' ..
-					"}")
-				);
+				"}")
+			);
 				return "안녕하세요 {#:UserName:#} 님!\n사용 약관에 동의해주셔서 감사합니다!\n사용 약관을 동의하였기 때문에 다음 기능을 사용 할 수 있게 되었습니다!\n\n> 미나야 배워 (미출시 기능)\n";
 			end;
 		};
@@ -223,7 +267,6 @@ logger.info(" |- command indexing end!");
 --#region : 메인 파트
 logger.info("----------------------- [SET UP BOT ] -----------------------");
 local findCommandFrom = commandHandler.findCommandFrom;
-local insert = table.insert;
 
 -- HOOK SYSTEM
 local beforeHook = {};
@@ -368,7 +411,8 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 
 	-- 만약 호감도가 있으면 올려주기
 	if love then
-		local thisUserDat = userData:loadData(user.id);
+		local userId = user.id
+		local thisUserDat = userData:loadData(userId);
 
 		if thisUserDat then
 			local username = user.name;
@@ -391,6 +435,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 				thisUserDat.love = thisUserDat.love + love;
 				lastCommand[CommandID] = osTime();
 				userData:saveData(user.id);
+				registeLeaderstatus(userId,thisUserDat);
 			end
 		else
 			loveText = eulaComment_love;
@@ -428,13 +473,15 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	local replyMsg; -- 답변 오브잭트를 담을 변수
 	if replyText then -- 만약 답변글이 있으면 답변 주기
 		local replyTextType = type(replyText);
+		local embed = Command.embed;
 		if replyTextType == "string" then
 			replyText = replyText .. loveText;
 		elseif replyTextType == "table" and replyText.content then
+			embed = replyText.embed or embed;
 			replyText.content = replyText.content .. loveText;
 		end
 		replyMsg = message:reply{
-			-- embed = Command.embed;
+			embed = embed;
 			content = commandHandler.formatReply(replyText,{
 				Msg = message;
 				user = user;
