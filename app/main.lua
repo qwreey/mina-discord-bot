@@ -122,6 +122,7 @@ local function setStatus(table,userId,this)
     table.love = this.love;
     table.when = posixTime.now();
     table.userId = userId;
+	return table;
 end
 -- registe user's love in to leaderstatus
 ---Save user love into leaderstatus
