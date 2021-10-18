@@ -13,6 +13,7 @@ local function setStatus(table,userId,this)
     table.love = this.love;
     table.when = posixTime.now();
     table.userId = userId;
+    return table;
 end
 local function registeLeaderstatus(userId,this)
     userId = tostring(userId);
