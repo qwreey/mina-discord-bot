@@ -173,7 +173,7 @@ reacts,commands,commandsLen = commandHandler.encodeCommands({
 					});
 				end
 				message:reply {
-					content = ("호감도가 가장 높은 유저 %d 명입니다."):format(#leaderstatusWords);
+					content = ("호감도가 가장 높은 유저 %d 명입니다."):format(#loveLeaderstatus);
 					embed = {
 						title = "호감도 순위";
 						fields = fields;
