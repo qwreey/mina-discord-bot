@@ -8,13 +8,27 @@ local loveLeaderstatus = json.decode(fs.readFileSync("data/loveLeaderstatus.json
 local function sortingLeaderstatus(a,b)
 	return a.love > b.love;
 end
+local function setStatus(table,userId,this)
+    table.name = this.latestName;
+    table.love = this.love;
+    table.when = posixTime.now();
+    table.userId = userId;
+end
 local function registeLeaderstatus(userId,this)
-	insert(loveLeaderstatus,{
-		name = this.latestName;
-		love = this.love;
-		when = posixTime.now();
-		userId = tostring(userId);
-	});
+    userId = tostring(userId);
+
+    -- check he/she is already on leaderstatus and then if exist, just update that
+    for _,status in ipairs(loveLeaderstatus) do
+        if status.userId == userId then
+            setStatus(status,userId,this);
+            sort(loveLeaderstatus,sortingLeaderstatus);
+            return;
+        end
+    end
+
+    -- couldn't find user on leaderstatus, just push user on leaderstatus
+    -- and resort and pop the last thing and then return what is poped
+	insert(loveLeaderstatus,setStatus({},userId,this));
 	sort(loveLeaderstatus,sortingLeaderstatus);
 	return remove(loveLeaderstatus);
 end
