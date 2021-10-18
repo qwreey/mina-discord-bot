@@ -124,8 +124,8 @@ local function registeLeaderstatus(userId,this)
 	insert(loveLeaderstatus,{
 		name = this.latestName;
 		love = this.love;
-		when = posixTime();
-		userId = userId;
+		when = posixTime.now();
+		userId = tostring(userId);
 	});
 	sort(loveLeaderstatus,sortingLeaderstatus);
 	data.save(loveLeaderstatusPath,loveLeaderstatus);
