@@ -31,7 +31,7 @@ _G.EULA = data.loadRaw("data/EULA.txt");
 
 -- the leaderstatus data that will save on server storage
 local loveLeaderstatusPath = "data/loveLeaderstatus.json";
-_G.loveLeaderstatus = data.love(loveLeaderstatusPath);
+_G.loveLeaderstatus = data.load(loveLeaderstatusPath);
 _G.loveLeaderstatusPath = loveLeaderstatusPath;
 
 -- the words that means rank, this is useed on '미나 호감도 순위'
