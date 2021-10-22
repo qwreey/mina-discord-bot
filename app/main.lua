@@ -108,7 +108,7 @@ local registeLeaderstatus = require("class.registeLeaderstatus");
 -- load commands
 logger.info(" |- load commands from commands folder");
 local otherCommands = {} -- commands 폴더에서 커맨드 불러오기
-for dir in fs.scandirSync("commands") do
+for dir in fs.scandirSync("commands") do -- read commands from commands folder
 	dir = string.gsub(dir,"%.lua$","");
 	logger.info(" |  |- load command dict from : commands." .. dir);
 	otherCommands[#otherCommands+1] = require("commands." .. dir);
