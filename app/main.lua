@@ -11,9 +11,6 @@
 	TODO: 다 못찾으면 !., 같은 기호 지우고 찾기
 	TODO: 그리고도 못찾으면 조사 다 지우고 찾기
 ]]
-local insert = table.insert;
-local sort = table.sort;
-local remove = table.remove;
 
 -- set title of terminal
 _G.app = {
@@ -42,6 +39,9 @@ package.path = require("app.path")(package.path); -- set require path
 _G.require = require; -- set global require function
 
 -- load modules
+local insert = table.insert;
+local sort = table.sort;
+local remove = table.remove;
 local utf8 = utf8 or require "utf8"; _G.utf8 = utf8; -- unicode 8 library
 local uv = require "uv"; _G.uv = uv; -- load uv library
 local prettyPrint = require "pretty-print"; _G.prettyPrint = prettyPrint; -- print many typed object on terminal
@@ -103,6 +103,7 @@ logger.info("load environments ...");
 require("app.env"); -- inject environments
 local adminCmd = require("app.admin"); -- load admin commands\
 local hook = require("class.hook");
+local registeLeaderstatus = require("class.registeLeaderstatus");
 
 -- load commands
 logger.info(" |- load commands from commands folder");
@@ -113,42 +114,6 @@ for dir in fs.scandirSync("commands") do
 	otherCommands[#otherCommands+1] = require("commands." .. dir);
 end
 
-local loveLeaderstatus = _G.loveLeaderstatus;
-local loveLeaderstatusPath = _G.loveLeaderstatusPath;
-local function sortingLeaderstatus(a,b)
-	return a.love > b.love;
-end
-local function setStatus(table,userId,this)
-    table.name = this.latestName;
-    table.love = this.love;
-    table.when = posixTime.now();
-    table.userId = userId;
-	return table;
-end
--- registe user's love in to leaderstatus
----Save user love into leaderstatus
----@param this table userData the table that inclued the user's data
----@return table | nil user what is poped user, when just updated it selfs, it will nil value
-local function registeLeaderstatus(userId,this)
-    userId = tostring(userId);
-
-    -- check he/she is already on leaderstatus and then if exist, just update that
-    for _,status in ipairs(loveLeaderstatus) do
-        if status.userId == userId then
-            setStatus(status,userId,this);
-            sort(loveLeaderstatus,sortingLeaderstatus);
-            return;
-        end
-    end
-
-    -- couldn't find user on leaderstatus, just push user on leaderstatus
-    -- and resort and pop the last thing and then return what is poped
-	insert(loveLeaderstatus,setStatus({},userId,this));
-	sort(loveLeaderstatus,sortingLeaderstatus);
-	data.save(loveLeaderstatusPath,loveLeaderstatus);
-	return remove(loveLeaderstatus);
-end
-_G.registeLeaderstatus = registeLeaderstatus;
 local leaderstatusWords = _G.leaderstatusWords;
 local timeAgo = _G.timeAgo;
 
