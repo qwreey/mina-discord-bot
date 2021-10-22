@@ -1,6 +1,8 @@
 local playerForChannels = {}; _G.playerForChannels = playerForChannels;
 local playerClass = require "class.music.playerClass";
 
+-- 섞기
+
 local help = [[
 '**음악**'에 대한 도움말입니다
 
