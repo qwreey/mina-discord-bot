@@ -118,14 +118,13 @@ return {
 			end
 
 			if not rawArgs:match(",") then -- once
+				local member = message.member;
+				local username = member and (member.nickname .. (" (%s)"):format(message.author.name)) or message.author.name;
 				local this = {
 					message = message;
 					url = rawArgs;
 					whenAdded = time();
-					username = (
-						message.author.nickname .. (" (%s)")
-						:format(message.author.name)
-					);
+					username = username;
 				};
 				local passed,back = pcall(player.add,player,this,nth);
 
@@ -160,16 +159,15 @@ return {
 					table.insert(list,item);
 				end
 				local ok = 0;
-				local whenAdded = time()
+				local whenAdded = time();
+				local member = message.member;
+				local username = member and (member.nickname .. (" (%s)"):format(message.author.name)) or message.author.name;
 				for _,item in ipairs(list) do
 					local this = {
 						message = message;
 						url = item;
 						whenAdded = whenAdded;
-						username = (
-							message.author.nickname .. (" (%s)")
-							:format(message.author.name)
-						);
+						username = username;
 					};
 					local passed,back = pcall(player.add,player,this,nth);
 					if not passed then
