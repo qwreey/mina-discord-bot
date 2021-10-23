@@ -118,7 +118,15 @@ return {
 			end
 
 			if not rawArgs:match(",") then -- once
-				local this = {message = message,url = rawArgs,whenAdd = time(),username = message.user.name};
+				local this = {
+					message = message;
+					url = rawArgs;
+					whenAdded = time();
+					username = (
+						message.author.nickname .. (" (%s)")
+						:format(message.author.name)
+					);
+				};
 				local passed,back = pcall(player.add,player,this,nth);
 
 				-- when failed to adding song into playlist
@@ -152,8 +160,17 @@ return {
 					table.insert(list,item);
 				end
 				local ok = 0;
+				local whenAdded = time()
 				for _,item in ipairs(list) do
-					local this = {message = message,url = item,whenAdd = time(),username = message.user.name};
+					local this = {
+						message = message;
+						url = item;
+						whenAdded = whenAdded;
+						username = (
+							message.author.nickname .. (" (%s)")
+							:format(message.author.name)
+						);
+					};
 					local passed,back = pcall(player.add,player,this,nth);
 					if not passed then
 						message:reply(("곡 '%s' 를 추가하는데 실패하였습니다\n```%s```"):format(tostring(item),tostring(back)));

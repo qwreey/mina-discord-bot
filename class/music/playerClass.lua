@@ -271,7 +271,7 @@ function this:embedfiyList(page)
 					(song.info or {title = "NULL"}).title:gsub("\"","\\\""),
 					song.url,
 					song.username or "NULL",
-					timeAgo(song.whenAdd)
+					timeAgo(song.whenAdded)
 				);
 			});
 		end
