@@ -113,10 +113,10 @@ function this:__play(thing) -- PRIVATE
 						tostring((thing.info or {title = "unknown"}).title),
 						tostring(result)
 					);
-					reference = {message = message, mention = true};
+					reference = {message = message, mention = false};
 				};
 			end
-		elseif reason and (reason ~= "stream stopped") then
+		elseif reason and (reason ~= "stream stopped") and (reason ~= "stream exhausted or errored") then
 			local message = thing.message;
 			logger.errorf("Play failed : %s",reason);
 			if message then -- display error message
@@ -125,7 +125,7 @@ function this:__play(thing) -- PRIVATE
 						tostring((thing.info or {title = "unknown"}).title),
 						tostring(reason)
 					);
-					reference = {message = message, mention = true};
+					reference = {message = message, mention = false};
 				};
 			end
 		end
@@ -138,7 +138,7 @@ function this:__play(thing) -- PRIVATE
 					content = ("지금 '%s' 를(을) 재생합니다!"):format(
 						tostring((upnext.info or {title = "unknown"}).title)
 					);
-					reference = {message = message, mention = true};
+					reference = {message = message, mention = false};
 				};
 			end
 		end
