@@ -348,7 +348,7 @@ end
 -- display now playing
 function this:embedfiyNowplaying(index)
 	index = tonumber(index) or 1;
-	local song = self[1];
+	local song = self[index];
 
 	if not song then
 		return {

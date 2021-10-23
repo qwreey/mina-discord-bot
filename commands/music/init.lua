@@ -184,8 +184,9 @@ return {
 
 			if not rawArgs:match(",") then -- once
 				local member = message.member;
+				local nickname = member and member.nickname;
 				local authorName = message.author.name:gsub("`","\\`");
-				local username = member and (member.nickname:gsub("`","\\`") .. (" (%s)"):format(authorName)) or authorName;
+				local username = nickname and (nickname:gsub("`","\\`") .. (" (%s)"):format(authorName)) or authorName;
 				local this = {
 					message = message;
 					url = rawArgs;
@@ -227,8 +228,9 @@ return {
 				local ok = 0;
 				local whenAdded = time();
 				local member = message.member;
+				local nickname = member and member.nickname;
 				local authorName = message.author.name:gsub("`","\\`");
-				local username = member and (member.nickname:gsub("`","\\`") .. (" (%s)"):format(authorName)) or authorName;
+				local username = nickname and (nickname:gsub("`","\\`") .. (" (%s)"):format(authorName)) or authorName;
 				local duration = 0;
 				for _,item in ipairs(list) do
 					if not guild.connection then -- if it killed by user
@@ -684,14 +686,10 @@ return {
 				return replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
 			end
 			local this = Content.rawArgs;
-			this = tonumber(this) or tonumber(this:match("%d+"));
-			if not this then
-				replyMsg:setContent("확인할 곡의 번째를 입력해주세요!");
-				return;
-			end
+			this = tonumber(this) or tonumber(this:match("%d+")) or 1;
 			replyMsg:update {
 				embed = player:embedfiyNowplaying(this);
-				content = "지금 재생중인 곡입니다!";
+				content = (this == 1) and "지금 재생중인 곡입니다!" or (("%d 번째 곡입니다!"):format(this));
 			};
 		end;
 	};
