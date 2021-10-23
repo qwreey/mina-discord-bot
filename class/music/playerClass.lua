@@ -134,8 +134,9 @@ function this:__play(thing) -- PRIVATE
 			end
 		end
 
+		local selfThis = self[1];
 		local upnext = self[2];
-		if upnext then
+		if (selfThis == thing) and upnext then
 			local message = upnext.message;
 			if message then
 				message:reply {
@@ -154,7 +155,7 @@ function this:__play(thing) -- PRIVATE
 
 		-- remove this song from queue
 		self.nowPlaying = nil; -- remove song
-		if self[1] == thing then
+		if selfThis == thing then
 			self:remove(1);
 		end
 	end)();
@@ -247,13 +248,15 @@ function this:setLooping(looping)
 	self.isLooping = looping;
 end
 
+local ceil = math.ceil;
 function this:getStatusText()
-	local len = 0;
+	local duration = 0;
 	for _,song in ipairs(self) do
-		len = len + song.info.duration;
+		duration = duration + song.info.duration;
 	end
+	local len = #self;
 	return {
-		text = ("총 곡 수 : %d | 총 길이 : %s"):format(#self,formatTime(len))
+		text = ("총 곡 수 : %d | 총 페이지 수 : %d | 총 길이 : %s"):format(len,ceil(len / 10),formatTime(duration))
 		 .. (self.isLooping and "\n플레이리스트 루프중" or "")
 		 .. (self.isPaused and "\n재생 멈춤" or "");
 	};
