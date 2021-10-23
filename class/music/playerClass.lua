@@ -9,6 +9,7 @@ local remove = table.remove;
 local insert = table.insert;
 local time = os.time;
 local floor = math.floor;
+local timeAgo = _G.timeAgo;
 
 local function formatTime(t)
 	local sec = floor(t % 60);
@@ -266,7 +267,12 @@ function this:embedfiyList(page)
 		if song then
 			insert(fields,{
 				name = (index == 1) and "현재 재생중" or (("%d 번째 곡"):format(index));
-				value = ("[%s](%s)"):format(song.info.title:gsub("\"","\\\""),song.url);
+				value = ("[%s](%s)\n`신청자 : %s (%s)`"):format(
+					(song.info or {title = "NULL"}).title:gsub("\"","\\\""),
+					song.url,
+					song.username or "NULL",
+					timeAgo(song.whenAdd)
+				);
 			});
 		end
 	end
