@@ -135,7 +135,7 @@ function this:__play(thing) -- PRIVATE
 			local message = upnext.message;
 			if message then
 				message:reply {
-					content = ("다음 곡 '%s' 를 재생합니다!"):format(
+					content = ("지금 '%s' 를(을) 재생합니다!"):format(
 						tostring((upnext.info or {title = "unknown"}).title)
 					);
 					reference = {message = message, mention = true};
