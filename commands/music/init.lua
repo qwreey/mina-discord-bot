@@ -214,8 +214,8 @@ return {
 				-- when successfully adding song into playlist
 				local info = this.info;
 				if info then
-					replyMsg:setContent(("성공적으로 곡 '%s' 을(를) 추가하였습니다! `(%s)`")
-						:format(info.title,formatTime(info.duration))
+					replyMsg:setContent(("성공적으로 곡 '%s' 을(를)%s 추가하였습니다! `(%s)`")
+						:format(info.title,nth and ((" %d 번째에"):format(nth)) or "",formatTime(info.duration))
 					);
 				else
 					replyMsg:setContent("성공적으로 곡 'NULL' 을(를) 추가하였습니다! `(0:0)`");
