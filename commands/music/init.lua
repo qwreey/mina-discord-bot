@@ -2,6 +2,7 @@ local playerForChannels = {}; _G.playerForChannels = playerForChannels;
 local playerClass = require "class.music.playerClass";
 local formatTime = playerClass.formatTime;
 local time = os.time;
+local timer = _G.timer;
 
 -- 섞기 움직이기(이동)
 
@@ -48,10 +49,56 @@ local help = [[
 > 미나 **곡끄기**
 음악봇을 완전히 종료합니다
 ]];
+local killTimer = 60 * 1;
+
 --이외에도, 곡을 음악/노래 등으로 바꾸는것 처럼 비슷한 말로 명령어를 사용할 수도 있습니다
 
 -- make auto leave for none-using channels
--- client:on("")
+
+local function voiceChannelJoin(member,channel)
+	local channelId = channel:hash();
+	local player = playerForChannels[channelId];
+	if player then
+		local timeout = player.timeout;
+		if timeout then
+			logger.infof("Someone joined voice channel, stop killing player [channel:%s]",channelId);
+			pcall(timer.clearTimer,timeout);
+		end
+	end
+end
+client:on("voiceChannelJoin",function (...)
+	pcall(voiceChannelJoin,...);
+end);
+
+local function voiceChannelLeave(member,channel)
+	local channelId = channel:hash();
+	local player = playerForChannels[channelId];
+	local guild = channel.guild;
+	if player and guild.connection then
+		local tryKill = true;
+		for _,user in pairs(channel.connectedMembers or {}) do
+			if not user.bot then
+				tryKill = false;
+			end
+		end
+		if tryKill then
+			logger.infof("All users left voice channel, queued player to kill list [channel:%s]",channelId);
+			player.timeout = timeout(killTimer,function ()
+				logger.infof("voice channel timeouted! killing player now [channel:%s]",channelId);
+				local connection = guild.connection;
+				if connection then
+					connection:close();
+					playerForChannels[channelId] = nil;
+				end
+			end);
+		end
+	elseif player then
+		playerForChannels[channelId] = nil;
+	end
+end
+client:on("voiceChannelLeave",function (...)
+	pcall(voiceChannelLeave,...);
+end);
 
 return {
 	["add music"] = {

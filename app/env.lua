@@ -165,7 +165,7 @@ local pcallWrapper = function (func,promise,...)
 	end
 end;
 local function timeout(time,func,...)
-	timer.setTimeout(time,coroutine.wrap(func));
+	return timer.setTimeout(time,coroutine.wrap(func));
 end
 _G.timeout = timeout;
 
