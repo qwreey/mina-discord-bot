@@ -1,6 +1,7 @@
 local playerForChannels = {}; _G.playerForChannels = playerForChannels;
 local playerClass = require "class.music.playerClass";
 local formatTime = playerClass.formatTime;
+local time = os.time;
 
 -- 섞기
 
@@ -111,12 +112,12 @@ return {
 				playerForChannels[voiceChannelID] = player;
 			end
 
-			if nth > #player then
+			if nth and (nth > #player) then
 				nth = nil;
 			end
 
 			if not rawArgs:match(",") then -- once
-				local this = {message = message,url = rawArgs};
+				local this = {message = message,url = rawArgs,addOn = time()};
 				local passed,back = pcall(player.add,player,this,nth);
 
 				-- when failed to adding song into playlist
@@ -151,7 +152,7 @@ return {
 				end
 				local ok = 0;
 				for _,item in ipairs(list) do
-					local this = {message = message,url = item};
+					local this = {message = message,url = item,addOn = time()};
 					local passed,back = pcall(player.add,player,this,nth);
 					if not passed then
 						message:reply(("곡 '%s' 를 추가하는데 실패하였습니다\n```%s```"):format(tostring(item),tostring(back)));
