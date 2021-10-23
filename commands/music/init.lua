@@ -92,6 +92,7 @@ local function voiceChannelLeave(member,channel)
 				logger.infof("voice channel timeouted! killing player now [channel:%s]",channelId);
 				local connection = guild.connection;
 				if connection then
+					pcall(player.destroy,player);
 					connection:close();
 					playerForChannels[channelId] = nil;
 				end
@@ -113,6 +114,7 @@ end);
 
 local function playerDestroy(self)
 	playerForChannels[self.voiceChannelID] = nil;
+	self.destroyed = true;
 end
 
 return {
@@ -636,6 +638,7 @@ return {
 			end
 
 			-- pause!
+			player:destroy();
 			player:kill();
 			replyMsg:setContent("성공적으로 음악을 종료하였습니다!");
 		end;

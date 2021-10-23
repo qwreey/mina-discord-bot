@@ -107,7 +107,9 @@ function this:__play(thing) -- PRIVATE
 		-- play this song
 		local handler = self.handler;
 		local isPassed,result,reason = pcall(handler.playFFmpeg,handler,thing.audio);
-		if not isPassed then
+		if self.destroyed then
+			return;
+		elseif not isPassed then
 			self.error = result;
 			logger.errorf("Play failed : %s",result);
 			local message = thing.message;
