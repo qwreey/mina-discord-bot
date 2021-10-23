@@ -671,6 +671,8 @@ return {
 			local player = playerForChannels[guildConnection.channel:__hash()];
 			if not player then
 				return replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
+			elseif #player == 0 then
+				return replyMsg:setContent("리스트가 비어있습니다!");
 			end
 			local export = "";
 			for _,item in ipairs(player) do
