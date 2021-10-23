@@ -112,6 +112,7 @@ return {
 				playerForChannels[voiceChannelID] = player;
 			end
 
+			-- if nth is bigger then playerlist len, just adding song on end of list
 			if nth and (nth > #player) then
 				nth = nil;
 			end
