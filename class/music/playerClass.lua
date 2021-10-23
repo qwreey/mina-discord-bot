@@ -121,7 +121,7 @@ function this:__play(thing) -- PRIVATE
 			logger.errorf("Play failed : %s",reason);
 			if message then -- display error message
 				message:reply {
-					content = ("곡 '%s' 를 실행하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
+					content = ("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
 						tostring((thing.info or {title = "unknown"}).title),
 						tostring(reason)
 					);
