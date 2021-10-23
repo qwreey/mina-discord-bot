@@ -111,6 +111,10 @@ return {
 				playerForChannels[voiceChannelID] = player;
 			end
 
+			if nth > #player then
+				nth = nil;
+			end
+
 			if not rawArgs:match(",") then -- once
 				local this = {message = message,url = rawArgs};
 				local passed,back = pcall(player.add,player,this,nth);
