@@ -269,7 +269,7 @@ function this:embedfiyList(page)
 		local song = self[index];
 		if song then
 			insert(fields,{
-				name = (index == 1) and "현재 재생중" or (("%d 번째 곡"):format(index));
+				name = (index == 1) and "현재 재생중" or (("%d 번째 곡 (%s)"):format(index,formatTime((song.info or {}).duration)));
 				value = ("[%s](%s)\n`신청자 : %s (%s)`"):format(
 					(song.info or {title = "NULL"}).title:gsub("\"","\\\""),
 					song.url,
