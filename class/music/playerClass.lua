@@ -8,21 +8,25 @@ local ytDownload = require("class.music.youtubeStream");--require("commands.musi
 local remove = table.remove;
 local insert = table.insert;
 local time = os.time;
+local floor = math.floor;
 
 local function formatTime(t)
-	local sec = math.floor(t % 60);
-	local min = math.floor(t / 60);
+	local sec = floor(t % 60);
+	local min = t / 60;
+	local hour = floor(min / 60);
+	min = floor(min%60)
 	sec = tostring(sec);
 	if #sec == 1 then
 		sec = "0" .. sec;
 	end
-	return ("%d:%s"):format(min,sec);
+	return ("%s%d:%s"):format((hour ~= 0 and (tostring(hour) .. ":") or ""),min,sec);
 end
+this.formatTime = formatTime;
 
 -- 이 코드는 신과 나만 읽을 수 있게 만들었습니다
 -- 만약 편집을 기꺼히 원한다면... 그렇게 하도록 하세요
 -- 다만 여기의 이 규칙을 따라주세요
--- local theHourOfAllOfSpentForEditingThis = 32; -- TYPE: number;hour
+-- local theHourOfAllOfSpentForEditingThis = 45; -- TYPE: number;hour
 -- 이 코드를 편집하기 위해 사용한 시간만큼 여기의
 -- 변수에 값을 추가해주세요.
 
@@ -281,7 +285,7 @@ end
 local seekbarForward = "━";
 local seekbarBackward = "─";
 local seekbarString = "%s %s⬤%s %s\n";
-local seekbarLen = 18;
+local seekbarLen = 14;
 local function seekbar(now,atEnd)
 	local per = now / atEnd;
 	local forward = math.floor(seekbarLen * per + 0.5);

@@ -74,10 +74,16 @@ local userLearn = require "commands.learning.learn"; -- user learning library
 local data = require "data"; data:setJson(json); _G.data = data; -- Data system
 local userData = require "userData"; userData:setJson(json):setlogger(logger):setMakeId(makeId); _G.userData = userData; -- Userdata system
 local posixTime = require "libs.posixTime"; _G.posixTime = posixTime; -- get posixTime library
+local inject = require "app.inject";
 --#endregion : Luvit 모듈 / 주요 모듈 임포트
 --#region : Discordia Module
 logger.info("------------------------ [CLEAN  UP] ------------------------");
 logger.info("wait for discordia ...");
+
+-- inject modified objects
+inject("discordia/libs/voice/VoiceConnection","voice/VoiceConnection"); -- inject modified voice connection
+inject("discordia/libs/voice/streams/FFmpegProcess","voice/streams/FFmpegProcess"); -- inject modified stream manager
+
 local discordia = require "discordia"; _G.discordia = discordia; -- 디스코드 lua 봇 모듈 불러오기
 local discordia_class = require "discordia/libs/class"; _G.discordia_class = discordia_class; -- 디스코드 클레스 가져오기
 local discordia_Logger = discordia_class.classes.Logger; -- 로거부분 가져오기 (통합을 위해 수정)

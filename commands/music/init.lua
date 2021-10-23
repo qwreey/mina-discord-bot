@@ -1,5 +1,6 @@
 local playerForChannels = {}; _G.playerForChannels = playerForChannels;
 local playerClass = require "class.music.playerClass";
+local formatTime = playerClass.formatTime;
 
 -- 섞기
 
@@ -131,9 +132,14 @@ return {
 				end
 
 				-- when successfully adding song into playlist
-				replyMsg:setContent(("성공적으로 곡 '%s' 을(를) 추가하였습니다!")
-					:format(this.info.title)
-				);
+				local info = this.info;
+				if info then
+					replyMsg:setContent(("성공적으로 곡 '%s' 을(를) 추가하였습니다! `(%s)`")
+						:format(info.title,formatTime(info.duration))
+					);
+				else
+					replyMsg:setContent("성공적으로 곡 'NULL' 을(를) 추가하였습니다! `(0:0)`");
+				end
 			else -- batch add
 				local list = {};
 				for item in rawArgs:gmatch("[^,]+") do
@@ -149,7 +155,7 @@ return {
 						ok = ok + 1;
 					end
 				end
-				replyMsg:setContent(("성공적으로 곡 %d 개를 추가하였습니다!")
+				replyMsg:setContent(("성공적으로 곡 %d 개를 추가하였습니다! `(%s)`")
 					:format(ok)
 				);
 			end
