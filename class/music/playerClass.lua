@@ -362,6 +362,8 @@ function this:embedfiyNowplaying(index)
 		title = info.title;
 		description = ("%s신청자 : %s | 신청시간 : %s\n%s조회수 : %s | 좋아요 : %s\n업로더 : %s\n[영상으로 이동](%s) | [채널로 이동](%s)"):format(
 			getElapsed and seekbar(elapsed,duration) or "",
+			song.username or "NULL",
+			timeAgo(song.whenAdded),
 			(not getElapsed) and ("곡 길이 : %s | "):format(formatTime(duration)) or "",
 			tostring(info.view_count),
 			tostring(info.like_count),
