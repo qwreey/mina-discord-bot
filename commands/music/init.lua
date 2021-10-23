@@ -225,6 +225,9 @@ return {
 				local username = member and (member.nickname:gsub("`","\\`") .. (" (%s)"):format(authorName)) or authorName;
 				local duration = 0;
 				for _,item in ipairs(list) do
+					if not guild.connection then -- if it killed by user
+						return;
+					end
 					local this = {
 						message = message;
 						url = item;
