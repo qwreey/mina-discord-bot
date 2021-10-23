@@ -56,7 +56,7 @@ local killTimer = 60 * 1;
 -- make auto leave for none-using channels
 
 local function voiceChannelJoin(member,channel)
-	local channelId = channel:hash();
+	local channelId = channel:__hash();
 	local player = playerForChannels[channelId];
 	if player then
 		local timeout = player.timeout;
@@ -67,11 +67,17 @@ local function voiceChannelJoin(member,channel)
 	end
 end
 client:on("voiceChannelJoin",function (...)
-	pcall(voiceChannelJoin,...);
+	local passed,result = pcall(voiceChannelJoin,...);
+	if not passed then
+		logger.errorf("An error occurred while trying adding killing music player queue [channel:%s]",
+			(select(2,...) or {__hash = function () return "unknown"; end}):__hash()
+		);
+		logger.errorf("Error message was : %s",result);
+	end
 end);
 
 local function voiceChannelLeave(member,channel)
-	local channelId = channel:hash();
+	local channelId = channel:__hash();
 	local player = playerForChannels[channelId];
 	local guild = channel.guild;
 	if player and guild.connection then
@@ -97,7 +103,13 @@ local function voiceChannelLeave(member,channel)
 	end
 end
 client:on("voiceChannelLeave",function (...)
-	pcall(voiceChannelLeave,...);
+	local passed,result = pcall(voiceChannelLeave,...);
+	if not passed then
+		logger.errorf("An error occurred while trying adding killing music player queue [channel:%s]",
+			(select(2,...) or {__hash = function () return "unknown"; end}):__hash()
+		);
+		logger.errorf("Error message was : %s",result);
+	end
 end);
 
 return {
