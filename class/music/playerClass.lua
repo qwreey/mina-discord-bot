@@ -102,7 +102,7 @@ function this:__play(thing) -- PRIVATE
 	coroutine.wrap(function()
 		-- play this song
 		local handler = self.handler;
-		local isPassed,result = pcall(handler.playFFmpeg,handler,thing.audio);
+		local isPassed,result,reason = pcall(handler.playFFmpeg,handler,thing.audio);
 		if not isPassed then
 			self.error = result;
 			logger.errorf("Play failed : %s",result);
@@ -112,6 +112,31 @@ function this:__play(thing) -- PRIVATE
 					content = ("곡 '%s' 를 실행하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
 						tostring((thing.info or {title = "unknown"}).title),
 						tostring(result)
+					);
+					reference = {message = message, mention = true};
+				};
+			end
+		elseif reason and (reason ~= "stream stopped") then
+			local message = thing.message;
+			logger.errorf("Play failed : %s",reason);
+			if message then -- display error message
+				message:reply {
+					content = ("곡 '%s' 를 실행하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
+						tostring((thing.info or {title = "unknown"}).title),
+						tostring(reason)
+					);
+					reference = {message = message, mention = true};
+				};
+			end
+		end
+
+		local upnext = self[2];
+		if upnext then
+			local message = upnext.message;
+			if message then
+				message:reply {
+					content = ("다음 곡 '%s' 를 재생합니다!"):format(
+						tostring((upnext.info or {title = "unknown"}).title)
 					);
 					reference = {message = message, mention = true};
 				};
