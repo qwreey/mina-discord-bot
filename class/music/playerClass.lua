@@ -120,6 +120,13 @@ function this:__play(thing) -- PRIVATE
 					reference = {message = message, mention = false};
 				};
 			end
+		elseif reason == "Connection is not ready" then
+			-- connection destroyed
+			local destroy = self.destroy;
+			if destroy then
+				pcall(destroy,self);
+			end
+			return;
 		elseif reason and (reason ~= "stream stopped") and (reason ~= "stream exhausted or errored") then
 			local message = thing.message;
 			logger.errorf("Play failed : %s",reason);

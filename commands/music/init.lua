@@ -54,7 +54,6 @@ local killTimer = 60 * 1;
 --이외에도, 곡을 음악/노래 등으로 바꾸는것 처럼 비슷한 말로 명령어를 사용할 수도 있습니다
 
 -- make auto leave for none-using channels
-
 local function voiceChannelJoin(member,channel)
 	local channelId = channel:__hash();
 	local player = playerForChannels[channelId];
@@ -112,6 +111,10 @@ client:on("voiceChannelLeave",function (...)
 	end
 end);
 
+local function playerDestroy(self)
+	playerForChannels[self.voiceChannelID] = nil;
+end
+
 return {
 	["add music"] = {
 		command = {"add","p","play"};
@@ -167,6 +170,7 @@ return {
 					voiceChannel = voiceChannel;
 					voiceChannelID = voiceChannelID;
 					handler = handler;
+					destroy = playerDestroy;
 				};
 				playerForChannels[voiceChannelID] = player;
 			end
