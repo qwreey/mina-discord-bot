@@ -3,7 +3,7 @@ local playerClass = require "class.music.playerClass";
 local formatTime = playerClass.formatTime;
 local time = os.time;
 
--- 섞기
+-- 섞기 움직이기(이동)
 
 local help = [[
 '**음악**'에 대한 도움말입니다
@@ -119,7 +119,8 @@ return {
 
 			if not rawArgs:match(",") then -- once
 				local member = message.member;
-				local username = member and (member.nickname .. (" (%s)"):format(message.author.name)) or message.author.name;
+				local authorName = message.author.name:gsub("`","\\`");
+				local username = member and (member.nickname:gsub("`","\\`") .. (" (%s)"):format(authorName)) or authorName;
 				local this = {
 					message = message;
 					url = rawArgs;
@@ -161,7 +162,8 @@ return {
 				local ok = 0;
 				local whenAdded = time();
 				local member = message.member;
-				local username = member and (member.nickname .. (" (%s)"):format(message.author.name)) or message.author.name;
+				local authorName = message.author.name:gsub("`","\\`");
+				local username = member and (member.nickname:gsub("`","\\`") .. (" (%s)"):format(authorName)) or authorName;
 				local duration = 0;
 				for _,item in ipairs(list) do
 					local this = {
