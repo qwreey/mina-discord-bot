@@ -162,6 +162,7 @@ return {
 				local whenAdded = time();
 				local member = message.member;
 				local username = member and (member.nickname .. (" (%s)"):format(message.author.name)) or message.author.name;
+				local duration = 0;
 				for _,item in ipairs(list) do
 					local this = {
 						message = message;
@@ -174,10 +175,14 @@ return {
 						message:reply(("곡 '%s' 를 추가하는데 실패하였습니다\n```%s```"):format(tostring(item),tostring(back)));
 					else
 						ok = ok + 1;
+						local info = this.info;
+						if info then
+							duration = duration + (info.duration or 0);
+						end
 					end
 				end
 				replyMsg:setContent(("성공적으로 곡 %d 개를 추가하였습니다! `(%s)`")
-					:format(ok)
+					:format(ok,formatTime(duration))
 				);
 			end
 		end;

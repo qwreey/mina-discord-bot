@@ -12,6 +12,9 @@ local floor = math.floor;
 local timeAgo = _G.timeAgo;
 
 local function formatTime(t)
+	if not t then
+		return "NULL";
+	end
 	local sec = floor(t % 60);
 	local min = t / 60;
 	local hour = floor(min / 60);
