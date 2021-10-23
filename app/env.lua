@@ -3,7 +3,11 @@ This code will injects environments into _G
 ]]
 
 -- displays --- ago
+local time = os.time;
 local function timeAgo(old,now)
+	if not now then
+		now = time();
+	end
 	local sub = now - old;
 	if sub > 220752000 then
 		return ("%d 년전"):format(sub / 220752000);

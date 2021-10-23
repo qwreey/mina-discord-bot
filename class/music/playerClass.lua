@@ -262,6 +262,7 @@ end
 local itemPerPage = 10;
 -- display list of songs
 function this:embedfiyList(page)
+	local now = time();
 	page = tonumber(page) or 1;
 	local atStart,atEnd = itemPerPage * (page-1) + 1,page * itemPerPage
 	local fields = {};
@@ -274,7 +275,7 @@ function this:embedfiyList(page)
 					(song.info or {title = "NULL"}).title:gsub("\"","\\\""),
 					song.url,
 					song.username or "NULL",
-					timeAgo(song.whenAdded)
+					timeAgo(song.whenAdded,now)
 				);
 			});
 		end
