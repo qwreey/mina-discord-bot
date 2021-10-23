@@ -352,7 +352,7 @@ function this:embedfiyNowplaying(index)
 
 	if not song then
 		return {
-			title = "재생 목록이 비어있습니다";
+			title = (index == 1) and "재생 목록이 비어있습니다" or "존재하지 않습니다!";
 			color = 16040191;
 		};
 	end
