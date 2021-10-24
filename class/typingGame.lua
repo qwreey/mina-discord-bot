@@ -71,11 +71,11 @@ function module.new(replyMsg,message,Content,text,title)
                     newMessage:reply {
                         content = "끝끝끝ㅌ끄ㅌ!!";
                         embed = {
-                            description = ("걸린 시간 : %s 초!\n타수 : %s(key/s)!"):format(
+                            description = ("걸린 시간 : %s 초!\n타수 : %s(key/m)!"):format(
                                 tostring(floor(tspend * 1000)/1000),
                                 tostring(
                                     floor(
-                                        (utf8.len(splitKoeran.split(text)) / tspend) * 1000
+                                        (utf8.len(splitKoeran.split(text)) / tspend) * 60000
                                     ) / 1000
                                 )
                             );
