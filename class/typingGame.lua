@@ -1,6 +1,6 @@
 local module = {};
 local floor = math.floor;
-local splitKoeran = require("libs.splitKorean");
+local splitKoeran = require("class.splitKorean");
 
 local function formatTime(time)
 	local sec = math.floor(time % 60);
