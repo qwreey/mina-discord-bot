@@ -75,7 +75,7 @@ function module.new(replyMsg,message,Content,text,title)
                                 tostring(floor(tspend * 1000)/1000),
                                 tostring(
                                     floor(
-                                        (utf8.len(splitKoeran(expected)) / tspend) * 1000
+                                        (utf8.len(splitKoeran.split(expected)) / tspend) * 1000
                                     ) / 1000
                                 )
                             );
