@@ -1,3 +1,4 @@
+local require = _G.requires.discordia;
 --[=[
 @c VoiceConnection
 @d Represents a connection to a Discord voice server.

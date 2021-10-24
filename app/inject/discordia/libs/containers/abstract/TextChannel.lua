@@ -1,3 +1,4 @@
+local require = _G.requires.discordia;
 --[=[
 @c TextChannel x Channel
 @t abc

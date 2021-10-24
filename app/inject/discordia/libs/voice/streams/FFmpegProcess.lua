@@ -1,3 +1,4 @@
+local require = _G.requires.discordia;
 local uv = require('uv')
 
 local remove = table.remove
@@ -21,7 +22,7 @@ function FFmpegProcess:__init(path, rate, channels)
 	local stdout = uv.new_pipe(false)
 
 	self._child = assert(uv.spawn('ffmpeg', {
-		args = {'-i', path, '-ar', rate, '-ac', channels, '-f', 's16le', 'pipe:1', '-loglevel', 'warning', '-ignore_unknown', '-ignoreerrors'},
+		args = {'-i', path, '-ar', rate, '-ac', channels, '-f', 's16le', 'pipe:1', '-loglevel', 'warning', '-ignore_unknown', '-ignoreerrors', '-copy_unknown', '-dn', '-sn'},
 		stdio = {0, stdout, 2},
 	}, onExit), 'ffmpeg could not be started, is it installed and on your executable path?')
 

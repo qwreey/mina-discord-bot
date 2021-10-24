@@ -1,3 +1,4 @@
+local require = _G.requires.discordia;
 --[=[
 @c Message x Snowflake
 @d Represents a text message sent in a Discord text channel. Messages can contain

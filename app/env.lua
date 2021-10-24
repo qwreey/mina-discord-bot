@@ -137,10 +137,20 @@ _G.unknownReply = { -- 반응 없을때 띄움
 };
 
 -- bot managing functions
-local function startBot(botToken) -- 봇 시작시키는 함수
+local function startBot(botToken,testing) -- 봇 시작시키는 함수
 	-- 토큰주고 시작
 	logger.debug("starting bot ...");
 	client:run(("Bot %s"):format(botToken));
+	if testing then
+		_G.livereloadEnabled = true;
+		local prefixs = _G.prefixs;
+		for i,v in pairs(prefixs) do
+			-- for testing mode, adding ! on prefixs to prevent two bot are crashing!
+			prefixs[i] = "!" .. v;
+		end
+		logger.warn("[SETUP] Testing mode enabled! you should use prefix with !");
+		logger.warn("[SETUP] enabled live reload system for testing!");
+	end
 	client:setGame("'미나야 도움말' 을 이용해 도움말을 얻거나 '미나야 <할말>' 을 이용해 미나와 대화하세요!");
 	return;
 end
@@ -154,16 +164,16 @@ _G.startBot = startBot;
 -- js's timeout function that inspired by js's timeout function
 local remove = table.remove;
 local unpack = unpack or table.unpack;
-local pcallWrapper = function (func,promise,...)
-	local result = {pcall(func,...)};
-	local isPassed = remove(result,1);
-	if isPassed then
-		local andThen = promise.andThen;
-		if andThen then
-			andThen(unpack(result));
-		end
-	end
-end;
+-- local pcallWrapper = function (func,promise,...)
+-- 	local result = {pcall(func,...)};
+-- 	local isPassed = remove(result,1);
+-- 	if isPassed then
+-- 		local andThen = promise.andThen;
+-- 		if andThen then
+-- 			andThen(unpack(result));
+-- 		end
+-- 	end
+-- end;
 local function timeout(time,func,...)
 	return timer.setTimeout(time,coroutine.wrap(func));
 end

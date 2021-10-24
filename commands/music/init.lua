@@ -289,6 +289,14 @@ return {
 			replyMsg:update {
 				embed = player:embedfiyList(tonumber(rawArgs) or tonumber(rawArgs:match("%d+")));
 				content = "현재 이 서버의 플레이리스트입니다!";
+				components = {
+					{
+						type = 1;
+						label = "Test";
+						sytle = 1;
+						custom_id = "test";
+					};
+				};
 			};
 		end;
 	};
@@ -444,14 +452,15 @@ return {
 				end
 			end
 			do -- index by name
-				for i,v in ipairs(player) do
-					local info = v.info;
+				for index = #player,1,-1 do -- TODO: check this is working?
+					local song = player[index];
+					local info = song.info;
 					if info then
 						local title = info.title;
 						if title then
-							if title:find(rawArgs,1,true) then
-								player:remove(i);
-								replyMsg:setContent(("%d 번째 곡 '%s' 를 삭제하였습니다"):format(i,info and info.title or "알 수 없음"));
+							if title:lower():gsub(" ",""):find(rawArgs:lower():gsub(" ",""),1,true) then
+								player:remove(index);
+								replyMsg:setContent(("%d 번째 곡 '%s' 를 삭제하였습니다"):format(index,info and info.title or "알 수 없음"));
 								return;
 							end
 						end

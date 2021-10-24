@@ -1,3 +1,4 @@
+local require = _G.requires.discordia;
 local enums = require('enums')
 local json = require('json')
 
