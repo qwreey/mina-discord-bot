@@ -1,4 +1,6 @@
 local module = {};
+local floor = math.floor;
+local splitKoeran = require("libs.splitKorean");
 
 local function formatTime(time)
 	local sec = math.floor(time % 60);
@@ -65,11 +67,17 @@ function module.new(replyMsg,message,Content,text,title)
                 local userText = contents.text:gsub("[ %.,%(%)%[%]%*%-_%+=;:'\"]",""):lower();
                 local newMessage = contents.message;
                 if expected == userText then
+                    local tspend = endTime - startTime;
                     newMessage:reply {
                         content = "끝끝끝ㅌ끄ㅌ!!";
                         embed = {
-                            description = ("걸린 시간 : %s 초!"):format(
-                                tostring(endTime - startTime)
+                            description = ("걸린 시간 : %s 초!\n타수 : %s(key/s)!"):format(
+                                tostring(floor(tspend * 1000)/1000),
+                                tostring(
+                                    floor(
+                                        (utf8.len(splitKoeran(expected)) / tspend) * 1000
+                                    ) / 1000
+                                )
                             );
                         };
                         reference = {message = newMessage, mention = true};
