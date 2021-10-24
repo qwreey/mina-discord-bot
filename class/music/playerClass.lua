@@ -70,6 +70,7 @@ function this:__init(props)
 	self.handler = props.handler;
 	self.isPaused = false;
 	self.isLooping = false;
+	self.destroy = props.destroy;
 end
 
 --#region : Stream handling methods
