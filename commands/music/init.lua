@@ -117,6 +117,51 @@ local function playerDestroy(self)
 	self.destroyed = true;
 end
 
+local function removeSong(rawArgs,player,replyMsg)
+	do -- remove by number of rawArgs
+		local this = tonumber(rawArgs);
+		if this then
+			local pop = player:remove(this);
+			if not pop then
+				replyMsg:setContent(("%d 번째 곡이 존재하지 않습니다!"):format(this));
+				return true;
+			end
+			local info = pop.info;
+			replyMsg:setContent(("%d 번째 곡 '%s' 를 삭제하였습니다"):format(this,info and info.title or "알 수 없음"));
+			return true;
+		end
+	end
+	do -- a~b
+		local atEnd,atStart;
+		atStart,atEnd = rawArgs:match("(%d+) -~ -(%d+)");
+		atStart,atEnd = tonumber(atStart),tonumber(atEnd);
+		if atEnd and atStart then
+			local min,max = math.min(atStart,atEnd),math.max(atStart,atEnd);
+			player:remove(
+				min,max
+			);
+			replyMsg:setContent(("성공적으로 %d 번째 곡부터 %d 번째 곡 까지 삭제했습니다!"):format(min,max));
+			return true;
+		end
+	end
+	do -- index by name
+		for index = #player,1,-1 do -- TODO: check this is working?
+			local song = player[index];
+			local info = song.info;
+			if info then
+				local title = info.title;
+				if title then
+					if title:lower():gsub(" ",""):find(rawArgs:lower():gsub(" ",""),1,true) then
+						player:remove(index);
+						replyMsg:setContent(("%d 번째 곡 '%s' 를 삭제하였습니다"):format(index,info and info.title or "알 수 없음"));
+						return true;
+					end
+				end
+			end
+		end
+	end
+end
+
 return {
 	["add music"] = {
 		disableDm = true;
@@ -422,56 +467,18 @@ return {
 						return;
 					end
 					local info = pop.info;
-					replyMsg:setContent(("%s 번째 곡 '%s' 를 삭제하였습니다"):format(tostring(index),info and info.title or "알 수 없음"));
+					replyMsg:setContent(("%s 번째 곡 '%s' 를 삭제하였습니다!"):format(tostring(index),info and info.title or "알 수 없음"));
 					return;
 				end
 			end
-			do -- remove by number of rawArgs
-				local this = tonumber(rawArgs);
-				if this then
-					local pop = player:remove(this);
-					if not pop then
-						replyMsg:setContent(("%d 번째 곡이 존재하지 않습니다!"):format(this));
-						return;
-					end
-					local info = pop.info;
-					replyMsg:setContent(("%d 번째 곡 '%s' 를 삭제하였습니다"):format(this,info and info.title or "알 수 없음"));
-					return;
-				end
+
+			local removed = false;
+			for songStr in rawArgs:gmatch("[^,]+") do
+				removed = removed or removeSong(songStr,player,replyMsg);
 			end
-			do -- a~b
-				local atEnd,atStart;
-				atStart,atEnd = rawArgs:match("(%d+) -~ -(%d+)");
-				atStart,atEnd = tonumber(atStart),tonumber(atEnd);
-				if atEnd and atStart then
-					local min,max = math.min(atStart,atEnd),math.max(atStart,atEnd);
-					player:remove(
-						min,max
-					);
-					-- for _ = 1,max-min+1 do
-					-- 	player:remove(min);
-					-- end
-					replyMsg:setContent(("성공적으로 %d 번째 곡부터 %d 번째 곡 까지 삭제했습니다!"):format(min,max));
-					return;
-				end
+			if not removed then
+				replyMsg:setContent("아무런 곡도 삭제하지 못했습니다!");
 			end
-			do -- index by name
-				for index = #player,1,-1 do -- TODO: check this is working?
-					local song = player[index];
-					local info = song.info;
-					if info then
-						local title = info.title;
-						if title then
-							if title:lower():gsub(" ",""):find(rawArgs:lower():gsub(" ",""),1,true) then
-								player:remove(index);
-								replyMsg:setContent(("%d 번째 곡 '%s' 를 삭제하였습니다"):format(index,info and info.title or "알 수 없음"));
-								return;
-							end
-						end
-					end
-				end
-			end
-			replyMsg:setContent("아무런 곡도 삭제하지 못했습니다");
 		end;
 	};
 	["skip music"] = {

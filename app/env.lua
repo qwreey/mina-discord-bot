@@ -45,6 +45,7 @@ _G.leaderstatusWords = {
 	["순위판"] = true;
 	["랭크"] = true;
 	["전채"] = true;
+	["랭킹"] = true;
 };
 
 -- Off keywords, used on 미나 음악 켜기 and more
