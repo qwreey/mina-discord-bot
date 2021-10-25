@@ -74,7 +74,7 @@ local myXMl = require "myXML"; _G.myXMl = myXMl; -- myXML library
 local userLearn = require "commands.learning.learn"; -- user learning library
 local data = require "data"; data:setJson(json); _G.data = data; -- Data system
 local userData = require "class.userData"; userData:setJson(json):setlogger(logger):setMakeId(makeId); _G.userData = userData; -- Userdata system
-local serverData = require "class.serverData"; server:setJson(json):setlogger(logger):setMakeId(makeId); _G.serverData = serverData; -- Serverdata system
+local serverData = require "class.serverData"; serverData:setJson(json):setlogger(logger):setMakeId(makeId); _G.serverData = serverData; -- Serverdata system
 local posixTime = require "libs.posixTime"; _G.posixTime = posixTime; -- get posixTime library
 local inject = require "app.inject";
 --#endregion : Luvit 모듈 / 주요 모듈 임포트
