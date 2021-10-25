@@ -119,6 +119,7 @@ end
 
 return {
 	["add music"] = {
+		disableDm = true;
 		command = {"add","p","play"};
 		alias = {
 			"노래틀어","노래틀어줘","노래추가해","노래추가해줘","노래추가하기","노래추가해봐","노래추가해라","노래추가","노래재생","노래실행",
@@ -260,6 +261,7 @@ return {
 		end;
 	};
 	["list music"] = {
+		disableDm = true;
 		command = {"l","ls","list","q","queue"};
 		alias = {
 			"노래페이지","노래대기열","노래리스트","노래순번","노래페이지",
@@ -301,6 +303,7 @@ return {
 		end;
 	};
 	["loop"] = {
+		disableDm = true;
 		command = {"loop","looping","lp","lop"};
 		alias = {
 			"반복재생",
@@ -368,6 +371,7 @@ return {
 		sendToDm = "개인 메시지로 도움말이 전송되었습니다!";
 	};
 	["remove music"] = {
+		disableDm = true;
 		command = {"rm","remove","r"};
 		alias = {
 			"곡 재거","곡재거","음악 재거","음악 재거","노래 재거","노래재거",
@@ -471,6 +475,7 @@ return {
 		end;
 	};
 	["skip music"] = {
+		disableDm = true;
 		command = {"sk","skip","s"};
 		alias = {
 			"곡 넘겨","곡건너뛰기","곡스킵","곡넘어가기","곡넘기기","곡넘겨줘","곡넘어가","곡다음","곡다음으로","곡다음곡",
@@ -546,6 +551,7 @@ return {
 		end;
 	};
 	["pause music"] = {
+		disableDm = true;
 		command = {"pause"};
 		alias = {
 			"곡 멈추기","곡 멈춰","곡멈추기","곡멈춰",
@@ -606,7 +612,8 @@ return {
 		end;
 	};
 	["stop music"] = {
-		command = {"off","stop"};
+		disableDm = true;
+		command = {"off","stop","leave"};
 		alias = {
 			"곡 끄기","곡 꺼","곡끄기","곡꺼",
 			"음악 끄기","음악 꺼","음악끄기","음악꺼",
@@ -655,6 +662,7 @@ return {
 		end;
 	};
 	["now music"] = {
+		disableDm = true;
 		command = {"n","np","nowplay","nowplaying","nplay","nplaying","nowp"};
 		alias = {
 			"현재재생","지금재생","현재 재생","지금 재생","현재 곡","현재 음악","현재 노래","지금 곡","지금 음악","지금 노래",
@@ -679,6 +687,7 @@ return {
 		end;
 	};
 	["info music"] = {
+		disableDm = true;
 		command = {"i","info","nowplay","nowplaying","nplay","nplaying","nowp"};
 		alias = {
 			"곡정보","곡 정보","info song","song info","music info","info music","곡 자세히보기",
@@ -703,6 +712,7 @@ return {
 		end;
 	};
 	["resume music"] = {
+		disableDm = true;
 		command = {"resume"};
 		alias = {
 			"곡 다시재생","곡다시재생",
@@ -754,6 +764,7 @@ return {
 		end;
 	};
 	["export music"] = {
+		disableDm = true;
 		command = {"export","e"};
 		alias = {
 			"노래리스트저장하기","노래리스트저장","노래내보내기","노래출력","노래저장","노래저장하기","노래기록","노래기록하기","노래나열하기",
