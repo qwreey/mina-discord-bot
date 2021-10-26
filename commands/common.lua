@@ -85,7 +85,7 @@ return {
 						local love = data.love;
 						local name = data.latestName;
 						if love and name then
-							message:reply(("*%s* 님의 호감도는 %d 이에요!"):format(name,love));
+							message:reply(("**%s** 님의 호감도는 **%d** 이에요!"):format(name,love));
 							return;
 						end
 					end
