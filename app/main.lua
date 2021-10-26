@@ -350,7 +350,11 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 		rawArgs = rawCommandText:sub(#CommandName+2,-1);
 		args = strSplit(rawArgs,"\32");
 		contents.rawArgs = rawArgs;
-		replyText = replyText(message,args,contents);
+		local passed;
+		passed,replyText = pcall(replyText,message,args,contents);
+		if not passed then
+			message:reply(("커맨드 반응 생성중 오류가 발생했습니다!\n```\n%s\n```"):format(tostring(replyText)));
+		end
 	end
 
 	local replyMsg; -- 답변 오브잭트를 담을 변수

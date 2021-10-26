@@ -9,8 +9,24 @@ local ctime = os.clock;
 local leaderstatusWords = _G.leaderstatusWords;
 local timeAgo = _G.timeAgo;
 local floor = math.floor;
+local posixTime = _G.posixTime;
 
 return {
+	["계정나이"] = {
+		alias = "계정 나이";
+		reply = function (message,args,content)
+			local this = content.rawArgs:match("%d+");
+			this = this or content.user.id;
+			local thisDate = Date.fromSnowflake(this);
+			local thisTable = thisDate:toTable();
+			local now = posixTime.now();
+			return ("%d년 %d월 %d일 %d시 %d분 %d초 %d밀리세컨드 (%d 일전!)\n> 대한민국 시간대(GMT +9) 기준입니다!"):format(
+				thisTable.year,thisTable.month,thisTable.day,thisTable.hour,thisTable.min,thisTable.sec,
+				thisDate:toMilliseconds(),
+				(now - thisDate:toSeconds()) / 86400
+			)
+		end;
+	};
 	["호감도"] = {
 		reply = function (message,args,content)
 			if message.author.id == "480318544693821450" then
@@ -55,7 +71,7 @@ return {
 		end
 	};
     ["핑"] = {
-        alias = {"ping","지연시간","응답시간"};
+        alias = {"상태","status","ping","지연시간","응답시간"};
         reply = function (msg)
             local send = time();
             local new = msg:reply("🏓 봇 지연시간\n전송중 . . .");
