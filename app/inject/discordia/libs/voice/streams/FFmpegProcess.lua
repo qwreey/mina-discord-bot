@@ -22,7 +22,7 @@ function FFmpegProcess:__init(path, rate, channels)
 	local stdout = uv.new_pipe(false)
 
 	self._child = assert(uv.spawn('ffmpeg', {
-		args = {'-i', path, '-ar', rate, '-ac', channels, '-dn', '-sn', '-f', 's16le', 'pipe:1', '-loglevel', 'warning', '-ignore_unknown', '-copy_unknown'},
+		args = {'-i', path, '-ar', rate, '-ac', channels, '-reconnect', '3', '-reconnect_streamed', '3', '-reconnect_delay_max', '10', '-dn', '-sn', '-f', 's16le', 'pipe:1', '-loglevel', 'warning', '-ignore_unknown', '-copy_unknown'},
 		stdio = {0, stdout, 2},
 	}, onExit), 'ffmpeg could not be started, is it installed and on your executable path?')
 

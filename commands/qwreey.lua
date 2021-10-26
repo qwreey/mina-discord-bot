@@ -269,10 +269,6 @@ return {
 		};
 		love = defaultLove;
 	};
-	["핑"] = {
-		reply = "퐁";
-		love = defaultLove;
-	};
 	["욕해봐"] = {
 		alias = "욕해";
 		reply = {
