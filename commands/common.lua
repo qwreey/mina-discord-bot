@@ -77,7 +77,20 @@ return {
 						fields = fields;
 					};
 				};
+			else
+				local id = rawArgs:gmatch("%d+");
+				if id and id ~= "" then
+					local data = userData:loadData(id)
+					if data then
+						local love = data.love;
+						local name = data.lastName;
+						if love then
+							message:reply(("*%s* 님의 호감도는 %d 이에요!"):format(name,love));
+						end
+					end
+				end
 			end
+			message:reply("해당 유저는 존재하지 않습니다!");
 		end
 	};
     ["핑"] = {
