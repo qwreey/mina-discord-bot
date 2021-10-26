@@ -1,13 +1,6 @@
 local history = readline.History.new(); -- 히스토리 홀더 만들기
 local editor = readline.Editor.new({stdin = process.stdin.handle, stdout = process.stdout.handle, history = history});
-
-local version do
-	local file = io.popen("git log -1 --format=%cd");
-	version = file:read("*a");
-	file:close();
-	local month,day,times,year,gmt = version:match("[^ ]+ +([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+)");
-	version = ("%s %s %s"):format(month,day,tostring(times:match("%d+:%d+")));
-end
+local version = _G.app.version;
 
 local colors = {
 	black = {30,40};

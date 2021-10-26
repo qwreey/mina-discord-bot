@@ -13,9 +13,17 @@
 ]]
 
 -- set title of terminal
+local version do
+	local file = io.popen("git log -1 --format=%cd");
+	version = file:read("*a");
+	file:close();
+	local month,day,times,year,gmt = version:match("[^ ]+ +([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+)");
+	version = ("%s %s %s"):format(month,day,tostring(times:match("%d+:%d+")));
+end
 _G.app = {
 	name = "DiscordBot";
 	fullname = "discord_mina_bot";
+	version = version;
 };
 os.execute("title " .. _G.app.name);
 

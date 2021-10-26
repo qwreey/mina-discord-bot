@@ -3,6 +3,7 @@ Admin command
 ]]
 
 local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
+	if ACCOUNTData.testing then return end
 	if (Text == "!!!stop" or Text == "!!!kill") then
 		message:reply('> 프로그램 죽이는중 . . .');
 		os.exit(exitCodes.exit); -- 프로그램 킬
