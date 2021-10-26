@@ -78,7 +78,7 @@ return {
 					};
 				};
 			else
-				local id = rawArgs:gmatch("%d+");
+				local id = rawArgs:match("%d+");
 				if id and id ~= "" then
 					local data = userData:loadData(id);
 					if data then
