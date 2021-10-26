@@ -117,8 +117,54 @@ local function playerDestroy(self)
 	self.destroyed = true;
 end
 
+local function removeSong(rawArgs,player,replyMsg)
+	do -- remove by number of rawArgs
+		local this = tonumber(rawArgs);
+		if this then
+			local pop = player:remove(this);
+			if not pop then
+				replyMsg:setContent(("%d 번째 곡이 존재하지 않습니다!"):format(this));
+				return true;
+			end
+			local info = pop.info;
+			replyMsg:setContent(("%d 번째 곡 '%s' 를 삭제하였습니다"):format(this,info and info.title or "알 수 없음"));
+			return true;
+		end
+	end
+	do -- a~b
+		local atEnd,atStart;
+		atStart,atEnd = rawArgs:match("(%d+) -~ -(%d+)");
+		atStart,atEnd = tonumber(atStart),tonumber(atEnd);
+		if atEnd and atStart then
+			local min,max = math.min(atStart,atEnd),math.max(atStart,atEnd);
+			player:remove(
+				min,max
+			);
+			replyMsg:setContent(("성공적으로 %d 번째 곡부터 %d 번째 곡 까지 삭제했습니다!"):format(min,max));
+			return true;
+		end
+	end
+	do -- index by name
+		for index = #player,1,-1 do -- TODO: check this is working?
+			local song = player[index];
+			local info = song.info;
+			if info then
+				local title = info.title;
+				if title then
+					if title:lower():gsub(" ",""):find(rawArgs:lower():gsub(" ",""),1,true) then
+						player:remove(index);
+						replyMsg:setContent(("%d 번째 곡 '%s' 를 삭제하였습니다"):format(index,info and info.title or "알 수 없음"));
+						return true;
+					end
+				end
+			end
+		end
+	end
+end
+
 return {
 	["add music"] = {
+		disableDm = true;
 		command = {"add","p","play"};
 		alias = {
 			"노래틀어","노래틀어줘","노래추가해","노래추가해줘","노래추가하기","노래추가해봐","노래추가해라","노래추가","노래재생","노래실행",
@@ -260,6 +306,7 @@ return {
 		end;
 	};
 	["list music"] = {
+		disableDm = true;
 		command = {"l","ls","list","q","queue"};
 		alias = {
 			"노래페이지","노래대기열","노래리스트","노래순번","노래페이지",
@@ -301,6 +348,7 @@ return {
 		end;
 	};
 	["loop"] = {
+		disableDm = true;
 		command = {"loop","looping","lp","lop"};
 		alias = {
 			"반복재생",
@@ -368,6 +416,7 @@ return {
 		sendToDm = "개인 메시지로 도움말이 전송되었습니다!";
 	};
 	["remove music"] = {
+		disableDm = true;
 		command = {"rm","remove","r"};
 		alias = {
 			"곡 재거","곡재거","음악 재거","음악 재거","노래 재거","노래재거",
@@ -418,59 +467,22 @@ return {
 						return;
 					end
 					local info = pop.info;
-					replyMsg:setContent(("%s 번째 곡 '%s' 를 삭제하였습니다"):format(tostring(index),info and info.title or "알 수 없음"));
+					replyMsg:setContent(("%s 번째 곡 '%s' 를 삭제하였습니다!"):format(tostring(index),info and info.title or "알 수 없음"));
 					return;
 				end
 			end
-			do -- remove by number of rawArgs
-				local this = tonumber(rawArgs);
-				if this then
-					local pop = player:remove(this);
-					if not pop then
-						replyMsg:setContent(("%d 번째 곡이 존재하지 않습니다!"):format(this));
-						return;
-					end
-					local info = pop.info;
-					replyMsg:setContent(("%d 번째 곡 '%s' 를 삭제하였습니다"):format(this,info and info.title or "알 수 없음"));
-					return;
-				end
+
+			local removed = false;
+			for songStr in rawArgs:gmatch("[^,]+") do
+				removed = removed or removeSong(songStr,player,replyMsg);
 			end
-			do -- a~b
-				local atEnd,atStart;
-				atStart,atEnd = rawArgs:match("(%d+) -~ -(%d+)");
-				atStart,atEnd = tonumber(atStart),tonumber(atEnd);
-				if atEnd and atStart then
-					local min,max = math.min(atStart,atEnd),math.max(atStart,atEnd);
-					player:remove(
-						min,max
-					);
-					-- for _ = 1,max-min+1 do
-					-- 	player:remove(min);
-					-- end
-					replyMsg:setContent(("성공적으로 %d 번째 곡부터 %d 번째 곡 까지 삭제했습니다!"):format(min,max));
-					return;
-				end
+			if not removed then
+				replyMsg:setContent("아무런 곡도 삭제하지 못했습니다!");
 			end
-			do -- index by name
-				for index = #player,1,-1 do -- TODO: check this is working?
-					local song = player[index];
-					local info = song.info;
-					if info then
-						local title = info.title;
-						if title then
-							if title:lower():gsub(" ",""):find(rawArgs:lower():gsub(" ",""),1,true) then
-								player:remove(index);
-								replyMsg:setContent(("%d 번째 곡 '%s' 를 삭제하였습니다"):format(index,info and info.title or "알 수 없음"));
-								return;
-							end
-						end
-					end
-				end
-			end
-			replyMsg:setContent("아무런 곡도 삭제하지 못했습니다");
 		end;
 	};
 	["skip music"] = {
+		disableDm = true;
 		command = {"sk","skip","s"};
 		alias = {
 			"곡 넘겨","곡건너뛰기","곡스킵","곡넘어가기","곡넘기기","곡넘겨줘","곡넘어가","곡다음","곡다음으로","곡다음곡",
@@ -546,6 +558,7 @@ return {
 		end;
 	};
 	["pause music"] = {
+		disableDm = true;
 		command = {"pause"};
 		alias = {
 			"곡 멈추기","곡 멈춰","곡멈추기","곡멈춰",
@@ -606,7 +619,8 @@ return {
 		end;
 	};
 	["stop music"] = {
-		command = {"off","stop"};
+		disableDm = true;
+		command = {"off","stop","leave"};
 		alias = {
 			"곡 끄기","곡 꺼","곡끄기","곡꺼",
 			"음악 끄기","음악 꺼","음악끄기","음악꺼",
@@ -655,6 +669,7 @@ return {
 		end;
 	};
 	["now music"] = {
+		disableDm = true;
 		command = {"n","np","nowplay","nowplaying","nplay","nplaying","nowp"};
 		alias = {
 			"현재재생","지금재생","현재 재생","지금 재생","현재 곡","현재 음악","현재 노래","지금 곡","지금 음악","지금 노래",
@@ -679,6 +694,7 @@ return {
 		end;
 	};
 	["info music"] = {
+		disableDm = true;
 		command = {"i","info","nowplay","nowplaying","nplay","nplaying","nowp"};
 		alias = {
 			"곡정보","곡 정보","info song","song info","music info","info music","곡 자세히보기",
@@ -703,6 +719,7 @@ return {
 		end;
 	};
 	["resume music"] = {
+		disableDm = true;
 		command = {"resume"};
 		alias = {
 			"곡 다시재생","곡다시재생",
@@ -754,6 +771,7 @@ return {
 		end;
 	};
 	["export music"] = {
+		disableDm = true;
 		command = {"export","e"};
 		alias = {
 			"노래리스트저장하기","노래리스트저장","노래내보내기","노래출력","노래저장","노래저장하기","노래기록","노래기록하기","노래나열하기",

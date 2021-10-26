@@ -29,6 +29,7 @@ do
 	end
 	if not chcpStatus == 65001 then
 		os.execute("chcp 65001>NUL");
+		-- os.execute("chcp 65001>/dev/null")
 	end
 end
 
@@ -72,7 +73,8 @@ local makeSeed = require "libs.makeSeed"; _G.makeSeed = makeSeed; -- making seed
 local myXMl = require "myXML"; _G.myXMl = myXMl; -- myXML library
 local userLearn = require "commands.learning.learn"; -- user learning library
 local data = require "data"; data:setJson(json); _G.data = data; -- Data system
-local userData = require "userData"; userData:setJson(json):setlogger(logger):setMakeId(makeId); _G.userData = userData; -- Userdata system
+local userData = require "class.userData"; userData:setJson(json):setlogger(logger):setMakeId(makeId); _G.userData = userData; -- Userdata system
+local serverData = require "class.serverData"; serverData:setJson(json):setlogger(logger):setMakeId(makeId); _G.serverData = serverData; -- Serverdata system
 local posixTime = require "libs.posixTime"; _G.posixTime = posixTime; -- get posixTime library
 local inject = require "app.inject";
 --#endregion : Luvit 모듈 / 주요 모듈 임포트
@@ -194,8 +196,8 @@ reacts,commands,commandsLen = commandHandler.encodeCommands({
 				return "안녕하세요 {#:UserName:#} 님!\n사용 약관에 동의해주셔서 감사합니다!\n사용 약관을 동의하였기 때문에 다음 기능을 사용 할 수 있게 되었습니다!\n\n> 미나야 배워 (미출시 기능)\n";
 			end;
 		};
-		["지워"] = {
-			disableDm = true;
+	["지워"] = {
+		disableDm = true;
 		alias = {"지우개","지워봐","지워라","지우기","삭제해","청소","삭제","청소해","clear"};
 		func = function(replyMsg,message,args,Content)
 			local RemoveNum = Content.rawArgs == "" and 5 or tonumber(Content.rawArgs);
@@ -233,9 +235,9 @@ reacts,commands,commandsLen = commandHandler.encodeCommands({
 
 			message.channel:bulkDelete(message.channel:getMessagesBefore(message.id,RemoveNum));
 			local infoMsg = message:reply(("최근 메시지 %s개를 지웠어요!"):format(RemoveNum));
-			message:delete();
 
-			timeout(1200,function ()
+			timeout(5000,function ()
+				message:delete();
 				infoMsg:delete();
 			end);
 			return;
@@ -332,7 +334,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	-- 못찾으면 다시 넘겨서 뒷단어로 넘김
 	-- 찾으면 넘겨서 COMMAND RUN 에 TRY 던짐
 	local rawCommandText = text:sub(#prefix+1,-1); -- 접두사 뺀 글자
-	local splited = strSplit(rawCommandText:lower(),"\32")
+	local splited = strSplit(rawCommandText:lower(),"\32");
 	local Command,CommandName,rawCommandName = findCommandFrom(reacts,rawCommandText,splited);
 	if not Command then
 		-- Solve user learn commands
