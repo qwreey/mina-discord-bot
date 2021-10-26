@@ -20,9 +20,8 @@ return {
 			local thisDate = Date.fromSnowflake(this);
 			local thisTable = thisDate:toTable();
 			local now = posixTime.now();
-			return ("%d년 %d월 %d일 %d시 %d분 %d초 %d밀리세컨드 (%d 일전!)\n> 대한민국 시간대(GMT +9) 기준입니다!"):format(
+			return ("%d년 %d월 %d일 %d시 %d분 %d초 (%d 일전!)\n> 대한민국 시간대(GMT +9) 기준입니다!"):format(
 				thisTable.year,thisTable.month,thisTable.day,thisTable.hour,thisTable.min,thisTable.sec,
-				thisDate:toMilliseconds(),
 				(now - thisDate:toSeconds()) / 86400
 			)
 		end;
