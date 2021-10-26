@@ -23,7 +23,6 @@ function module.compile(str,env)
 
     -- parse string
     local strParsed = strParser(str);
-    p(strParsed)
 
     -- run extensions and make output
     local out = "";

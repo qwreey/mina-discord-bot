@@ -135,56 +135,12 @@ for dir in fs.scandirSync("commands") do -- read commands from commands folder
 	otherCommands[#otherCommands+1] = require("commands." .. dir);
 end
 
-local leaderstatusWords = _G.leaderstatusWords;
-local timeAgo = _G.timeAgo;
+
 
 -- 커맨드 색인파일 만들기
 local reacts,commands,commandsLen;
 reacts,commands,commandsLen = commandHandler.encodeCommands({
 	-- 특수기능
-	["호감도"] = {
-		reply = function (message,args,c)
-			if message.author.id == "480318544693821450" then
-				return "미나는 **{#:UserName:#}** 님을 **10/25** 만금 좋아해요!";
-			elseif message.author.id == "647101613047152640" then
-				return "니 약관동의 안할 거잔아";
-			end
-			local rawArgs = c.rawArgs;
-			rawArgs = rawArgs:gsub("^ +",""):gsub(" +$","");
-			if rawArgs == "" then -- 내 호감도 불러오기
-				local this = c.getUserData();
-				if this == nil then -- 약관 동의하지 않았으면 리턴
-					return eulaComment_love;
-				end
-				local numLove = tonumber(this.love);
-				if numLove == nil then
-					return "미나는 **{#:UserName:#}** 님을 **NULL (nil)** 만큼 좋아해요!\n\n오류가 발생하였습니다...\n```json : Userdata / love ? NULL```";	
-				elseif numLove > 0 then
-					return ("미나는 **{#:UserName:#}** 님을 **%d** 만큼 좋아해요!"):format(numLove);
-				elseif numLove < 0 then
-					return ("미나는 **{#:UserName:#}** 님을 **%d** 만큼 싫어해요;"):format(math.abs(numLove));
-				elseif numLove == 0 then
-					return "미나는 아직 **{#:UserName:#}** 님을 몰라요!";
-				end
-			elseif leaderstatusWords[rawArgs] then
-				local fields = {};
-				local now = posixTime.now();
-				for nth,this in ipairs(loveLeaderstatus) do
-					insert(fields,{
-						name = ("%d 등! **%s**"):format(nth,this.name);
-						value = ("❤ %d (%s)"):format(this.love,timeAgo(this.when,now));
-					});
-				end
-				message:reply {
-					content = ("호감도가 가장 높은 유저 %d 명입니다."):format(#loveLeaderstatus);
-					embed = {
-						title = "호감도 순위";
-						fields = fields;
-					};
-				};
-			end
-		end
-	};
 	["약관동의"] = {
 		alias = {"EULA동의","약관 동의","사용계약 동의"};
 		reply = function (message,args,c)
@@ -201,54 +157,7 @@ reacts,commands,commandsLen = commandHandler.encodeCommands({
 					'"lastCommand":{}' ..
 				"}")
 			);
-				return "안녕하세요 {#:UserName:#} 님!\n사용 약관에 동의해주셔서 감사합니다!\n사용 약관을 동의하였기 때문에 다음 기능을 사용 할 수 있게 되었습니다!\n\n> 미나야 배워 (미출시 기능)\n";
-			end;
-		};
-	["지워"] = {
-		disableDm = true;
-		alias = {"지우개","지워봐","지워라","지우기","삭제해","청소","삭제","청소해","clear"};
-		func = function(replyMsg,message,args,Content)
-			local RemoveNum = Content.rawArgs == "" and 5 or tonumber(Content.rawArgs);
-			if (not RemoveNum) or type(RemoveNum) ~= "number" then -- 숫자가 아닌 다른걸 입력함
-				message:reply("잘못된 명령어 사용법이에요!\n\n**올바른 사용 방법**\n> 미나야 지워 <지울 수>\n지울수 : 2 에서 100 까지의 숫자 (정수)");
-				return;
-			elseif (RemoveNum % 1) ~= 0 then -- 소숫점을 입력함
-				local Remsg = message:reply("~~메시지를 반으로 쪼개서 지우라는거야? ㅋㅋㅋ~~");
-				timeout(800,function()
-					Remsg:setContent("<지울 수> 는 정수만 사용 가능해요!");
-				end);
-				return;
-			elseif RemoveNum < 0 then -- 마이너스를 입력함
-				local Remsg = message:reply("~~메시지를 더 늘려달라는거야? ㅋㅋㅋ~~");
-				timeout(800,function()
-					Remsg:setContent("적어도 2개 이상부터 지울 수 있어요!");
-				end);
-				return;
-			elseif RemoveNum > 100 then -- 너무 많음
-				local Remsg = message:reply("~~미쳤나봐... 작작 일 시켜~~");
-				timeout(800,function()
-					Remsg:setContent("100 개 이상의 메시지는 지울 수 없어요!");
-				end);
-				return;
-			elseif RemoveNum < 2 then -- 범위를 넘어감
-				local Remsg = message:reply("~~그정도는 니 손으로 좀 지워라~~");
-				timeout(800,function()
-					Remsg:setContent("너무 적어요! 2개 이상부터 지울 수 있어요!");
-				end);
-				return;
-			elseif not message.member:hasPermission(message.channel,enums.permission.manageMessages) then
-				message:reply("권한이 부족해요! 메시지 관리 권한이 있는 유저만 이 명령어를 사용 할 수 있어요");
-				return;
-			end
-
-			message.channel:bulkDelete(message.channel:getMessagesBefore(message.id,RemoveNum));
-			local infoMsg = message:reply(("최근 메시지 %s개를 지웠어요!"):format(RemoveNum));
-
-			timeout(5000,function ()
-				message:delete();
-				infoMsg:delete();
-			end);
-			return;
+			return "안녕하세요 {#:UserName:#} 님!\n사용 약관에 동의해주셔서 감사합니다!\n사용 약관을 동의하였기 때문에 다음 기능을 사용 할 수 있게 되었습니다!\n\n> 미나야 배워 (미출시 기능)\n";
 		end;
 	};
 	["미나"] = {

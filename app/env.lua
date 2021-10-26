@@ -138,6 +138,15 @@ _G.unknownReply = { -- 반응 없을때 띄움
 };
 
 -- bot managing functions
+local ctime = os.clock;
+local status = {
+	"'미나야 도움말' 을 이용해 도움말을 얻거나 '미나야 <할말>' 을 이용해 미나와 대화하세요!";
+	function ()
+		return ("미나 가동시간 %s!"):format(timeAgo(0,ctime()));
+	end;
+};
+local statusLen = #status;
+_G.status = status;
 local function startBot(botToken,testing) -- 봇 시작시키는 함수
 	-- 토큰주고 시작
 	logger.debug("starting bot ...");
@@ -152,8 +161,22 @@ local function startBot(botToken,testing) -- 봇 시작시키는 함수
 		logger.warn("[SETUP] Testing mode enabled! you should use prefix with !");
 		logger.warn("[SETUP] enabled live reload system for testing!");
 	end
-	client:setGame("'미나야 도움말' 을 이용해 도움말을 얻거나 '미나야 <할말>' 을 이용해 미나와 대화하세요!");
-	return;
+
+	local statusPos = 1;
+	local function nextStatus()
+		local this = status[statusPos];
+		if type(this) == "function" then
+			this = this();
+		end
+		client:setGame(this);
+		if statusPos == statusLen then
+			statusPos = 1;
+		else
+			statusPos = statusPos + 1;
+		end
+		timeout(10000,nextStatus);
+	end
+	nextStatus();
 end
 local function reloadBot() -- 봇 종료 함수
 	logger.info("try restarting ...");
