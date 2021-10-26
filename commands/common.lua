@@ -80,11 +80,11 @@ return {
 			else
 				local id = rawArgs:gmatch("%d+");
 				if id and id ~= "" then
-					local data = userData:loadData(id)
+					local data = userData:loadData(id);
 					if data then
 						local love = data.love;
-						local name = data.lastName;
-						if love then
+						local name = data.latestName;
+						if love and name then
 							message:reply(("*%s* 님의 호감도는 %d 이에요!"):format(name,love));
 						end
 					end
