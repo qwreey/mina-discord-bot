@@ -11,19 +11,30 @@ local timeAgo = _G.timeAgo;
 local floor = math.floor;
 local posixTime = _G.posixTime;
 
+local function formatIDTime(this)
+	local thisDate = Date.fromSnowflake(this);
+	local thisTable = thisDate:toTable();
+	local now = posixTime.now();
+	return ("%d년 %d월 %d일 %d시 %d분 %d초 (%d 일전!)\n> 대한민국 시간대(GMT +9) 기준입니다!"):format(
+		thisTable.year,thisTable.month,thisTable.day,thisTable.hour,thisTable.min,thisTable.sec,
+		(now - thisDate:toSeconds()) / 86400
+	);
+end
+
 return {
 	["계정나이"] = {
 		alias = "계정 나이";
 		reply = function (message,args,content)
 			local this = content.rawArgs:match("%d+");
 			this = this or content.user.id;
-			local thisDate = Date.fromSnowflake(this);
-			local thisTable = thisDate:toTable();
-			local now = posixTime.now();
-			return ("%d년 %d월 %d일 %d시 %d분 %d초 (%d 일전!)\n> 대한민국 시간대(GMT +9) 기준입니다!"):format(
-				thisTable.year,thisTable.month,thisTable.day,thisTable.hour,thisTable.min,thisTable.sec,
-				(now - thisDate:toSeconds()) / 86400
-			)
+			return formatIDTime(this);
+		end;
+	};
+	["서버나이"] = {
+		disableDm = true;
+		alias = "서버 나이";
+		reply = function (message,args,content)
+			return formatIDTime(message.guild.id);
 		end;
 	};
 	["호감도"] = {
