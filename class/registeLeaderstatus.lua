@@ -26,6 +26,7 @@ local function registeLeaderstatus(userId,this)
         if status.userId == userId then
             setStatus(status,userId,this);
             sort(loveLeaderstatus,sortingLeaderstatus);
+            data.save(loveLeaderstatusPath,loveLeaderstatus);
             return;
         end
     end
@@ -34,7 +35,7 @@ local function registeLeaderstatus(userId,this)
     -- and resort and pop the last thing and then return what is poped
 	insert(loveLeaderstatus,setStatus({},userId,this));
 	sort(loveLeaderstatus,sortingLeaderstatus);
-	local removed = remove(loveLeaderstatus)
+	local removed = remove(loveLeaderstatus);
 	data.save(loveLeaderstatusPath,loveLeaderstatus);
 	return removed;
 end
