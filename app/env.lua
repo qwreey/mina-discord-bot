@@ -147,6 +147,7 @@ local status = {
 };
 local statusLen = #status;
 _G.status = status;
+_G.ping = "Unknown";
 local function startBot(botToken,testing) -- 봇 시작시키는 함수
 	-- 토큰주고 시작
 	logger.debug("starting bot ...");
@@ -163,12 +164,18 @@ local function startBot(botToken,testing) -- 봇 시작시키는 함수
 	end
 
 	local statusPos = 1;
+	local uv = uv or require("uv");
+	local time = uv.hrtime;
+	local msOffset = 1e6;
 	local function nextStatus()
 		local this = status[statusPos];
 		if type(this) == "function" then
 			this = this();
 		end
+		local st = time();
 		client:setGame(this);
+		local ed = time();
+		_G.ping = (ed - st) / msOffset;
 		if statusPos == statusLen then
 			statusPos = 1;
 		else

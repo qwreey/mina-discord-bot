@@ -17,8 +17,11 @@ local version do
 	local file = io.popen("git log -1 --format=%cd");
 	version = file:read("*a");
 	file:close();
+	local commitCountFile = io.popen("git rev-list --count HEAD");
+	local commitCount = commitCountFile:read("*a");
+	commitCountFile:close();
 	local month,day,times,year,gmt = version:match("[^ ]+ +([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+)");
-	version = ("%s %s %s"):format(month,day,tostring(times:match("%d+:%d+")));
+	version = ("%s %s %s Build %s"):format(month,day,tostring(times:match("%d+:%d+")),tostring(commitCount));
 end
 _G.app = {
 	name = "DiscordBot";
