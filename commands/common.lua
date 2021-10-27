@@ -78,6 +78,7 @@ return {
 						fields = fields;
 					};
 				};
+				return;
 			else
 				local id = rawArgs:match("%d+");
 				if id and id ~= "" then
