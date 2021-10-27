@@ -109,9 +109,9 @@ return {
 				-- local dataReadEd = time();
 				
 				new:setContent(
-					("🏓 봇 지연시간\n> 서버 응답시간 : %s`ms`\n> 메시지 도달시간 : %s`ms`\n> 내부 클럭 속도 : %s`us`\n> 가동시간 : %s\n> 사용 RAM : %dMB")
+					("🏓 봇 지연시간\n> 서버 응답시간 : %s`ms`\n> 내부 클럭 속도 : %s`us`\n> 가동시간 : %s\n> 사용 RAM : %dMB")
 					:format(
-						tostring(_G.ping),msgPing,
+						msgPing,
 						clock,
 						timeAgo(0,ctime()),
 						(collectgarbage("count")*1024 + uv.resident_set_memory())/1000000
