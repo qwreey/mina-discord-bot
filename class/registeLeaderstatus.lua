@@ -36,6 +36,9 @@ local function registeLeaderstatus(userId,this)
 	insert(loveLeaderstatus,setStatus({},userId,this));
 	sort(loveLeaderstatus,sortingLeaderstatus);
 	local removed = remove(loveLeaderstatus);
+    while #loveLeaderstatus > 10 do -- remove other . . .
+        remove(loveLeaderstatus);
+    end
 	data.save(loveLeaderstatusPath,loveLeaderstatus);
 	return removed;
 end
