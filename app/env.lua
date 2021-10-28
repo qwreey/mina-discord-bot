@@ -184,6 +184,13 @@ local function startBot(botToken,testing) -- 봇 시작시키는 함수
 		timeout(10000,nextStatus);
 	end
 	nextStatus();
+
+	local heartbeatChannel = client:getChannel("903210299555987506");
+	local function heartbeat()
+		heartbeatChannel:send("[♥] HEARTBEAT - RUNNING"):delete();
+		timeout(60000,heartbeat);
+	end
+	heartbeat();
 end
 local function reloadBot() -- 봇 종료 함수
 	logger.info("try restarting ...");
