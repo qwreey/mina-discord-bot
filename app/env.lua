@@ -190,7 +190,11 @@ local function startBot(botToken,testing) -- 봇 시작시키는 함수
 		heartbeatChannel:send("[♥] HEARTBEAT - RUNNING"):delete();
 		timeout(60000,heartbeat);
 	end
+    if heartbeatChannel then
 	heartbeat();
+    else
+        logger.error("Couldn't find heartbeat channel!");
+    end
 end
 local function reloadBot() -- 봇 종료 함수
 	logger.info("try restarting ...");
