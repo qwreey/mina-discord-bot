@@ -7,16 +7,26 @@
 	https://github.com/qwreey75/MINA_DiscordBot/blob/faf29242b29302341d631513617810d9fe102587/bot.lua
 
 	TODO: 도움말 만들기
-	TODO: 사전 Json 인코딩을 없에고 그냥 바로 테이블 넘기기
 	TODO: 지우기 명령,강퇴,채널잠금,밴 같은거 만들기
 	TODO: 다 못찾으면 !., 같은 기호 지우고 찾기
 	TODO: 그리고도 못찾으면 조사 다 지우고 찾기
 ]]
 
 -- set title of terminal
+local version do
+	local file = io.popen("git log -1 --format=%cd");
+	version = file:read("*a");
+	file:close();
+	local commitCountFile = io.popen("git rev-list --count HEAD");
+	local commitCount = commitCountFile:read("*a"):gsub("\n","");
+	commitCountFile:close();
+	local month,day,times,year,gmt = version:match("[^ ]+ +([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+)");
+	version = ("%s %s %s Build %s"):format(month,day,tostring(times:match("%d+:%d+")),tostring(commitCount));
+end
 _G.app = {
 	name = "DiscordBot";
 	fullname = "discord_mina_bot";
+	version = version;
 };
 os.execute("title " .. _G.app.name);
 
@@ -30,6 +40,7 @@ do
 	end
 	if not chcpStatus == 65001 then
 		os.execute("chcp 65001>NUL");
+		-- os.execute("chcp 65001>/dev/null")
 	end
 end
 
@@ -40,6 +51,9 @@ package.path = require("app.path")(package.path); -- set require path
 _G.require = require; -- set global require function
 
 -- load modules
+local insert = table.insert;
+local sort = table.sort;
+local remove = table.remove;
 local utf8 = utf8 or require "utf8"; _G.utf8 = utf8; -- unicode 8 library
 local uv = require "uv"; _G.uv = uv; -- load uv library
 local prettyPrint = require "pretty-print"; _G.prettyPrint = prettyPrint; -- print many typed object on terminal
@@ -70,16 +84,29 @@ local makeSeed = require "libs.makeSeed"; _G.makeSeed = makeSeed; -- making seed
 local myXMl = require "myXML"; _G.myXMl = myXMl; -- myXML library
 local userLearn = require "commands.learning.learn"; -- user learning library
 local data = require "data"; data:setJson(json); _G.data = data; -- Data system
-local userData = require "userData"; userData:setJson(json):setlogger(logger):setMakeId(makeId); _G.userData = userData; -- Userdata system
+local userData = require "class.userData"; userData:setJson(json):setlogger(logger):setMakeId(makeId); _G.userData = userData; -- Userdata system
+local serverData = require "class.serverData"; serverData:setJson(json):setlogger(logger):setMakeId(makeId); _G.serverData = serverData; -- Serverdata system
+local posixTime = require "libs.posixTime"; _G.posixTime = posixTime; -- get posixTime library
+local inject = require "app.inject";
 --#endregion : Luvit 모듈 / 주요 모듈 임포트
 --#region : Discordia Module
 logger.info("------------------------ [CLEAN  UP] ------------------------");
 logger.info("wait for discordia ...");
+
+-- inject modified objects
+inject("discordia/libs/voice/VoiceConnection","voice/VoiceConnection"); -- inject modified voice connection
+inject("discordia/libs/voice/streams/FFmpegProcess","voice/streams/FFmpegProcess"); -- inject modified stream manager
+-- inject("discordia/libs/containers/Message","containers/Message"); -- inject button system
+-- inject("discordia/libs/containers/abstract/TextChannel","containers/abstract/TextChannel"); -- inject button system
+-- inject("discordia/libs/client/EventHandler","client/EventHandler"); -- inject button system
+local require = _G.require;
+
 local discordia = require "discordia"; _G.discordia = discordia; -- 디스코드 lua 봇 모듈 불러오기
 local discordia_class = require "discordia/libs/class"; _G.discordia_class = discordia_class; -- 디스코드 클레스 가져오기
 local discordia_Logger = discordia_class.classes.Logger; -- 로거부분 가져오기 (통합을 위해 수정)
 local enums = discordia.enums; _G.enums = enums; -- 디스코드 enums 가져오기
 local client = discordia.Client(); _G.client = client; -- 디스코드 클라이언트 만들기
+local Date = discordia.Date; _G.Date = Date;
 function discordia_Logger:log(level, msg, ...) -- 디스코드 모듈 로거부분 편집
 	if self._level < level then return end
 	msg = string.format(msg, ...);
@@ -98,110 +125,42 @@ logger.info("---------------------- [LOAD SETTINGS] ----------------------");
 -- load environments
 logger.info("load environments ...");
 require("app.env"); -- inject environments
-local adminCmd = require("app.admin"); -- load admin commands
+local adminCmd = require("app.admin"); -- load admin commands\
+local hook = require("class.hook");
+local registeLeaderstatus = require("class.registeLeaderstatus");
 
 -- load commands
 logger.info(" |- load commands from commands folder");
 local otherCommands = {} -- commands 폴더에서 커맨드 불러오기
-for dir in fs.scandirSync("commands") do
+for dir in fs.scandirSync("commands") do -- read commands from commands folder
 	dir = string.gsub(dir,"%.lua$","");
 	logger.info(" |  |- load command dict from : commands." .. dir);
 	otherCommands[#otherCommands+1] = require("commands." .. dir);
 end
 
+
+
 -- 커맨드 색인파일 만들기
 local reacts,commands,commandsLen;
 reacts,commands,commandsLen = commandHandler.encodeCommands({
 	-- 특수기능
-	["호감도"] = {
-		reply = function (message,args,c)
-			if message.author.id == "480318544693821450" then
-				return "미나는 **{#:UserName:#}** 님을 **10/25** 만금 좋아해요!";
-			elseif message.author.id == "647101613047152640" then
-				return "니 약관동의 안할 거잔아";
-			end
-			if c.rawArgs == "" then -- 내 호감도 불러오기
-				local userData = c.getUserData();
-				if userData == nil then -- 약관 동의하지 않았으면 리턴
-					return eulaComment_love;
-				end
-				local numLove = tonumber(userData.love);
-				if numLove == nil then
-					return "미나는 **{#:UserName:#}** 님을 **NULL (nil)** 만큼 좋아해요!\n\n오류가 발생하였습니다...\n```json : Userdata / love ? NULL```";	
-				elseif numLove > 0 then
-					return ("미나는 **{#:UserName:#}** 님을 **%d** 만큼 좋아해요!"):format(numLove);
-				elseif numLove < 0 then
-					return ("미나는 **{#:UserName:#}** 님을 **%d** 만큼 싫어해요;"):format(math.abs(numLove));
-				elseif numLove == 0 then
-					return "미나는 아직 **{#:UserName:#}** 님을 몰라요!";
-				end
-			end
-		end
-	};
 	["약관동의"] = {
 		alias = {"EULA동의","약관 동의","사용계약 동의"};
 		reply = function (message,args,c)
-			local userData = c.getUserData(); -- 내 호감도 불러오기
-			if userData then -- 약관 동의하지 않았으면 리턴
+			local this = c.getUserData(); -- 내 호감도 불러오기
+			if this then -- 약관 동의하지 않았으면 리턴
 				return "**{#:UserName:#}** 님은 이미 약관을 동의하셨어요!";
 			end
 			local userId = tostring(message.author.id);
 			fs.writeFileSync(("data/userData/%s.json"):format(userId),
 				("{" ..
-				('"latestName":"%s",'):format(message.author.name) ..
-				'"love":0,' ..
+					('"latestName":"%s",'):format(message.author.name) ..
+					'"love":0,' ..
 					('"lastName":["%s"],'):format(message.author.name) ..
 					'"lastCommand":{}' ..
-					"}")
-				);
-				return "안녕하세요 {#:UserName:#} 님!\n사용 약관에 동의해주셔서 감사합니다!\n사용 약관을 동의하였기 때문에 다음 기능을 사용 할 수 있게 되었습니다!\n\n> 미나야 배워 (미출시 기능)\n";
-			end;
-		};
-		["지워"] = {
-			disableDm = true;
-		alias = {"지우개","지워봐","지워라","지우기","삭제해","청소","삭제","청소해","clear"};
-		func = function(replyMsg,message,args,Content)
-			local RemoveNum = Content.rawArgs == "" and 5 or tonumber(Content.rawArgs);
-			if (not RemoveNum) or type(RemoveNum) ~= "number" then -- 숫자가 아닌 다른걸 입력함
-				message:reply("잘못된 명령어 사용법이에요!\n\n**올바른 사용 방법**\n> 미나야 지워 <지울 수>\n지울수 : 2 에서 100 까지의 숫자 (정수)");
-				return;
-			elseif (RemoveNum % 1) ~= 0 then -- 소숫점을 입력함
-				local Remsg = message:reply("~~메시지를 반으로 쪼개서 지우라는거야? ㅋㅋㅋ~~");
-				timeout(800,function()
-					Remsg:setContent("<지울 수> 는 정수만 사용 가능해요!");
-				end);
-				return;
-			elseif RemoveNum < 0 then -- 마이너스를 입력함
-				local Remsg = message:reply("~~메시지를 더 늘려달라는거야? ㅋㅋㅋ~~");
-				timeout(800,function()
-					Remsg:setContent("적어도 2개 이상부터 지울 수 있어요!");
-				end);
-				return;
-			elseif RemoveNum > 100 then -- 너무 많음
-				local Remsg = message:reply("~~미쳤나봐... 작작 일 시켜~~");
-				timeout(800,function()
-					Remsg:setContent("100 개 이상의 메시지는 지울 수 없어요!");
-				end);
-				return;
-			elseif RemoveNum < 2 then -- 범위를 넘어감
-				local Remsg = message:reply("~~그정도는 니 손으로 좀 지워라~~");
-				timeout(800,function()
-					Remsg:setContent("너무 적어요! 2개 이상부터 지울 수 있어요!");
-				end);
-				return;
-			elseif not message.member:hasPermission(message.channel,enums.permission.manageMessages) then
-				message:reply("권한이 부족해요! 메시지 관리 권한이 있는 유저만 이 명령어를 사용 할 수 있어요");
-				return;
-			end
-
-			message.channel:bulkDelete(message.channel:getMessagesBefore(message.id,RemoveNum));
-			local infoMsg = message:reply(("최근 메시지 %s개를 지웠어요!"):format(RemoveNum));
-			message:delete();
-
-			timeout(1200,function ()
-				infoMsg:delete();
-			end);
-			return;
+				"}")
+			);
+			return "안녕하세요 {#:UserName:#} 님!\n사용 약관에 동의해주셔서 감사합니다!\n사용 약관을 동의하였기 때문에 다음 기능을 사용 할 수 있게 되었습니다!\n\n> 미나야 배워 (미출시 기능)\n";
 		end;
 	};
 	["미나"] = {
@@ -223,38 +182,8 @@ logger.info(" |- command indexing end!");
 --#region : 메인 파트
 logger.info("----------------------- [SET UP BOT ] -----------------------");
 local findCommandFrom = commandHandler.findCommandFrom;
-local insert = table.insert;
-
--- HOOK SYSTEM
-local beforeHook = {};
-local afterHook = {};
-local hook = {};
-hook.__index = hook;
-hook.types = {after = 1; before = 2;};
-function hook.new(self)
-	self.id = makeId();
-	self.type = self.type or self.types.before;
-	setmetatable(self,hook);
-	return self;
-end
-function hook:attach()
-	if self.isAttach then
-		error("This hook already attached to message event!");
-	end
-	((self.type == self.types.after and afterHook) or (self.type == self.types.before and beforeHook))[self.id] = self;
-	self.isAttach = true;
-end
-function hook:detach()
-	if not self.isAttach then
-		error("couldn't detach this hook from message event, it seemed not attached yet!");
-	end
-	((self.type == self.types.after and afterHook) or (self.type == self.types.before and beforeHook))[self.id] = nil;
-	self.isAttach = false;
-end
-_G.hook = hook;
-_G.afterHook = afterHook;
-_G.beforeHook = beforeHook;
-
+local afterHook = hook.afterHook;
+local beforeHook = hook.beforeHook;
 client:on('messageCreate', function(message) -- 메시지 생성됨
 
 	-- get base information from message object
@@ -325,7 +254,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	-- 못찾으면 다시 넘겨서 뒷단어로 넘김
 	-- 찾으면 넘겨서 COMMAND RUN 에 TRY 던짐
 	local rawCommandText = text:sub(#prefix+1,-1); -- 접두사 뺀 글자
-	local splited = strSplit(rawCommandText:lower(),"\32")
+	local splited = strSplit(rawCommandText:lower(),"\32");
 	local Command,CommandName,rawCommandName = findCommandFrom(reacts,rawCommandText,splited);
 	if not Command then
 		-- Solve user learn commands
@@ -368,7 +297,8 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 
 	-- 만약 호감도가 있으면 올려주기
 	if love then
-		local thisUserDat = userData:loadData(user.id);
+		local userId = user.id
+		local thisUserDat = userData:loadData(userId);
 
 		if thisUserDat then
 			local username = user.name;
@@ -391,6 +321,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 				thisUserDat.love = thisUserDat.love + love;
 				lastCommand[CommandID] = osTime();
 				userData:saveData(user.id);
+				registeLeaderstatus(userId,thisUserDat);
 			end
 		else
 			loveText = eulaComment_love;
@@ -422,19 +353,25 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 		rawArgs = rawCommandText:sub(#CommandName+2,-1);
 		args = strSplit(rawArgs,"\32");
 		contents.rawArgs = rawArgs;
-		replyText = replyText(message,args,contents);
+		local passed;
+		passed,replyText = pcall(replyText,message,args,contents);
+		if not passed then
+			message:reply(("커맨드 반응 생성중 오류가 발생했습니다!\n```\n%s\n```"):format(tostring(replyText)));
+		end
 	end
 
 	local replyMsg; -- 답변 오브잭트를 담을 변수
 	if replyText then -- 만약 답변글이 있으면 답변 주기
 		local replyTextType = type(replyText);
+		local embed = Command.embed;
 		if replyTextType == "string" then
 			replyText = replyText .. loveText;
 		elseif replyTextType == "table" and replyText.content then
+			embed = replyText.embed or embed;
 			replyText.content = replyText.content .. loveText;
 		end
 		replyMsg = message:reply{
-			-- embed = Command.embed;
+			embed = embed;
 			content = commandHandler.formatReply(replyText,{
 				Msg = message;
 				user = user;
@@ -476,8 +413,8 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	end
 end);
 
-startBot(ACCOUNTData.botToken); -- init bot (init discordia)
 term(); -- load repl terminal system
 _G.livereloadEnabled = false; -- enable live reload
 require("app.livereload"); -- loads livereload system; it will make uv event and take file changed signal
+startBot(ACCOUNTData.botToken,ACCOUNTData.testing); -- init bot (init discordia)
 --#endregion : 메인 파트

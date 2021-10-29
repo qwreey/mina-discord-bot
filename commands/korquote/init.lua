@@ -23,7 +23,7 @@ return {
 			"타자한글","타자 한글","타자 한국어","타자연습한글"
 		};
 		reply = "잠시만 기달려주세요 . . .";
-		embed = "잠시 뒤에 보이는 문구를 재빠르게 입력하세요!";
+		embed = {description = "뒤에 보이는 문구를 재빠르게 입력하세요!"};
 		func = function(replyMsg,message,args,Content)
 			local this = korquoteRequest.fetch();
 			typingGame.new(replyMsg,message,Content,this.message,this.author);

@@ -3,6 +3,7 @@ local json;
 
 function module:setJson(newJson)
 	json = newJson;
+	return self;
 end
 
 function module.load(fileName)
@@ -10,7 +11,7 @@ function module.load(fileName)
 end
 
 function module.save(fileName,data)
- 	return fs.writeFile(fileName,json.encoding(data));
+ 	return fs.writeFile(fileName,json.encode(data));
 end
 
 function module.loadRaw(fileName)

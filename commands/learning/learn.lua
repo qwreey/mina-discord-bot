@@ -18,6 +18,7 @@ local errorType = {
 	channelDetected = 9;
 	alreadlyLearnByYou = 10;
 	onCooltime = 11;
+	noData = 12;
 };
 module.errorType = errorType;
 
@@ -70,6 +71,9 @@ local utf8Len = utf8.len;
 local insert = table.insert;
 --- Add new react
 function module.put(name,value,author,when,userData)
+	if not userData then
+		return errorType.noData;
+	end
 	local lastTime = userData.lastLearnTime;
 	if lastTime and (lastTime + cooltime > when) then
 		return errorType.onCooltime;

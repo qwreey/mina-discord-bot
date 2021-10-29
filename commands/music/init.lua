@@ -1,5 +1,10 @@
 local playerForChannels = {}; _G.playerForChannels = playerForChannels;
-local playerClass = require "commands.music.playerClass";
+local playerClass = require "class.music.playerClass";
+local formatTime = playerClass.formatTime;
+local time = os.time;
+local timer = _G.timer;
+
+-- 섞기 움직이기(이동)
 
 local help = [[
 '**음악**'에 대한 도움말입니다
@@ -44,13 +49,122 @@ local help = [[
 > 미나 **곡끄기**
 음악봇을 완전히 종료합니다
 ]];
+local killTimer = 60 * 5 * 1000;
+
 --이외에도, 곡을 음악/노래 등으로 바꾸는것 처럼 비슷한 말로 명령어를 사용할 수도 있습니다
 
 -- make auto leave for none-using channels
--- client:on("")
+local function voiceChannelJoin(member,channel)
+	local channelId = channel:__hash();
+	local player = playerForChannels[channelId];
+	if player then
+		local timeout = player.timeout;
+		if timeout then
+			logger.infof("Someone joined voice channel, stop killing player [channel:%s]",channelId);
+			pcall(timer.clearTimer,timeout);
+		end
+	end
+end
+client:on("voiceChannelJoin",function (...)
+	local passed,result = pcall(voiceChannelJoin,...);
+	if not passed then
+		logger.errorf("An error occurred while trying adding killing music player queue [channel:%s]",
+			(select(2,...) or {__hash = function () return "unknown"; end}):__hash()
+		);
+		logger.errorf("Error message was : %s",result);
+	end
+end);
+
+local function voiceChannelLeave(member,channel)
+	local channelId = channel:__hash();
+	local player = playerForChannels[channelId];
+	local guild = channel.guild;
+	if player and guild.connection then
+		local tryKill = true;
+		for _,user in pairs(channel.connectedMembers or {}) do
+			if not user.bot then
+				tryKill = false;
+			end
+		end
+		if tryKill then
+			logger.infof("All users left voice channel, queued player to kill list [channel:%s]",channelId);
+			player.timeout = timeout(killTimer,function ()
+				logger.infof("voice channel timeouted! killing player now [channel:%s]",channelId);
+				local connection = guild.connection;
+				if connection then
+					pcall(player.destroy,player);
+					connection:close();
+					playerForChannels[channelId] = nil;
+				end
+			end);
+		end
+	elseif player then
+		playerForChannels[channelId] = nil;
+	end
+end
+client:on("voiceChannelLeave",function (...)
+	local passed,result = pcall(voiceChannelLeave,...);
+	if not passed then
+		logger.errorf("An error occurred while trying adding killing music player queue [channel:%s]",
+			(select(2,...) or {__hash = function () return "unknown"; end}):__hash()
+		);
+		logger.errorf("Error message was : %s",result);
+	end
+end);
+
+local function playerDestroy(self)
+	playerForChannels[self.voiceChannelID] = nil;
+	self.destroyed = true;
+end
+
+local function removeSong(rawArgs,player,replyMsg)
+	do -- remove by number of rawArgs
+		local this = tonumber(rawArgs);
+		if this then
+			local pop = player:remove(this);
+			if not pop then
+				replyMsg:setContent(("%d 번째 곡이 존재하지 않습니다!"):format(this));
+				return true;
+			end
+			local info = pop.info;
+			replyMsg:setContent(("%d 번째 곡 '%s' 를 삭제하였습니다"):format(this,info and info.title or "알 수 없음"));
+			return true;
+		end
+	end
+	do -- a~b
+		local atEnd,atStart;
+		atStart,atEnd = rawArgs:match("(%d+) -~ -(%d+)");
+		atStart,atEnd = tonumber(atStart),tonumber(atEnd);
+		if atEnd and atStart then
+			local min,max = math.min(atStart,atEnd),math.max(atStart,atEnd);
+			player:remove(
+				min,max
+			);
+			replyMsg:setContent(("성공적으로 %d 번째 곡부터 %d 번째 곡 까지 삭제했습니다!"):format(min,max));
+			return true;
+		end
+	end
+	do -- index by name
+		for index = #player,1,-1 do -- TODO: check this is working?
+			local song = player[index];
+			local info = song.info;
+			if info then
+				local title = info.title;
+				if title then
+					if title:lower():gsub(" ",""):find(rawArgs:lower():gsub(" ",""),1,true) then
+						player:remove(index);
+						replyMsg:setContent(("%d 번째 곡 '%s' 를 삭제하였습니다"):format(index,info and info.title or "알 수 없음"));
+						return true;
+					end
+				end
+			end
+		end
+	end
+end
 
 return {
 	["add music"] = {
+		disableDm = true;
 		command = {"add","p","play"};
 		alias = {
 			"노래틀어","노래틀어줘","노래추가해","노래추가해줘","노래추가하기","노래추가해봐","노래추가해라","노래추가","노래재생","노래실행",
@@ -104,12 +218,27 @@ return {
 					voiceChannel = voiceChannel;
 					voiceChannelID = voiceChannelID;
 					handler = handler;
+					destroy = playerDestroy;
 				};
 				playerForChannels[voiceChannelID] = player;
 			end
 
+			-- if nth is bigger then playerlist len, just adding song on end of list
+			if nth and (nth > #player) then
+				nth = nil;
+			end
+
 			if not rawArgs:match(",") then -- once
-				local this = {message = message,url = rawArgs};
+				local member = message.member;
+				local nickname = member and member.nickname;
+				local authorName = message.author.name:gsub("`","\\`");
+				local username = nickname and (nickname:gsub("`","\\`") .. (" (%s)"):format(authorName)) or authorName;
+				local this = {
+					message = message;
+					url = rawArgs;
+					whenAdded = time();
+					username = username;
+				};
 				local passed,back = pcall(player.add,player,this,nth);
 
 				-- when failed to adding song into playlist
@@ -129,31 +258,55 @@ return {
 				end
 
 				-- when successfully adding song into playlist
-				replyMsg:setContent(("성공적으로 곡 '%s' 을(를) 추가하였습니다!")
-					:format(this.info.title)
-				);
+				local info = this.info;
+				if info then
+					replyMsg:setContent(("성공적으로 곡 '%s' 을(를)%s 추가하였습니다! `(%s)`")
+						:format(info.title,nth and ((" %d 번째에"):format(nth)) or "",formatTime(info.duration))
+					);
+				else
+					replyMsg:setContent("성공적으로 곡 'NULL' 을(를) 추가하였습니다! `(0:0)`");
+				end
 			else -- batch add
 				local list = {};
 				for item in rawArgs:gmatch("[^,]+") do
 					table.insert(list,item);
 				end
 				local ok = 0;
+				local whenAdded = time();
+				local member = message.member;
+				local nickname = member and member.nickname;
+				local authorName = message.author.name:gsub("`","\\`");
+				local username = nickname and (nickname:gsub("`","\\`") .. (" (%s)"):format(authorName)) or authorName;
+				local duration = 0;
 				for _,item in ipairs(list) do
-					local this = {message = message,url = item};
+					if not guild.connection then -- if it killed by user
+						return;
+					end
+					local this = {
+						message = message;
+						url = item;
+						whenAdded = whenAdded;
+						username = username;
+					};
 					local passed,back = pcall(player.add,player,this,nth);
 					if not passed then
 						message:reply(("곡 '%s' 를 추가하는데 실패하였습니다\n```%s```"):format(tostring(item),tostring(back)));
 					else
 						ok = ok + 1;
+						local info = this.info;
+						if info then
+							duration = duration + (info.duration or 0);
+						end
 					end
 				end
-				replyMsg:setContent(("성공적으로 곡 %d 개를 추가하였습니다!")
-					:format(ok)
+				replyMsg:setContent(("성공적으로 곡 %d 개를 추가하였습니다! `(%s)`")
+					:format(ok,formatTime(duration))
 				);
 			end
 		end;
 	};
 	["list music"] = {
+		disableDm = true;
 		command = {"l","ls","list","q","queue"};
 		alias = {
 			"노래페이지","노래대기열","노래리스트","노래순번","노래페이지",
@@ -183,12 +336,22 @@ return {
 			replyMsg:update {
 				embed = player:embedfiyList(tonumber(rawArgs) or tonumber(rawArgs:match("%d+")));
 				content = "현재 이 서버의 플레이리스트입니다!";
+				components = {
+					{
+						type = 1;
+						label = "Test";
+						sytle = 1;
+						custom_id = "test";
+					};
+				};
 			};
 		end;
 	};
 	["loop"] = {
+		disableDm = true;
 		command = {"loop","looping","lp","lop"};
 		alias = {
+			"반복재생",
 			"looping","looping toggle","toggle looping","플레이리스트반복","플레이 리스트 반복","플리 반복",
 			"플리반복","플리루프","플리 루프","플리반복하기","플리 반복하기",
 			"재생목록 반복하기","재생목록반복하기","재생목록반복","재생목록 반복","재생목록루프","재생목록 루프",
@@ -253,8 +416,10 @@ return {
 		sendToDm = "개인 메시지로 도움말이 전송되었습니다!";
 	};
 	["remove music"] = {
+		disableDm = true;
 		command = {"rm","remove","r"};
 		alias = {
+			"곡 재거","곡재거","음악 재거","음악 재거","노래 재거","노래재거",
 			"곡빼줘","곡제거","곡빼기","곡없에기","곡지우기","곡삭제","곡지워","곡빼","곡없에","곡지워줘","곡없에줘","곡날리기",
 			"곡 빼줘","곡 제거","곡 빼기","곡 없에기","곡 지우기","곡 삭제","곡 지워","곡 빼","곡 없에","곡 지워줘","곡 없에줘","곡 날리기",
 			"음악빼줘","음악제거","음악빼기","음악없에기","음악지우기","음악삭제","음악지워","음악빼","음악없에","음악지워줘","음악없에줘","음악날리기",
@@ -302,58 +467,22 @@ return {
 						return;
 					end
 					local info = pop.info;
-					replyMsg:setContent(("%s 번째 곡 '%s' 를 삭제하였습니다"):format(tostring(index),info and info.title or "알 수 없음"));
+					replyMsg:setContent(("%s 번째 곡 '%s' 를 삭제하였습니다!"):format(tostring(index),info and info.title or "알 수 없음"));
 					return;
 				end
 			end
-			do -- remove by number of rawArgs
-				local this = tonumber(rawArgs);
-				if this then
-					local pop = player:remove(this);
-					if not pop then
-						replyMsg:setContent(("%d 번째 곡이 존재하지 않습니다!"):format(this));
-						return;
-					end
-					local info = pop.info;
-					replyMsg:setContent(("%d 번째 곡 '%s' 를 삭제하였습니다"):format(this,info and info.title or "알 수 없음"));
-					return;
-				end
+
+			local removed = false;
+			for songStr in rawArgs:gmatch("[^,]+") do
+				removed = removed or removeSong(songStr,player,replyMsg);
 			end
-			do -- a~b
-				local atEnd,atStart;
-				atStart,atEnd = rawArgs:match("(%d+) -~ -(%d+)");
-				atStart,atEnd = tonumber(atStart),tonumber(atEnd);
-				if atEnd and atStart then
-					local min,max = math.min(atStart,atEnd),math.max(atStart,atEnd);
-					player:remove(
-						min,max
-					);
-					-- for _ = 1,max-min+1 do
-					-- 	player:remove(min);
-					-- end
-					replyMsg:setContent(("성공적으로 %d 번째 곡부터 %d 번째 곡 까지 삭제했습니다!"):format(min,max));
-					return;
-				end
+			if not removed then
+				replyMsg:setContent("아무런 곡도 삭제하지 못했습니다!");
 			end
-			do -- index by name
-				for i,v in ipairs(player) do
-					local info = v.info;
-					if info then
-						local title = info.title;
-						if title then
-							if title:find(rawArgs,1,true) then
-								player:remove(i);
-								replyMsg:setContent(("%d 번째 곡 '%s' 를 삭제하였습니다"):format(i,info and info.title or "알 수 없음"));
-								return;
-							end
-						end
-					end
-				end
-			end
-			replyMsg:setContent("아무런 곡도 삭제하지 못했습니다");
 		end;
 	};
 	["skip music"] = {
+		disableDm = true;
 		command = {"sk","skip","s"};
 		alias = {
 			"곡 넘겨","곡건너뛰기","곡스킵","곡넘어가기","곡넘기기","곡넘겨줘","곡넘어가","곡다음","곡다음으로","곡다음곡",
@@ -416,15 +545,20 @@ return {
 					player:add(thing);
 				end
 			end
-			local loopMsg = (looping and "\n(루프 모드가 켜져있어 스킵된 곡은 가장 뒤에 다시 추가되었습니다)" or "")
+			local loopMsg = (looping and "\n(루프 모드가 켜져있어 스킵된 곡은 가장 뒤에 다시 추가되었습니다)" or "");
+			local new = player[1];
+			new = new and player.info;
+			new = new and new.title
+			local nowPlaying = (new and ("다음으로 재생되는 곡은 '%s' 입니다\n"):format(new) or "");
 			replyMsg:setContent( -- !!REVIEW NEEDED!!
 				rawArgs == 1 and
-				(("성공적으로 곡 '%s' 를 스킵하였습니다%s"):format(tostring(lastOne and lastOne.info and lastOne.info.title),loopMsg)) or
-				(("성공적으로 곡 %s 개를 스킵하였습니다!%s"):format(tostring(rawArgs),loopMsg))
+				(("성공적으로 곡 '%s' 를 스킵하였습니다%s%s"):format(tostring(lastOne and lastOne.info and lastOne.info.title),nowPlaying,loopMsg)) or
+				(("성공적으로 곡 %s 개를 스킵하였습니다!%s%s"):format(tostring(rawArgs),nowPlaying,loopMsg))
 			);
 		end;
 	};
 	["pause music"] = {
+		disableDm = true;
 		command = {"pause"};
 		alias = {
 			"곡 멈추기","곡 멈춰","곡멈추기","곡멈춰",
@@ -485,7 +619,8 @@ return {
 		end;
 	};
 	["stop music"] = {
-		command = {"off","stop"};
+		disableDm = true;
+		command = {"off","stop","leave"};
 		alias = {
 			"곡 끄기","곡 꺼","곡끄기","곡꺼",
 			"음악 끄기","음악 꺼","음악끄기","음악꺼",
@@ -528,11 +663,13 @@ return {
 			end
 
 			-- pause!
+			player:destroy();
 			player:kill();
 			replyMsg:setContent("성공적으로 음악을 종료하였습니다!");
 		end;
 	};
 	["now music"] = {
+		disableDm = true;
 		command = {"n","np","nowplay","nowplaying","nplay","nplaying","nowp"};
 		alias = {
 			"현재재생","지금재생","현재 재생","지금 재생","현재 곡","현재 음악","현재 노래","지금 곡","지금 음악","지금 노래",
@@ -557,6 +694,7 @@ return {
 		end;
 	};
 	["info music"] = {
+		disableDm = true;
 		command = {"i","info","nowplay","nowplaying","nplay","nplaying","nowp"};
 		alias = {
 			"곡정보","곡 정보","info song","song info","music info","info music","곡 자세히보기",
@@ -573,18 +711,15 @@ return {
 				return replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
 			end
 			local this = Content.rawArgs;
-			this = tonumber(this) or tonumber(this:match("%d+"));
-			if not this then
-				replyMsg:setContent("확인할 곡의 번째를 입력해주세요!");
-				return;
-			end
+			this = tonumber(this) or tonumber(this:match("%d+")) or 1;
 			replyMsg:update {
 				embed = player:embedfiyNowplaying(this);
-				content = "지금 재생중인 곡입니다!";
+				content = (this == 1) and "지금 재생중인 곡입니다!" or (("%d 번째 곡입니다!"):format(this));
 			};
 		end;
 	};
 	["resume music"] = {
+		disableDm = true;
 		command = {"resume"};
 		alias = {
 			"곡 다시재생","곡다시재생",
@@ -636,6 +771,7 @@ return {
 		end;
 	};
 	["export music"] = {
+		disableDm = true;
 		command = {"export","e"};
 		alias = {
 			"노래리스트저장하기","노래리스트저장","노래내보내기","노래출력","노래저장","노래저장하기","노래기록","노래기록하기","노래나열하기",
@@ -658,6 +794,8 @@ return {
 			local player = playerForChannels[guildConnection.channel:__hash()];
 			if not player then
 				return replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
+			elseif #player == 0 then
+				return replyMsg:setContent("리스트가 비어있습니다!");
 			end
 			local export = "";
 			for _,item in ipairs(player) do

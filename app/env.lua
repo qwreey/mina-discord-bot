@@ -1,8 +1,52 @@
+--[[
+This code will injects environments into _G
+]]
+
+-- displays --- ago
+local time = os.time;
+local function timeAgo(old,now)
+	if not now then
+		now = time();
+	end
+	local sub = now - old;
+	if sub > 220752000 then
+		return ("%d 년전"):format(sub / 220752000);
+	elseif sub > 18446400 then
+		return ("%d 달전"):format(sub / 18446400);
+	elseif sub > 604800 then
+		return ("%d 주전"):format(sub / 604800);
+	elseif sub > 86400 then
+		return ("%d 일전"):format(sub / 86400);
+	elseif sub > 3600 then
+		return ("%d 시간전"):format(sub / 3600);
+	elseif sub > 60 then
+		return ("%d 분전"):format(sub / 60);
+	else
+		return ("%d 초전"):format(sub);
+	end
+	return "?";
+end
+_G.timeAgo = timeAgo;
+
 -- google api key, discord token, game api key and more. this is should be protected
 _G.ACCOUNTData = data.load("data/ACCOUNT.json");
 
 -- EULA text
 _G.EULA = data.loadRaw("data/EULA.txt");
+
+-- the leaderstatus data that will save on server storage
+local loveLeaderstatusPath = "data/loveLeaderstatus.json";
+_G.loveLeaderstatus = data.load(loveLeaderstatusPath);
+_G.loveLeaderstatusPath = loveLeaderstatusPath;
+
+-- the words that means rank, this is useed on '미나 호감도 순위'
+_G.leaderstatusWords = {
+	["순위"] = true;
+	["순위판"] = true;
+	["랭크"] = true;
+	["전채"] = true;
+	["랭킹"] = true;
+};
 
 -- Off keywords, used on 미나 음악 켜기 and more
 _G.onKeywords = {
@@ -63,18 +107,22 @@ _G.admins = { -- 관리 명령어 권한
 
 -- the bot prefixs
 _G.prefixs = {
-	[1] = "미나야";
-	[2] = "미나";
-	[3] = "미나야.";
-	[4] = "미나!";
-	[5] = "미나야!";
-	[6] = "미나야...";
-	[7] = "미나야..",
-	[8] = "미나...";
-	[9] = "미나는";
-	[10] = "미나의";
-	[11] = "mina";
-	[12] = "hey mina";
+	"미나야";
+	"미나";
+	"미나야.";
+	"미나!";
+	"미나야!";
+	"미나야...";
+	"미나야..",
+	"미나...";
+	"미나는";
+	"미나의";
+	"mina";
+	"hey mina";
+	"민아";
+	"민나";
+	"민나야";
+	"민아야";
 };
 
 -- this is used on display when user messaged only perfixs
@@ -90,12 +138,63 @@ _G.unknownReply = { -- 반응 없을때 띄움
 };
 
 -- bot managing functions
-local function startBot(botToken) -- 봇 시작시키는 함수
+local ctime = os.clock;
+local status = {
+	"'미나야 도움말' 을 이용해 도움말을 얻거나 '미나야 <할말>' 을 이용해 미나와 대화하세요!";
+	function ()
+		return ("미나 가동시간 %s!"):format(timeAgo(0,ctime()));
+	end;
+};
+local statusLen = #status;
+_G.status = status;
+_G.ping = "Unknown";
+local function startBot(botToken,testing) -- 봇 시작시키는 함수
 	-- 토큰주고 시작
 	logger.debug("starting bot ...");
 	client:run(("Bot %s"):format(botToken));
-	client:setGame("'미나야 도움말' 을 이용해 도움말을 얻거나 '미나야 <할말>' 을 이용해 미나와 대화하세요!");
-	return;
+	if testing then
+		_G.livereloadEnabled = true;
+		local prefixs = _G.prefixs;
+		for i,v in pairs(prefixs) do
+			-- for testing mode, adding ! on prefixs to prevent two bot are crashing!
+			prefixs[i] = "!" .. v;
+		end
+		logger.warn("[SETUP] Testing mode enabled! you should use prefix with !");
+		logger.warn("[SETUP] enabled live reload system for testing!");
+	end
+
+	local statusPos = 1;
+	-- local uv = uv or require("uv");
+	-- local time = uv.hrtime;
+	-- local msOffset = 1e6;
+	local function nextStatus()
+		local this = status[statusPos];
+		if type(this) == "function" then
+			this = this();
+		end
+		-- local st = time();
+		client:setGame(this);
+		-- local ed = time();
+		-- _G.ping = (ed - st) / msOffset;
+		if statusPos == statusLen then
+			statusPos = 1;
+		else
+			statusPos = statusPos + 1;
+		end
+		timeout(10000,nextStatus);
+	end
+	nextStatus();
+
+	--local heartbeatChannel = client:getGuild("772816335859089420"):getChannel("903210299555987506");
+	--local function heartbeat()
+	--	heartbeatChannel:send("[♥] HEARTBEAT - RUNNING"):delete();
+	--	timeout(60000,heartbeat);
+	--end
+    --if heartbeatChannel then
+	--heartbeat();
+    --else
+    --    logger.error("Couldn't find heartbeat channel!");
+    --end
 end
 local function reloadBot() -- 봇 종료 함수
 	logger.info("try restarting ...");
@@ -105,8 +204,20 @@ _G.reloadBot = reloadBot;
 _G.startBot = startBot;
 
 -- js's timeout function that inspired by js's timeout function
-local function timeout(time,func)
-	timer.setTimeout(time,coroutine.wrap(func));
+local remove = table.remove;
+local unpack = unpack or table.unpack;
+-- local pcallWrapper = function (func,promise,...)
+-- 	local result = {pcall(func,...)};
+-- 	local isPassed = remove(result,1);
+-- 	if isPassed then
+-- 		local andThen = promise.andThen;
+-- 		if andThen then
+-- 			andThen(unpack(result));
+-- 		end
+-- 	end
+-- end;
+local function timeout(time,func,...)
+	return timer.setTimeout(time,coroutine.wrap(func));
 end
 _G.timeout = timeout;
 

@@ -1,25 +1,36 @@
+-- music channel player instance class for playing user's queued music
+
 local this = {};
 this.__index = this;
 
-local ytDownload = require("commands.music.youtubeStream");--require("commands.music.youtubeDownload");
+local ytDownload = require("class.music.youtubeStream");--require("commands.music.youtubeDownload");
+
 local remove = table.remove;
 local insert = table.insert;
 local time = os.time;
+local floor = math.floor;
+local timeAgo = _G.timeAgo;
 
-local function formatTime(time)
-	local sec = math.floor(time % 60);
-	local min = math.floor(time / 60);
+local function formatTime(t)
+	if not t then
+		return "NULL";
+	end
+	local sec = floor(t % 60);
+	local min = t / 60;
+	local hour = floor(min / 60);
+	min = floor(min%60)
 	sec = tostring(sec);
 	if #sec == 1 then
 		sec = "0" .. sec;
 	end
-	return ("%d:%s"):format(min,sec);
+	return ("%s%d:%s"):format((hour ~= 0 and (tostring(hour) .. ":") or ""),min,sec);
 end
+this.formatTime = formatTime;
 
 -- 이 코드는 신과 나만 읽을 수 있게 만들었습니다
 -- 만약 편집을 기꺼히 원한다면... 그렇게 하도록 하세요
 -- 다만 여기의 이 규칙을 따라주세요
--- local theHourOfAllOfSpentForEditingThis = 32; -- TYPE: number;hour
+-- local theHourOfAllOfSpentForEditingThis = 45; -- TYPE: number;hour
 -- 이 코드를 편집하기 위해 사용한 시간만큼 여기의
 -- 변수에 값을 추가해주세요.
 
@@ -48,6 +59,7 @@ function this.download(thing)
 	thing.audio = audio;
 	thing.info = info;
 	thing.vid = vid;
+	thing.exprie = tonumber(audio:match("expire=(%d+)&"));
 	return true;
 end
 
@@ -58,11 +70,14 @@ function this:__init(props)
 	self.handler = props.handler;
 	self.isPaused = false;
 	self.isLooping = false;
+	self.destroy = props.destroy;
 end
 
 --#region : Stream handling methods
 
 -- play thing
+local getPosixNow = posixTime.now;
+local expireAtLast = 2 * 60;
 function this:__play(thing) -- PRIVATE
 	-- if thing is nil, return
 	if not thing then
@@ -79,16 +94,23 @@ function this:__play(thing) -- PRIVATE
 	self.isPaused = false; -- set paused state to false
 
 	-- if it needs redownload, try it now
-	if (ytDownload.redownload) and (time() - thing.whenDownloaded > 5) then
-		self.download(thing);
+	-- if (ytDownload.redownload) and (time() - thing.whenDownloaded > 10) then
+	-- 	pcall(self.download,thing);
+	-- end
+	local exprie = thing.exprie;
+	local info = thing.info;
+	if exprie and exprie <= (getPosixNow()+(info and info.duration or 0)+expireAtLast) then
+		this.download();
 	end
 
 	-- run asynchronously task for playing song
 	coroutine.wrap(function()
 		-- play this song
 		local handler = self.handler;
-		local isPassed,result = pcall(handler.playFFmpeg,handler,thing.audio);
-		if not isPassed then
+		local isPassed,result,reason = pcall(handler.playFFmpeg,handler,thing.audio);
+		if self.destroyed then
+			return;
+		elseif not isPassed then
 			self.error = result;
 			logger.errorf("Play failed : %s",result);
 			local message = thing.message;
@@ -98,7 +120,40 @@ function this:__play(thing) -- PRIVATE
 						tostring((thing.info or {title = "unknown"}).title),
 						tostring(result)
 					);
-					reference = {message = message, mention = true};
+					reference = {message = message, mention = false};
+				};
+			end
+		elseif reason == "Connection is not ready" then
+			-- connection destroyed
+			local destroy = self.destroy;
+			if destroy then
+				pcall(destroy,self);
+			end
+			return;
+		elseif reason and (reason ~= "stream stopped") and (reason ~= "stream exhausted or errored") then
+			local message = thing.message;
+			logger.errorf("Play failed : %s",reason);
+			if message then -- display error message
+				message:reply {
+					content = ("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
+						tostring((thing.info or {title = "unknown"}).title),
+						tostring(reason)
+					);
+					reference = {message = message, mention = false};
+				};
+			end
+		end
+
+		local selfThis = self[1];
+		local upnext = self[2];
+		if (selfThis == thing) and upnext then
+			local message = upnext.message;
+			if message then
+				message:reply {
+					content = ("지금 '%s' 를(을) 재생합니다!"):format(
+						tostring((upnext.info or {title = "unknown"}).title)
+					);
+					reference = {message = message, mention = false};
 				};
 			end
 		end
@@ -110,7 +165,7 @@ function this:__play(thing) -- PRIVATE
 
 		-- remove this song from queue
 		self.nowPlaying = nil; -- remove song
-		if self[1] == thing then
+		if selfThis == thing then
 			self:remove(1);
 		end
 	end)();
@@ -203,13 +258,15 @@ function this:setLooping(looping)
 	self.isLooping = looping;
 end
 
+local ceil = math.ceil;
 function this:getStatusText()
-	local len = 0;
+	local duration = 0;
 	for _,song in ipairs(self) do
-		len = len + song.info.duration;
+		duration = duration + song.info.duration;
 	end
+	local len = #self;
 	return {
-		text = ("총 곡 수 : %d | 총 길이 : %s"):format(#self,formatTime(len))
+		text = ("총 곡 수 : %d | 총 페이지 수 : %d | 총 길이 : %s"):format(len,ceil(len / 10),formatTime(duration))
 		 .. (self.isLooping and "\n플레이리스트 루프중" or "")
 		 .. (self.isPaused and "\n재생 멈춤" or "");
 	};
@@ -218,6 +275,7 @@ end
 local itemPerPage = 10;
 -- display list of songs
 function this:embedfiyList(page)
+	local now = time();
 	page = tonumber(page) or 1;
 	local atStart,atEnd = itemPerPage * (page-1) + 1,page * itemPerPage
 	local fields = {};
@@ -225,8 +283,13 @@ function this:embedfiyList(page)
 		local song = self[index];
 		if song then
 			insert(fields,{
-				name = (index == 1) and "현재 재생중" or (("%d 번째 곡"):format(index));
-				value = ("[%s](%s)"):format(song.info.title:gsub("\"","\\\""),song.url);
+				name = (index == 1) and "현재 재생중" or (("%d 번째 곡 (%s)"):format(index,formatTime((song.info or {}).duration)));
+				value = ("[%s](%s)\n`신청자 : %s (%s)`"):format(
+					(song.info or {title = "NULL"}).title:gsub("\"","\\\""),
+					song.url,
+					song.username or "NULL",
+					timeAgo(song.whenAdded,now)
+				);
 			});
 		end
 	end
@@ -270,7 +333,7 @@ end
 local seekbarForward = "━";
 local seekbarBackward = "─";
 local seekbarString = "%s %s⬤%s %s\n";
-local seekbarLen = 18;
+local seekbarLen = 14;
 local function seekbar(now,atEnd)
 	local per = now / atEnd;
 	local forward = math.floor(seekbarLen * per + 0.5);
@@ -286,11 +349,11 @@ end
 -- display now playing
 function this:embedfiyNowplaying(index)
 	index = tonumber(index) or 1;
-	local song = self[1];
+	local song = self[index];
 
 	if not song then
 		return {
-			title = "재생 목록이 비어있습니다";
+			title = (index == 1) and "재생 목록이 비어있습니다" or "존재하지 않습니다!";
 			color = 16040191;
 		};
 	end
@@ -310,8 +373,10 @@ function this:embedfiyNowplaying(index)
 	return {
 		footer = self:getStatusText();
 		title = info.title;
-		description = ("%s%s조회수 : %s | 좋아요 : %s\n업로더 : %s\n[영상으로 이동](%s) | [채널로 이동](%s)"):format(
+		description = ("%s신청자 : %s | 신청시간 : %s\n%s조회수 : %s | 좋아요 : %s\n업로더 : %s\n[영상으로 이동](%s) | [채널로 이동](%s)"):format(
 			getElapsed and seekbar(elapsed,duration) or "",
+			song.username or "NULL",
+			timeAgo(song.whenAdded),
 			(not getElapsed) and ("곡 길이 : %s | "):format(formatTime(duration)) or "",
 			tostring(info.view_count),
 			tostring(info.like_count),

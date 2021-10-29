@@ -1,3 +1,7 @@
+--[[
+Live reload system for testing code
+]]
+
 local uv = uv or require("uv");
 for _,path in pairs({
 	"./app";
