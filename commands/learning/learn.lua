@@ -52,12 +52,13 @@ function module.get(name)
 
 	local path = root:format(id);
 	local maxIndex = tonumber((fs.readFileSync(path .. "/index") or ""):match("%d+"));
+	local removed = json.decode(("[%s]"):format(fs.readFileSync(path .. "removed")));
 
-	if (not maxIndex) or (maxIndex == 0) then
+	if (not maxIndex) or (maxIndex == 0) or (#removed >= maxIndex) then
 		return;
 	end
 
-	local index = cRandom(1,maxIndex);
+	local index = cRandom(1,maxIndex,removed);
 	local this = json.decode(fs.readFileSync(("%s/%d"):format(path,index)));
 
 	return this;
@@ -177,10 +178,10 @@ function module.remove(id)
 	local path = root:format(path);
 	local indexPath = path .. "/index";
 
-	fs.appendFileSync(("%s,"):format(tostring(num)));
-	
-	fs.unlinkSync(id);
-	local hash = 
+	-- adding sync?
+	fs.appendFile(path .. "removed",("%s,"):format(tostring(num)));
+	fs.unlink(id);
+	return true; 
 end
 
 return module;
