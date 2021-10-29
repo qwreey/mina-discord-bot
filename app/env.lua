@@ -140,6 +140,7 @@ _G.unknownReply = { -- 반응 없을때 띄움
 -- bot managing functions
 local ctime = os.clock;
 local status = {
+	("미나 버전 `%s`!"):format(_G.app.version)
 	"'미나야 도움말' 을 이용해 도움말을 얻거나 '미나야 <할말>' 을 이용해 미나와 대화하세요!";
 	function ()
 		return ("미나 가동시간 %s!"):format(timeAgo(0,ctime()));
