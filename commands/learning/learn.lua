@@ -53,7 +53,7 @@ function module.get(name)
 	local path = root:format(id);
 	local maxIndex = tonumber((fs.readFileSync(path .. "/index") or ""):match("%d+"));
 
-	if not maxIndex then
+	if (not maxIndex) or (maxIndex == 0) then
 		return;
 	end
 
@@ -164,6 +164,23 @@ function module.put(name,value,author,when,userData)
 	end
 	insert(learned,("%s/%d"):format(id,index));
 	userData.lenLearned = userData.lenLearned + 1;
+end
+
+-- removing object
+-- id = "ID/NUM"
+function module.remove(id)
+	if not fs.existsSync(id) then
+		return;
+	end
+
+	local pathId,num = id:match("(.-)/(%d+)");
+	local path = root:format(path);
+	local indexPath = path .. "/index";
+
+	fs.appendFileSync(("%s,"):format(tostring(num)));
+	
+	fs.unlinkSync(id);
+	local hash = 
 end
 
 return module;
