@@ -52,7 +52,7 @@ function module.get(name)
 
 	local path = root:format(id);
 	local maxIndex = tonumber((fs.readFileSync(path .. "/index") or ""):match("%d+"));
-	local removed = json.decode(("[%s]"):format(fs.readFileSync(path .. "removed")));
+	local removed = json.decode(("[%s]"):format(fs.readFileSync(path .. "removed")) or "");
 
 	if (not maxIndex) or (maxIndex == 0) or (#removed >= maxIndex) then
 		return;

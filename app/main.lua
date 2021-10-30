@@ -347,7 +347,10 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 		end;
 		loveText = loveText;
 		isPremium = function ()
-			local uData = userData:saveData(user.id);
+			local uData = userData:loadData(user.id);
+			if not uData then
+				return;
+			end
 			local premiumStatus = uData.premiumStatus;
 			if premiumStatus and (premiumStatus > posixTime.now()) then
 				return true;
