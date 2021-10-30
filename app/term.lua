@@ -100,7 +100,8 @@ end
 setmetatable(runEnv,{ -- wtf?? lua can use metable env... cuz lua's global is a table!!
 	__index = _G;
 	__newindex = _G;
-});
+});.
+_G.loadstringEnv = runEnv;
 -- 라인 읽기 함수
 return function ()
 	local function onLine(err, line, ...)

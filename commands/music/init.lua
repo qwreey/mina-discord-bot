@@ -367,57 +367,6 @@ return {
 		};
 		reply = "처리중입니다 . . .";
 		func = function(replyMsg,message,args,Content)
-			-- get already exist connection
-			local guildConnection = message.guild.connection;
-			if not guildConnection then
-				replyMsg:setContent("봇이 음성채팅방에 있지 않습니다. 봇이 음성채팅방에 있을때 사용해주세요!");
-				return;
-			end
-			local voiceChannel = guildConnection.channel;
-			if not voiceChannel then
-				replyMsg:setContent("채널이 발견되지 않았습니다!");
-				return;
-			end
-
-			-- get player object from playerClass
-			local voiceChannelID = voiceChannel:__hash();
-			local player = playerForChannels[voiceChannelID];
-			if not player then
-				replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
-				return;
-			end
-
-			local rawArgs = Content.rawArgs;
-			local setTo = not player.isLooping;
-			if onKeywords[rawArgs] then
-				setTo = true;
-			elseif onKeywords[rawArgs] then
-				setTo = false;
-			end
-
-			if setTo then
-				player:setLooping(true);
-				replyMsg:setContent("성공적으로 플레이리스트 반복을 켰습니다!");
-			else
-				player:setLooping(false);
-				replyMsg:setContent("성공적으로 플레이리스트 반복을 멈췄습니다!");
-			end
-		end;
-	};
-	["loop"] = {
-		disableDm = true;
-		command = {"loop","looping","lp","lop"};
-		alias = {
-			"반복재생",
-			"looping","looping toggle","toggle looping","플레이리스트반복","플레이 리스트 반복","플리 반복",
-			"플리반복","플리루프","플리 루프","플리반복하기","플리 반복하기",
-			"재생목록 반복하기","재생목록반복하기","재생목록반복","재생목록 반복","재생목록루프","재생목록 루프",
-			"노래반복","노래루프","노래반복하기","노래 반복","노래 루프","노래 반복하기",
-			"음악반복","음악루프","음악반복하기","음악 반복","음악 루프","음악 반복하기",
-			"곡반복","곡루프","곡반복하기","곡 반복","곡 루프","곡 반복하기",
-		};
-		reply = "처리중입니다 . . .";
-		func = function(replyMsg,message,args,Content)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
 			if not voiceChannel then
@@ -466,6 +415,57 @@ return {
 				player.mode24 = nil;
 				replyMsg:setContent("성공적으로 24 시간 모드를 비활성화했습니다!");
 				voiceChannelLeave(Content.user,voiceChannel); -- check there is no users
+			end
+		end;
+	};
+	["loop"] = {
+		disableDm = true;
+		command = {"loop","looping","lp","lop"};
+		alias = {
+			"반복재생",
+			"looping","looping toggle","toggle looping","플레이리스트반복","플레이 리스트 반복","플리 반복",
+			"플리반복","플리루프","플리 루프","플리반복하기","플리 반복하기",
+			"재생목록 반복하기","재생목록반복하기","재생목록반복","재생목록 반복","재생목록루프","재생목록 루프",
+			"노래반복","노래루프","노래반복하기","노래 반복","노래 루프","노래 반복하기",
+			"음악반복","음악루프","음악반복하기","음악 반복","음악 루프","음악 반복하기",
+			"곡반복","곡루프","곡반복하기","곡 반복","곡 루프","곡 반복하기",
+		};
+		reply = "처리중입니다 . . .";
+		func = function(replyMsg,message,args,Content)
+			-- get already exist connection
+			local guildConnection = message.guild.connection;
+			if not guildConnection then
+				replyMsg:setContent("봇이 음성채팅방에 있지 않습니다. 봇이 음성채팅방에 있을때 사용해주세요!");
+				return;
+			end
+			local voiceChannel = guildConnection.channel;
+			if not voiceChannel then
+				replyMsg:setContent("채널이 발견되지 않았습니다!");
+				return;
+			end
+
+			-- get player object from playerClass
+			local voiceChannelID = voiceChannel:__hash();
+			local player = playerForChannels[voiceChannelID];
+			if not player then
+				replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
+				return;
+			end
+
+			local rawArgs = Content.rawArgs;
+			local setTo = not player.isLooping;
+			if onKeywords[rawArgs] then
+				setTo = true;
+			elseif onKeywords[rawArgs] then
+				setTo = false;
+			end
+
+			if setTo then
+				player:setLooping(true);
+				replyMsg:setContent("성공적으로 플레이리스트 반복을 켰습니다!");
+			else
+				player:setLooping(false);
+				replyMsg:setContent("성공적으로 플레이리스트 반복을 멈췄습니다!");
 			end
 		end;
 	};

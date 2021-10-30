@@ -54,7 +54,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 			'!!!sync : 클라우드와 코드를 동기화 시킵니다 (차이 비교후 병합)\n'
 		);
 	elseif (cmd == "!!!exe" or cmd == "!!!exec" or cmd == "!!!execute" or cmd == "loadstring") then
-		local new = message:reply("[WARN] Executing codes can cause issues on main loop thread!\n[INFO] Executing lua string with env by _G");
+		local new = message:reply("[WARN] Executing codes can cause issues on main loop thread!\n[INFO] Executing lua string with env by _G.loadstringEnv");
 		-- first, decoding lua
 		local func,err = loadstring("return " .. args);
 		if not func then
@@ -64,7 +64,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 			new:setContent(new.content .. "\n[ERROR] Error occured on loadstring! traceback : " .. tostring(err));
 			return;
 		end
-		local setfenvPassed,setfenvTraceback = pcall(setfenv,func,_G);
+		local setfenvPassed,setfenvTraceback = pcall(setfenv,func,_G.loadstringEnv);
 		if not setfenvPassed then
 			new:setContent(new.content .. "\n[ERROR] Error occured on setting env! traceback : " .. tostring(setfenvTraceback));
 		end
