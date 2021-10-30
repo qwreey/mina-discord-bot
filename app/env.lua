@@ -198,8 +198,8 @@ local unpack = unpack or table.unpack;
 -- 		end
 -- 	end
 -- end;
-local function timeout(time,func,...)
-	return timer.setTimeout(time,coroutine.wrap(func));
+local function timeout(delay,func,...)
+	return timer.setTimeout(delay,coroutine.wrap(func));
 end
 _G.timeout = timeout;
 
