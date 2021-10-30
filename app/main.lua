@@ -346,6 +346,14 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 			return userData:loadData(user.id);
 		end;
 		loveText = loveText;
+		isPremium = function ()
+			local uData = userData:saveData(user.id);
+			local premiumStatus = uData.premiumStatus;
+			if premiumStatus and (premiumStatus > posixTime.now()) then
+				return true;
+			end
+			return false;
+		end;
 	};
 
 	-- 만약 답변글이 함수면 (지금은 %s 시에요 처럼 쓸 수 있도록) 실행후 결과 가져오기

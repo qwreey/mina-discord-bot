@@ -175,13 +175,13 @@ function module.remove(id)
 	end
 
 	local pathId,num = id:match("(.-)/(%d+)");
-	local path = root:format(path);
+	local path = root:format(pathId);
 	local indexPath = path .. "/index";
 
 	-- adding sync?
 	fs.appendFile(path .. "removed",("%s,"):format(tostring(num)));
 	fs.unlink(id);
-	return true; 
+	return true;
 end
 
 return module;

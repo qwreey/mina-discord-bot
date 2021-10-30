@@ -1,6 +1,7 @@
 local history = readline.History.new(); -- 히스토리 홀더 만들기
 local editor = readline.Editor.new({stdin = process.stdin.handle, stdout = process.stdout.handle, history = history});
 local version = _G.app.version;
+local prettyPrint = prettyPrint or require("pretty-print");
 
 local colors = {
 	black = {30,40};
