@@ -59,7 +59,7 @@ function module.get(name)
 		end
 	end
 	
-	if (not maxIndex) or (maxIndex == 0) or (#removed >= maxIndex) then
+	if (not maxIndex) or (maxIndex == 0) or (removed and (#removed >= maxIndex)) then
 		return;
 	end
 
