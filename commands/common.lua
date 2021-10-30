@@ -22,6 +22,7 @@ local function formatIDTime(this)
 end
 
 return {
+	--타이머
 	["계정나이"] = {
 		alias = "계정 나이";
 		reply = function (message,args,content)
@@ -77,6 +78,7 @@ return {
 						fields = fields;
 					};
 				};
+				return;
 			else
 				local id = rawArgs:match("%d+");
 				if id and id ~= "" then
@@ -94,32 +96,36 @@ return {
 			message:reply("해당 유저는 존재하지 않습니다!");
 		end
 	};
-    ["핑"] = {
-        alias = {"상태","status","ping","지연시간","응답시간"};
-        reply = function (msg)
-            local send = time();
-            local new = msg:reply("🏓 봇 지연시간\n전송중 . . .");
-            local ping = tostring((time()-send)/msOffset);
-            local before = time();
-            timeout(0,function ()
-                local clock = tostring((time()-before)/usOffset);
-                new:setContent(
-                    ("🏓 봇 지연시간\n> 서버 응답시간 : %s`ms`\n> 내부 클럭 속도 : %s`us`\n> 가동시간 : %s\n> 사용 RAM : %dMB")
-                    :format(
-                        ping,
-                        clock,
-                        timeAgo(0,ctime()),
-                        (collectgarbage("count")*1024 + uv.resident_set_memory())/1000000
-                    )
-                );
-            end);
-        end;
-    };
-    ["버전"] = {
-        alias = "version";
-        reply = ("미나의 현재버전은 `%s` 이에요 (From last git commit time)"):format(app.version);
-        love = defaultLove;
-    };
+	["핑"] = {
+		alias = {"상태","status","ping","지연시간","응답시간"};
+		reply = function (msg)
+			local send = time();
+			local new = msg:reply("🏓 봇 지연시간\n전송중 . . .");
+			local msgPing = tostring((time()-send)/msOffset);
+			local before = time();
+			timeout(0,function ()
+				local clock = tostring((time()-before)/usOffset);
+				-- local dataReadSt = time();
+				-- userData.load()
+				-- local dataReadEd = time();
+				
+				new:setContent(
+					("🏓 봇 지연시간\n> 서버 응답시간 : %s`ms`\n> 내부 클럭 속도 : %s`us`\n> 가동시간 : %s\n> 사용 RAM : %dMB")
+					:format(
+						msgPing,
+						clock,
+						timeAgo(0,ctime()),
+						(collectgarbage("count")*1024 + uv.resident_set_memory())/1000000
+					)
+				);
+			end);
+		end;
+	};
+	["버전"] = {
+		alias = "version";
+		reply = ("미나의 현재버전은 `%s` 이에요 (From last git commit time)"):format(app.version);
+		love = defaultLove;
+	};
 	["지워"] = {
 		disableDm = true;
 		alias = {"지우개","지워봐","지워라","지우기","삭제해","청소","삭제","청소해","clear"};
