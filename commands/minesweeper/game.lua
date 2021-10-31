@@ -179,7 +179,7 @@ local function draw(gameInstance,clicked,flagged)
     for i = 1,size do
         str = str .. numIcon[i];
     end
-    str = str .. "\n" .. none:rep(size + 2) .. "\n";
+    str = str .. "\n" .. none:rep(size + 2) .. " \n";
     for y,clickedTable in ipairs(clicked or gameInstance) do
         str = str .. numIcon[y] .. none;
         for x,xClicked in ipairs(clickedTable) do
@@ -202,7 +202,7 @@ local function draw(gameInstance,clicked,flagged)
                 )
             ) or "🔲​");
         end
-        str = str .. "\n";
+        str = str .. " \n";
     end
     -- str = str .. "```";
     logger.info("[Minesweeper] End to draw object! ...");

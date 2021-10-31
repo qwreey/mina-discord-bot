@@ -105,7 +105,7 @@ local discordia = require "discordia"; _G.discordia = discordia; ---@type discor
 local discordia_class = require "discordia/libs/class"; _G.discordia_class = discordia_class; ---@type class -- 디스코드 클레스 가져오기
 local discordia_Logger = discordia_class.classes.Logger; ---@type Logger -- 로거부분 가져오기 (통합을 위해 수정)
 local enums = discordia.enums; _G.enums = enums; ---@type enums -- 디스코드 enums 가져오기
-local client = discordia.Client(); _G.client = client; ---@type Client -- 디스코드 클라이언트 만들기
+local client = discordia.Client(require("app.clientSettings")); _G.client = client; ---@type Client -- 디스코드 클라이언트 만들기
 local Date = discordia.Date; _G.Date = Date; ---@type Date
 function discordia_Logger:log(level, msg, ...) -- 디스코드 모듈 로거부분 편집
 	if self._level < level then return end ---@diagnostic disable-line
