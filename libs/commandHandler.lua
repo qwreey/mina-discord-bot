@@ -56,8 +56,16 @@ function module.encodeCommands(...)
 	local len = 0;
 
 	for _,commandPackage in pairs({...}) do
+		if type(commandPackage) ~= "table" then
+			logger.errorf(("Error occurred while indexing commands from '%s'"):format(
+				tostring(commandPackage)
+			));
+			logger.error(" |- commandPackage must be table!");
+		end
 		for commandName,commandInfo in pairs(commandPackage) do
-			len = len + indexingReact(this,cmds,commandName,commandInfo);
+			if type(commandInfo) == "table" then
+				len = len + indexingReact(this,cmds,commandName,commandInfo);
+			end
 		end
 	end
 

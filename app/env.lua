@@ -29,7 +29,21 @@ end
 _G.timeAgo = timeAgo;
 
 -- google api key, discord token, game api key and more. this is should be protected
+local testing;
+for _,v in pairs(args) do
+	if v == "test" or v == "testing" then
+		testing = true;
+		break;
+	end
+end
 _G.ACCOUNTData = data.load("data/ACCOUNT.json");
+if testing then
+	local testData = data.load("data/ACCOUNT_test.json");
+	for i,v in pairs(testData) do
+		ACCOUNTData[i] = v;
+	end
+	ACCOUNTData.testing = true;
+end
 
 -- EULA text
 _G.EULA = data.loadRaw("data/EULA.txt");

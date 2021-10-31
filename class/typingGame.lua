@@ -12,19 +12,29 @@ local zeroWidthSpace = utf8.char(tonumber("200B",16));
 local gameForUsers = {};
 
 local stopTypingGame = {
+    ["멈춰"] = true;
+    ["끄기"] = true;
+    ["그만"] = true;
+    ["stop"] = true;
 	["멈춰타자연습"] = true;
 	["타자연습멈춰"] = true;
 	["그만타자연습"] = true;
 	["타자연습그만"] = true;
 	["끄기타자연습"] = true;
 	["타자연습끄기"] = true;
+	["미나멈춰타자연습"] = true;
+	["미나타자연습멈춰"] = true;
+	["미나그만타자연습"] = true;
+	["미나타자연습그만"] = true;
+	["미나끄기타자연습"] = true;
+	["미나타자연습끄기"] = true;
 };
 module.gameForUsers = gameForUsers;
 
 ---Making new typing game instances
 ---@param replyMsg Message Replyed message
 ---@param message Message Message that started this game
----@param Content CommandContent inclueds command contents
+---@param Content commandContent inclueds command contents
 ---@param text string what user should typing
 ---@param title string title of this typing game (embed title)
 ---@return nil
@@ -110,6 +120,7 @@ function module.new(replyMsg,message,Content,text,title)
                         content = "잘못된 글자가 있습니다!\n> 진행중인 게임을 멈추려면 `타자연습 멈춰` 를 입력해주세요";
                         reference = {message = newMessage, mention = true};
                     };
+                    return true
                 end
             end
         end;

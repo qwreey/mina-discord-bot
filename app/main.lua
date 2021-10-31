@@ -138,8 +138,6 @@ for dir in fs.scandirSync("commands") do -- read commands from commands folder
 	otherCommands[#otherCommands+1] = require("commands." .. dir);
 end
 
-
-
 -- 커맨드 색인파일 만들기
 local reacts,commands,commandsLen;
 reacts,commands,commandsLen = commandHandler.encodeCommands({
@@ -203,14 +201,16 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	end
 
 	-- run before hook
+	local hookContent;
 	for _,thisHook in pairs(beforeHook) do
-		local isPassed,result = pcall(thisHook.func,thisHook,{
+		hookContent = hookContent or {
 			text = text;
 			user = user;
 			channel = channel;
 			isDm = isDm;
 			message = message;
-		});
+		};
+		local isPassed,result = pcall(thisHook.func,thisHook,hookContent);
 		if isPassed and result then
 			return;
 		end
@@ -329,7 +329,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	end
 
 	-- 함수 실행을 위한 콘탠츠 만들기
-	---@class CommandContent
+	---@class commandContent
 	local contents = {
 		user = user; ---@type User a user that called this command
 		channel = channel; ---@type Channel|TextChannel|GuildChannel|PrivateChannel|GuildTextChannel a channel that this command is called on
@@ -427,7 +427,14 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 
 	-- run after hook
 	for _,thisHook in pairs(afterHook) do
-		pcall(thisHook.func,thisHook,contents);
+		hookContent = hookContent or {
+			text = text;
+			user = user;
+			channel = channel;
+			isDm = isDm;
+			message = message;
+		};
+		pcall(thisHook.func,thisHook,hookContent,contents);
 	end
 end);
 
