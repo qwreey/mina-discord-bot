@@ -5,6 +5,8 @@ Admin command
 local injectLogger = {};
 local prettyPrint = prettyPrint or require("pretty-print");
 
+---@param Text string
+---@param message Message
 local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 	local cmd = Text:match("^[^ ]+");
 	if not cmd then return; end

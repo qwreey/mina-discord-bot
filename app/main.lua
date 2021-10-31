@@ -101,14 +101,14 @@ inject("discordia/libs/voice/streams/FFmpegProcess","voice/streams/FFmpegProcess
 -- inject("discordia/libs/client/EventHandler","client/EventHandler"); -- inject button system
 local require = _G.require;
 
-local discordia = require "discordia"; _G.discordia = discordia; -- 디스코드 lua 봇 모듈 불러오기
-local discordia_class = require "discordia/libs/class"; _G.discordia_class = discordia_class; -- 디스코드 클레스 가져오기
-local discordia_Logger = discordia_class.classes.Logger; -- 로거부분 가져오기 (통합을 위해 수정)
-local enums = discordia.enums; _G.enums = enums; -- 디스코드 enums 가져오기
-local client = discordia.Client(); _G.client = client; -- 디스코드 클라이언트 만들기
-local Date = discordia.Date; _G.Date = Date;
+local discordia = require "discordia"; _G.discordia = discordia; ---@type discordia -- 디스코드 lua 봇 모듈 불러오기
+local discordia_class = require "discordia/libs/class"; _G.discordia_class = discordia_class; ---@type class -- 디스코드 클레스 가져오기
+local discordia_Logger = discordia_class.classes.Logger; ---@type Logger -- 로거부분 가져오기 (통합을 위해 수정)
+local enums = discordia.enums; _G.enums = enums; ---@type enums -- 디스코드 enums 가져오기
+local client = discordia.Client(); _G.client = client; ---@type Client -- 디스코드 클라이언트 만들기
+local Date = discordia.Date; _G.Date = Date; ---@type Date
 function discordia_Logger:log(level, msg, ...) -- 디스코드 모듈 로거부분 편집
-	if self._level < level then return end
+	if self._level < level then return end ---@diagnostic disable-line
 	msg = string.format(msg, ...);
 	local logFn =
 		(level == 3 and logger.debug) or
@@ -329,23 +329,30 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	end
 
 	-- 함수 실행을 위한 콘탠츠 만들기
+	---@class CommandContent
 	local contents = {
-		user = user;
-		channel = channel;
-		isDm = isDm;
-		rawCommandText = rawCommandText; -- 접두사를 지운 커맨드 스트링
-		prefix = prefix; -- 접두사(확인된)
-		rawArgs = rawArgs; -- args 를 str 로 받기 (직접 분석용)
-		rawCommandName = rawCommandName;
-		self = Command;
-		commandName = CommandName;
+		user = user; ---@type User a user that called this command
+		channel = channel; ---@type Channel|TextChannel|GuildChannel|PrivateChannel|GuildTextChannel a channel that this command is called on
+		isDm = isDm; ---@type boolean whether this channel is dm
+		rawCommandText = rawCommandText; ---@type string raw command text (removed prefix)
+		prefix = prefix; ---@type string used prefix
+		rawArgs = rawArgs; ---@type string raw string arguments
+		rawCommandName = rawCommandName; ---@type string command name, this is can be alias
+		self = Command; ---@type Command this command it self
+		commandName = CommandName; ---@type string this command is self's name
+		---@type function Save this user's data with userData library
+		---@return nil
 		saveUserData = function ()
 			return userData:saveData(user.id);
 		end;
+		---@type function Save this user's data with userData library
+		---@return userDataObject userDataObject User's Data
 		getUserData = function ()
 			return userData:loadData(user.id);
 		end;
-		loveText = loveText;
+		loveText = loveText; ---@type string love earned text
+		---@type function Get user's premium status
+		---@return boolean whether user's premium exist
 		isPremium = function ()
 			local uData = userData:saveData(user.id);
 			local premiumStatus = uData.premiumStatus;

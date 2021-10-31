@@ -3,7 +3,8 @@ local naverDictEmbed = require "commands.naverDict.embed"; -- 네이버 사전 �
 local naverDictSearch = require "commands.naverDict.request"; -- 네이버 사전 API 핸들러
 naverDictSearch:setCoroHttp(corohttp):setJson(json):setUrlCode(urlCode); -- 네이버 사전 셋업
 
-return {
+---@type table<string, Command>
+local export = {
 	["사전"] = {
 		reply = "잠시만 기다려주세요... (검색중)";
 		alias = {
@@ -26,7 +27,7 @@ return {
 				embed = embed.embed;
 				content = embed.content;
 			};
-			return;
 		end;
 	};
 };
+return export;

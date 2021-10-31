@@ -171,7 +171,8 @@ local function removeSong(rawArgs,player,replyMsg)
 	end
 end
 
-return {
+---@type table<string, Command>
+local export = {
 	["add music"] = {
 		disableDm = true;
 		command = {"add","p","play"};
@@ -869,3 +870,4 @@ return {
 		end;
 	};
 };
+return export;

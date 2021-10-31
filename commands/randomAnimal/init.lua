@@ -8,7 +8,8 @@
 local request = require "commands.randomAnimal.request";
 request:setCoroHttp(corohttp):setJson(json);
 
-return {
+---@type table<string, Command>
+local export = {
 	["동물"] = {
 		alias = {"동물사진","동물 사진","동물 가져오기","동물 사진 가져오기","렌덤 동물","렌덤동물","동물사진가져오기","동물가져오기"};
 		reply = "잠시만 기달려주세요... (불러오는중)";
@@ -17,3 +18,4 @@ return {
 		end;
 	};
 };
+return export;

@@ -13,11 +13,12 @@ local function drawAscii(font,text)
 		this = this .. str;
 	end
 	newProcess.waitExit();
-	os.execute("title " .. _G.app.name);
+	-- os.execute("title " .. _G.app.name);
 	return this;
 end
 
-return {
+---@type table<string, Command>
+local export = {
 	["탱크"] = {
 		reply = (
 			"░░░░░░███████ ]▄▄▄▄▄▄▄▄▃\n" ..
@@ -41,3 +42,4 @@ return {
 		end;
 	};
 };
+return export;

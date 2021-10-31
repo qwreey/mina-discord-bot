@@ -21,6 +21,13 @@ local stopTypingGame = {
 };
 module.gameForUsers = gameForUsers;
 
+---Making new typing game instances
+---@param replyMsg Message Replyed message
+---@param message Message Message that started this game
+---@param Content CommandContent inclueds command contents
+---@param text string what user should typing
+---@param title string title of this typing game (embed title)
+---@return nil
 function module.new(replyMsg,message,Content,text,title)
     local userId = Content.user.id;
     local channelId = Content.channel.id;
