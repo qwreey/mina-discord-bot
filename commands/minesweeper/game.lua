@@ -74,7 +74,6 @@ local num = {
     ["y"] = 34;
     ["z"] = 35;
 };
-local block = "🟦​";
 local none = "⬛​";
 
 local defaultGameSize = 12;
@@ -174,7 +173,7 @@ game.initGame = initGame;
 local function draw(gameInstance,clicked,flagged)
     logger.info("[Minesweeper] Drawing object ...");
     flagged = flagged or {};
-    local str = "현재 상태```\n" .. block .. none;
+    local str = "현재 상태```\n" .. none:rep(2);
     -- local str = "```\n";
     local size = gameInstance.size;
     for i = 1,size do
