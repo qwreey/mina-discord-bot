@@ -1,6 +1,7 @@
 local APIurl = "http://hangang.dkserver.wo.tc";
 
-return {
+---@type table<string, Command>
+local export = {
 	["한강"] = {
 		alias = {"한강물온도","한강 물 온도","한강 물온도","한강 각","한강각"};
 		reply = function ()
@@ -13,3 +14,4 @@ return {
 		end;
 	};
 };
+return export;

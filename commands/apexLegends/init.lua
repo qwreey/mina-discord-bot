@@ -3,7 +3,8 @@ local apexLegendsRequest = require "commands.apexLegends.request";
 local apexLegendsEmbed = require "commands.apexLegends.embed";
 apexLegendsRequest:setCoroHttp(corohttp):setJson(json):setUrlCode(urlCode);
 
-return {
+---@type table<string, Command>
+local export = {
 	["에이펙스 스텟"] = {
 		alias = {"apex legends 스텟","apex legends stats","apex stats","apex 스텟","에이펙스 레전드 스텟","에펙 스텟"};
 		reply = "잠시만 기달려주세요... (확인중)";
@@ -17,3 +18,4 @@ return {
 		end;
 	};
 };
+return export;

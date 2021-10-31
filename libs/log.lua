@@ -12,7 +12,7 @@ log.usecolor = true;
 log.outfile = nil;
 log.minLevel = 1;
 log.disable = false;
-local root = process.env.PWD;
+local root = process.cwd();
 if not root then
 	local new = io.popen("cd");
 	root = new:read("*l");
@@ -54,7 +54,7 @@ local function runLog(thisName,thisLevel,color,debugInfo,...)
 	);
 	--io.write(text .. "\n");
 	local buildPrompt = _G.buildPrompt;
-	local str = buildPrompt and {"\27[2K\r",text,"\n",buildPrompt()} or {text,"\n"};
+	local str = buildPrompt and {"\27[2K\r\27[0m",text,"\n",buildPrompt()} or {"\27[2K\r\27[0m",text,"\n"};
 	local prettyPrint = _G.prettyPrint;
 	if prettyPrint then
 		prettyPrint.stdout:write(str);
@@ -72,7 +72,7 @@ local function runLog(thisName,thisLevel,color,debugInfo,...)
 		fp:close();
 	end
 
-	return text;
+	return str;
 end
 
 -- 모드들

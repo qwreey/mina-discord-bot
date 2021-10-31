@@ -3,7 +3,8 @@ local covid19Request = require "commands.covid19.request";
 local covid19Embed = require "commands.covid19.embed";
 covid19Request:setCoroHttp(corohttp):setMyXML(myXMl);
 
-return {
+---@type table<string, Command>
+local export = {
 	["코로나 현황"] = {
 		alias = {"코로나 상황","코로나 확진자","코로나 통계","오늘자 코로나","코로나 정보"};
 		reply = "잠시만 기달려주세요... (확인중)";
@@ -19,3 +20,4 @@ return {
 		end;
 	};
 };
+return export;

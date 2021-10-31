@@ -29,7 +29,21 @@ end
 _G.timeAgo = timeAgo;
 
 -- google api key, discord token, game api key and more. this is should be protected
+local testing;
+for _,v in pairs(args) do
+	if v == "test" or v == "testing" then
+		testing = true;
+		break;
+	end
+end
 _G.ACCOUNTData = data.load("data/ACCOUNT.json");
+if testing then
+	local testData = data.load("data/ACCOUNT_test.json");
+	for i,v in pairs(testData) do
+		ACCOUNTData[i] = v;
+	end
+	ACCOUNTData.testing = true;
+end
 
 -- EULA text
 _G.EULA = data.loadRaw("data/EULA.txt");
@@ -147,6 +161,16 @@ _G.unknownReply = { -- 반응 없을때 띄움
 	"**(갸우뚱?)**","무슨 말이에요?","네?","으에?"--,"먕?",":thinking: 먀?"
 };
 
+-- client initing config
+_G.clientSettings = {
+	routeDelay = 100;
+	largeThreshold = 2048;
+	cacheAllMembers = true;
+	compress = false;
+	bitrate = 82000;
+	logFile = nil;
+};
+
 -- bot managing functions
 local ctime = os.clock;
 local status = {
@@ -158,11 +182,11 @@ local status = {
 local statusLen = #status;
 _G.status = status;
 _G.ping = "Unknown";
-local function startBot(botToken,testing) -- 봇 시작시키는 함수
+local function startBot(botToken,isTesting) -- 봇 시작시키는 함수
 	-- 토큰주고 시작
 	logger.debug("starting bot ...");
 	client:run(("Bot %s"):format(botToken));
-	if testing then
+	if isTesting then
 		_G.livereloadEnabled = true;
 		local prefixs = _G.prefixs;
 		for i,v in pairs(prefixs) do

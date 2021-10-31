@@ -14,7 +14,8 @@ local insert = table.insert;
 local remove = table.remove;
 local time = os.time;
 
-return {
+---@type table<string, Command>
+local export = {
 	["배워"] = {
 		alias = {"기억해","배워라","배워봐","암기해","가르치기"};
 		reply = "외우고 있어요 . . .";
@@ -125,3 +126,4 @@ return {
 		end;
 	};
 };
+return export;

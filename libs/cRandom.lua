@@ -32,6 +32,7 @@ return function (min,max,ignore)
 				this = this + 1;
 			end
 		end
+		return this;
 	else
 		return math.random(min,max);
 	end

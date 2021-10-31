@@ -172,7 +172,8 @@ local function removeSong(rawArgs,player,replyMsg)
 	end
 end
 
-return {
+---@type table<string, Command>
+local export = {
 	["add music"] = {
 		registeredOnly = eulaComment_music:
 		disableDm = true;
@@ -872,3 +873,4 @@ return {
 		end;
 	};
 };
+return export;

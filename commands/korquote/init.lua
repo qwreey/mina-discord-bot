@@ -4,7 +4,8 @@ local korquoteEmbed = require "commands.korquote.embed";
 korquoteRequest:setCRandom(cRandom):setJson(json);
 korquoteEmbed:setUrlCode(urlCode);
 
-return {
+---@type table<string, Command>
+local export = {
 	["한글명언"] = {
 		alias = {"명언 한국어","명언 한글","한글명언","한국어명언","한글 명언","한국어 명언","명언","korean quote","kor quote","koreanquote","korquote"};
 		reply = "잠시만 기달려주세요 . . .";
@@ -30,3 +31,4 @@ return {
 		end;
 	};
 };
+return export;
