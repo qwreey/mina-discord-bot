@@ -6,7 +6,7 @@ local export = {
         alias = {"지뢰찾기","지뢰 찾기"};
         reply = "게임을 만드는중!";
         func = function (replyMsg,message,args,Content)
-            game.new(message,Content.channel);
+            game.new(replyMsg,message,Content.channel);
         end
     };
 };

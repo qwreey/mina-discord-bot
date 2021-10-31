@@ -1,7 +1,7 @@
 local game = {};
 local insert = table.insert;
 
-local cRandom = _G.cRandom or require("libs.cRandom");
+local cRandom = _G.cRandom or require("libs.cRandom"); ---@diagnostic disable-line
 
 ---@type table<string, boolean> stop commands
 local stopCommand = {
@@ -30,24 +30,55 @@ local stopCommand = {
 	["미나지뢰찾기끄기"] = true;
 };
 
-local num = {
-    [0] = "0️⃣";
-    "1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣",
-    "🇦","🇧","🇨","🇩","🇪","🇫","🇬","🇭","🇮","🇯","🇰","🇱","🇳",
-    "🇲","🇴","🇵","🇶","🇷","🇸","🇹","🇺","🇻","🇼","🇽","🇾","🇿"
+local numIcon = {
+    [0] = "0️⃣​";
+    "1️⃣​","2️⃣​","3️⃣​","4️⃣​","5️⃣​","6️⃣​","7️⃣​","8️⃣​","9️⃣​",
+    "🇦​","🇧​","🇨​","🇩​","🇪​","🇫​","🇬​","🇭​","🇮​","🇯​","🇰​","🇱​","🇳​",
+    "🇲​","🇴​","🇵​","🇶​","🇷​","🇸​","🇹​","🇺​","🇻​","🇼​","🇽​","🇾​","🇿​"
 };
-local none = "🟦";
-
--- local function ifind(table,value)
---     for i,v in ipairs(table) do
---         if v == value then
---             return i;
---         end
---     end
--- end
+local num = {
+    ["1"] = 1;
+    ["2"] = 2;
+    ["3"] = 3;
+    ["4"] = 4;
+    ["5"] = 5;
+    ["6"] = 6;
+    ["7"] = 7;
+    ["8"] = 8;
+    ["9"] = 9;
+    ["0"] = 0;
+    ["a"] = 10;
+    ["b"] = 11;
+    ["c"] = 12;
+    ["d"] = 13;
+    ["e"] = 14;
+    ["f"] = 15;
+    ["g"] = 16;
+    ["h"] = 17;
+    ["i"] = 18;
+    ["j"] = 19;
+    ["k"] = 20;
+    ["l"] = 21;
+    ["m"] = 22;
+    ["n"] = 23;
+    ["o"] = 24;
+    ["p"] = 25;
+    ["q"] = 26;
+    ["r"] = 27;
+    ["s"] = 28;
+    ["t"] = 29;
+    ["u"] = 30;
+    ["v"] = 31;
+    ["w"] = 32;
+    ["x"] = 33;
+    ["y"] = 34;
+    ["z"] = 35;
+};
+local block = "🟦​";
+local none = "⬛​";
 
 local defaultGameSize = 12;
-local defaultGameMinesweepers = 42;
+local defaultGameMinesweepers = 18;
 ---Make new game table (status objects)
 ---@param size number Size of X and Y
 ---@param minesweepers number amount of minesweepers
@@ -141,65 +172,177 @@ end
 game.initGame = initGame;
 
 local function draw(gameInstance,clicked,flagged)
+    logger.info("[Minesweeper] Drawing object ...");
     flagged = flagged or {};
-    local str = "\n" .. none;
+    local str = "\n" .. block .. none;
     -- local str = "```\n";
     local size = gameInstance.size;
     for i = 1,size do
-        str = str .. num[i];
+        str = str .. numIcon[i];
     end
-    str = str .. "\n";
+    str = str .. "\n" .. none:rep(size + 2) .. "\n";
     for y,clickedTable in ipairs(clicked or gameInstance) do
-        str = str .. num[y];
+        str = str .. numIcon[y] .. none;
         for x,xClicked in ipairs(clickedTable) do
             local flaggedY = flagged[y];
-            local isFlagged = flaggedY and flagged[x];
+            local isFlagged = flaggedY and flaggedY[x];
             local this = gameInstance[y][x];
 
-            str = str .. ((isFlagged and "✅") or
+            str = str .. ((isFlagged and "✅​") or
                 (xClicked and (
-                    (this == true and "💥") or
-                    (this == 0 and "0️⃣") or
-                    (this == 1 and "1️⃣") or
-                    (this == 2 and "2️⃣") or
-                    (this == 3 and "3️⃣") or
-                    (this == 4 and "4️⃣") or
-                    (this == 5 and "5️⃣") or
-                    (this == 6 and "6️⃣") or
-                    (this == 7 and "7️⃣") or
-                    (this == 8 and "8️⃣")
+                    (this == true and "💥​") or
+                    (this == 0 and block) or
+                    (this == 1 and "1️⃣​") or
+                    (this == 2 and "2️⃣​") or
+                    (this == 3 and "3️⃣​") or
+                    (this == 4 and "4️⃣​") or
+                    (this == 5 and "5️⃣​") or
+                    (this == 6 and "6️⃣​") or
+                    (this == 7 and "7️⃣​") or
+                    (this == 8 and "8️⃣​")
                 )
-            ) or "🟦");
+            ) or "🔲​");
         end
         str = str .. "\n";
     end
     -- str = str .. "```";
+    logger.info("[Minesweeper] End to draw object! ...");
     return str;
 end
 game.draw = draw;
 
+local function click(gameInstance,clicked,flagged,x,y)
+    local point = gameInstance[y][x];
+    if not point then
+        return ("%s,%s 는 존재하지 않는 위치입니다!"):format(tostring(x),tostring(y));
+    end
+    flagged[y][x] = false;
+    clicked[y][x] = true;
+
+    if point ~= 0 then
+        return point;
+    end
+
+    for indexY = y-1,y+1,2 do
+        local thisY = gameInstance[indexY];
+        for indexX = x-1,x+1 do
+            local this = thisY[indexX];
+            if this and (this ~= true) then
+                click(gameInstance,clicked,flagged,indexX,indexY);
+            end
+        end
+    end
+    for indexX = x-1,x+1,2 do
+        local this = gameInstance[y][indexX];
+        if this and (this ~= true) then
+            click(gameInstance,clicked,flagged,indexX,y);
+        end
+    end
+end
+
+local function flag(gameInstance,clicked,flagged)
+
+end
+
+local embed = {
+    title = "지뢰찾기!";
+    description = "게임은 다음과 같이 진행 할 수 있습니다!";
+    footer = {
+        text = "지뢰찾기를 그만두려면 '지뢰찾기 멈춰' 를 입력하세요!";
+    };
+    fields = {
+        {
+            name = "칸 열기";
+            value = "```c(세로 좌표)(가로 좌표)```\n> 예시 : c12";
+            inline = true;
+        };
+        {
+            name = "깃발 놓기";
+            value = "```f(세로 좌표)(가로 좌표)```\n> 예시 : f23";
+            inline = true;
+        };
+    };
+};
+local endingEmbed = {
+    title = "게임이 끝났어요!";
+    description = "지뢰를 건들였어요";
+};
+
+local channelGames = {};
+local userGames = {};
 ---Make new game instance
+---@param replyMsg Message message that bot replyed
 ---@param message Message message of stated this game
 ---@param channel TextChannel | PrivateChannel | GuildTextChannel | GuildChannel channel of stated this game
-function game.new(message,channel)
+function game.new(replyMsg,message,channel)
+    local channelId = channel:__hash();
+    if channelGames[channelId] then
+        replyMsg:update("이미 이 채널에는 진행중인 게임이 있습니다!");
+        return;
+    end
+
     local newHook = hook.new {
         type = hook.types.before;
     };
 
     local gameInstance,clicked,flagged = initGame(defaultGameSize,defaultGameMinesweepers);
-    message:reply(game.draw(gameInstance));
+    local lastMessage = replyMsg;
+    replyMsg:update({
+        content = game.draw(gameInstance,clicked,flagged);
+        embed = embed;
+        reference = {message = message, mention = false};
+    });
 
-    local channelId = channel:__hash();
     newHook.func = function (self,contents)
+        local newMessage = contents.message;
         local hookChannel = contents.channel;
         local text = contents.text;
         if hookChannel:__hash() == channelId then
             if stopCommand[text:gsub(" ","")] then
                 pcall(self.destroy,self);
+                channel:send({
+                    content = "성공적으로 게임을 종료했습니다!";
+                    reference = {message = message, mention = false};
+                });
                 return true;
+            else
+                local y = num[text:sub(2,2):lower()];
+                local x = num[text:sub(3,3):lower()];
+                if x and y then
+                    logger.infof("[Minesweeper] clicked %d,%d on channel %s",y,x,channelId);
+                    if text:sub(1,1) == "c" then
+                        local object = click(gameInstance,clicked,flagged,x,y);
+                        if object == true then -- ended
+                            local delete = lastMessage;
+                            coroutine.wrap(function()
+                                lastMessage = newMessage:reply({
+                                    content = game.draw(gameInstance);
+                                    reference = {message = message, mention = false};
+                                    embed = endingEmbed;
+                                });
+                            end)();
+                            delete:delete();
+                            newMessage:delete();
+                            self:destroy();
+                            return;
+                        end
+                        logger.infof("[Minesweeper] making new message on %s",channelId);
+                        local delete = lastMessage;
+                        coroutine.wrap(function()
+                            lastMessage = newMessage:reply({
+                                content = game.draw(gameInstance,clicked,flagged);
+                                reference = {message = message, mention = false};
+                                embed = embed;
+                            });
+                        end)
+                        delete:delete();
+                        logger.infof("[Minesweeper] delete user message on %s",channelId);
+                        newMessage:delete();
+                        return true; --precessed
+                    end
+                end
             end
 
-            return true; --precessed
         end
     end;
     newHook.destroy = function (self)
@@ -208,7 +351,10 @@ function game.new(message,channel)
         clicked = nil;
         flagged = nil;
         newHook = nil;
+        lastMessage = nil;
+        channelGames[channelId] = nil;
     end;
+    newHook:attach();
 end
 
 return game;

@@ -13,6 +13,7 @@ args[0] = nil;
 args[1] = "app/main";
 
 local function spawnProcess(path,thisArgs)
+	-- return os.execute("bin\\luvit.exe " .. path .. table.concat(thisArgs or {}, " "));
 	local newArgs = {};
 	for i,v in pairs(args) do
 		newArgs[i] = v;
@@ -32,7 +33,6 @@ local function spawnProcess(path,thisArgs)
 		stdio = {0,1,2};
 		args = newArgs;
 		cwd = "./";
-		hide = true;
 	});
 	-- for str in newProcess.stdout.read do
 	-- 	prettyPrint.stdout:write(str);

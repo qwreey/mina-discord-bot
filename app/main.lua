@@ -269,13 +269,20 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	end
 
 	-- 커맨드 찾지 못함
+	local cmdDisableDm = Command.disableDm;
 	if not Command then
-		message:reply(unknownReply[cRandom(1,#unknownReply)]);
+		message:reply({
+			content = unknownReply[cRandom(1,#unknownReply)];
+			reference = {message = message, mention = false};
+		});
 		-- 반응 없는거 기록하기
 		fs.appendFile("log/unknownTexts/raw.txt","\n" .. text);
 		return;
-	elseif isDm and Command.disableDm then
-		message:reply(disableDm);
+	elseif isDm and cmdDisableDm then
+		message:reply({
+			content = (type(cmdDisableDm) == "string") and cmdDisableDm or disableDm;
+			reference = {message = message, mention = false};
+		});
 		return;
 	end
 
@@ -374,7 +381,10 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 		local passed;
 		passed,replyText = pcall(replyText,message,args,contents);
 		if not passed then
-			message:reply(("커맨드 반응 생성중 오류가 발생했습니다!\n```\n%s\n```"):format(tostring(replyText)));
+			message:reply({
+				content = ("커맨드 반응 생성중 오류가 발생했습니다!\n```\n%s\n```"):format(tostring(replyText));
+				reference = {message = message, mention = false};
+			});
 		end
 	end
 
@@ -388,7 +398,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 			embed = replyText.embed or embed;
 			replyText.content = replyText.content .. loveText;
 		end
-		replyMsg = message:reply{
+		replyMsg = message:reply({
 			embed = embed;
 			content = commandHandler.formatReply(replyText,{
 				Msg = message;
@@ -396,7 +406,7 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 				channel = channel;
 			});
 			reference = {message = message, mention = false};
-		};
+		});
 	end
 
 	-- 명령어에 담긴 함수를 실행합니다
