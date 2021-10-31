@@ -225,17 +225,21 @@ local function click(gameInstance,clicked,flagged,x,y)
     for indexY = y-1,y+1,2 do
         local thisY = gameInstance[indexY];
         for indexX = x-1,x+1 do
-            local this = thisY[indexX];
-            if this and (this ~= true) then
-                click(gameInstance,clicked,flagged,indexX,indexY);
+        	if not clicked[y][x] then
+	            local this = thisY[indexX];
+	            if this and (this ~= true) then
+	                click(gameInstance,clicked,flagged,indexX,indexY);
+	            end
             end
         end
     end
     for indexX = x-1,x+1,2 do
-        local this = gameInstance[y][indexX];
-        if this and (this ~= true) then
-            click(gameInstance,clicked,flagged,indexX,y);
-        end
+    	if not clicked[y][x] then
+	        local this = gameInstance[y][indexX];
+	        if this and (this ~= true) then
+	            click(gameInstance,clicked,flagged,indexX,y);
+	        end
+    	end
     end
 end
 
@@ -326,38 +330,37 @@ function game.new(replyMsg,message,channel)
                                 self:destroy();
                             end)();
                             return true;
-                        else
-                        	logger.infof("[Minesweeper] making new message on %s",channelId);
-	                        coroutine.wrap(function()
-	                            lastMessage:update({
-	                                content = "게임중 ...";
-	                                --reference = {message = message, mention = false};
-	                                embed = {
-									    title = "지뢰찾기!";
-									    description = game.draw(gameInstance,clicked,flagged)
-									    	..  "\n게임은 다음과 같이 진행 할 수 있습니다! (여럿이서 사용가능)";
-									    footer = {
-									        text = "지뢰찾기를 그만두려면 '지뢰찾기 멈춰' 를 입력하세요!";
-							   		 };
-									    fields = {
-									        {
-									            name = "칸 열기";
-									            value = "```c(세로 좌표)(가로 좌표)```";
-									            inline = true;
-									        };
-									        {
-									            name = "깃발 놓기";
-									            value = "```f(세로 좌표)(가로 좌표)```";
-									            inline = true;
-									        };
-									    };
-									};
-	                            });
-	                            newMessage:delete();
-	                        end)();
-	                        logger.infof("[Minesweeper] delete user message on %s",channelId);
-	                        return true; --precessed
                         end
+                    	logger.infof("[Minesweeper] making new message on %s",channelId);
+                        coroutine.wrap(function()
+                            lastMessage:update({
+                                content = "게임중 ...";
+                                --reference = {message = message, mention = false};
+                                embed = {
+								    title = "지뢰찾기!";
+								    description = game.draw(gameInstance,clicked,flagged)
+								    	..  "\n게임은 다음과 같이 진행 할 수 있습니다! (여럿이서 사용가능)";
+								    footer = {
+								        text = "지뢰찾기를 그만두려면 '지뢰찾기 멈춰' 를 입력하세요!";
+						   		 };
+								    fields = {
+								        {
+								            name = "칸 열기";
+								            value = "```c(세로 좌표)(가로 좌표)```";
+								            inline = true;
+								        };
+								        {
+								            name = "깃발 놓기";
+								            value = "```f(세로 좌표)(가로 좌표)```";
+								            inline = true;
+								        };
+								    };
+								};
+                            });
+                            newMessage:delete();
+                        end)();
+                        logger.infof("[Minesweeper] delete user message on %s",channelId);
+                        return true; --precessed
                     end
                 end
             end
