@@ -5,10 +5,17 @@ local cRandom = _G.cRandom or require("libs.cRandom");
 
 ---@type table<string, boolean> stop commands
 local stopCommand = {
+    ["끝"] = true;
+    ["미나끝"] = true;
     ["멈춰"] = true;
+    ["미나멈춰"] = true;
     ["끄기"] = true;
+    ["미나끄기"] = true;
     ["그만"] = true;
+    ["미나그만"] = true;
     ["stop"] = true;
+    ["미나stop"] = true;
+    ["minastop"] = true;
 	["멈춰지뢰찾기"] = true;
 	["지뢰찾기멈춰"] = true;
 	["그만지뢰찾기"] = true;
@@ -22,6 +29,14 @@ local stopCommand = {
 	["미나끄기지뢰찾기"] = true;
 	["미나지뢰찾기끄기"] = true;
 };
+
+local num = {
+    [0] = "0️⃣";
+    "1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣",
+    "🇦","🇧","🇨","🇩","🇪","🇫","🇬","🇭","🇮","🇯","🇰","🇱","🇳",
+    "🇲","🇴","🇵","🇶","🇷","🇸","🇹","🇺","🇻","🇼","🇽","🇾","🇿"
+};
+local none = "🟦";
 
 -- local function ifind(table,value)
 --     for i,v in ipairs(table) do
@@ -105,14 +120,21 @@ local function initGame(size,minesweepers)
     local clicked = {};
     for _y = 1,size do
         local yThis = {};
+        for x = 1,size do
+            yThis[x] = false;
+        end
         insert(clicked,yThis);
     end
 
     local flagged = {};
     for _y = 1,size do
         local yThis = {};
+        for x = 1,size do
+            yThis[x] = false;
+        end
         insert(flagged,yThis);
     end
+    new.size = size;
 
     return new,clicked,flagged;
 end
@@ -120,8 +142,15 @@ game.initGame = initGame;
 
 local function draw(gameInstance,clicked,flagged)
     flagged = flagged or {};
-    local str = "```\n";
+    local str = "\n" .. none;
+    -- local str = "```\n";
+    local size = gameInstance.size;
+    for i = 1,size do
+        str = str .. num[i];
+    end
+    str = str .. "\n";
     for y,clickedTable in ipairs(clicked or gameInstance) do
+        str = str .. num[y];
         for x,xClicked in ipairs(clickedTable) do
             local flaggedY = flagged[y];
             local isFlagged = flaggedY and flagged[x];
@@ -140,24 +169,25 @@ local function draw(gameInstance,clicked,flagged)
                     (this == 7 and "7️⃣") or
                     (this == 8 and "8️⃣")
                 )
-            ) or "*️⃣");
-
+            ) or "🟦");
         end
         str = str .. "\n";
     end
-    str = str .. "```";
+    -- str = str .. "```";
     return str;
 end
 game.draw = draw;
 
 ---Make new game instance
+---@param message Message message of stated this game
 ---@param channel TextChannel | PrivateChannel | GuildTextChannel | GuildChannel channel of stated this game
-function game.new(channel)
+function game.new(message,channel)
     local newHook = hook.new {
-        hookType = hook.types.before;
+        type = hook.types.before;
     };
 
-    local gameStatus = initGame(defaultGameSize,defaultGameMinesweepers);
+    local gameInstance,clicked,flagged = initGame(defaultGameSize,defaultGameMinesweepers);
+    message:reply(game.draw(gameInstance));
 
     local channelId = channel:__hash();
     newHook.func = function (self,contents)
@@ -174,7 +204,9 @@ function game.new(channel)
     end;
     newHook.destroy = function (self)
         pcall(self.detach,self);
-        gameStatus = nil;
+        gameInstance = nil;
+        clicked = nil;
+        flagged = nil;
         newHook = nil;
     end;
 end

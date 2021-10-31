@@ -12,7 +12,7 @@ log.usecolor = true;
 log.outfile = nil;
 log.minLevel = 1;
 log.disable = false;
-local root = process.env.PWD;
+local root = process.cwd();
 if not root then
 	local new = io.popen("cd");
 	root = new:read("*l");
