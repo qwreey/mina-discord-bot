@@ -3,6 +3,7 @@ local playerClass = require "class.music.playerClass";
 local formatTime = playerClass.formatTime;
 local time = os.time;
 local timer = _G.timer;
+local eulaComment_music = _G.eulaComment_music or makeEulaComment("음악");
 
 -- 섞기 움직이기(이동)
 
@@ -173,6 +174,7 @@ end
 
 return {
 	["add music"] = {
+		registeredOnly = eulaComment_music:
 		disableDm = true;
 		command = {"add","p","play"};
 		alias = {
@@ -315,6 +317,7 @@ return {
 		end;
 	};
 	["list music"] = {
+		eulaComment_music
 		disableDm = true;
 		command = {"l","ls","list","q","queue"};
 		alias = {
@@ -397,7 +400,7 @@ return {
 
 			-- loop!
 			local rawArgs = Content.rawArgs;
-			local setTo = not player.isLooping;
+			local setTo = not player.mode24;
 			if onKeywords[rawArgs] then
 				setTo = true;
 			elseif onKeywords[rawArgs] then
