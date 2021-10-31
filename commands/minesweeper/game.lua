@@ -1,7 +1,7 @@
 local game = {};
 local insert = table.insert;
 
-local cRandom = _G.cRandom or require("libs.cRandom"); ---@diagnostic disable-line
+local cRandom = _G.cRandom or require("cRandom"); ---@diagnostic disable-line
 
 ---@type table<string, boolean> stop commands
 local stopCommand = {
@@ -243,29 +243,29 @@ local function flag(gameInstance,clicked,flagged)
 
 end
 
-local embed = {
-    title = "지뢰찾기!";
-    description = "게임은 다음과 같이 진행 할 수 있습니다! (여럿이서 사용가능)";
-    footer = {
-        text = "지뢰찾기를 그만두려면 '지뢰찾기 멈춰' 를 입력하세요!";
-    };
-    fields = {
-        {
-            name = "칸 열기";
-            value = "```c(세로 좌표)(가로 좌표)```";
-            inline = true;
-        };
-        {
-            name = "깃발 놓기";
-            value = "```f(세로 좌표)(가로 좌표)```";
-            inline = true;
-        };
-    };
-};
-local endingEmbed = {
-    title = "게임이 끝났어요!";
-    description = "지뢰를 건들였어요";
-};
+-- local embed = {
+--     title = "지뢰찾기!";
+--     description = "게임은 다음과 같이 진행 할 수 있습니다! (여럿이서 사용가능)";
+--     footer = {
+--         text = "지뢰찾기를 그만두려면 '지뢰찾기 멈춰' 를 입력하세요!";
+--     };
+--     fields = {
+--         {
+--             name = "칸 열기";
+--             value = "```c(세로 좌표)(가로 좌표)```";
+--             inline = true;
+--         };
+--         {
+--             name = "깃발 놓기";
+--             value = "```f(세로 좌표)(가로 좌표)```";
+--             inline = true;
+--         };
+--     };
+-- };
+-- local endingEmbed = {
+--     title = "게임이 끝났어요!";
+--     description = "지뢰를 건들였어요";
+-- };
 
 local channelGames = {};
 local userGames = {};
@@ -314,9 +314,13 @@ function game.new(replyMsg,message,channel)
                         if object == true then -- ended
                             coroutine.wrap(function()
                                 lastMessage:update({
-                                    content = game.draw(gameInstance);
-                                    reference = {message = message, mention = false};
-                                    embed = endingEmbed;
+                                    content = "게임 끝!"
+                                    --reference = {message = message, mention = false};
+                                    embed = {
+									    title = "게임이 끝났어요!";
+									    description = game.draw(gameInstance)
+									    	.. "\n지뢰를 건들였어요";
+									};
                                 });
                                 newMessage:delete();
                                 self:destroy();
@@ -326,9 +330,28 @@ function game.new(replyMsg,message,channel)
                         logger.infof("[Minesweeper] making new message on %s",channelId);
                         coroutine.wrap(function()
                             lastMessage:update({
-                                content = game.draw(gameInstance,clicked,flagged);
-                                reference = {message = message, mention = false};
-                                embed = embed;
+                                content = "게임중 ...";
+                                --reference = {message = message, mention = false};
+                                embed = {
+								    title = "지뢰찾기!";
+								    description = game.draw(gameInstance,clicked,flagged)
+								    	..  "\n게임은 다음과 같이 진행 할 수 있습니다! (여럿이서 사용가능)";
+								    footer = {
+								        text = "지뢰찾기를 그만두려면 '지뢰찾기 멈춰' 를 입력하세요!";
+						   		 };
+								    fields = {
+								        {
+								            name = "칸 열기";
+								            value = "```c(세로 좌표)(가로 좌표)```";
+								            inline = true;
+								        };
+								        {
+								            name = "깃발 놓기";
+								            value = "```f(세로 좌표)(가로 좌표)```";
+								            inline = true;
+								        };
+								    };
+								};
                             });
                             newMessage:delete();
                         end)();
