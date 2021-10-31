@@ -314,7 +314,7 @@ function game.new(replyMsg,message,channel)
                         if object == true then -- ended
                             coroutine.wrap(function()
                                 lastMessage:update({
-                                    content = "게임 끝!"
+                                    content = "게임 끝!";
                                     --reference = {message = message, mention = false};
                                     embed = {
 									    title = "게임이 끝났어요!";
