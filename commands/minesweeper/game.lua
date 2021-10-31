@@ -295,7 +295,7 @@ function game.new(replyMsg,message,channel)
     newHook.func = function (self,contents)
         local newMessage = contents.message;
         local hookChannel = contents.channel;
-        local text = contents.text;
+        local text = contents.text:gsub("^ -","");
         if hookChannel:__hash() == channelId then
             if stopCommand[text:gsub(" ","")] then
                 pcall(self.destroy,self);
@@ -308,10 +308,10 @@ function game.new(replyMsg,message,channel)
                 local y = num[text:sub(2,2):lower()];
                 local x = num[text:sub(3,3):lower()];
                 if x and y then
-                    logger.infof("[Minesweeper] clicked %d,%d on channel %s",y,x,channelId);
-                    if text:sub(1,1) == "c" then
+                    if text:sub(1,1):lower() == "c" then
+                    	logger.infof("[Minesweeper] clicked %d,%d on channel %s (%s)",y,x,channelId,text);
                         local object = click(gameInstance,clicked,flagged,x,y);
-                        if object == true then -- ended
+                        if type(object) == "boolean" then -- ended
                             coroutine.wrap(function()
                                 lastMessage:update({
                                     content = "게임 끝!";
@@ -326,41 +326,41 @@ function game.new(replyMsg,message,channel)
                                 self:destroy();
                             end)();
                             return true;
+                        else
+                        	logger.infof("[Minesweeper] making new message on %s",channelId);
+	                        coroutine.wrap(function()
+	                            lastMessage:update({
+	                                content = "게임중 ...";
+	                                --reference = {message = message, mention = false};
+	                                embed = {
+									    title = "지뢰찾기!";
+									    description = game.draw(gameInstance,clicked,flagged)
+									    	..  "\n게임은 다음과 같이 진행 할 수 있습니다! (여럿이서 사용가능)";
+									    footer = {
+									        text = "지뢰찾기를 그만두려면 '지뢰찾기 멈춰' 를 입력하세요!";
+							   		 };
+									    fields = {
+									        {
+									            name = "칸 열기";
+									            value = "```c(세로 좌표)(가로 좌표)```";
+									            inline = true;
+									        };
+									        {
+									            name = "깃발 놓기";
+									            value = "```f(세로 좌표)(가로 좌표)```";
+									            inline = true;
+									        };
+									    };
+									};
+	                            });
+	                            newMessage:delete();
+	                        end)();
+	                        logger.infof("[Minesweeper] delete user message on %s",channelId);
+	                        return true; --precessed
                         end
-                        logger.infof("[Minesweeper] making new message on %s",channelId);
-                        coroutine.wrap(function()
-                            lastMessage:update({
-                                content = "게임중 ...";
-                                --reference = {message = message, mention = false};
-                                embed = {
-								    title = "지뢰찾기!";
-								    description = game.draw(gameInstance,clicked,flagged)
-								    	..  "\n게임은 다음과 같이 진행 할 수 있습니다! (여럿이서 사용가능)";
-								    footer = {
-								        text = "지뢰찾기를 그만두려면 '지뢰찾기 멈춰' 를 입력하세요!";
-						   		 };
-								    fields = {
-								        {
-								            name = "칸 열기";
-								            value = "```c(세로 좌표)(가로 좌표)```";
-								            inline = true;
-								        };
-								        {
-								            name = "깃발 놓기";
-								            value = "```f(세로 좌표)(가로 좌표)```";
-								            inline = true;
-								        };
-								    };
-								};
-                            });
-                            newMessage:delete();
-                        end)();
-                        logger.infof("[Minesweeper] delete user message on %s",channelId);
-                        return true; --precessed
                     end
                 end
             end
-
         end
     end;
     newHook.destroy = function (self)
