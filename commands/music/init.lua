@@ -175,7 +175,7 @@ end
 ---@type table<string, Command>
 local export = {
 	["add music"] = {
-		registeredOnly = eulaComment_music:
+		registeredOnly = eulaComment_music;
 		disableDm = true;
 		command = {"add","p","play"};
 		alias = {
@@ -318,7 +318,6 @@ local export = {
 		end;
 	};
 	["list music"] = {
-		eulaComment_music
 		disableDm = true;
 		command = {"l","ls","list","q","queue"};
 		alias = {
@@ -361,6 +360,7 @@ local export = {
 		end;
 	};
 	["song24"] = {
+		registeredOnly = eulaComment_music;
 		disableDm = true;
 		command = {"loop","looping","lp","lop"};
 		alias = {
@@ -423,6 +423,7 @@ local export = {
 		end;
 	};
 	["loop"] = {
+		registeredOnly = eulaComment_music;
 		disableDm = true;
 		command = {"loop","looping","lp","lop"};
 		alias = {
@@ -477,11 +478,13 @@ local export = {
 		reply = "명령어를 처리하지 못했어요!\n> 음악 기능 도움이 필요하면 '미나 음악 도움말' 을 입력해주세요";
 	};
 	["음악 도움말"] = {
+		registeredOnly = eulaComment_music;
 		alias = {"음악 사용법","음악 사용법 알려줘","음악사용법","음악 도움말 보여줘","음악 help","음악도움말","music help","help music","music 도움말"};
 		reply = help;
 		sendToDm = "개인 메시지로 도움말이 전송되었습니다!";
 	};
 	["remove music"] = {
+		registeredOnly = eulaComment_music;
 		disableDm = true;
 		command = {"rm","remove","r"};
 		alias = {
@@ -548,6 +551,7 @@ local export = {
 		end;
 	};
 	["skip music"] = {
+		registeredOnly = eulaComment_music;
 		disableDm = true;
 		command = {"sk","skip","s"};
 		alias = {
@@ -624,6 +628,7 @@ local export = {
 		end;
 	};
 	["pause music"] = {
+		registeredOnly = eulaComment_music;
 		disableDm = true;
 		command = {"pause"};
 		alias = {
@@ -685,6 +690,7 @@ local export = {
 		end;
 	};
 	["stop music"] = {
+		registeredOnly = eulaComment_music;
 		disableDm = true;
 		command = {"off","stop","leave"};
 		alias = {
@@ -785,6 +791,7 @@ local export = {
 		end;
 	};
 	["resume music"] = {
+		registeredOnly = eulaComment_music;
 		disableDm = true;
 		command = {"resume"};
 		alias = {
@@ -837,6 +844,7 @@ local export = {
 		end;
 	};
 	["export music"] = {
+		registeredOnly = eulaComment_music;
 		disableDm = true;
 		command = {"export","e"};
 		alias = {
