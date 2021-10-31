@@ -331,7 +331,7 @@ function game.new(replyMsg,message,channel)
                                 embed = embed;
                             });
                             newMessage:delete();
-                        end)
+                        end)();
                         logger.infof("[Minesweeper] delete user message on %s",channelId);
                         return true; --precessed
                     end
