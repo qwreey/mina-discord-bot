@@ -235,7 +235,7 @@ local function click(gameInstance,clicked,flagged,x,y)
             end
         end
     end
-    local clickedY = clicked[y],
+    local clickedY = clicked[y];
     for indexX = x-1,x+1,2 do
     	if not clickedY[x] then
 	        local this = gameInstance[y][indexX];
