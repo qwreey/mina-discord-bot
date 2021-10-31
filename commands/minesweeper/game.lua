@@ -226,7 +226,7 @@ local function click(gameInstance,clicked,flagged,x,y)
     for indexY = y-1,y+1,2 do
         local thisY = gameInstance[indexY];
         local clickY = clicked[indexY];
-        for indexX = x-1,x+1 do
+        for indexX = x-1,x+1,1 do
         	if not clickY[indexX] then
 	            local this = thisY[indexX];
 	            if this and (this ~= true) then
@@ -237,7 +237,7 @@ local function click(gameInstance,clicked,flagged,x,y)
     end
     local clickedY = clicked[y];
     for indexX = x-1,x+1,2 do
-    	if not clickedY[x] then
+    	if not clickedY[indexX] then
 	        local this = gameInstance[y][indexX];
 	        if this and (this ~= true) then
 	            click(gameInstance,clicked,flagged,indexX,y);
