@@ -312,31 +312,27 @@ function game.new(replyMsg,message,channel)
                     if text:sub(1,1) == "c" then
                         local object = click(gameInstance,clicked,flagged,x,y);
                         if object == true then -- ended
-                            local delete = lastMessage;
                             coroutine.wrap(function()
-                                lastMessage = newMessage:reply({
+                                lastMessage:update({
                                     content = game.draw(gameInstance);
                                     reference = {message = message, mention = false};
                                     embed = endingEmbed;
                                 });
+                                newMessage:delete();
+                                self:destroy();
                             end)();
-                            delete:delete();
-                            newMessage:delete();
-                            self:destroy();
-                            return;
+                            return true;
                         end
                         logger.infof("[Minesweeper] making new message on %s",channelId);
-                        local delete = lastMessage;
                         coroutine.wrap(function()
-                            lastMessage = newMessage:reply({
+                            lastMessage:update({
                                 content = game.draw(gameInstance,clicked,flagged);
                                 reference = {message = message, mention = false};
                                 embed = embed;
                             });
+                            newMessage:delete();
                         end)
-                        delete:delete();
                         logger.infof("[Minesweeper] delete user message on %s",channelId);
-                        newMessage:delete();
                         return true; --precessed
                     end
                 end
