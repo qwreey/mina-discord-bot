@@ -354,7 +354,10 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 		---@type function Get user's premium status
 		---@return boolean whether user's premium exist
 		isPremium = function ()
-			local uData = userData:saveData(user.id);
+			local uData = userData:loadData(user.id);
+			if not uData then
+				return;
+			end
 			local premiumStatus = uData.premiumStatus;
 			if premiumStatus and (premiumStatus > posixTime.now()) then
 				return true;
