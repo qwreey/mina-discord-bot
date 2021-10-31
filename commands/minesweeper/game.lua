@@ -245,19 +245,19 @@ end
 
 local embed = {
     title = "지뢰찾기!";
-    description = "게임은 다음과 같이 진행 할 수 있습니다!";
+    description = "게임은 다음과 같이 진행 할 수 있습니다! (여럿이서 사용가능)";
     footer = {
         text = "지뢰찾기를 그만두려면 '지뢰찾기 멈춰' 를 입력하세요!";
     };
     fields = {
         {
             name = "칸 열기";
-            value = "```c(세로 좌표)(가로 좌표)```\n> 예시 : c12";
+            value = "```c(세로 좌표)(가로 좌표)```";
             inline = true;
         };
         {
             name = "깃발 놓기";
-            value = "```f(세로 좌표)(가로 좌표)```\n> 예시 : f23";
+            value = "```f(세로 좌표)(가로 좌표)```";
             inline = true;
         };
     };
