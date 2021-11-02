@@ -174,7 +174,8 @@ game.initGame = initGame;
 local function draw(gameInstance,clicked,flagged)
     logger.info("[Minesweeper] Drawing object ...");
     flagged = flagged or {};
-    local str = "현재 상태```\n" .. none:rep(2);
+    -- local str = "현재 상태```\n" .. none:rep(2);
+    local str = "현재 상태\n" .. none:rep(2);
     -- local str = "```\n";
     local size = gameInstance.size;
     for i = 1,size do
@@ -207,7 +208,8 @@ local function draw(gameInstance,clicked,flagged)
     end
     -- str = str .. "```";
     logger.info("[Minesweeper] End to draw object! ...");
-    return str .. "```";
+    -- return str .. "```";
+    return str;
 end
 game.draw = draw;
 
