@@ -75,7 +75,8 @@ local num = {
     ["z"] = 35;
 };
 local none = "⬛​";
-local block = "*️⃣"
+-- local block = "*️⃣";
+local block = "🟦​";
 
 local defaultGameSize = 12;
 local defaultGameMinesweepers = 18;
