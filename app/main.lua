@@ -96,6 +96,7 @@ logger.info("wait for discordia ...");
 -- inject modified objects
 inject("discordia/libs/voice/VoiceConnection","voice/VoiceConnection"); -- inject modified voice connection
 inject("discordia/libs/voice/streams/FFmpegProcess","voice/streams/FFmpegProcess"); -- inject modified stream manager
+-- inject("discordia/libs/")
 -- inject("discordia/libs/containers/Message","containers/Message"); -- inject button system
 -- inject("discordia/libs/containers/abstract/TextChannel","containers/abstract/TextChannel"); -- inject button system
 -- inject("discordia/libs/client/EventHandler","client/EventHandler"); -- inject button system
