@@ -11,9 +11,11 @@ local errorType = learn.errorType;
 ]]
 
 local insert = table.insert;
+local remove = table.remove;
 local time = os.time;
 
-return {
+---@type table<string, Command>
+local export = {
 	["배워"] = {
 		alias = {"기억해","배워라","배워봐","암기해","가르치기"};
 		reply = "외우고 있어요 . . .";
@@ -80,14 +82,48 @@ return {
 		alias = {"까먹어","잊어버려","잊어라","잊어줘"};
 		reply = "에ㅔㅔㅔㅔㅔㅔㅔㅔㅔ";
 		func = function(replyMsg,message,args,Content)
-			if true then return replyMsg:setContent("아직 구현중 . . ."); end
 
+			-- checking arg
 			local rawArgs = Content.rawArgs;
-			rawArgs = rawArgs:match(" -.- -");
+			rawArgs = tonumber(rawArgs:match("%d+"));
+			if not rawArgs then
+				replyMsg:setContent("지울 반응의 아이디를 입력해주세요!￦n> 반응 아이디는 리스트에서 확인할 수 있습니다");
+				return;
+			end
 
-			-- DO SOMETHING
+			-- get user data
+			local userData = Content.getUserData();
+			if not userData then
+				replyMsg:setContent("유저 데이터를 찾지 못했습니다!￦n> 약관 동의가 되어 있는지 확인하세요!");
+				return;
+			end
+			local learned = userData.learned;
+			if not learned then
+				replyMsg:setContent("아직 가르친 반응이 하나도 없어요!");
+				return;
+			end
+
+			-- checking object from learned object
+			local this = learned[rawArgs];
+			if not this then
+				replyMsg:setContent(("%d 번째 반응이 존재하지 않아요!"):format(rawArgs));
+				return;
+			end
+
+			learn.remove(this);
+			remove(learned,rawArgs); -- remove from indexs
+			userData.lenLearned = userData.lenLearned - 1;
+			Content.saveUserData();
 
 			replyMsg:setContent(("'%s'? 그게 뭐였죠? 기억나지가 않아요"):format(rawArgs));
 		end;
 	};
+	["기억"] = {
+		alias = {"지식","가르침"};
+		reply = "처리중 . . .";
+		func = function (replyMsg,message,args,Content)
+			
+		end;
+	};
 };
+return export;

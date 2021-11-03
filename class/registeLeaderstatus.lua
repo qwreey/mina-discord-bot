@@ -16,6 +16,7 @@ local function setStatus(table,userId,this)
 end
 -- registe user's love in to leaderstatus
 ---Save user love into leaderstatus
+---@param userId Snowflake userData the table that inclued the user's data
 ---@param this table userData the table that inclued the user's data
 ---@return table | nil user what is poped user, when just updated it selfs, it will nil value
 local function registeLeaderstatus(userId,this)

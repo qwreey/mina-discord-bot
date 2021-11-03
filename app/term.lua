@@ -1,6 +1,7 @@
 local history = readline.History.new(); -- 히스토리 홀더 만들기
 local editor = readline.Editor.new({stdin = process.stdin.handle, stdout = process.stdout.handle, history = history});
 local version = _G.app.version;
+local prettyPrint = prettyPrint or require("pretty-print");
 
 local colors = {
 	black = {30,40};
@@ -100,6 +101,7 @@ setmetatable(runEnv,{ -- wtf?? lua can use metable env... cuz lua's global is a 
 	__index = _G;
 	__newindex = _G;
 });
+_G.loadstringEnv = runEnv;
 -- 라인 읽기 함수
 return function ()
 	local function onLine(err, line, ...)

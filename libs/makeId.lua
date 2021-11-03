@@ -6,6 +6,8 @@ local WORD = {
 local lWord = #WORD;
 local rand = require "cRandom";
 
+--- making base64 id that have 18 length
+---@return string id base64 id
 return function ()
 	local ID = "";
 	for i = 1,18 do

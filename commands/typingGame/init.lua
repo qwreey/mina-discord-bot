@@ -1,7 +1,8 @@
 local typingGame = require "class.typingGame";
 local gameForUsers = typingGame.gameForUsers;
 
-return {
+---@type table<string, Command>
+local export = {
     ["타자연습 그만"] = {
 		alias = {"타자연습 그만","타자연습그만","타자연습멈춰","멈춰 타자연습","멈춰타자연습","타자연습 멈춰","그만타자연습","그만 타자연습","끄기 타자연습","타자연습 끄기"};
 		reply = "잠기만 기달려주세요 . . .";
@@ -22,3 +23,4 @@ return {
         reply = "이용 가능한 타자 연습 게임은 '영문','한글' 입니다";
     };
 }
+return export;

@@ -9,6 +9,7 @@ Lua (luvit)
 C 랑 동기화가 쉬움  
 js 랑 가까움 (그래서 js 모듈 이식작이 많음)  
 비동기IO 로 처리 가능  
+String 같은 라이브러리 포함되니 문서 확인   
 
 ## [편집 주의 사항]  
 편집기 열 때 가능하면 개속해서 git pull 받아서 온라인 스토리지로 부터  
@@ -98,17 +99,6 @@ reply = string.rep("멈춰! ",20);
 
     end
 };
-```  
-  
-## [반복시 호감도가 내리는 반응 (선택적 사항)]  
-```lua
-["안녕"] = {
-    reply = "안녕하세요";
-    love = 2;
-    repLove = -1; -- 5 번 반복시 호감도 1 하락
-    repText = {"그만...","그만 하세요!"}; -- 반복시 나오는 글,
-    -- 한개면 {} 안쓰고 "" 안에 써도 됨 (선택적 사항)
-};
 ```
   
 ## [몇 초 뒤 바뀌는 반응]  
@@ -152,27 +142,33 @@ msg (메시지 개체) 받아서 편집도 가능함,
     alias = table[array]/str; -- 다른 명령어로도 똑같은 기능 내도록
     reply = table[array]/str; -- 콜백
     func  = function(replyMsg,message,args,{
+    	user = user:table; -- 메시지 워너
+    	channel = channel:table; -- 메시지 채널
+    	isDm = bool; -- 디엠인가 여부
+    	loveText = string; -- 표시되어야할 호감도 바닥글 문자
         commandName = string; -- 이 커맨드 이름
         rawCommandText = string; -- 접두사를 제외한 스트링
         prefix = string; -- 접두사(사용된)
         rawArgs = string; -- args 스트링 (커스텀 분석용)
         rawCommandName = string; -- 커맨드 이름 (앞에 무시된거 포함됨)
         self = Command:table; -- 지금 이 커맨드 개체를 반환
-        getUserData = fnc; -- 유저 데이터 테이블 가져오기
-        saveUserData = fnc; -- 유저 데이터 저장하기 (넘겨 받은 테이블 고치고 수행)
+        getUserData = func; -- 유저 데이터 테이블 가져오기
+        saveUserData = func; -- 유저 데이터 저장하기 (넘겨 받은 테이블 고치고 수행)
+        isPremium = func; -- 프리미엄 상태 확인
     }); -- 함수
     love = 1; -- love 주는 정도 (1시간 쿨탐 가짐, 선택사항)
-    canRep = false; -- 반복해도 love 가 깍이지 않음 (아에 love 가 없으면 이거에 소용 없이 안줄어듬)
+    registeredOnly = bool/string; -- (선택사항, 데이터가 있는 사람만 써짐.
+                                  --  스트링이면 데이터 없을때 표시됨)
 
     -- 함수를 이용한 가변적인 결과
     reply = func(message,args,{위와(func 의 가장 뒤 인자) 동일한 테이블});
-    love = function(userId) -- 렌덤적인 값을 반환 할 수 있음
+    love = function(userId) -- 렌덤적인 값을 반환 할 수 있음 (선택사항)
         return cRandom(1,3);
-    end;
+    end; -- 보통 그냥 defaultLove; 또는 rmLove; 를 넘김
 };
 ```
 <!-- repLove = -1; -- 5번 반복할 때 love 깍이는 정도 (10 분 뒤 초기화, 선택사항) -->
-  
+
 ## [다른 모듈 설명]  
 json : 루아 테이블을 json 으로 인코딩/디코딩 => https://luvit.io/api/json.html  
 cRandom : 여러 난수를 섞은 렌덤함수, cRandom(최소값,최대값)  

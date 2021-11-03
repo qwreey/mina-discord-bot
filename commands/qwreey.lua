@@ -53,22 +53,21 @@
 	구글,네이버,유튜브,위키피디아,나무위키 검색명령어
 ]]
 
-return {
+---@type table<string, Command>
+local export = {
 	-------------------------------------------------
 	-- 특수 반응 (함수를 쓰거나 여러 의도가 담긴 반응)
 	-------------------------------------------------
 	["미나초대"] = {
 		alias = {"초대링크","미나 초대","초대 링크"};
 		reply = {"쨘!"};
-		func = function(replyMsg,message,args,Content)
-			replyMsg:setEmbed {
-				color = 10026831;
-				fields = {{
-					name = "아래의 버튼을 누르면 미나를 다른 서버에 추가 할 수 있어요!";
-					value = ("[초대하기](%s)"):format(ACCOUNTData.InvLink);
-				}};
-			};
-		end;
+		embed = {
+			color = 10026831;
+			fields = {{
+				name = "아래의 버튼을 누르면 미나를 다른 서버에 추가 할 수 있어요!";
+				value = ("[초대하기](%s)"):format(ACCOUNTData.InvLink);
+			}};
+		};
 	};
 	["뽑기"] = {
 		alias = {"선택해","선택","추첨","뽑아","추첨해","골라","골라봐"};
@@ -739,3 +738,4 @@ return {
 	--	reply = {};
 	--};
 };
+return export;

@@ -52,12 +52,18 @@ function module.get(name)
 
 	local path = root:format(id);
 	local maxIndex = tonumber((fs.readFileSync(path .. "/index") or ""):match("%d+"));
-
-	if not maxIndex then
+	local removed; do
+		local file = fs.readFileSync(path .. "removed");
+		if file then
+			removed = json.decode(("[%s]"):format(file));
+		end
+	end
+	
+	if (not maxIndex) or (maxIndex == 0) or (removed and (#removed >= maxIndex)) then
 		return;
 	end
 
-	local index = cRandom(1,maxIndex);
+	local index = cRandom(1,maxIndex,removed);
 	local this = json.decode(fs.readFileSync(("%s/%d"):format(path,index)));
 
 	return this;
@@ -164,6 +170,23 @@ function module.put(name,value,author,when,userData)
 	userData.lastLearnTime = when;
 	insert(learned,("%s/%d"):format(id,index));
 	userData.lenLearned = userData.lenLearned + 1;
+end
+
+-- removing object
+-- id = "ID/NUM"
+function module.remove(id)
+	if not fs.existsSync(id) then
+		return;
+	end
+
+	local pathId,num = id:match("(.-)/(%d+)");
+	local path = root:format(pathId);
+	local indexPath = path .. "/index";
+
+	-- adding sync?
+	fs.appendFile(path .. "removed",("%s,"):format(tostring(num)));
+	fs.unlink(id);
+	return true;
 end
 
 return module;

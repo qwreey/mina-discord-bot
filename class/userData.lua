@@ -29,7 +29,20 @@ local function formatFileRoot(userId)
 	return ("data/userData/%s.json"):format(userId);
 end
 
--- 데이터 저장하기 (로드를 먼저 해야 작동함)
+---inclueding user's data
+---@class userDataObject
+---@field public lastCommand table key/value pairs of command id and timestamp of when last this user used command
+---@field public learned table | nil Array of user leanred reactions
+---@field public lenLearned number | nil Length of learend table
+---@field public love number User's love stats
+---@field public lastLearnTime number | nil timestamp of when last this user used learning command
+---@field public premiumStatus number | nil user's premium status, this is pointing end of premium's timestamp
+---@field public lastName table Array of user's lastname *CACHED NAME ONLY*
+---@field public latestName string User's lastest name *CACHED NAME ONLY*
+
+---Save user data to userdata storage
+---@param userId Snowflake pointing data what want to save
+---@return nil
 function module:saveData(userId)
 	if not userId then
 		return;
@@ -59,7 +72,9 @@ function module:saveData(userId)
 	end
 end
 
--- 데이터 읽어들이기
+---Get user data from userdata storage
+---@param userId Snowflake pointing data what want to get
+---@return userDataObject | nil userDataObject user's data
 function module:loadData(userId)
 	if not userId then
 		return;
@@ -84,11 +99,11 @@ end
 
 -- 데이터 파일 지우고 데이터 초기화
 -- this is should be replaced with fs module
-function module:resetData(userId)
-	userDatas[userId] = nil;
-	return pcall(function ()
-		os.remove(formatFileRoot(userId));
-	end);
-end
+-- function module:resetData(userId)
+-- 	userDatas[userId] = nil;
+-- 	return pcall(function ()
+-- 		os.remove(formatFileRoot(userId));
+-- 	end);
+-- end
 
 return module;

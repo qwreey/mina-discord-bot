@@ -4,7 +4,8 @@ local youtubeSearch = require "commands.youtube.request"; -- 유튜브 검색
 youtubeSearch:setCoroHttp(corohttp):setJson(json):setUrlCode(urlCode); -- 유튜브 검색 셋업
 youtubeEmbed:setMyXML(myXMl);
 
-return {
+---@type table<string, Command>
+local export = {
 	["유튜브"] = {
 		alias = {"유튜브검색","유튜브찾기","유튜브탐색","유튭찾기","유튭","유튭검색","유튜브 검색","유튜브 찾기","youtube 찾기","youtube","youtube search","유튜브에서 찾기","search from youtube"};
 		reply = "잠시만 기다려주세요... (검색중)";
@@ -24,3 +25,4 @@ return {
 		end;
 	};
 };
+return export;

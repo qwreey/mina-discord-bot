@@ -21,7 +21,8 @@ local function formatIDTime(this)
 	);
 end
 
-return {
+---@type table<string, Command>
+local export = {
 	--타이머
 	["계정나이"] = {
 		alias = "계정 나이";
@@ -173,3 +174,4 @@ return {
 		end;
 	};
 };
+return export;
