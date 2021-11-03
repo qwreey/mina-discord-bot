@@ -270,7 +270,6 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	end
 
 	-- 커맨드 찾지 못함
-	local cmdDisableDm = Command.disableDm;
 	if not Command then
 		message:reply({
 			content = unknownReply[cRandom(1,#unknownReply)];
@@ -279,12 +278,15 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 		-- 반응 없는거 기록하기
 		fs.appendFile("log/unknownTexts/raw.txt","\n" .. text);
 		return;
-	elseif isDm and cmdDisableDm then
-		message:reply({
-			content = (type(cmdDisableDm) == "string") and cmdDisableDm or disableDm;
-			reference = {message = message, mention = false};
-		});
-		return;
+	else -- 디엠 확인
+		local cmdDisableDm = Command.disableDm;
+		if isDm and cmdDisableDm then
+			message:reply({
+				content = (type(cmdDisableDm) == "string") and cmdDisableDm or disableDm;
+				reference = {message = message, mention = false};
+			});
+			return;
+		end
 	end
 
 	-- 커맨드 찾음 (실행)
