@@ -50,8 +50,8 @@ function FFmpegProcess:__init(path, rate, channels)
 	end)
 	-- local errstr = "";
 	stderr:read_start(function(err, chunk)
-		if err or not chunk then
-			self:close()
+		if err or (not chunk) then
+			return;
 		end
 		stderr:read_stop();
 		local str = tostring(chunk):gsub("\n$","");
