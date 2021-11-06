@@ -72,7 +72,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		end
 		local passed,value = pcall(setfenvTraceback);
 		if passed then
-			new:setContent(new.content .. "\n[INFO] Execution success! traceback : ```\n" .. tostring(prettyPrint.dump(value,nil,true)) .. "\n```");
+			new:setContent(new.content .. "\n[INFO] Execution success! traceback : ```\n" .. (type(value) == "string" and value or tostring(prettyPrint.dump(value,nil,true))) .. "\n```");
 		else -- on error
 			new:setContent(new.content .. "\n[ERROR] Error occured running function! traceback : ```\n" .. tostring(value) .. "\n```");
 		end
