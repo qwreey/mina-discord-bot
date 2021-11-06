@@ -22,7 +22,16 @@ local errorType = {
 };
 module.errorType = errorType;
 
+---@class learnObject
+---@field author Snowflake id of author on discord
+---@field content string reply of this
+---@field when number timestamp of when this is learned on posix time
+---@field name string name of this learn if is exist
+
 -- format
+---make formatted string of learnObject
+---@param userReact learnObject what you want to stringify
+---@return string formatted formatted string of learnObject
 function module.format(userReact)
 	if not userReact then
 		return "오류가 발생했어요!\n> 알 수 없는 유저 반응을 호출하려고 시도합니다\n```app.main : formatUserLearnReact(userReact) -> userReact == nil```";
@@ -42,7 +51,9 @@ function module.format(userReact)
 	return ("%s\n> '%s' 님이 가르쳐 주셨어요!"):format(content,author.latestName);
 end
 
---- get react
+---get learnObject with name (not learnObject id)
+---@param name string this is will be used as query
+---@return learnObject|nil result searched object
 function module.get(name)
 	local hash = sha1(name);
 	local id = indexedCache[hash];
@@ -58,7 +69,7 @@ function module.get(name)
 			removed = json.decode(("[%s]"):format(file));
 		end
 	end
-	
+
 	if (not maxIndex) or (maxIndex == 0) or (removed and (#removed >= maxIndex)) then
 		return;
 	end
@@ -69,13 +80,39 @@ function module.get(name)
 	return this;
 end
 
+---get learnObject from id (pathed id)
+---@param id string path of what you want to get
+---@return learnObject|nil result result learnObject
+---@return string|nil name name of this object
+function module.rawGet(id)
+	local data = fs.readFileSync(root:format(id));
+	if not data then return end
+
+	data = json.decode(data);
+	if not data then return end
+
+	local pathId = id:match("(.-)/");
+	local path = root:format(pathId);
+	local name = fs.readFileSync(path .. "name");
+	if not name then return end
+
+	return data,name;
+end
+
 local maxValueLength = 200;
 local maxNameLength = 100;
 local costLove = 20;
 local cooltime = 5;
 local utf8Len = utf8.len;
 local insert = table.insert;
---- Add new react
+
+---Make new learnObject and save
+---@param name string name of this learnObject
+---@param value string value of this learnObject
+---@param author Snowflake id of author
+---@param when number timestamp of when this object was created on posix time
+---@param userData userDataObject author's user data object
+---@return nil|number errorType description of error occurred, it is no error in execution, will return nil
 function module.put(name,value,author,when,userData)
 	if not userData then
 		return errorType.noData;
@@ -174,18 +211,23 @@ end
 
 -- removing object
 -- id = "ID/NUM"
+
+---Remove learnObject
+---@param id string path of what you want to remove
+---@return boolean|nil isSuccess will return true if success
 function module.remove(id)
-	if not fs.existsSync(id) then
+	local this = root:format(id);
+	if not fs.existsSync(this) then
 		return;
 	end
 
 	local pathId,num = id:match("(.-)/(%d+)");
 	local path = root:format(pathId);
-	local indexPath = path .. "/index";
+	-- local indexPath = path .. "/index";
 
 	-- adding sync?
 	fs.appendFile(path .. "removed",("%s,"):format(tostring(num)));
-	fs.unlink(id);
+	fs.unlink(this);
 	return true;
 end
 

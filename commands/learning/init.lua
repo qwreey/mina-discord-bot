@@ -10,12 +10,38 @@ local errorType = learn.errorType;
 
 ]]
 
+local help = [[
+**가르치기 기능에 대한 도움말입니다**
+> 주의! 이 기능으로 가르쳐진 데이터는 다른 모든이가 볼 수 있습니다. 불쾌한 내용을 담지 않도록 조심해주세요!
+
+> 미나 배워 **가르칠것**=**반응**
+미나에게 무언가를 가르칩니다! 호감도 20 을 사용해요
+예시 : `미나 배워 디스코드가 뭐야?=만능 채팅 플랫폼!`
+
+> 미나 잊어 **(가르친것-순번)**
+명령어 `미나 기억` 에서 나온 번호를 사용해서 해당 지식을 지울 수 있습니다!
+예시 : `미나 잊어 1` (가장 최근에 가르친것을 잊습니다)
+
+> 미나 기억 **페이지**
+지금까지 가르친 모든 내용을 보여줍니다!
+제공된 페이지가 없으면 1 번째 페이지를 보여줍니다]];
+
+local posixTime = _G.posixTime;
 local insert = table.insert;
 local remove = table.remove;
-local time = os.time;
+local time = posixTime.now;
+local ceil = math.ceil;
+local timeAgo = _G.timeAgo;
+
+local itemsPerPage = 10;
 
 ---@type table<string, Command>
 local export = {
+	["가르치기 도움말"] = {
+		alias = {"가르치기 사용법","가르치기 사용법 알려줘","가르치기사용법","가르치기 도움말 보여줘","가르치기 help","가르치기도움말"};
+		reply = help;
+		sendToDm = "개인 메시지로 도움말이 전송되었습니다!";
+	};
 	["배워"] = {
 		alias = {"기억해","배워라","배워봐","암기해","가르치기"};
 		reply = "외우고 있어요 . . .";
@@ -110,19 +136,85 @@ local export = {
 				return;
 			end
 
-			learn.remove(this);
+			local success = learn.remove(this);
 			remove(learned,rawArgs); -- remove from indexs
 			userData.lenLearned = userData.lenLearned - 1;
 			Content.saveUserData();
+			if not success then
+				replyMsg:setContent(("처리중에 오류가 발생했어요!"):format(rawArgs));
+				return;
+			end
 
 			replyMsg:setContent(("'%s'? 그게 뭐였죠? 기억나지가 않아요"):format(rawArgs));
 		end;
 	};
 	["기억"] = {
 		alias = {"지식","가르침"};
-		reply = "처리중 . . .";
+		reply = "잠깐만 기다려!";
 		func = function (replyMsg,message,args,Content)
-			
+			local rawArgs = Content.rawArgs;
+			rawArgs = tonumber(rawArgs:match("%d+")) or 1;
+			if rawArgs < 1 then
+				replyMsg:setContent("페이지에 마이너스는 없는것 같아요!");
+				return;
+			end
+			local userData = Content.getUserData();
+			if not userData then
+				replyMsg:setContent("유저 데이터가 존재하지 않습니다!\n유저 데이터는 약관 동의 후 부터 저장될 수 있어요!");
+				return;
+			end
+			local learned = userData.learned;
+			local content = ("**%s** 의 기억"):format(Content.user.name);
+			local title = ("**%d** 페이지"):format(rawArgs);
+
+			local fields = {};
+			local startAt,endAt = ((rawArgs-1)*itemsPerPage)+1,rawArgs*itemsPerPage;
+			for index = startAt,endAt do
+				local thisId = learned[index];
+				if not thisId then
+					break;
+				end
+				local this,name = learn.rawGet(thisId);
+				if this then
+					local when = this.when;
+					insert(fields, {
+						name = ("%d 번째 : %s"):format(index,tostring(name));
+						value = ("`%s`%s"):format(
+							tostring(this.content):gsub("`","\\`"),
+							when and (("\n> %s"):format(timeAgo(when,time()))) or ""
+						);
+					});
+				end
+			end
+
+			if #fields == 0 then
+				replyMsg:update{
+					content = content;
+					embed = {
+						title = title;
+						description = "이 페이지에는 기억이 없어요!";
+					};
+				};
+				return;
+			elseif learned[endAt+1] then
+				insert(fields, {
+					name = "다음 페이지가 있어요!";
+					value = ("**`미나 기억 %d`** 를 입력해서 다음 페이지를 볼 수 있어요!"):format(rawArgs + 1);
+				});
+			end
+
+			local lenLearned = #learned;
+			replyMsg:update{
+				content = title;
+				embed = {
+					title = title;
+					fields = fields;
+					color = 8520189;
+					footer = {
+						text = ("총 기억 갯수 : %d | 총 페이지수 : %d"):format(ceil(lenLearned / itemsPerPage),lenLearned);
+					};
+				};
+			};
 		end;
 	};
 };

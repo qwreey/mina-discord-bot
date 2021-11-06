@@ -8,7 +8,8 @@ local eulaComment_music = _G.eulaComment_music or makeEulaComment("음악");
 -- 섞기 움직이기(이동)
 
 local help = [[
-'**음악**'에 대한 도움말입니다
+**음악 기능에 대한 도움말입니다**
+> 주의! 이 기능은 아직 불완전합니다. 오류로 인해 몇몇 곡이 스킵 될 수도 있습니다!
 
 > 미나 **음악도움말**
 이 메시지를 표시합니다
@@ -549,7 +550,6 @@ local export = {
 		reply = "명령어를 처리하지 못했어요!\n> 음악 기능 도움이 필요하면 '미나 음악 도움말' 을 입력해주세요";
 	};
 	["음악 도움말"] = {
-		registeredOnly = eulaComment_music;
 		alias = {"음악 사용법","음악 사용법 알려줘","음악사용법","음악 도움말 보여줘","음악 help","음악도움말","music help","help music","music 도움말"};
 		reply = help;
 		sendToDm = "개인 메시지로 도움말이 전송되었습니다!";
