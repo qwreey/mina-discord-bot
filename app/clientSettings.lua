@@ -1,6 +1,6 @@
 -- client initing config
 _G.clientSettings = {
-	routeDelay = 20;
+	routeDelay = 0;
 	largeThreshold = 2048;
 	cacheAllMembers = true;
 	compress = true;
