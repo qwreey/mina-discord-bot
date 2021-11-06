@@ -50,6 +50,7 @@ local function runLog(levelName,levelNumber,color,debugInfo,...)
 		:gsub("%.lua$","") -- remove .lua
 		:gsub("^%.[/\\]","") -- remove ./
 		:gsub("[\\//]",".")
+		:gsub("%.init$") -- remove .init
 	); -- change \ and / into .
 	local lineinfo = ("%s:%-5s"):format(src,tostring(debugInfo.currentline)); -- source:line
 

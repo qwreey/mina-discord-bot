@@ -53,7 +53,7 @@ function FFmpegProcess:__init(path, rate, channels)
 		if err or (not chunk) then
 			return;
 		end
-		stderr:read_stop();
+		-- stderr:read_stop();
 		local str = tostring(chunk):gsub("\n$","");
 		-- errstr = errstr .. str .. "\n";
 		logger.errorf("[FFmpeg Error] %s",str);
