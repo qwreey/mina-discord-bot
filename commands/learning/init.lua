@@ -164,12 +164,17 @@ local export = {
 				return;
 			end
 			local learned = userData.learned;
+			if not learned then
+				replyMsg:setContent(("**%s** 님이 가르친건 하나도 없어요 :cry:"):format(Content.user.name));
+				return;
+			end
 			local content = ("**%s** 의 기억"):format(Content.user.name);
 			local title = ("**%d** 페이지"):format(rawArgs);
 
 			local fields = {};
 			local startAt,endAt = ((rawArgs-1)*itemsPerPage)+1,rawArgs*itemsPerPage;
 			for index = startAt,endAt do
+				logger.infof("reading %d",index);
 				local thisId = learned[index];
 				if not thisId then
 					break;
