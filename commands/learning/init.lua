@@ -170,11 +170,12 @@ local export = {
 			end
 			local content = ("**%s** 의 기억"):format(Content.user.name);
 			local title = ("**%d** 페이지"):format(rawArgs);
-
+			
 			local fields = {};
 			local startAt,endAt = ((rawArgs-1)*itemsPerPage)+1,rawArgs*itemsPerPage;
+			local lenLearned = #learned;
 			for index = startAt,endAt do
-				local thisId = learned[index];
+				local thisId = learned[lenLearned - index];
 				if not thisId then
 					break;
 				end
@@ -207,7 +208,6 @@ local export = {
 				});
 			end
 
-			local lenLearned = #learned;
 			replyMsg:update{
 				content = title;
 				embed = {
