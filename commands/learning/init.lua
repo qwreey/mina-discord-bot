@@ -130,7 +130,7 @@ local export = {
 			end
 
 			-- checking object from learned object
-			local this = learned[rawArgs];
+			local this = learned[#learned - rawArgs];
 			if not this then
 				replyMsg:setContent(("%d 번째 반응이 존재하지 않아요!"):format(rawArgs));
 				return;
@@ -170,7 +170,7 @@ local export = {
 			end
 			local content = ("**%s** 의 기억"):format(Content.user.name);
 			local title = ("**%d** 페이지"):format(rawArgs);
-			
+
 			local fields = {};
 			local startAt,endAt = ((rawArgs-1)*itemsPerPage)+1,rawArgs*itemsPerPage;
 			local lenLearned = #learned;
