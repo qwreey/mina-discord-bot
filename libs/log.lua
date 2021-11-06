@@ -50,9 +50,9 @@ local function runLog(levelName,levelNumber,color,debugInfo,...)
 		:gsub("%.lua$","") -- remove .lua
 		:gsub("^%.[/\\]","") -- remove ./
 		:gsub("[\\//]",".")
-		:gsub("%.init$") -- remove .init
+		:gsub("%.init$","") -- remove .init
 	); -- change \ and / into .
-	local lineinfo = ("%s:%-5s"):format(src,tostring(debugInfo.currentline)); -- source:line
+	local lineinfo = ("%s:%s"):format(src,tostring(debugInfo.currentline)); -- source:line
 
 	-- Make header
 	local usecolor = log.usecolor;
@@ -70,7 +70,7 @@ local function runLog(levelName,levelNumber,color,debugInfo,...)
 		lineinfo -- line info
 	);
 	local headerLen = #(header:gsub("\27%[%d+m",""));
-	local liner = headerLen%4;
+	local liner = headerLen%6;
 	if liner ~= 0 then
 		local adding = 4 - liner;
 		headerLen = headerLen + adding;
