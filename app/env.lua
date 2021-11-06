@@ -219,6 +219,19 @@ local function startBot(botToken,isTesting) -- 봇 시작시키는 함수
     --else
     --    logger.error("Couldn't find heartbeat channel!");
     --end
+
+	local args = app.args;
+	local onHeartbeat;
+	for _,v in ipairs(args) do
+		if v == "http_heartbeat" then
+			local function heartbeatHTTP()
+				corohttp.request("GET","https://discord.com/api/v9")
+				timeout(300000,heartbeatHTTP);
+			end
+			heartbeatHTTP();
+			break;
+		end
+	end
 end
 local function reloadBot() -- 봇 종료 함수
 	logger.info("try restarting ...");
