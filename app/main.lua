@@ -96,6 +96,7 @@ logger.info("wait for discordia ...");
 -- inject modified objects
 inject("discordia/libs/voice/VoiceConnection","voice/VoiceConnection"); -- inject modified voice connection
 inject("discordia/libs/voice/streams/FFmpegProcess","voice/streams/FFmpegProcess"); -- inject modified stream manager
+-- inject("discordia/libs/")
 -- inject("discordia/libs/containers/Message","containers/Message"); -- inject button system
 -- inject("discordia/libs/containers/abstract/TextChannel","containers/abstract/TextChannel"); -- inject button system
 -- inject("discordia/libs/client/EventHandler","client/EventHandler"); -- inject button system
@@ -105,7 +106,7 @@ local discordia = require "discordia"; _G.discordia = discordia; ---@type discor
 local discordia_class = require "discordia/libs/class"; _G.discordia_class = discordia_class; ---@type class -- 디스코드 클레스 가져오기
 local discordia_Logger = discordia_class.classes.Logger; ---@type Logger -- 로거부분 가져오기 (통합을 위해 수정)
 local enums = discordia.enums; _G.enums = enums; ---@type enums -- 디스코드 enums 가져오기
-local client = discordia.Client(); _G.client = client; ---@type Client -- 디스코드 클라이언트 만들기
+local client = discordia.Client(require("app.clientSettings")); _G.client = client; ---@type Client -- 디스코드 클라이언트 만들기
 local Date = discordia.Date; _G.Date = Date; ---@type Date
 function discordia_Logger:log(level, msg, ...) -- 디스코드 모듈 로거부분 편집
 	if self._level < level then return end ---@diagnostic disable-line
@@ -269,7 +270,6 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	end
 
 	-- 커맨드 찾지 못함
-	local cmdDisableDm = Command.disableDm;
 	if not Command then
 		message:reply({
 			content = unknownReply[cRandom(1,#unknownReply)];
@@ -278,12 +278,15 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 		-- 반응 없는거 기록하기
 		fs.appendFile("log/unknownTexts/raw.txt","\n" .. text);
 		return;
-	elseif isDm and cmdDisableDm then
-		message:reply({
-			content = (type(cmdDisableDm) == "string") and cmdDisableDm or disableDm;
-			reference = {message = message, mention = false};
-		});
-		return;
+	else -- 디엠 확인
+		local cmdDisableDm = Command.disableDm;
+		if isDm and cmdDisableDm then
+			message:reply({
+				content = (type(cmdDisableDm) == "string") and cmdDisableDm or disableDm;
+				reference = {message = message, mention = false};
+			});
+			return;
+		end
 	end
 
 	-- 커맨드 찾음 (실행)

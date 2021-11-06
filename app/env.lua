@@ -64,6 +64,7 @@ _G.leaderstatusWords = {
 
 -- Off keywords, used on 미나 음악 켜기 and more
 _G.onKeywords = {
+	["켬"] = true;
 	["켜기"] = true;
 	["켜"] = true;
 	["켜줘"] = true;
@@ -82,6 +83,7 @@ _G.onKeywords = {
 
 -- Off keywords, used on 미나 음악 끄기 and more
 _G.offKeywords = {
+	["끔"] = true;
 	["끄기"] = true;
 	["꺼"] = true;
 	["꺼줘"] = true;
@@ -104,12 +106,20 @@ _G.loveCooltime = 3600;
 -- this is used on displays disabled on dm message
 _G.disableDm = "이 반응은 DM 에서 사용 할 수 없어요! 서버에서 이용해 주세요";
 
--- this is used on when user is not accept eula
-_G.eulaComment_love = (
-	"\n> 호감도 기능을 사용할 수 없어요!" ..
-	"\n> 호감도 기능을 사용하려면 '미나야 약관 동의' 를 입력해주세요!" ..
-	"\n> (약관의 세부정보를 보려면 '미나야 약관' 을 입력해주세요)"
+local eulaComment = (
+	"\n> %s 기능을 사용할 수 없어요!" ..
+	"\n> %s 기능을 사용하려면 **`미나야 약관 동의`** 를 입력해주세요!" ..
+	"\n> (약관의 세부정보를 보려면 **`미나야 약관`** 을 입력해주세요)"
 );
+_G.eulaComment = eulaComment;
+local function makeEulaComment(feature)
+	return eulaComment:format(feature,feature);
+end
+_G.makeEulaComment = makeEulaComment;
+
+-- this is used on when user is not accept eula
+_G.eulaComment_love = makeEulaComment("호감도");
+_G.eulaComment_music = makeEulaComment("음악");
 
 -- the admins of this bot
 _G.admins = { -- 관리 명령어 권한
@@ -149,16 +159,6 @@ _G.prefixReply = { -- 그냥 미나야 하면 답
 -- this is used on when user messaged texts that bot didn't know
 _G.unknownReply = { -- 반응 없을때 띄움
 	"**(갸우뚱?)**","무슨 말이에요?","네?","으에?"--,"먕?",":thinking: 먀?"
-};
-
--- client initing config
-_G.clientSettings = {
-	routeDelay = 100;
-	largeThreshold = 2048;
-	cacheAllMembers = true;
-	compress = false;
-	bitrate = 82000;
-	logFile = nil;
 };
 
 -- bot managing functions
