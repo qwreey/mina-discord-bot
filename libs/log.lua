@@ -72,7 +72,7 @@ local function runLog(levelName,levelNumber,color,debugInfo,...)
 	local headerLen = #(header:gsub("\27%[%d+m",""));
 	local liner = headerLen%6;
 	if liner ~= 0 then
-		local adding = 4 - liner;
+		local adding = 6 - liner;
 		headerLen = headerLen + adding;
 		header = header .. (" "):rep(adding);
 	end
