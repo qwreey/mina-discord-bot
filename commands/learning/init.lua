@@ -174,7 +174,6 @@ local export = {
 			local fields = {};
 			local startAt,endAt = ((rawArgs-1)*itemsPerPage)+1,rawArgs*itemsPerPage;
 			for index = startAt,endAt do
-				logger.infof("reading %d",index);
 				local thisId = learned[index];
 				if not thisId then
 					break;
