@@ -12,7 +12,12 @@
 	TODO: 그리고도 못찾으면 조사 다 지우고 찾기
 ]]
 
--- set title of terminal
+-- Setup require system
+process.env.PATH = process.env.PATH .. ";.\\bin"; -- add bin libs path
+package.path = require("app.path")(package.path); -- set require path
+_G.require = require; -- set global require function
+
+-- Get version from git
 local version do
 	local file = io.popen("git log -1 --format=%cd");
 	version = file:read("*a");
@@ -23,14 +28,23 @@ local version do
 	local month,day,times,year,gmt = version:match("[^ ]+ +([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+)");
 	version = ("%s %s %s Build %s"):format(month,day,tostring(times:match("%d+:%d+")),tostring(commitCount));
 end
+
+-- Make app object
+local args,options = (require "argsParser").decode(args,{
+	["--logger_prefix"] = true;
+});
 _G.app = {
 	name = "DiscordBot";
 	fullname = "discord_mina_bot";
 	version = version;
+	args = args;
+	options = options;
 };
+
+-- Set title of terminal
 os.execute("title " .. _G.app.name);
 
--- set utf-8 terminal
+-- Set utf-8 terminal
 do
 	local chcpStatus do
 		local file = io.popen("chcp");
@@ -38,22 +52,14 @@ do
 		file:close();
 		chcpStatus = tonumber((chcpStatus or ""):match(": (%d+)")) or 0;
 	end
-	if not chcpStatus == 65001 then
+	if chcpStatus ~= 65001 then
 		os.execute("chcp 65001>NUL");
 		-- os.execute("chcp 65001>/dev/null")
 	end
 end
 
---#region : Luvit 모듈 / 주요 모듈 임포트
--- setup require system
-process.env.PATH = process.env.PATH .. ";.\\bin"; -- add bin libs path
-package.path = require("app.path")(package.path); -- set require path
-_G.require = require; -- set global require function
-
--- load modules
+--#region : Load modules
 local insert = table.insert;
-local sort = table.sort;
-local remove = table.remove;
 local utf8 = utf8 or require "utf8"; _G.utf8 = utf8; -- unicode 8 library
 local uv = require "uv"; _G.uv = uv; -- load uv library
 local prettyPrint = require "pretty-print"; _G.prettyPrint = prettyPrint; -- print many typed object on terminal
@@ -87,8 +93,8 @@ local data = require "data"; data:setJson(json); _G.data = data; -- Data system
 local userData = require "class.userData"; userData:setJson(json):setlogger(logger):setMakeId(makeId); _G.userData = userData; -- Userdata system
 local serverData = require "class.serverData"; serverData:setJson(json):setlogger(logger):setMakeId(makeId); _G.serverData = serverData; -- Serverdata system
 local posixTime = require "libs.posixTime"; _G.posixTime = posixTime; -- get posixTime library
-local inject = require "app.inject";
---#endregion : Luvit 모듈 / 주요 모듈 임포트
+local inject = require "app.inject"; _G.inject = inject; -- module injection
+--#endregion : Load modules
 --#region : Discordia Module
 logger.info("------------------------ [CLEAN  UP] ------------------------");
 logger.info("wait for discordia ...");
@@ -100,7 +106,6 @@ inject("discordia/libs/voice/streams/FFmpegProcess","voice/streams/FFmpegProcess
 -- inject("discordia/libs/containers/Message","containers/Message"); -- inject button system
 -- inject("discordia/libs/containers/abstract/TextChannel","containers/abstract/TextChannel"); -- inject button system
 -- inject("discordia/libs/client/EventHandler","client/EventHandler"); -- inject button system
-local require = _G.require;
 
 local discordia = require "discordia"; _G.discordia = discordia; ---@type discordia -- 디스코드 lua 봇 모듈 불러오기
 local discordia_class = require "discordia/libs/class"; _G.discordia_class = discordia_class; ---@type class -- 디스코드 클레스 가져오기
@@ -120,17 +125,17 @@ function discordia_Logger:log(level, msg, ...) -- 디스코드 모듈 로거부�
 	return msg;
 end
 --#endregion : Discordia Module
---#region : 반응, 프리픽스, 설정, 커맨드 등등
+--#region : Load bot environments
 logger.info("---------------------- [LOAD SETTINGS] ----------------------");
 
--- load environments
+-- Load environments
 logger.info("load environments ...");
 require("app.env"); -- inject environments
-local adminCmd = require("app.admin"); -- load admin commands\
+local adminCmd = require("app.admin"); -- load admin commands
 local hook = require("class.hook");
 local registeLeaderstatus = require("class.registeLeaderstatus");
 
--- load commands
+-- Load commands
 logger.info(" |- load commands from commands folder");
 local otherCommands = {} -- commands 폴더에서 커맨드 불러오기
 for dir in fs.scandirSync("commands") do -- read commands from commands folder
@@ -139,7 +144,7 @@ for dir in fs.scandirSync("commands") do -- read commands from commands folder
 	otherCommands[#otherCommands+1] = require("commands." .. dir);
 end
 
--- 커맨드 색인파일 만들기
+-- Load command indexer
 local reacts,commands,commandsLen;
 reacts,commands,commandsLen = commandHandler.encodeCommands({
 	-- 특수기능
@@ -176,14 +181,13 @@ reacts,commands,commandsLen = commandHandler.encodeCommands({
 },unpack(otherCommands));
 _G.reacts = reacts;
 logger.info(" |- command indexing end!");
-
---#endregion : 반응, 프리픽스, 설정
---#region : 메인 파트
+--#endregion : Load bot environments
+--#region : Main logic
 logger.info("----------------------- [SET UP BOT ] -----------------------");
 local findCommandFrom = commandHandler.findCommandFrom;
 local afterHook = hook.afterHook;
 local beforeHook = hook.beforeHook;
-client:on('messageCreate', function(message) -- 메시지 생성됨
+client:on('messageCreate', function(message) -- On messages
 
 	-- get base information from message object
 	local user = message.author;
@@ -451,8 +455,8 @@ client:on('messageCreate', function(message) -- 메시지 생성됨
 	end
 end);
 
-term(); -- load repl terminal system
+term(); -- Load repl terminal system
 _G.livereloadEnabled = false; -- enable live reload
 require("app.livereload"); -- loads livereload system; it will make uv event and take file changed signal
 startBot(ACCOUNTData.botToken,ACCOUNTData.testing); -- init bot (init discordia)
---#endregion : 메인 파트
+--#endregion : Main logic
