@@ -57,7 +57,7 @@ local function runLog(levelName,levelNumber,color,debugInfo,...)
 	-- Make header
 	local usecolor = log.usecolor;
 	local prefix = log.prefix;
-	local header = string.format("%s[%-6s%s]%s %s%s ",
+	local header = string.format("%s[%-6s%s]%s %s%s",
 		usecolor and color or "",
 		levelName, -- Level
 		date("%H:%M"), -- add date
@@ -76,9 +76,9 @@ local function runLog(levelName,levelNumber,color,debugInfo,...)
 		headerLen = headerLen + adding;
 		header = header .. (" "):rep(adding);
 	end
-	headerLen = headerLen + 2;
-	header = header .. "│ ";
-	msg = msg:gsub("\n","\n" .. (" "):rep(headerLen-2) .. "│ ");
+	headerLen = headerLen + 3;
+	header = header .. " │ ";
+	msg = msg:gsub("\n","\n" .. (" "):rep(headerLen-2) .. " │ ");
 
 	-- print / build prompt
 	local buildPrompt = _G.buildPrompt;
