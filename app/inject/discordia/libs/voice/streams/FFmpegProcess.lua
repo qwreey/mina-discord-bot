@@ -17,7 +17,7 @@ local fmt = setmetatable({}, {
 
 local FFmpegProcess = require('class')('FFmpegProcess')
 
-function FFmpegProcess:__init(path, rate, channels)
+function FFmpegProcess:__init(path, rate, channels, errorHandler)
 
 	local stdout = uv.new_pipe(false)
 	local stderr = uv.new_pipe(false)
@@ -57,6 +57,9 @@ function FFmpegProcess:__init(path, rate, channels)
 		local str = tostring(chunk):gsub("\n$","");
 		-- errstr = errstr .. str .. "\n";
 		logger.errorf("[FFmpeg Error] %s",str);
+		if errorHandler then
+			pcall(errorHandler,str);
+		end
 	end)
 
 	self._buffer = buffer or ''

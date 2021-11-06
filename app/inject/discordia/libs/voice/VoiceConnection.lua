@@ -355,13 +355,13 @@ time elapsed while streaming and the returned string is a message detailing the
 reason why the stream stopped. For more information about using FFmpeg,
 see the [[voice]] page.
 ]=]
-function VoiceConnection:playFFmpeg(path, duration)
+function VoiceConnection:playFFmpeg(path, duration, errorHandler)
 
 	if not self._ready then
 		return nil, 'Connection is not ready'
 	end
 
-	local stream = FFmpegProcess(path, SAMPLE_RATE, CHANNELS)
+	local stream = FFmpegProcess(path, SAMPLE_RATE, CHANNELS, errorHandler)
 
 	local elapsed, reason = self:_play(stream, duration)
 	stream:close()
