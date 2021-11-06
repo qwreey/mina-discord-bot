@@ -107,30 +107,40 @@ function this:__play(thing) -- PRIVATE
 	coroutine.wrap(function()
 		-- play this song
 		local handler = self.handler;
-		local isPassed,result,reason = pcall(handler.playFFmpeg,handler,thing.audio);
-		if self.destroyed then
+		local isPassed,result,reason = pcall(handler.playFFmpeg,handler,thing.audio,nil,nil,function (errStr)
+			-- error on ffmpeg
+			local message = thing.message;
+			message:reply {
+				content = ("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
+					tostring((thing.info or {title = "unknown"}).title),
+					tostring(errStr:gsub("https?://.-\n",""))
+				);
+				reference = {message = message, mention = false};
+			};
+		end);
+		if self.destroyed then -- none self
 			return;
-		elseif not isPassed then
+		elseif not isPassed then -- errored with lua
 			self.error = result;
 			logger.errorf("Play failed : %s",result);
 			local message = thing.message;
 			if message then -- display error message
 				message:reply {
-					content = ("곡 '%s' 를 실행하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
+					content = ("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
 						tostring((thing.info or {title = "unknown"}).title),
 						tostring(result)
 					);
 					reference = {message = message, mention = false};
 				};
 			end
-		elseif reason == "Connection is not ready" then
+		elseif reason == "Connection is not ready" then -- just unconnected from discord
 			-- connection destroyed
 			local destroy = self.destroy;
 			if destroy then
 				pcall(destroy,self);
 			end
 			return;
-		elseif reason and (reason ~= "stream stopped") and (reason ~= "stream exhausted or errored") then
+		elseif reason and (reason ~= "stream stopped") and (reason ~= "stream exhausted or errored") then -- steam error
 			local message = thing.message;
 			logger.errorf("Play failed : %s",reason);
 			if message then -- display error message
@@ -144,6 +154,7 @@ function this:__play(thing) -- PRIVATE
 			end
 		end
 
+		-- show next song
 		local selfThis = self[1];
 		local upnext = self[2];
 		if (selfThis == thing) and upnext then

@@ -1,6 +1,7 @@
 local history = readline.History.new(); -- 히스토리 홀더 만들기
 local editor = readline.Editor.new({stdin = process.stdin.handle, stdout = process.stdout.handle, history = history});
-local version = _G.app.version;
+local app = app;
+local version = app and app.version;
 local prettyPrint = prettyPrint or require("pretty-print");
 
 local colors = {
@@ -97,7 +98,7 @@ end
 function runEnv.saveUserData(id)
 	return userData:saveData(id);
 end
-setmetatable(runEnv,{ -- wtf?? lua can use metable env... cuz lua's global is a table!!
+setmetatable(runEnv,{ -- lua can use metable env... cuz lua's global is a table!!
 	__index = _G;
 	__newindex = _G;
 });
@@ -148,12 +149,14 @@ return function ()
 			local envfunc = setfenv(func or function ()
 				error(tostring(err));
 			end,runEnv) -- 명령어 분석
-			local pass,dat = pcall(envfunc); -- 보호 모드로 명령어를 실행
-			if not pass then -- 오류 나면
-				logger.error("LUA | error : " .. dat);
-			else
-				prettyPrint.stdout:write{"\27[2K\r → ",prettyPrint.dump(dat),"\n",buildPrompt()};
-			end
+			coroutine.wrap(function ()
+				local pass,dat = pcall(envfunc); -- 보호 모드로 명령어를 실행
+				if not pass then -- 오류 나면
+					logger.error("LUA | error : " .. dat);
+				else
+					prettyPrint.stdout:write{"\27[2K\r → ",prettyPrint.dump(dat),"\n",buildPrompt()};
+				end
+			end)();
 		else
 			process:exit();
 		end

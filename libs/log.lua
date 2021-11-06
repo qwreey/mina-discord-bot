@@ -7,12 +7,22 @@
 -- under the terms of the MIT license. See LICENSE for details.
 --
 
-local log = {_version = "0.1.0"};
-log.usecolor = true;
-log.outfile = nil;
-log.minLevel = 1;
-log.disable = false;
-local root = process.cwd();
+-- Load env
+local app = _G.app;
+local options = app and app.options;
+local date = os.date;
+local fs = _G.fs;
+-- Make log module object
+local log = {
+	_version = "0.1.0";
+	buildPrompt = _G.buildPrompt;
+	prefix = options["--logger_prefix"];
+	usecolor = true;
+	outfile = nil;
+	minLevel = 1;
+	disable = false;
+};
+local root = process and process.cwd();
 if not root then
 	local new = io.popen("cd");
 	root = new:read("*l");
@@ -21,40 +31,58 @@ end
 log.root = root;
 local rootLen = #root;
 
--- 베이스 함수
-local function runLog(thisName,thisLevel,color,debugInfo,...)
-	local msg = tostring(...);
-
-	if log.disable then
+-- Base
+local function runLog(levelName,levelNumber,color,debugInfo,...)
+	if log.disable then -- If log is disabled, return this
+		return;
+	elseif levelNumber < log.minLevel then -- If it not enough to display, return this
 		return;
 	end
 
-	-- 최소 래밸에 도달하지 못한 경우 호출을 묵인
-	if thisLevel < log.minLevel then
-		return;
-	end
+	local msg = tostring(...); -- msg
 
-	-- 파일명 : 라인 번호 를 가져옴
+	-- Get file name and line
 	local src = debugInfo.short_src;
-	if string.sub(src,1,rootLen) == root then
+	if string.sub(src,1,rootLen) == root then -- remove root prefix
 		src = string.sub(src,rootLen+2,-1);
 	end
-	src = src:gsub("%.lua$",""):gsub("^%.[/\\]",""):gsub("[\\//]",".");
-	local line = tostring(debugInfo.currentline);
-	local lineinfo = src .. ":" .. line .. string.rep(" ",4-#line);
+	src = (src
+		:gsub("%.lua$","") -- remove .lua
+		:gsub("^%.[/\\]","") -- remove ./
+		:gsub("[\\//]",".")
+		:gsub("%.init$","") -- remove .init
+	); -- change \ and / into .
+	local lineinfo = ("%s:%s"):format(src,tostring(debugInfo.currentline)); -- source:line
 
-	-- 프린트
-	local text = string.format("%s[%-6s%s]%s %s: %s ",
-		log.usecolor and color or "",
-		thisName,
-		os.date("%H:%M"),
-		log.usecolor and "\27[0m" or "",
-		lineinfo,
-		msg
+	-- Make header
+	local usecolor = log.usecolor;
+	local prefix = log.prefix;
+	local header = string.format("%s[%-6s%s]%s %s%s",
+		usecolor and color or "",
+		levelName, -- Level
+		date("%H:%M"), -- add date
+		usecolor and "\27[0m" or "", -- reset color
+		prefix and ("%s(%s)%s "):format(
+			usecolor and "\27[93m" or "",
+			tostring(prefix),
+			usecolor and "\27[0m" or ""
+		) or "", -- print perfix
+		lineinfo -- line info
 	);
-	--io.write(text .. "\n");
+	local headerLen = #(header:gsub("\27%[%d+m",""));
+	local liner = headerLen%6;
+	if liner ~= 0 then
+		local adding = 6 - liner;
+		headerLen = headerLen + adding;
+		header = header .. (" "):rep(adding);
+	end
+	headerLen = headerLen + 3;
+	header = header .. " │ ";
+	msg = msg:gsub("\n","\n" .. (" "):rep(headerLen-2) .. " │ ");
+
+	-- print / build prompt
 	local buildPrompt = _G.buildPrompt;
-	local str = buildPrompt and {"\27[2K\r\27[0m",text,"\n",buildPrompt()} or {"\27[2K\r\27[0m",text,"\n"};
+	local str = buildPrompt and {"\27[2K\r\27[0m",header,msg,"\n",buildPrompt()} or {"\27[2K\r\27[0m",header,msg,"\n"};
 	local prettyPrint = _G.prettyPrint;
 	if prettyPrint then
 		prettyPrint.stdout:write(str);
@@ -62,14 +90,16 @@ local function runLog(thisName,thisLevel,color,debugInfo,...)
 		io.write(unpack(str));
 	end
 
-	-- 아웃풋 파일에 집어넣기
+	-- Adding message into output
 	if log.outfile then
-		local fp = io.open(log.outfile, "a");
-		local str = string.format("[%-6s%s] %s: %s\n",
-			thisName, os.date(), lineinfo, msg
-		);
-		fp:write(str);
-		fp:close();
+		local data = ("[%-6s%s] %s: %s\n"):format(levelName, os.date(), lineinfo, msg);
+		if fs then
+			fs.appendFile(log.outfile,data);
+		else
+			local fp = io.open(log.outfile, "a");
+			fp:write();
+			fp:close();
+		end
 	end
 
 	return str;
@@ -99,23 +129,34 @@ for i,v in pairs(modes) do
 	end;
 end
 
-log.cmd		= log.cmd;
-log.cmdf	= log.cmdf;
-log.exit	= log.exit;
-log.exitf	= log.exitf;
-log.setup	= log.setup;
-log.setupf	= log.setupf;
-log.trace	= log.trace;
-log.tracef	= log.trace;
-log.debug	= log.debug;
-log.debugf	= log.debugf;
-log.info	= log.info;
-log.infof	= log.infof;
-log.warn	= log.warn;
-log.warnf	= log.warnf;
-log.error	= log.error;
-log.errorf	= log.errorf;
-log.fatal	= log.fatal;
-log.fatalf	= log.fatalf;
+---@class loggerPrint
+---@param message string what you want to print
+---@return string printData
+local function loggerPrint(message) end
+
+---@class loggerFormat
+---@param message string what you want to print
+---@param format any will formated into message
+---@return string printData
+local function loggerFormat(message,format,...) end
+
+log.cmd		= log.cmd;    ---@type loggerPrint
+log.cmdf	= log.cmdf;   ---@type loggerFormat
+log.exit	= log.exit;   ---@type loggerPrint
+log.exitf	= log.exitf;  ---@type loggerFormat
+log.setup	= log.setup;  ---@type loggerPrint
+log.setupf	= log.setupf; ---@type loggerFormat
+log.trace	= log.trace;  ---@type loggerPrint
+log.tracef	= log.trace;  ---@type loggerFormat
+log.debug	= log.debug;  ---@type loggerPrint
+log.debugf	= log.debugf; ---@type loggerFormat
+log.info	= log.info;   ---@type loggerPrint
+log.infof	= log.infof;  ---@type loggerFormat
+log.warn	= log.warn;   ---@type loggerPrint
+log.warnf	= log.warnf;  ---@type loggerFormat
+log.error	= log.error;  ---@type loggerPrint
+log.errorf	= log.errorf; ---@type loggerFormat
+log.fatal	= log.fatal;  ---@type loggerPrint
+log.fatalf	= log.fatalf; ---@type loggerFormat
 
 return log;

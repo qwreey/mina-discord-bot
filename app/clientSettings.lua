@@ -1,10 +1,10 @@
 -- client initing config
 _G.clientSettings = {
-	routeDelay = 20;
-	largeThreshold = 2048;
+	routeDelay = 0;
+	largeThreshold = 1024;--2048;
 	cacheAllMembers = true;
 	compress = true;
-	bitrate = 72000;
+	bitrate = 64000; -- 72000
 	logFile = nil;
 };
 return _G.clientSettings;

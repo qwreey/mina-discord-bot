@@ -8,7 +8,8 @@ local eulaComment_music = _G.eulaComment_music or makeEulaComment("음악");
 -- 섞기 움직이기(이동)
 
 local help = [[
-'**음악**'에 대한 도움말입니다
+**음악 기능에 대한 도움말입니다**
+> 주의! 이 기능은 아직 불완전합니다. 오류로 인해 몇몇 곡이 스킵 될 수도 있습니다!
 
 > 미나 **음악도움말**
 이 메시지를 표시합니다
@@ -317,6 +318,77 @@ local export = {
 			end
 		end;
 	};
+	["join music"] = {
+		registeredOnly = eulaComment_music;
+		disableDm = true;
+		command = {"add","p","play"};
+		alias = {
+			"보이스채팅참여","보이스채팅참여해","보이스채팅참가","보이스채팅참가해","보이스채팅참가하기","보이스채팅참가해라","보이스채팅참가해봐","보이스채팅참가하자",
+			"보이스채팅 참여","보이스채팅 참여해","보이스채팅 참가","보이스채팅 참가해","보이스채팅 참가하기","보이스채팅 참가해라","보이스채팅 참가해봐","보이스채팅 참가하자",
+			"보이스 채팅참여","보이스 채팅참여해","보이스 채팅참가","보이스 채팅참가해","보이스 채팅참가하기","보이스 채팅참가해라","보이스 채팅참가해봐","보이스 채팅참가하자",
+			"보이스 채팅 참여","보이스 채팅 참여해","보이스 채팅 참가","보이스 채팅 참가해","보이스 채팅 참가하기","보이스 채팅 참가해라","보이스 채팅 참가해봐","보이스 채팅 참가하자",
+			"voice참여","voice참여해","voice참가","voice참가해","voice참가하기","voice참가해라","voice참가해봐","voice참가하자",
+			"voice 참여","voice 참여해","voice 참가","voice 참가해","voice 참가하기","voice 참가해라","voice 참가해봐","voice 참가하자",
+			"보이스참여","보이스참여해","보이스참가","보이스참가해","보이스참가하기","보이스참가해라","보이스참가해봐","보이스참가하자",
+			"보이스 참여","보이스 참여해","보이스 참가","보이스 참가해","보이스 참가하기","보이스 참가해라","보이스 참가해봐","보이스 참가하자",
+			"보이스챗참여","보이스챗참여해","보이스챗참가","보이스챗참가해","보이스챗참가하기","보이스챗참가해라","보이스챗참가해봐","보이스챗참가하자",
+			"보이스챗 참여","보이스챗 참여해","보이스챗 참가","보이스챗 참가해","보이스챗 참가하기","보이스챗 참가해라","보이스챗 참가해봐","보이스챗 참가하자",
+			"음성 채팅참여","음성 채팅참여해","음성 채팅참가","음성 채팅참가해","음성 채팅참가하기","음성 채팅참가해라","음성 채팅참가해봐","음성 채팅참가하자",
+			"음성 채팅 참여","음성 채팅 참여해","음성 채팅 참가","음성 채팅 참가해","음성 채팅 참가하기","음성 채팅 참가해라","음성 채팅 참가해봐","음성 채팅 참가하자",
+			"음챗참여","음챗참여해","음챗참가","음챗참가해","음챗참가하기","음챗참가해라","음챗참가해봐","음챗참가하자",
+			"음챗 참여","음챗 참여해","음챗 참가","음챗 참가해","음챗 참가하기","음챗 참가해라","음챗 참가해봐","음챗 참가하자",
+			"음성채팅참여","음성채팅참여해","음성채팅참가","음성채팅참가해","음성채팅참가하기","음성채팅참가해라","음성채팅참가해봐","음성채팅참가하자",
+			"음성채팅 참여","음성채팅 참여해","음성채팅 참가","음성채팅 참가해","음성채팅 참가하기","음성채팅 참가해라","음성채팅 참가해봐","음성채팅 참가하자",
+			"vc참여","vc참여해","vc참가","vc참가해","vc참가하기","vc참가해라","vc참가해봐","vc참가하자",
+			"vc 참여","vc 참여해","vc 참가","vc 참가해","vc 참가하기","vc 참가해라","vc 참가해봐","vc 참가하자",
+			"노래참여","노래참여해","노래참가","노래참가해","노래참가하기","노래참가해라","노래참가해봐","노래참가하자",
+			"노래 참여","노래 참여해","노래 참가","노래 참가해","노래 참가하기","노래 참가해라","노래 참가해봐","노래 참가하자",
+			"음악참여","음악참여해","음악참가","음악참가해","음악참가하기","음악참가해라","음악참가해봐","음악참가하자",
+			"음악 참여","음악 참여해","음악 참가","음악 참가해","음악 참가하기","음악 참가해라","음악 참가해봐","음악 참가하자",
+			"곡참여","곡참여해","곡참가","곡참가해","곡참가하기","곡참가해라","곡참가해봐","곡참가하자",
+			"곡 참여","곡 참여해","곡 참가","곡 참가해","곡 참가하기","곡 참가해라","곡 참가해봐","곡 참가하자",			
+			"음악 join","music join","music 참가","join vc","vc join","join voice","voice join"
+		};
+		reply = "처리중입니다";
+		func = function(replyMsg,message,args,Content)
+			-- check users voice channel
+			local voiceChannel = message.member.voiceChannel;
+			if not voiceChannel then
+				replyMsg:setContent("음성 채팅방에 있지 않습니다! 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다.");
+				return;
+			end
+
+			-- get already exist connection
+			local guild = message.guild;
+			local guildConnection = guild.connection;
+			if guildConnection and (guildConnection.channel ~= voiceChannel) then
+				replyMsg:setContent("다른 음성채팅방에서 봇을 사용중입니다, 각 서버당 한 채널만 이용할 수 있습니다!");
+				return;
+			end
+
+			-- get player object from playerClass
+			local voiceChannelID = voiceChannel:__hash();
+			local player = playerForChannels[voiceChannelID];
+			if not guildConnection then -- if connections is not exist, create new one
+				local handler = voiceChannel:join();
+				if not handler then
+					replyMsg:setContent("채널에 참가할 수 없습니다, 봇이 유효한 권한을 가지고 있는지 확인해주세요!");
+					return;
+				end
+				guild.me:deafen(); -- deafen it selfs
+				player = playerClass.new {
+					voiceChannel = voiceChannel;
+					voiceChannelID = voiceChannelID;
+					handler = handler;
+					destroy = playerDestroy;
+				};
+				playerForChannels[voiceChannelID] = player;
+				replyMsg:setContent("성공적으로 음성채팅에 참가했습니다!");
+				return;
+			end
+			replyMsg:setContent("이미 음성채팅에 참가했습니다!");
+		end;
+	};
 	["list music"] = {
 		disableDm = true;
 		command = {"l","ls","list","q","queue"};
@@ -478,7 +550,6 @@ local export = {
 		reply = "명령어를 처리하지 못했어요!\n> 음악 기능 도움이 필요하면 '미나 음악 도움말' 을 입력해주세요";
 	};
 	["음악 도움말"] = {
-		registeredOnly = eulaComment_music;
 		alias = {"음악 사용법","음악 사용법 알려줘","음악사용법","음악 도움말 보여줘","음악 help","음악도움말","music help","help music","music 도움말"};
 		reply = help;
 		sendToDm = "개인 메시지로 도움말이 전송되었습니다!";

@@ -184,8 +184,8 @@ local function startBot(botToken,isTesting) -- 봇 시작시키는 함수
 			-- for testing mode, adding ! on prefixs to prevent two bot are crashing!
 			prefixs[i] = "!" .. v;
 		end
-		logger.warn("[SETUP] Testing mode enabled! you should use prefix with !");
-		logger.warn("[SETUP] enabled live reload system for testing!");
+		logger.warn("Testing mode enabled! you should use prefix with !");
+		logger.warn("Enabled live reload system for testing!");
 	end
 
 	local statusPos = 1;
@@ -210,20 +210,25 @@ local function startBot(botToken,isTesting) -- 봇 시작시키는 함수
 	end
 	nextStatus();
 
-	--local heartbeatChannel = client:getGuild("772816335859089420"):getChannel("903210299555987506");
-	--local function heartbeat()
-	--	heartbeatChannel:send("[♥] HEARTBEAT - RUNNING"):delete();
-	--	timeout(60000,heartbeat);
-	--end
-    --if heartbeatChannel then
-	--heartbeat();
-    --else
-    --    logger.error("Couldn't find heartbeat channel!");
-    --end
+	local args = app.args;
+	for _,v in ipairs(args) do
+		if v == "http_heartbeat" then
+			logger.info("HTTP Heartbeat mode enabled");
+			local function heartbeatHTTP()
+				corohttp.request("GET","https://discord.com/api/v9");
+				logger.info("Made heartbeat http on discord.com/api/v9");
+				timeout(300000,heartbeatHTTP);
+			end
+			heartbeatHTTP();
+			break;
+		end
+	end
 end
+startBot = coroutine.wrap(startBot);
 local function reloadBot() -- 봇 종료 함수
 	logger.info("try restarting ...");
 	client:setGame("재시작중...");
+	client:stop();
 end
 _G.reloadBot = reloadBot;
 _G.startBot = startBot;
