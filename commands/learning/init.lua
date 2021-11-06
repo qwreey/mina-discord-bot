@@ -184,7 +184,7 @@ local export = {
 					local when = this.when;
 					insert(fields, {
 						name = ("%d 번째 : %s"):format(index,tostring(name));
-						value = ("`%s`%s"):format(
+						value = ("%s%s"):format(
 							tostring(this.content):gsub("`","\\`"),
 							when and (("\n> %s"):format(timeAgo(when,time()))) or ""
 						);
