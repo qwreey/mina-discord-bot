@@ -97,6 +97,7 @@ function module.findCommandFrom(reacts,text,splitCommandText)
 		local this = text;
 		while true do
 			local command = findCommand(reacts,this);
+			command = command or findCommand(reacts,this:gsub(" ",""));
 			if command then
 				return command,this,this;
 			end
@@ -135,7 +136,7 @@ function module.findCommandFrom(reacts,text,splitCommandText)
 		if command then
 			local rawCommand = "";
 			for Index = 1,findPos do
-				rawCommand = rawCommand .. splitCommandText[Index];
+				rawCommand = rawCommand .. splitCommandText[Index] .. (Index == findPos and "" or " ");
 			end
 			return command,textn,rawCommand;
 		end

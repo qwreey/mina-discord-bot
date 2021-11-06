@@ -81,7 +81,7 @@ local dumpTable = require "libs.dumpTable"; -- table dump library, this is auto 
 local exitCodes = require("app.exitCodes"); _G.exitCodes = exitCodes; -- get exit codes
 local qDebug = require "app.debug"; _G.qDebug = qDebug; -- my debug system
 local term = require "app.term"; -- setuping REPL terminal
-local commandHandler = require "commandHandler"; _G.commandHandler = commandHandler; -- command decoding-caching-indexing system
+local commandHandler = require "class.commandHandler"; _G.commandHandler = commandHandler; -- command decoding-caching-indexing system
 local cRandom = require "cRandom"; _G.cRandom = cRandom; -- LUA random handler
 local strSplit = require "stringSplit"; _G.strSplit = strSplit; -- string split library
 local urlCode = require "urlCode"; _G.urlCode = urlCode; -- url encoder/decoder library
@@ -193,6 +193,7 @@ client:on('messageCreate', function(message) -- On messages
 	local user = message.author;
 	local text = message.content;
 	local channel = message.channel;
+	local guild = message.guild;
 	local isDm = channel.type == enums.channelType.private;
 
 	-- check user that is bot; if it is bot, then return (ignore call)
@@ -248,6 +249,22 @@ client:on('messageCreate', function(message) -- On messages
 			break;
 		end
 	end
+
+	-- guild prefix
+	local guildCommandMode;
+	if guild then
+		local guildData = serverData:loadData(guild.id);
+		if guildData then
+			local guildPrefix = guildData.guildPrefix;
+			if guildPrefix then
+				local lenGuildPrefix = #guildPrefix;
+				if guildPrefix == text:sub(1,lenGuildPrefix) then
+					guildCommandMode = true;
+					prefix = guildPrefix;
+				end
+			end
+		end
+	end
 	if (not prefix) and (not isDm) then
 		return;
 	end
@@ -260,8 +277,17 @@ client:on('messageCreate', function(message) -- On messages
 	-- 찾으면 넘겨서 COMMAND RUN 에 TRY 던짐
 	local rawCommandText = text:sub(#prefix+1,-1); -- 접두사 뺀 글자
 	local splited = strSplit(rawCommandText:lower(),"\32");
-	local Command,CommandName,rawCommandName = findCommandFrom(reacts,rawCommandText,splited);
+	local Command,CommandName,rawCommandName = findCommandFrom(guildCommandMode and commands or reacts,rawCommandText,splited);
 	if not Command then
+		-- is guild command mode
+		if guildCommandMode then
+			message:reply {
+				content = ("커맨드 **'%s'** 는 존재하지 않습니다!"):format(rawCommandText);
+				reference = {message = message, mention = false};
+			};
+			return;
+		end
+
 		-- Solve user learn commands
 		local userReact = findCommandFrom(userLearn.get,rawCommandText,splited);
 		if userReact then
@@ -271,18 +297,16 @@ client:on('messageCreate', function(message) -- On messages
 			};
 			return;
 		end
-	end
 
-	-- 커맨드 찾지 못함
-	if not Command then
+		-- not found
 		message:reply({
 			content = unknownReply[cRandom(1,#unknownReply)];
 			reference = {message = message, mention = false};
 		});
-		-- 반응 없는거 기록하기
-		fs.appendFile("log/unknownTexts/raw.txt","\n" .. text);
+		fs.appendFile("log/unknownTexts/raw.txt","\n" .. text); -- save
 		return;
-	else -- 디엠 확인
+	else
+		-- check dm
 		local cmdDisableDm = Command.disableDm;
 		if isDm and cmdDisableDm then
 			message:reply({
@@ -382,7 +406,7 @@ client:on('messageCreate', function(message) -- On messages
 
 	-- 만약 답변글이 함수면 (지금은 %s 시에요 처럼 쓸 수 있도록) 실행후 결과 가져오기
 	if type(replyText) == "function" then
-		rawArgs = rawCommandText:sub(#CommandName+2,-1);
+		rawArgs = rawCommandText:sub(#rawCommandName+2,-1);
 		args = strSplit(rawArgs,"\32");
 		contents.rawArgs = rawArgs;
 		local passed;
