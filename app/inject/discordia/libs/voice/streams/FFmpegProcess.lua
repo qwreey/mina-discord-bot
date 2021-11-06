@@ -48,12 +48,15 @@ function FFmpegProcess:__init(path, rate, channels)
 		stdout:read_stop()
 		return assert(resume(thread))
 	end)
+	-- local errstr = "";
 	stderr:read_start(function(err, chunk)
 		if err or not chunk then
 			self:close()
 		end
 		stderr:read_stop();
-		logger.errorf("[FFmpeg Error] %s",tostring(chunk));
+		local str = tostring(chunk):gsub("\n$","");
+		-- errstr = errstr .. str .. "\n";
+		logger.errorf("[FFmpeg Error] %s",str);
 	end)
 
 	self._buffer = buffer or ''
