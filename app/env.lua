@@ -225,7 +225,8 @@ local function startBot(botToken,isTesting) -- 봇 시작시키는 함수
 	for _,v in ipairs(args) do
 		if v == "http_heartbeat" then
 			local function heartbeatHTTP()
-				corohttp.request("GET","https://discord.com/api/v9")
+				corohttp.request("GET","https://discord.com/api/v9");
+				logger.info("Made heartbeat http on discord.com/api/v9 !");
 				timeout(300000,heartbeatHTTP);
 			end
 			heartbeatHTTP();
