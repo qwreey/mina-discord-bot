@@ -145,7 +145,7 @@ local export = {
 				return;
 			end
 
-			replyMsg:setContent(("'%s'? 그게 뭐였죠? 기억나지가 않아요"):format(rawArgs));
+			replyMsg:setContent("그게 뭐였죠? 기억나지가 않아요");
 		end;
 	};
 	["기억"] = {
