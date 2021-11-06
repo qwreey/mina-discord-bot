@@ -317,6 +317,59 @@ local export = {
 			end
 		end;
 	};
+	["join music"] = {
+		registeredOnly = eulaComment_music;
+		disableDm = true;
+		command = {"add","p","play"};
+		alias = {
+			"노래참여","노래참여해","노래참가","노래참가해","노래참가하기","노래참가해라","노래참가해봐","노래참가하자",
+			"노래 참여","노래 참여해","노래 참가","노래 참가해","노래 참가하기","노래 참가해라","노래 참가해봐","노래 참가하자",
+			"음악참여","음악참여해","음악참가","음악참가해","음악참가하기","음악참가해라","음악참가해봐","음악참가하자",
+			"음악 참여","음악 참여해","음악 참가","음악 참가해","음악 참가하기","음악 참가해라","음악 참가해봐","음악 참가하자",
+			"곡참여","곡참여해","곡참가","곡참가해","곡참가하기","곡참가해라","곡참가해봐","곡참가하자",
+			"곡 참여","곡 참여해","곡 참가","곡 참가해","곡 참가하기","곡 참가해라","곡 참가해봐","곡 참가하자",			
+			"음악 join","music join","music 참가",
+		};
+		reply = "처리중입니다";
+		func = function(replyMsg,message,args,Content)
+			-- check users voice channel
+			local voiceChannel = message.member.voiceChannel;
+			if not voiceChannel then
+				replyMsg:setContent("음성 채팅방에 있지 않습니다! 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다.");
+				return;
+			end
+
+			-- get already exist connection
+			local guild = message.guild;
+			local guildConnection = guild.connection;
+			if guildConnection and (guildConnection.channel ~= voiceChannel) then
+				replyMsg:setContent("다른 음성채팅방에서 봇을 사용중입니다, 각 서버당 한 채널만 이용할 수 있습니다!");
+				return;
+			end
+
+			-- get player object from playerClass
+			local voiceChannelID = voiceChannel:__hash();
+			local player = playerForChannels[voiceChannelID];
+			if not guildConnection then -- if connections is not exist, create new one
+				local handler = voiceChannel:join();
+				if not handler then
+					replyMsg:setContent("채널에 참가할 수 없습니다, 봇이 유효한 권한을 가지고 있는지 확인해주세요!");
+					return;
+				end
+				guild.me:deafen(); -- deafen it selfs
+				player = playerClass.new {
+					voiceChannel = voiceChannel;
+					voiceChannelID = voiceChannelID;
+					handler = handler;
+					destroy = playerDestroy;
+				};
+				playerForChannels[voiceChannelID] = player;
+				replyMsg:setContent("성공적으로 음성채팅에 참가했습니다!");
+				return;
+			end
+			replyMsg:setContent("이미 음성채팅에 참가했습니다!");
+		end;
+	};
 	["list music"] = {
 		disableDm = true;
 		command = {"l","ls","list","q","queue"};
