@@ -40,28 +40,29 @@ local function spawnProcess(path,thisArgs)
 	return newProcess.waitExit();
 end
 
-local function loopProcess(path,thisArgs)
+local function loopProcess(name,path,thisArgs)
 	while true do
 		local exitCode = spawnProcess(path,thisArgs);
 		prettyPrint.stdout:write(("\27[2K\r\27[95m[EXIT  %s] \27[0m----------------------------------------------------------------------------\n"):format(os.date("%H:%M")));
-		prettyPrint.stdout:write(("\27[2K\r\27[95m[EXIT  %s] \27[0mMain process was exited with return code : %s\n"):format(os.date("%H:%M"),tostring(exitCode)));
+		prettyPrint.stdout:write(("\27[2K\r\27[95m[EXIT  %s] \27[0m(%s) process was exited with return code : %s\n"):format(os.date("%H:%M"),name,tostring(exitCode)));
 
 		if exitCode == exitCodes.exit then
-			prettyPrint.stdout:write(("\27[95m[EXIT  %s] \27[0mApp was passed process kill code. Killing luvit app tree ...\n"):format(os.date("%H:%M")));
+			prettyPrint.stdout:write(("\27[95m[EXIT  %s] \27[0m(%s) App was passed process kill code. Killing luvit app tree ...\n"):format(os.date("%H:%M"),name));
 			os.exit(0);
 		elseif exitCode == exitCodes.error then
-			prettyPrint.stdout:write(("\27[95m[EXIT  %s] \27[0mApp was passed error code. Reload 5s later ...\n"):format(os.date("%H:%M")));
+			prettyPrint.stdout:write(("\27[95m[EXIT  %s] \27[0m(%s) App was passed error code. Reload 5s later ...\n"):format(os.date("%H:%M"),name));
 			uv.sleep(5000);
 		elseif exitCode == exitCodes.reload then
-			prettyPrint.stdout:write(("\27[95m[EXIT  %s] \27[0mApp called reloading ...\n"):format(os.date("%H:%M")));
+			prettyPrint.stdout:write(("\27[95m[EXIT  %s] \27[0m(%s) App called reloading ...\n"):format(os.date("%H:%M"),name));
 		else
-			prettyPrint.stdout:write(("\27[95m[EXIT  %s] \27[0mApp was killed with some unexpected error. Reload 5s later ...\n"):format(os.date("%H:%M")));
+			prettyPrint.stdout:write(("\27[95m[EXIT  %s] \27[0m(%s) App was killed with some unexpected error. Reload 5s later ...\n"):format(os.date("%H:%M"),name));
 			uv.sleep(5000);
 		end
-		prettyPrint.stdout:write(("\27[2K\r\27[93m[SETUP %s] \27[0mSpawn new process!\n"):format(os.date("%H:%M")));
+		prettyPrint.stdout:write(("\27[2K\r\27[93m[SETUP %s] \27[0m(%s) Spawn new process!\n"):format(os.date("%H:%M"),name));
 		prettyPrint.stdout:write(("\27[2K\r\27[93m[SETUP %s] \27[0m----------------------------------------------------------------------------\n"):format(os.date("%H:%M")));
 	end
 end
 loopProcess = coroutine.wrap(loopProcess);
 
-loopProcess("app/main");
+loopProcess("main","app/main");
+loopProcess("data","app/data");
