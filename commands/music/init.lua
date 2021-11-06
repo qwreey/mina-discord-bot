@@ -497,7 +497,7 @@ local export = {
 	["loop"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"loop","looping","lp","lop"};
+		command = {"루프","loop","looping","lp","lop"};
 		alias = {
 			"반복재생",
 			"looping","looping toggle","toggle looping","플레이리스트반복","플레이 리스트 반복","플리 반복",
@@ -557,7 +557,7 @@ local export = {
 	["remove music"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"rm","remove","r"};
+		command = {"제거","재거","빼기","rm","remove","r"};
 		alias = {
 			"곡 재거","곡재거","음악 재거","음악 재거","노래 재거","노래재거",
 			"곡빼줘","곡제거","곡빼기","곡없에기","곡지우기","곡삭제","곡지워","곡빼","곡없에","곡지워줘","곡없에줘","곡날리기",
@@ -624,7 +624,7 @@ local export = {
 	["skip music"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"sk","skip","s"};
+		command = {"건너뛰기","스킵","sk","skip","s"};
 		alias = {
 			"곡 넘겨","곡건너뛰기","곡스킵","곡넘어가기","곡넘기기","곡넘겨줘","곡넘어가","곡다음","곡다음으로","곡다음곡",
 			"곡넘겨","곡 건너뛰기","곡 스킵","곡 넘어가기","곡 넘기기","곡 넘겨줘","곡 넘어가","곡 다음","곡 다음으로","곡 다음곡",
@@ -701,7 +701,7 @@ local export = {
 	["pause music"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"pause"};
+		command = {"멈춰","멈처","멈춤","pause"};
 		alias = {
 			"곡 멈추기","곡 멈춰","곡멈추기","곡멈춰",
 			"음악 멈추기","음악 멈춰","음악멈추기","음악멈춰",
@@ -763,7 +763,7 @@ local export = {
 	["stop music"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"off","stop","leave","kill"};
+		command = {"나가","끄기","off","stop","leave","kill"};
 		alias = {
 			"곡 끄기","곡 꺼","곡끄기","곡꺼",
 			"음악 끄기","음악 꺼","음악끄기","음악꺼",
@@ -813,7 +813,7 @@ local export = {
 	};
 	["now music"] = {
 		disableDm = true;
-		command = {"n","np","nowplay","nowplaying","nplay","nplaying","nowp"};
+		command = {"현재","재생중","지금곡","지금노래","n","np","nowplay","nowplaying","nplay","nplaying","nowp"};
 		alias = {
 			"현재재생","지금재생","현재 재생","지금 재생","현재 곡","현재 음악","현재 노래","지금 곡","지금 음악","지금 노래",
 			"현재곡","현재음악","현재노래","지금곡","지금음악","지금노래","지금재생중",
@@ -838,7 +838,7 @@ local export = {
 	};
 	["info music"] = {
 		disableDm = true;
-		command = {"i","info","nowplay","nowplaying","nplay","nplaying","nowp"};
+		command = {"정보","i","info","nowplay","nowplaying","nplay","nplaying","nowp"};
 		alias = {
 			"곡정보","곡 정보","info song","song info","music info","info music","곡 자세히보기",
 			"곡자세히보기","곡설명","곡 설명","song description","description song"
@@ -864,7 +864,7 @@ local export = {
 	["resume music"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"resume"};
+		command = {"재개","resume"};
 		alias = {
 			"곡 다시재생","곡다시재생",
 			"음악 다시재생","음악다시재생",
@@ -917,7 +917,7 @@ local export = {
 	["export music"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"export","e"};
+		command = {"저장","export","e"};
 		alias = {
 			"노래리스트저장하기","노래리스트저장","노래내보내기","노래출력","노래저장","노래저장하기","노래기록","노래기록하기","노래나열하기",
 			"노래 리스트 저장하기","노래 리스트 저장","노래 내보내기","노래 출력","노래 저장","노래 저장하기","노래 기록","노래 기록하기","노래 나열하기",
