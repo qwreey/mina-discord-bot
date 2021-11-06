@@ -27,7 +27,6 @@ function FFmpegProcess:__init(path, rate, channels)
 			'-i', path,
 			'-ar', rate,
 			'-ac', channels,
-			'-stimeout', '10000000',
 			'-reconnect', '1',
 			'-reconnect_at_eof', '1',
 			'-reconnect_streamed', '1',
