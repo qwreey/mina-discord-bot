@@ -211,7 +211,7 @@ local export = {
 					fields = fields;
 					color = 8520189;
 					footer = {
-						text = ("총 기억 갯수 : %d | 총 페이지수 : %d"):format(ceil(lenLearned / itemsPerPage),lenLearned);
+						text = ("총 기억 갯수 : %d | 총 페이지수 : %d"):format(lenLearned,ceil(lenLearned / itemsPerPage));
 					};
 				};
 			};

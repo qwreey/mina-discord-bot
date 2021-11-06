@@ -26,7 +26,7 @@ module.errorType = errorType;
 ---@field author Snowflake id of author on discord
 ---@field content string reply of this
 ---@field when number timestamp of when this is learned on posix time
----@field name string name of this learn if is exist
+----@field name string name of this learn if is exist
 
 -- format
 ---make formatted string of learnObject
@@ -87,13 +87,12 @@ end
 function module.rawGet(id)
 	local data = fs.readFileSync(root:format(id));
 	if not data then return end
-
 	data = json.decode(data);
 	if not data then return end
 
 	local pathId = id:match("(.-)/");
 	local path = root:format(pathId);
-	local name = fs.readFileSync(path .. "name");
+	local name = fs.readFileSync(path .. "/name");
 	if not name then return end
 
 	return data,name;
