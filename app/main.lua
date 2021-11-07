@@ -111,7 +111,7 @@ local discordia = require "discordia"; _G.discordia = discordia; ---@type discor
 local discordia_class = require "discordia/libs/class"; _G.discordia_class = discordia_class; ---@type class -- 디스코드 클레스 가져오기
 local discordia_Logger = discordia_class.classes.Logger; ---@type Logger -- 로거부분 가져오기 (통합을 위해 수정)
 local enums = discordia.enums; _G.enums = enums; ---@type enums -- 디스코드 enums 가져오기
-local client = discordia.Client(require("app.clientSettings")); _G.client = client; ---@type Client -- 디스코드 클라이언트 만들기
+local client = discordia.Client(require("class.clientSettings")); _G.client = client; ---@type Client -- 디스코드 클라이언트 만들기
 local Date = discordia.Date; _G.Date = Date; ---@type Date
 function discordia_Logger:log(level, msg, ...) -- 디스코드 모듈 로거부분 편집
 	if self._level < level then return end ---@diagnostic disable-line
@@ -131,7 +131,7 @@ logger.info("---------------------- [LOAD SETTINGS] ----------------------");
 -- Load environments
 logger.info("load environments ...");
 require("app.env"); -- inject environments
-local adminCmd = require("app.admin"); -- load admin commands
+local adminCmd = require("class.adminCommands"); -- load admin commands
 local hook = require("class.hook");
 local registeLeaderstatus = require("class.registeLeaderstatus");
 
@@ -479,8 +479,24 @@ client:on('messageCreate', function(message) -- On messages
 	end
 end);
 
-term(); -- Load repl terminal system
-_G.livereloadEnabled = false; -- enable live reload
+do
+	local terminalInputDisabled;
+	local livereload = false;
+	for _,v in pairs(app.args) do
+		if v == "disable_terminal" then
+			terminalInputDisabled = true;
+		elseif v == "enable_livereload" then
+			livereload = true;
+		end
+		if terminalInputDisabled and livereload then
+			break;
+		end
+	end
+	if not terminalInputDisabled then
+		term(); -- Load repl terminal system
+	end
+	_G.livereloadEnabled = livereload; -- enable live reload
+end
 require("app.livereload"); -- loads livereload system; it will make uv event and take file changed signal
 startBot(ACCOUNTData.botToken,ACCOUNTData.testing); -- init bot (init discordia)
 --#endregion : Main logic

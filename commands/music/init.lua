@@ -202,6 +202,11 @@ local export = {
 				rawArgs = rawArgs or contentRaw;
 			end
 
+			if rawArgs == "" then
+				replyMsg:setContent("키워드 또는 url 을 입력해주세요!");
+				return;
+			end
+
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
 			if not voiceChannel then
@@ -557,7 +562,7 @@ local export = {
 	["remove music"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"제거","재거","빼기","rm","remove","r"};
+		command = {"지워","지워기","없에기","없에","제거","재거","빼기","rm","remove","r"};
 		alias = {
 			"곡 재거","곡재거","음악 재거","음악 재거","노래 재거","노래재거",
 			"곡빼줘","곡제거","곡빼기","곡없에기","곡지우기","곡삭제","곡지워","곡빼","곡없에","곡지워줘","곡없에줘","곡날리기",
@@ -624,7 +629,7 @@ local export = {
 	["skip music"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"건너뛰기","스킵","sk","skip","s"};
+		command = {"넘겨","넘기기","건너뛰기","스킵","sk","skip","s"};
 		alias = {
 			"곡 넘겨","곡건너뛰기","곡스킵","곡넘어가기","곡넘기기","곡넘겨줘","곡넘어가","곡다음","곡다음으로","곡다음곡",
 			"곡넘겨","곡 건너뛰기","곡 스킵","곡 넘어가기","곡 넘기기","곡 넘겨줘","곡 넘어가","곡 다음","곡 다음으로","곡 다음곡",
