@@ -58,49 +58,6 @@ local export = {
 	-------------------------------------------------
 	-- 특수 반응 (함수를 쓰거나 여러 의도가 담긴 반응)
 	-------------------------------------------------
-	["미나초대"] = {
-		alias = {"초대링크","미나 초대","초대 링크"};
-		reply = {"쨘!"};
-		embed = {
-			color = 10026831;
-			fields = {{
-				name = "아래의 버튼을 누르면 미나를 다른 서버에 추가 할 수 있어요!";
-				value = ("[초대하기](%s)"):format(ACCOUNTData.InvLink);
-			}};
-		};
-	};
-	["뽑기"] = {
-		alias = {"선택해","선택","추첨","뽑아","추첨해","골라","골라봐"};
-		reply = "결과는?! **(두구두구두구두구)**";
-		func = function(replyMsg,message,args,Content)
-			timeout(2000,function ()
-				local items = {};
-				for str in Content.rawArgs:gmatch("[^,]+") do
-					table.insert(items,str);
-				end
-				replyMsg:setContent(("%s (이)가 뽑혔어요!"):format(
-					tostring(items[cRandom(1,#items)]))
-				);
-			end);
-		end;
-	};
-	["시간"] = {
-		alias = {
-			"안녕 몇시야","안녕 지금 시간 알려줘","지금 시간","몇시야","몇시",
-			"안녕 몇시야?","몇시야?","지금시간","알려줘 시간","what time is",
-			"what time is?","지금은 몇시","지금은 몇시?"
-		};
-		reply = "안뇽! 지금 시간은 {#:T+%I:#}시 {#:T+%M:#}분이야!";
-		love = defaultLove;
-	};
-	["나이"] = {
-		func = function (_,message)
-			--local Year = tostring(math.floor((10000*(os.time() - ACCOUNTData.BirthdayDay) / 31536000))/10000);
-			local Day = math.floor((os.time() - ACCOUNTData.BirthdayDay) / 86400);
-			message:reply(("미나는 %s 일 살았어요"):format(tostring(Day)));
-		end;
-		love = defaultLove;
-	};
 	["테스트"] = {
 		reply = "```lua\ntry(main):catch(function(err)\n\tlocal file = io.open(\"log/error.log\",\"w\");\n\tfile:write(err);\n\tfile:close();\n\treturn true;\nend);\n```";
 		love = defaultLove;
@@ -122,45 +79,6 @@ local export = {
 				message:delete();
 			end);
 		end;
-		love = defaultLove;
-	};
-	["가위"] = {
-		alias = {"바위","보"};
-		reply = {"**{#:UserName:#}** 님이 이겼어요!","이번판은 미나 승리!","무승부! 똑같아요"};
-		love = defaultLove;
-	};
-	["동전뒤집기"] = {
-		alias = {"동전 뒤집기","동전놀이","동전 놀이","동전던지기","동전 던지기","동전뒤집기","동전게임","동전 게임"};
-		reply = function ()
-			local pF = cRandom(1,11);
-			return pF == 11 and "옆면????" or (pF <= 5 and "앞면!" or "뒷면!");
-		end;
-		love = defaultLove;
-	};
-	["제작진"] = {
-		alias = {"제작사","만든 사람","만든사람","만든 이들","만든이들","크래딧","크레딧","누가만듬?","작자","제작자"};
-		reply = "**총괄**/코드 : 쿼리\n프로필/아이디어 : **상아리**,별이(블스상)\n작명 : 눈송이\n\n테스팅/아이디어 : 팥죽";
-		love = defaultLove;
-	};
-	["주사위 던지기"] = {
-		alias = {
-			"주사위","주사위던지기","주사위던져","주사위 던져",
-			"주사위 굴리기","주사위굴려","주사위 굴려","주사위굴리기"
-		};
-		reply = {
-			"대굴 대굴... **1** 이 나왔넹?";
-			"대굴 대굴... **2** 나왔다!";
-			"대굴 대굴... **3** 나왔어!";
-			"대굴 대굴... **4** !";
-			"대굴 대굴... **5** 가 나왔네!";
-			"대굴 대굴... **6** 나왔당!";
-			function (msg)
-				local newMsg = msg:reply("대굴 대굴... 어? 0? 이게 왜 나왔지?");
-				timeout(500,function ()
-					newMsg:delete();
-				end);
-			end;
-		};
 		love = defaultLove;
 	};
 
@@ -253,13 +171,6 @@ local export = {
 			"~~할말이 그렇게 없냐?~~ 욕은 나빠요!","~~너나 꺼져~~ 욕은 나빠요!","욕은 나빠요!"
 		};
 		love = rmLove;
-	};
-	["생일"] = {
-		alias = {"생일?","생일이언제야?","생일머야","생일뭐야","생일뭐야?","생일머야?"};
-		reply = {
-			"2021 4월 7일이요!"
-		};
-		love = defaultLove;
 	};
 	["쉿"] = {
 		alias = {"조용","조용!","조용!!","조용히","조용히!"};
@@ -486,10 +397,10 @@ local export = {
 		};
 		love = defaultLove;
 	};
-	["상아리"] = {
-		reply = "프사를 그려준 착한 친구";
-		love = defaultLove;
-	};
+	-- ["상아리"] = {
+	-- 	reply = "프사를 그려준 착한 친구";
+	-- 	love = defaultLove;
+	-- };
 	["망겜"] = {
 		reply = {"망--겜","그걸 왜함"};
 		love = defaultLove;
@@ -580,10 +491,10 @@ local export = {
 		};
 		love = defaultLove;
 	};
-	["캐비어"] = {
-		reply = "ㅎㅇ";
-		love = defaultLove;
-	};
+	-- ["캐비어"] = {
+	-- 	reply = "ㅎㅇ";
+	-- 	love = defaultLove;
+	-- };
 	["노래불러"] = {
 		alias = {"노래해","노래해봐","노래해바","노래해줘","노래해저"};
 		reply = {
@@ -726,10 +637,10 @@ local export = {
 		reply = "귀엽고 노래 잘 부르고 예쁜 누나";
 		love = defaultLove;
 	};
-
-	--["생일"] = {
-	--	alias = "생축"
-	--};
+	-- ["생일"] = {
+	-- 	alias = "생축";
+	-- 	reply
+	-- };
 	--["답이 없네"] = {
 
 	--};
