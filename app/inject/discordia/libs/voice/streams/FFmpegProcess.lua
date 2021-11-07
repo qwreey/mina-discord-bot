@@ -61,6 +61,7 @@ function FFmpegProcess:__init(path, rate, channels, errorHandler)
 			pcall(errorHandler,str);
 		end
 	end)
+	p(errorHandler)
 
 	self._buffer = buffer or ''
 	self._stdout = stdout

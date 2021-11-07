@@ -107,7 +107,7 @@ function this:__play(thing) -- PRIVATE
 	coroutine.wrap(function()
 		-- play this song
 		local handler = self.handler;
-		local isPassed,result,reason = pcall(handler.playFFmpeg,handler,thing.audio,nil,nil,function (errStr)
+		local isPassed,result,reason = pcall(handler.playFFmpeg,handler,thing.audio,nil,function (errStr)
 			-- error on ffmpeg
 			local message = thing.message;
 			message:reply {
