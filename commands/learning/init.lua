@@ -129,14 +129,15 @@ local export = {
 			end
 
 			-- checking object from learned object
-			local this = learned[#learned - rawArgs];
+			local lenLearned = #learned;
+			local this = learned[lenLearned - rawArgs];
 			if not this then
 				replyMsg:setContent(("%d 번째 반응이 존재하지 않아요!"):format(rawArgs));
 				return;
 			end
 
 			local success = learn.remove(this);
-			remove(learned,rawArgs); -- remove from indexs
+			remove(learned,lenLearned - rawArgs); -- remove from indexs
 			userData.lenLearned = userData.lenLearned - 1;
 			Content.saveUserData();
 			if not success then
