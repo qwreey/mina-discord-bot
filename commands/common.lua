@@ -233,7 +233,7 @@ local export = {
 					table.insert(items,str);
 				end
 				replyMsg:setContent(("%s (이)가 뽑혔어요!"):format(
-					tostring(items[cRandom(1,#items)]))
+					tostring(items[cRandom(1,#items)])):gsub("@",""):gsub("#","")
 				);
 			end);
 		end;
