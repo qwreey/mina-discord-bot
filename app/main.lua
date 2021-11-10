@@ -93,15 +93,15 @@ local data = require "data"; data:setJson(json); _G.data = data; -- Data system
 local userData = require "class.userData"; userData:setJson(json):setlogger(logger):setMakeId(makeId); _G.userData = userData; -- Userdata system
 local serverData = require "class.serverData"; serverData:setJson(json):setlogger(logger):setMakeId(makeId); _G.serverData = serverData; -- Serverdata system
 local posixTime = require "libs.posixTime"; _G.posixTime = posixTime; -- get posixTime library
-local inject = require "app.inject"; _G.inject = inject; -- module injection
+-- local inject = require "app.inject"; _G.inject = inject; -- module injection
 --#endregion : Load modules
 --#region : Discordia Module
 logger.info("------------------------ [CLEAN  UP] ------------------------");
 logger.info("wait for discordia ...");
 
 -- inject modified objects
-inject("discordia/libs/voice/VoiceConnection","voice/VoiceConnection"); -- inject modified voice connection
-inject("discordia/libs/voice/streams/FFmpegProcess","voice/streams/FFmpegProcess"); -- inject modified stream manager
+-- inject("discordia/libs/voice/VoiceConnection","voice/VoiceConnection"); -- inject modified voice connection
+-- inject("discordia/libs/voice/streams/FFmpegProcess","voice/streams/FFmpegProcess"); -- inject modified stream manager
 -- inject("discordia/libs/")
 -- inject("discordia/libs/containers/Message","containers/Message"); -- inject button system
 -- inject("discordia/libs/containers/abstract/TextChannel","containers/abstract/TextChannel"); -- inject button system
@@ -124,6 +124,7 @@ function discordia_Logger:log(level, msg, ...) -- 디스코드 모듈 로거부�
 	logFn(msg);
 	return msg;
 end
+require("discordia_voicefix");
 --#endregion : Discordia Module
 --#region : Load bot environments
 logger.info("---------------------- [LOAD SETTINGS] ----------------------");
