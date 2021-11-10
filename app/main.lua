@@ -124,7 +124,12 @@ function discordia_Logger:log(level, msg, ...) -- 디스코드 모듈 로거부�
 	logFn(msg);
 	return msg;
 end
-require("discordia_voicefix");
+require("discordia_voicefix"); -- enable voice fix extension
+require("discordia_api9") -- enable api 9
+-- local discordia_slash = require("discordia_slash"); _G.discordia_slash = discordia_slash;
+-- client:useSlashCommands(); --enable slash extension
+-- local slashCommands = require 'slashCommands';
+-- _G.slashCommands = slashCommands;
 --#endregion : Discordia Module
 --#region : Load bot environments
 logger.info("---------------------- [LOAD SETTINGS] ----------------------");
@@ -188,7 +193,9 @@ logger.info("----------------------- [SET UP BOT ] -----------------------");
 local findCommandFrom = commandHandler.findCommandFrom;
 local afterHook = hook.afterHook;
 local beforeHook = hook.beforeHook;
-client:on('messageCreate', function(message) -- On messages
+
+-- making command reader
+local function processCommand(message)
 
 	-- get base information from message object
 	local user = message.author;
@@ -478,8 +485,89 @@ client:on('messageCreate', function(message) -- On messages
 		};
 		pcall(thisHook.func,thisHook,hookContent,contents);
 	end
-end);
+end
 
+-- on message
+client:on('messageCreate', processCommand);
+
+-- making slash command
+-- local interactMessageWarpper = {};
+-- interactMessageWarpper.__index = interactMessageWarpper;
+-- function interactMessageWarpper:__edit(d,private)
+-- 	if type(d) == "string" then
+-- 		d = {
+-- 			content = d;
+-- 		};
+-- 	end
+-- 	local last = self.last;
+-- 	if last then
+-- 		for i,v in pairs(d) do
+-- 			last[i] = v;
+-- 		end
+-- 	end
+-- 	local this = self.this;
+-- 	if self.replyed then
+-- 		this:update(last or d);
+-- 	else
+-- 		self.this:reply(last or d,private);
+-- 		self.replyed = true;
+-- 	end
+-- 	self.last = last or d;
+-- 	return self;
+-- end
+-- function interactMessageWarpper:update(d,private)
+-- 	self:edit(d,private);
+-- end;
+-- function interactMessageWarpper:delete()
+-- 	self.this.delete();
+-- end
+-- function interactMessageWarpper.new(this)
+-- 	local self = {this = this};
+-- 	setmetatable(self,interactMessageWarpper);
+-- 	return self;
+-- end
+
+-- client:on("slashCommandsReady", function()
+-- 	client:slashCommand({
+-- 		name = "mina";
+-- 		description = "using mina with slash command";
+-- 		options = {
+-- 			{
+-- 				name = "Command";
+-- 				description = "type to say with mina!";
+-- 				type = discordia_slash.enums.optionType.string;
+-- 				required = true;
+-- 			};
+-- 		};
+-- 		callback = function(ia, params, cmd)
+-- 			local member = ia.member;
+-- 			local replyMessage = interactMessageWarpper.new(ia);
+-- 			pcall(processCommand,{
+-- 				reply = function(self,d,private)
+-- 					replyMessage:update(d,private);
+-- 					return replyMessage;
+-- 				end;
+-- 				content = params.Command;
+-- 				guild = ia.guild;
+-- 				channel = ia.channel;
+-- 				member = member;
+-- 				author = member.user;
+-- 			});
+-- 		end;
+-- 	});
+-- end);
+
+-- local defaultCommand = slashCommands.SlashCommand(client, "미나", "미나 봇을 사용합니다")
+-- 	:argument("할말","미나에게 할 말을 입력해보세요!",slashCommands.enums.string)
+-- 	:execute(function (ctx)
+-- 		local args = ctx.arguments
+-- 		ctx:reply("아직 사용할 수 없습니다!");
+-- 	end);
+-- client:once('ready', function()
+-- 	defaultCommand:commit();
+-- end);
+
+-- enable terminal features and live reload system
 do
 	local terminalInputDisabled;
 	local livereload = false;
