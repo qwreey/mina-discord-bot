@@ -537,6 +537,9 @@ function interactMessageWarpper:__edit(d,private)
 	return self;
 end
 function interactMessageWarpper:update(d,private)
+	if not d then
+		return;
+	end
 	d.reference = false;
 	self:__edit(d,private);
 end;
@@ -548,6 +551,9 @@ function interactMessageWarpper:setEmbed(embed)
 end
 function interactMessageWarpper:delete()
 	self.this.delete();
+end
+function interactMessageWarpper:reply(d)
+	self.channel:send(d);
 end
 function interactMessageWarpper.new(this)
 	local self = {this = this};
@@ -568,11 +574,15 @@ client:on("slashCommandsReady", function()
 			};
 		};
 		callback = function(interaction, params, cmd)
-			local replyMessage = interactMessageWarpper.new(interaction);
+			local replyMessage;
 			local pass,err = pcall(processCommand,{
 				reply = function(self,d,private)
-					replyMessage:update(d,private);
-					return replyMessage;
+					if not replyMessage then
+						replyMessage = interactMessageWarpper.new(interaction);
+						replyMessage:update(d,private);
+						return replyMessage;
+					end
+					return self.channel:send(d);
 				end;
 				content = params["내용"];
 				guild = interaction.guild;

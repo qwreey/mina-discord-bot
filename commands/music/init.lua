@@ -425,14 +425,14 @@ local export = {
 			replyMsg:update {
 				embed = player:embedfiyList(tonumber(rawArgs) or tonumber(rawArgs:match("%d+")));
 				content = "현재 이 서버의 플레이리스트입니다!";
-				components = {
-					{
-						type = 1;
-						label = "Test";
-						sytle = 1;
-						custom_id = "test";
-					};
-				};
+				-- components = {
+				-- 	{
+				-- 		type = 1;
+				-- 		label = "Test";
+				-- 		sytle = 1;
+				-- 		custom_id = "test";
+				-- 	};
+				-- };
 			};
 		end;
 	};
