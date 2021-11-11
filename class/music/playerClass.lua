@@ -107,7 +107,7 @@ function this:__play(thing) -- PRIVATE
 	coroutine.wrap(function()
 		-- play this song
 		local handler = self.handler;
-		local isPassed,result,reason = pcall(handler.playFFmpeg,handler,thing.audio,nil,function (errStr)
+		local isPassed,result,reason = pcall(handler.playFFmpeg,handler,thing.audio,nil,coroutine.wrap(function (errStr)
 			-- error on ffmpeg
 			local message = thing.message;
 			message:reply {
@@ -117,7 +117,7 @@ function this:__play(thing) -- PRIVATE
 				);
 				reference = {message = message, mention = false};
 			};
-		end);
+		end));
 		if self.destroyed then -- none self
 			return;
 		elseif not isPassed then -- errored with lua
