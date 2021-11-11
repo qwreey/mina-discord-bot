@@ -127,6 +127,7 @@ end
 require("discordia_voicefix"); -- enable voice fix extension
 require("discordia_api9") -- enable api 9
 local discordia_slash = require("discordia_slash"); _G.discordia_slash = discordia_slash;
+---@diagnostic disable-next-line
 client:useSlashCommands(); --enable slash extension
 -- local slashCommands = require 'slashCommands';
 -- _G.slashCommands = slashCommands;
@@ -136,7 +137,7 @@ logger.info("---------------------- [LOAD SETTINGS] ----------------------");
 
 -- Load environments
 logger.info("load environments ...");
-require("app.env"); -- inject environments
+require("app.env"); -- inject environments ---@diagnostic disable-line
 local adminCmd = require("class.adminCommands"); -- load admin commands
 local hook = require("class.hook");
 local registeLeaderstatus = require("class.registeLeaderstatus");
@@ -202,7 +203,7 @@ local function processCommand(message)
 	local text = message.content;
 	local channel = message.channel;
 	local guild = message.guild;
-	local isDm = channel.type == enums.channelType.private;
+	local isDm = channel.type == enums.channelType.private; ---@diagnostic disable-line
 	local isSlashCommand = rawget(message,"slashCommand");
 
 	-- check user that is bot; if it is bot, then return (ignore call)
@@ -555,7 +556,7 @@ function interactMessageWarpper.new(this)
 end
 
 client:on("slashCommandsReady", function()
-	client:slashCommand({
+	client:slashCommand({ ---@diagnostic disable-line
 		name = "미나";
 		description = "미나와 대화합니다!";
 		options = {

@@ -1,3 +1,4 @@
+---@diagnostic disable
 p(args);
 
 local game = require("commands.minesweeper.game");
