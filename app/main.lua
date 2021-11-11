@@ -496,6 +496,7 @@ client:on('messageCreate', processCommand);
 local interactMessageWarpper = {};
 interactMessageWarpper.__index = interactMessageWarpper;
 function interactMessageWarpper:__edit(d,private)
+	local this = self.this;
 
 	-- content from string
 	if type(d) == "string" then
@@ -516,6 +517,15 @@ function interactMessageWarpper:__edit(d,private)
 		insert(embeds,embed);
 	end
 
+	local content = d.content;
+	if content then
+		local user = this and this.user;
+		d.content = ("%s: %s\n"):format(
+			tostring(user and user.mentionString or "@NULL"),
+			tostring(self.commandStr or "'NULL'")
+		) .. content;
+	end
+
 	-- merge with previous
 	local last = self.last;
 	if last then
@@ -526,11 +536,10 @@ function interactMessageWarpper:__edit(d,private)
 	last = last or d;
 
 	-- update
-	local this = self.this;
 	if self.replyed then
 		this:update(last);
 	else
-		self.this:reply(last,private);
+		this:reply(last,private);
 		self.replyed = true;
 	end
 	self.last = last;
@@ -555,8 +564,11 @@ end
 function interactMessageWarpper:reply(d)
 	self.channel:send(d);
 end
-function interactMessageWarpper.new(this)
-	local self = {this = this};
+function interactMessageWarpper.new(this,commandStr)
+	local self = {
+		this = this;
+		commandStr = commandStr;
+	};
 	setmetatable(self,interactMessageWarpper);
 	return self;
 end
@@ -575,16 +587,17 @@ client:on("slashCommandsReady", function()
 		};
 		callback = function(interaction, params, cmd)
 			local replyMessage;
+			local content = params["내용"];
 			local pass,err = pcall(processCommand,{
 				reply = function(self,d,private)
 					if not replyMessage then
-						replyMessage = interactMessageWarpper.new(interaction);
+						replyMessage = interactMessageWarpper.new(interaction,content);
 						replyMessage:update(d,private);
 						return replyMessage;
 					end
 					return self.channel:send(d);
 				end;
-				content = params["내용"];
+				content = content;
 				guild = interaction.guild;
 				channel = interaction.channel;
 				member = interaction.member;
