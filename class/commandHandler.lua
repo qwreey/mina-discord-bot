@@ -86,7 +86,7 @@ end
 ---@return string | nil CommandName Name of command
 ---@return string | nil CommandRawName full of user inputed string
 function module.findCommandFrom(reacts,text,splitCommandText)
-	splitCommandText = splitCommandText or ((type(text) == "table") and text or strSplit(text:lower(),"\32"));
+	splitCommandText = splitCommandText or ((type(text) == "table") and text or strSplit(text:lower(),"\32\n"));
 
 	-- rawText = "find thing like this"
 	-- indexing( "find thing like this" )

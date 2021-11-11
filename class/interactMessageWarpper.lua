@@ -27,9 +27,11 @@ function interactMessageWarpper:__edit(d,private)
 	local content = d.content;
 	if content then
 		local user = this and this.user;
-		d.content = ("> %s: %s\n"):format(
+		local str = self.commandStr;
+		d.content = ("> %s:%s%s\n"):format(
 			tostring(user and user.mentionString or "@NULL"),
-			tostring(self.commandStr or "'NULL'")
+			(str and str:match("\n")) and "\n" or " ",
+			tostring(str or "'NULL'"):gsub("\n","\n> ")
 		) .. content;
 	end
 

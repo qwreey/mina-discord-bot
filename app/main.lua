@@ -286,7 +286,7 @@ local function processCommand(message)
 	-- 못찾으면 다시 넘겨서 뒷단어로 넘김
 	-- 찾으면 넘겨서 COMMAND RUN 에 TRY 던짐
 	local rawCommandText = text:sub(#prefix+1,-1); -- 접두사 뺀 글자
-	local splited = strSplit(rawCommandText:lower(),"\32");
+	local splited = strSplit(rawCommandText:lower(),"\32\n");
 	local Command,CommandName,rawCommandName = findCommandFrom(guildCommandMode and commands or reacts,rawCommandText,splited);
 	if not Command then
 		-- is guild command mode
