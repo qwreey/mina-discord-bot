@@ -37,29 +37,29 @@ local help = [[
 ]]
 
 local function buildHelpAlias(keyword)
-    return {
-        ("도움말%s"):format(keyword);
-        ("%s도움말"):format(keyword);
-        ("%s 도움말"):format(keyword);
-        ("%s 사용법"):format(keyword);
-        ("%s사용법"):format(keyword);
-        ("사용법%s"):format(keyword);
-        ("사용법 %s"):format(keyword);
-        ("도움 %s"):format(keyword);
-        ("도움%s"):format(keyword);
-        ("%s 도움"):format(keyword);
-        ("%s도움"):format(keyword);
-    };
+	return {
+		("도움말%s"):format(keyword);
+		("%s도움말"):format(keyword);
+		("%s 도움말"):format(keyword);
+		("%s 사용법"):format(keyword);
+		("%s사용법"):format(keyword);
+		("사용법%s"):format(keyword);
+		("사용법 %s"):format(keyword);
+		("도움 %s"):format(keyword);
+		("도움%s"):format(keyword);
+		("%s 도움"):format(keyword);
+		("%s도움"):format(keyword);
+	};
 end
 
 return {
-    ["도움말"] = {
-        alias = {"도움","사용법"};
-        reply = help;
-    };
-    ["도움말 오락"] = {
-        alias = buildHelpAlias("오락");
-        reply = [[
+	["도움말"] = {
+		alias = {"도움","사용법"};
+		reply = help;
+	};
+	["도움말 오락"] = {
+		alias = buildHelpAlias("오락");
+		reply = [[
 봇을 가지고 놀 수 있는 명령어입니다!
 
 > [한글/영문] 타자연습
@@ -81,10 +81,10 @@ return {
 > 에이펙스 스텟 [유저이름]
 해당 유저의 에이펙스 스텟을 보여줍니다
 ]];
-    };
-    ["도움말 관리"] = {
-        alias = buildHelpAlias("관리");
-        reply = [[
+	};
+	["도움말 관리"] = {
+		alias = buildHelpAlias("관리");
+		reply = [[
 서버 관리에 유용한 명령어입니다!
 
 > 지워 [지울 메시지 수]
@@ -99,10 +99,10 @@ return {
 > 계정나이 [유저 맨션]
 해당 유저의 계정 나이(생성한지 몇일째인지) 를 가져옵니다
 유저 아이디로 쓸 수도 있습니다]];
-    };
-    ["도움말 일반"] = {
-        alias = buildHelpAlias("일반");
-        reply = [[
+	};
+	["도움말 일반"] = {
+		alias = buildHelpAlias("일반");
+		reply = [[
 일반적인 명령어들입니다!
 
 > 호감도
@@ -161,5 +161,5 @@ return {
 
 > 생일
 미나가 등장한 날을 보여줍니다]];
-    };
+	};
 };
