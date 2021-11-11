@@ -567,18 +567,18 @@ client:on("slashCommandsReady", function()
 				required = true;
 			};
 		};
-		callback = function(ia, params, cmd)
-			local replyMessage = interactMessageWarpper.new(ia);
+		callback = function(interaction, params, cmd)
+			local replyMessage = interactMessageWarpper.new(interaction);
 			local pass,err = pcall(processCommand,{
 				reply = function(self,d,private)
 					replyMessage:update(d,private);
 					return replyMessage;
 				end;
 				content = params["내용"];
-				guild = ia.guild;
-				channel = ia.channel;
-				member = ia.member;
-				author = ia.user;
+				guild = interaction.guild;
+				channel = interaction.channel;
+				member = interaction.member;
+				author = interaction.user;
 				slashCommand = true;
 			});
 			if not pass then
