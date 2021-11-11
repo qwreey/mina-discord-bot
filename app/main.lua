@@ -126,8 +126,8 @@ function discordia_Logger:log(level, msg, ...) -- 디스코드 모듈 로거부�
 end
 require("discordia_voicefix"); -- enable voice fix extension
 require("discordia_api9") -- enable api 9
--- local discordia_slash = require("discordia_slash"); _G.discordia_slash = discordia_slash;
--- client:useSlashCommands(); --enable slash extension
+local discordia_slash = require("discordia_slash"); _G.discordia_slash = discordia_slash;
+client:useSlashCommands(); --enable slash extension
 -- local slashCommands = require 'slashCommands';
 -- _G.slashCommands = slashCommands;
 --#endregion : Discordia Module
@@ -203,6 +203,7 @@ local function processCommand(message)
 	local channel = message.channel;
 	local guild = message.guild;
 	local isDm = channel.type == enums.channelType.private;
+	local isSlashCommand = rawget(message,"slashCommand");
 
 	-- check user that is bot; if it is bot, then return (ignore call)
 	if user.bot then
@@ -273,7 +274,7 @@ local function processCommand(message)
 			end
 		end
 	end
-	if (not prefix) and (not isDm) then
+	if (not prefix) and (not isDm) and (not isSlashCommand) then
 		return;
 	end
 	prefix = prefix or "";
@@ -491,78 +492,108 @@ end
 client:on('messageCreate', processCommand);
 
 -- making slash command
--- local interactMessageWarpper = {};
--- interactMessageWarpper.__index = interactMessageWarpper;
--- function interactMessageWarpper:__edit(d,private)
--- 	if type(d) == "string" then
--- 		d = {
--- 			content = d;
--- 		};
--- 	end
--- 	local last = self.last;
--- 	if last then
--- 		for i,v in pairs(d) do
--- 			last[i] = v;
--- 		end
--- 	end
--- 	local this = self.this;
--- 	if self.replyed then
--- 		this:update(last or d);
--- 	else
--- 		self.this:reply(last or d,private);
--- 		self.replyed = true;
--- 	end
--- 	self.last = last or d;
--- 	return self;
--- end
--- function interactMessageWarpper:update(d,private)
--- 	self:edit(d,private);
--- end;
--- function interactMessageWarpper:delete()
--- 	self.this.delete();
--- end
--- function interactMessageWarpper.new(this)
--- 	local self = {this = this};
--- 	setmetatable(self,interactMessageWarpper);
--- 	return self;
--- end
+local interactMessageWarpper = {};
+interactMessageWarpper.__index = interactMessageWarpper;
+function interactMessageWarpper:__edit(d,private)
 
--- client:on("slashCommandsReady", function()
--- 	client:slashCommand({
--- 		name = "mina";
--- 		description = "using mina with slash command";
--- 		options = {
--- 			{
--- 				name = "Command";
--- 				description = "type to say with mina!";
--- 				type = discordia_slash.enums.optionType.string;
--- 				required = true;
--- 			};
--- 		};
--- 		callback = function(ia, params, cmd)
--- 			local member = ia.member;
--- 			local replyMessage = interactMessageWarpper.new(ia);
--- 			pcall(processCommand,{
--- 				reply = function(self,d,private)
--- 					replyMessage:update(d,private);
--- 					return replyMessage;
--- 				end;
--- 				content = params.Command;
--- 				guild = ia.guild;
--- 				channel = ia.channel;
--- 				member = member;
--- 				author = member.user;
--- 			});
--- 		end;
--- 	});
--- end);
+	-- content from string
+	if type(d) == "string" then
+		d = {
+			content = d;
+		};
+	end
+
+	-- embeds
+	local embed = d.embed;
+	if embed then
+		d.embed = nil;
+		local embeds = d.embeds;
+		if not embeds then
+			embeds = {};
+			d.embeds = embeds;
+		end
+		insert(embeds,embed);
+	end
+
+	-- merge with previous
+	local last = self.last;
+	if last then
+		for i,v in pairs(d) do
+			last[i] = v;
+		end
+	end
+	last = last or d;
+
+	-- update
+	local this = self.this;
+	if self.replyed then
+		this:update(last);
+	else
+		self.this:reply(last,private);
+		self.replyed = true;
+	end
+	self.last = last;
+	return self;
+end
+function interactMessageWarpper:update(d,private)
+	d.reference = false;
+	self:__edit(d,private);
+end;
+function interactMessageWarpper:setContent(str)
+	self:__edit(tostring(str));
+end;
+function interactMessageWarpper:setEmbed(embed)
+	self:__edit({embeds = {embed}});
+end
+function interactMessageWarpper:delete()
+	self.this.delete();
+end
+function interactMessageWarpper.new(this)
+	local self = {this = this};
+	setmetatable(self,interactMessageWarpper);
+	return self;
+end
+
+client:on("slashCommandsReady", function()
+	client:slashCommand({
+		name = "미나";
+		description = "미나와 대화합니다!";
+		options = {
+			{
+				name = "내용";
+				description = "미나와 나눌 대화를 입력해보세요!";
+				type = discordia_slash.enums.optionType.string;
+				required = true;
+			};
+		};
+		callback = function(ia, params, cmd)
+			local replyMessage = interactMessageWarpper.new(ia);
+			local pass,err = pcall(processCommand,{
+				reply = function(self,d,private)
+					replyMessage:update(d,private);
+					return replyMessage;
+				end;
+				content = params["내용"];
+				guild = ia.guild;
+				channel = ia.channel;
+				member = ia.member;
+				author = ia.user;
+				slashCommand = true;
+			});
+			if not pass then
+				logger.errorf("Error occurred on executing slash command\n%s",tostring(err));
+			end
+		end;
+	});
+end);
 
 -- local defaultCommand = slashCommands.SlashCommand(client, "미나", "미나 봇을 사용합니다")
 -- 	:argument("할말","미나에게 할 말을 입력해보세요!",slashCommands.enums.string)
--- 	:execute(function (ctx)
--- 		local args = ctx.arguments
--- 		ctx:reply("아직 사용할 수 없습니다!");
--- 	end);
+
+-- defaultCommand:execute(function (ctx)
+-- 	local args = ctx.arguments
+-- 	ctx:reply("아직 사용할 수 없습니다!");
+-- end);
 -- client:once('ready', function()
 -- 	defaultCommand:commit();
 -- end);
