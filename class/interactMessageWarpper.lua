@@ -30,7 +30,7 @@ function interactMessageWarpper:__edit(d,private)
 		local str = self.commandStr;
 		d.content = ("> %s:%s%s\n"):format(
 			tostring(user and user.mentionString or "@NULL"),
-			(str and str:match("\n")) and "\n" or " ",
+			(str and str:match("\n")) and "\n> " or " ",
 			tostring(str or "'NULL'"):gsub("\n","\n> ")
 		) .. content;
 	end
