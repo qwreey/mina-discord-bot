@@ -115,7 +115,7 @@ function this:__play(thing) -- PRIVATE
 				message:reply {
 					content = ("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
 						tostring((thing.info or {title = "unknown"}).title),
-						tostring(errStr:gsub("https?://.-\n",""))
+						tostring((errStr .. "\n"):gsub("https?://.-<[\n :]",""))
 					);
 					reference = {message = message, mention = false};
 				};
