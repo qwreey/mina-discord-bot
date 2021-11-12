@@ -1,4 +1,5 @@
 -- slash command callback message into message object (simulate)
+local insert = table.insert;
 
 local interactMessageWarpper = {};
 interactMessageWarpper.__index = interactMessageWarpper;
@@ -58,7 +59,9 @@ function interactMessageWarpper:update(d,private)
 	if not d then
 		return;
 	end
-	d.reference = false;
+	if type(d) == "table" then
+		d.reference = false;
+	end
 	self:__edit(d,private);
 end;
 function interactMessageWarpper:setContent(str)
