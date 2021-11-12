@@ -43,7 +43,11 @@ return function (FFmpegProcess)
 			-- errstr = errstr .. str .. "\n";
 			logger.errorf("[FFmpeg Error] %s",str);
 			if errorHandler then
-				pcall(errorHandler,str);
+			    logger.infof("calling error function with %s",tostring(errorHandler));
+				local passed,result = pcall(errorHandler,str);
+				if not passed then
+					logger.errorf("ErrorCallbackFunction was errored on called. traceback was :\n",tostring(result));
+				end
 			end
 		end)
 

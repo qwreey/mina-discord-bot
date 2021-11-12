@@ -109,14 +109,17 @@ function this:__play(thing) -- PRIVATE
 		local handler = self.handler;
 		local isPassed,result,reason = pcall(handler.playFFmpeg,handler,thing.audio,nil,coroutine.wrap(function (errStr)
 			-- error on ffmpeg
+			logger.info("[Music] try to sending error last message");
 			local message = thing.message;
-			message:reply {
-				content = ("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
-					tostring((thing.info or {title = "unknown"}).title),
-					tostring(errStr:gsub("https?://.-\n",""))
-				);
-				reference = {message = message, mention = false};
-			};
+			if message then
+				message:reply {
+					content = ("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
+						tostring((thing.info or {title = "unknown"}).title),
+						tostring(errStr:gsub("https?://.-\n",""))
+					);
+					reference = {message = message, mention = false};
+				};
+			end
 		end));
 		if self.destroyed then -- none self
 			return;
