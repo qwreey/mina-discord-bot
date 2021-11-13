@@ -79,7 +79,7 @@ end
 local getPosixNow = posixTime.now;
 local expireAtLast = 2 * 60;
 function this:__play(thing,position) -- PRIVATE
-	-- logging
+	-- logginggs
 	logger.infof("playing %s with %s",tostring(thing),tostring(position));
 
 	-- if thing is nil, return
@@ -141,6 +141,14 @@ function this:__play(thing,position) -- PRIVATE
 				};
 			end
 		end));
+
+		-- TODO: hight resolution time required!
+		-- when errored, replay on errored timestamp (point of stoped)
+		if (ffmpegErrorCount ~= 0) and (type(result) == "number") then -- result is elapsed
+			self.nowPlaying = nil;
+			timeout(self.__play,self,thing,result / 1000); -- adding coroutine on worker
+			return;
+		end
 
 		-- is on seeking mode
 		local seeking = self.seeking;

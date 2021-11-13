@@ -158,7 +158,7 @@ local function removeSong(rawArgs,player,replyMsg)
 		end
 	end
 	do -- index by name
-		for index = #player,1,-1 do -- TODO: check this is working?
+		for index = #player,1,-1 do
 			local song = player[index];
 			local info = song.info;
 			if info then
