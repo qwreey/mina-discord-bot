@@ -79,7 +79,9 @@ end
 local getPosixNow = posixTime.now;
 local expireAtLast = 2 * 60;
 function this:__play(thing,position) -- PRIVATE
+	-- logging
 	logger.infof("playing %s with %s",tostring(thing),tostring(position));
+
 	-- if thing is nil, return
 	if not thing then
 		return;
@@ -109,25 +111,38 @@ function this:__play(thing,position) -- PRIVATE
 		-- play this song
 		local handler = self.handler;
 		local ffmpegErrorCount = 0;
+		local ffmpegLastError;
 		local isPassed,result,reason = pcall(handler.playFFmpeg,handler,thing.audio,nil,position,coroutine.wrap(function (errStr)
+			-- error sending limitation
 			ffmpegErrorCount = ffmpegErrorCount + 1;
 			if ffmpegErrorCount > 4 then
 				return;
 			end
+
 			-- error on ffmpeg
 			logger.info("[Music] try to sending error last message");
 			local message = thing.message;
+
+			-- check old message is same with this error
+			local oldError = ffmpegLastError;
+			ffmpegLastError = ("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
+				tostring((thing.info or {title = "unknown"}).title),
+				tostring((errStr .. "\n"):gsub("https?://.-[\n :]",""))
+			);
+			if ffmpegLastError == oldError then
+				return;
+			end
+
+			-- send message
 			if message then
 				message:reply {
-					content = ("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
-						tostring((thing.info or {title = "unknown"}).title),
-						tostring((errStr .. "\n"):gsub("https?://.-[\n :]",""))
-					);
+					content = ffmpegLastError;
 					reference = {message = message, mention = false};
 				};
 			end
 		end));
 
+		-- is on seeking mode
 		local seeking = self.seeking;
 		if seeking then
 			self.seeking = nil;
@@ -189,7 +204,7 @@ function this:__play(thing,position) -- PRIVATE
 			end
 		end
 
-		-- when looping is enabled
+		-- when looping is enabled, append this into playlist
 		if self.isLooping and self.nowPlaying then
 			insert(self,thing); -- insert this into end of queue
 		end
@@ -204,7 +219,7 @@ function this:__play(thing,position) -- PRIVATE
 			end);
 		end
 
-		-- this coroutine will killed
+		-- this coroutine will killed on here
 	end)();
 end
 
