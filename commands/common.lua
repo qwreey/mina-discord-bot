@@ -282,7 +282,7 @@ local export = {
 			local now = posixTime.now();
 			if lastReportedTime and (now < lastReportedTime + _G.reportCooltime) then
 				replyMsg:setContent(
-					("문의는 1 시간당 1 개씩 보낼 수 있습니다!\n> 최근 문의는 %s에 있었습니다"):format(timeAgo(lastReportedTime,now))
+					("문의는 1 시간당 1 개씩 보낼 수 있습니다!\n> 최근 문의는 %s에 보냈습니다"):format(timeAgo(lastReportedTime,now))
 				);
 				return;
 			end
