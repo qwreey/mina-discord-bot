@@ -234,8 +234,8 @@ _G.reloadBot = reloadBot;
 _G.startBot = startBot;
 
 -- js's timeout function that inspired by js's timeout function
-local remove = table.remove;
-local unpack = unpack or table.unpack;
+-- local remove = table.remove;
+-- local unpack = unpack or table.unpack;
 -- local pcallWrapper = function (func,promise,...)
 -- 	local result = {pcall(func,...)};
 -- 	local isPassed = remove(result,1);

@@ -12,6 +12,7 @@
 	TODO: 그리고도 못찾으면 조사 다 지우고 찾기
 ]]
 
+--#region : sys setup
 -- Setup require system
 process.env.PATH = process.env.PATH .. ";.\\bin"; -- add bin libs path
 package.path = require("app.path")(package.path); -- set require path
@@ -57,7 +58,7 @@ do
 		-- os.execute("chcp 65001>/dev/null")
 	end
 end
-
+--#endregion sys setup
 --#region : Load modules
 local insert = table.insert;
 local utf8 = utf8 or require "utf8"; _G.utf8 = utf8; -- unicode 8 library
@@ -93,59 +94,53 @@ local data = require "data"; data:setJson(json); _G.data = data; -- Data system
 local userData = require "class.userData"; userData:setJson(json):setlogger(logger):setMakeId(makeId); _G.userData = userData; -- Userdata system
 local serverData = require "class.serverData"; serverData:setJson(json):setlogger(logger):setMakeId(makeId); _G.serverData = serverData; -- Serverdata system
 local posixTime = require "libs.posixTime"; _G.posixTime = posixTime; -- get posixTime library
--- local inject = require "app.inject"; _G.inject = inject; -- module injection
 --#endregion : Load modules
 --#region : Discordia Module
 logger.info("------------------------ [CLEAN  UP] ------------------------");
 logger.info("wait for discordia ...");
 
--- inject modified objects
--- inject("discordia/libs/voice/VoiceConnection","voice/VoiceConnection"); -- inject modified voice connection
--- inject("discordia/libs/voice/streams/FFmpegProcess","voice/streams/FFmpegProcess"); -- inject modified stream manager
--- inject("discordia/libs/")
--- inject("discordia/libs/containers/Message","containers/Message"); -- inject button system
--- inject("discordia/libs/containers/abstract/TextChannel","containers/abstract/TextChannel"); -- inject button system
--- inject("discordia/libs/client/EventHandler","client/EventHandler"); -- inject button system
-
 local discordia = require "discordia"; _G.discordia = discordia; ---@type discordia -- 디스코드 lua 봇 모듈 불러오기
+local discordia_slash = require("discordia_slash"); _G.discordia_slash = discordia_slash;
+local userInteractWarpper = require("class.userInteractWarpper"); _G.userInteractWarpper = userInteractWarpper;
+require("discordia_voicefix"); -- enable voice fix extension
+require("discordia_api9") -- enable api 9
+
 local discordia_class = require "discordia/libs/class"; _G.discordia_class = discordia_class; ---@type class -- 디스코드 클레스 가져오기
 local discordia_Logger = discordia_class.classes.Logger; ---@type Logger -- 로거부분 가져오기 (통합을 위해 수정)
 local enums = discordia.enums; _G.enums = enums; ---@type enums -- 디스코드 enums 가져오기
 local client = discordia.Client(require("class.clientSettings")); _G.client = client; ---@type Client -- 디스코드 클라이언트 만들기
 local Date = discordia.Date; _G.Date = Date; ---@type Date
-function discordia_Logger:log(level, msg, ...) -- 디스코드 모듈 로거부분 편집
+
+-- inject logger
+function discordia_Logger:log(level, msg, ...)
 	if self._level < level then return end ---@diagnostic disable-line
 	msg = string.format(msg, ...);
 	local logFn =
 		(level == 3 and logger.debug) or
 		(level == 2 and logger.info) or
 		(level == 1 and logger.warn) or
-		(level == 0 and logger.error);
+		(level == 0 and logger.error) or logger.info;
 	logFn(msg);
 	return msg;
 end
-require("discordia_voicefix"); -- enable voice fix extension
-require("discordia_api9") -- enable api 9
-local discordia_slash = require("discordia_slash"); _G.discordia_slash = discordia_slash;
+
 ---@diagnostic disable-next-line
 client:useSlashCommands(); --enable slash extension
--- local slashCommands = require 'slashCommands';
--- _G.slashCommands = slashCommands;
 --#endregion : Discordia Module
 --#region : Load bot environments
 logger.info("---------------------- [LOAD SETTINGS] ----------------------");
 
 -- Load environments
 logger.info("load environments ...");
-require("app.env"); -- inject environments ---@diagnostic disable-line
+require("app.env"); -- inject environment
 local adminCmd = require("class.adminCommands"); -- load admin commands
 local hook = require("class.hook");
 local registeLeaderstatus = require("class.registeLeaderstatus");
 
 -- Load commands
 logger.info(" |- load commands from commands folder");
-local otherCommands = {} -- commands 폴더에서 커맨드 불러오기
-for dir in fs.scandirSync("commands") do -- read commands from commands folder
+local otherCommands = {} -- read commands from commands folder
+for dir in fs.scandirSync("commands") do
 	dir = string.gsub(dir,"%.lua$","");
 	logger.info(" |  |- load command dict from : commands." .. dir);
 	otherCommands[#otherCommands+1] = require("commands." .. dir);
@@ -493,7 +488,6 @@ end
 client:on('messageCreate', processCommand);
 
 -- making slash command
-local userInteractWarpper = require("class.userInteractWarpper");
 client:on("slashCommandsReady", function()
 	client:slashCommand({ ---@diagnostic disable-line
 		name = "미나";
@@ -521,17 +515,6 @@ client:on("slashCommandsReady", function()
 	});
 end);
 
--- local defaultCommand = slashCommands.SlashCommand(client, "미나", "미나 봇을 사용합니다")
--- 	:argument("할말","미나에게 할 말을 입력해보세요!",slashCommands.enums.string)
-
--- defaultCommand:execute(function (ctx)
--- 	local args = ctx.arguments
--- 	ctx:reply("아직 사용할 수 없습니다!");
--- end);
--- client:once('ready', function()
--- 	defaultCommand:commit();
--- end);
-
 -- enable terminal features and live reload system
 do
 	local terminalInputDisabled;
@@ -552,5 +535,5 @@ do
 	_G.livereloadEnabled = livereload; -- enable live reload
 end
 require("app.livereload"); -- loads livereload system; it will make uv event and take file changed signal
-startBot(ACCOUNTData.botToken,ACCOUNTData.testing); -- init bot (init discordia)
+_G.startBot(ACCOUNTData.botToken,ACCOUNTData.testing); -- init bot (init discordia)
 --#endregion : Main logic
