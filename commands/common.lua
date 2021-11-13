@@ -280,7 +280,7 @@ local export = {
 
 			local lastReportedTime = tonumber(userData.lastReportedTime);
 			local now = posixTime.now();
-			if lastReportedTime and (now < lastReportedTime + reportCooltime) then
+			if lastReportedTime and (now < lastReportedTime + _G.reportCooltime) then
 				replyMsg:setContent(
 					("문의는 1 시간당 1 개씩 보낼 수 있습니다!\n> 최근 문의는 %s에 있었습니다"):format(timeAgo(lastReportedTime,now))
 				);
@@ -297,7 +297,7 @@ local export = {
 				replyMsg:setContent(("문의중 오류가 발생했습니다!\n```\n%s\n``"):format(reason));
 				return;
 			end
-			userData.lastReportedTime = lastReportedTime;
+			userData.lastReportedTime = now;
 			Content.saveUserData();
 			replyMsg:setContent("문의가 발송되었습니다!");
 		end;
