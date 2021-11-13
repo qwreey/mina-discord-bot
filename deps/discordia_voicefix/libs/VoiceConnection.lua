@@ -54,14 +54,15 @@ return function (VoiceConnection,options)
 		end)
 	end
 
-	function VoiceConnection:_play(stream, duration)
+	function VoiceConnection:_play(stream, duration, position)
+		position = tonumber(position);
 
 		self:stopStream()
 		self:_setSpeaking(true)
 
 		duration = tonumber(duration) or math.huge
 
-		local elapsed = 0
+		local elapsed = position and (position * 1000) or 0
 		local udp, ip, port = self._udp, self._ip, self._port
 		local ssrc, key = self._ssrc, self._key
 		local encoder = self._encoder
@@ -69,7 +70,7 @@ return function (VoiceConnection,options)
 		local frame_size = SAMPLE_RATE * FRAME_DURATION / MS_PER_S
 		local pcm_len = frame_size * CHANNELS
 
-		local start = hrtime()
+		local start = hrtime() - (position and position*1000000000 or 0)
 		local reason
 
 		---CUSTOM PATCH
@@ -162,15 +163,15 @@ return function (VoiceConnection,options)
 	reason why the stream stopped. For more information about using FFmpeg,
 	see the [[voice]] page.
 	]=]
-	function VoiceConnection:playFFmpeg(path, duration, errorHandler)
+	function VoiceConnection:playFFmpeg(path, duration, position, errorHandler)
 
 		if not self._ready then
 			return nil, 'Connection is not ready'
 		end
 
-		local stream = FFmpegProcess(path, SAMPLE_RATE, CHANNELS, errorHandler)
+		local stream = FFmpegProcess(path, SAMPLE_RATE, CHANNELS, position, errorHandler)
 
-		local elapsed, reason = self:_play(stream, duration)
+		local elapsed, reason = self:_play(stream, duration, position)
 		stream:close()
 		return elapsed, reason
 

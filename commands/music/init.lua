@@ -917,7 +917,7 @@ local export = {
 				return;
 			end
 
-			-- pause!
+			-- unpause!
 			player:setPaused(false);
 			replyMsg:setContent("성공적으로 음악을 재개했습니다!");
 		end;
@@ -964,7 +964,7 @@ local export = {
 			if not player then
 				replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
 				return;
-			elseif nowPlaying then -- if it is not playing then
+			elseif not nowPlaying then -- if it is not playing then
 				replyMsg:setContent("실행중인 음악이 없습니다!");
 				return;
 			end
@@ -973,6 +973,7 @@ local export = {
 			local handler = player.handler;
 			local getElapsed = handler and handler.getElapsed;
 			local elapsed = tonumber(getElapsed and getElapsed());
+			elapsed = elapsed and (elapsed / 1000);
 			local mode, hours, minutes, seconds;
 			local timestamp; do
 				do
@@ -1010,8 +1011,16 @@ local export = {
 					end
 				end
 				if not timestamp then
-					mode,timestamp = rawArgs:match("([%+%-]?) -(%d+)");
+					local multiple;
+					mode,timestamp,multiple = rawArgs:match("([%+%-]?) -(%d+) -([hHsSmM]?)");
 					timestamp = tonumber(timestamp);
+					if timestamp then
+						if multiple == "h" or multiple == "H" then
+							timestamp = timestamp * hourInSecond;
+						elseif multiple == "m" or multiple == "M" then
+							timestamp = timestamp * minuteInSecond;
+						end
+					end
 				end
 			end
 			if mode and elapsed then
@@ -1023,6 +1032,7 @@ local export = {
 			end
 
 			-- checking time
+			local duration;
 			if not timestamp then
 				replyMsg:setContent("원하는 시간을 입력해주세요!");
 				return;
@@ -1031,7 +1041,7 @@ local export = {
 				return;
 			else
 				local info = nowPlaying.info;
-				local duration = tonumber(info.duration);
+				duration = tonumber(info.duration);
 				if duration and (duration < timestamp) then
 					replyMsg:setContent(
 						("곡의 길이보다 더 앞으로 갈 수 없습니다\n> 곡 길이는 %s 입니다!")
@@ -1043,6 +1053,14 @@ local export = {
 
 			-- seek!
 			player:seek(timestamp);
+			replyMsg:update {
+				embed = {
+					title = "재생 위치를 이동했습니다!";
+					description = duration and player.seekbar(timestamp,duration);
+					footer = player:getStatusText();
+				};
+				content = ("%s 로 이동!"):format(player.formatTime(timestamp));
+			};
 		end;
 	};
 	["export music"] = {

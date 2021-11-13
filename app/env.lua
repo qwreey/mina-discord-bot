@@ -247,7 +247,7 @@ _G.startBot = startBot;
 -- 	end
 -- end;
 local function timeout(delay,func,...)
-	return timer.setTimeout(delay,coroutine.wrap(func));
+	return timer.setTimeout(delay,coroutine.wrap(func),...);
 end
 _G.timeout = timeout;
 
