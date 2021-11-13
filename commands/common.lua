@@ -262,5 +262,45 @@ local export = {
 		};
 		love = defaultLove;
 	};
+	["문의"] = {
+		alias = {"신고","제의"};
+		reply = "잠시만 기다려주세요";
+		func = function (replyMsg,message,args,Content)
+			local rawArgs = Content.rawArgs;
+			if (not rawArgs) or (rawArgs == "" or rawArgs == "\n") then
+				replyMsg:setContent("문의 내용이 비어있을 수 없습니다!");
+				return;
+			end
+
+			local userData = Content.getUserData();
+			if not userData then
+				replyMsg:setContent("약관 동의가 없어 문의를 요청할 수 없습니다!");
+				return;
+			end
+
+			local lastReportedTime = tonumber(userData.lastReportedTime);
+			local now = posixTime.now();
+			if lastReportedTime and (now < lastReportedTime + reportCooltime) then
+				replyMsg:setContent(
+					("문의는 1 시간당 1 개씩 보낼 수 있습니다!\n> 최근 문의는 %s에 있었습니다"):format(timeAgo(lastReportedTime,now))
+				);
+				return;
+			end
+
+			local ReportWebhooks = ACCOUNTData.ReportWebhooks;
+			local response = corohttp.request("POST",ReportWebhooks[cRandom(1,#ReportWebhooks)],{{"Content-Type","application/json"}},
+				('{"content":"Report from user %s","embeds":[{"title":"Report","description":"%s"}]}')
+					:format(tostring(Content.user.id),tostring(Content.rawArgs))
+			);
+			if (not response) or (response.code >= 400) then
+				local reason = response and response.reason or "unknown";
+				replyMsg:setContent(("문의중 오류가 발생했습니다!\n```\n%s\n``"):format(reason));
+				return;
+			end
+			userData.lastReportedTime = lastReportedTime;
+			Content.saveUserData();
+			replyMsg:setContent("문의가 발송되었습니다!");
+		end;
+	};
 };
 return export;
