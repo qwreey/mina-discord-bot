@@ -43,8 +43,6 @@ local function indexingReact(indexTable,cmds,commandName,reactInfo)
 		indexTable[alias:lower()] = reactInfo;
 		len = len + 1;
 	end
-	reactInfo.alias = nil;
-	reactInfo.command = nil;
 
 	local command = reactInfo.command;
 	local commandType = type(command);
@@ -56,6 +54,8 @@ local function indexingReact(indexTable,cmds,commandName,reactInfo)
 		cmds[command] = reactInfo;
 	end
 
+	reactInfo.alias = nil;
+	reactInfo.command = nil;
 	return len;
 end
 
