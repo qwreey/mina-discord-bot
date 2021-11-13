@@ -108,7 +108,12 @@ function this:__play(thing,position) -- PRIVATE
 	coroutine.wrap(function()
 		-- play this song
 		local handler = self.handler;
+		local ffmpegErrorCount = 0;
 		local isPassed,result,reason = pcall(handler.playFFmpeg,handler,thing.audio,nil,position,coroutine.wrap(function (errStr)
+			ffmpegErrorCount = ffmpegErrorCount + 1;
+			if ffmpegErrorCount > 4 then
+				return;
+			end
 			-- error on ffmpeg
 			logger.info("[Music] try to sending error last message");
 			local message = thing.message;
