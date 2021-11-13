@@ -4,6 +4,8 @@ local formatTime = playerClass.formatTime;
 local time = os.time;
 local timer = _G.timer;
 local eulaComment_music = _G.eulaComment_music or makeEulaComment("음악");
+local hourInSecond = 60*60;
+local minuteInSecond = 60;
 
 -- 섞기 움직이기(이동)
 
@@ -180,6 +182,7 @@ local export = {
 		disableDm = true;
 		command = {"add","p","play","추가","재생","곡추가"};
 		alias = {
+			"곡 신청","노래 신청","음악 신청","곡신청","노래신청","음악신청",
 			"노래틀어","노래틀어줘","노래추가해","노래추가해줘","노래추가하기","노래추가해봐","노래추가해라","노래추가","노래재생","노래실행",
 			"노래 틀어","노래 틀어줘","노래 추가해","노래 추가해줘","노래 추가하기","노래 추가해봐","노래 추가해라","노래 추가","노래 재생","노래 실행",
 			"음악틀어","음악틀어줘","음악추가해","음악추가해줘","음악추가하기","음악추가해봐","음악추가해라","음악추가","음악재생","음악실행",
@@ -917,6 +920,129 @@ local export = {
 			-- pause!
 			player:setPaused(false);
 			replyMsg:setContent("성공적으로 음악을 재개했습니다!");
+		end;
+	};
+	["seek music"] = {
+		registeredOnly = eulaComment_music;
+		disableDm = true;
+		command = {"시간","seek","timestamp"};
+		alias = {
+			"timestamp music","music timestamp","music seek",
+			"song music","song timestamp","song seek","seek song",
+			"곡 시간","곡시간","곡 시간 이동","곡 시간이동","곡시간 이동","곡시간이동","곡 시간 조정","곡 시간조정","곡시간 조정","곡시간조정",
+			"곡타임스템프","곡 타임스템프","곡 타임스템프 조정","곡 타임스템프조정","곡타임스템프 조정","곡타임스템프조정","곡 타임스템프 이동","곡 타임스템프이동","곡타임스템프 이동","곡타임스템프이동",
+			"음악 시간","음악시간","음악 시간 이동","음악 시간이동","음악시간 이동","음악시간이동","음악 시간 조정","음악 시간조정","음악시간 조정","음악시간조정",
+			"음악타임스템프","음악 타임스템프","음악 타임스템프 조정","음악 타임스템프조정","음악타임스템프 조정","음악타임스템프조정","음악 타임스템프 이동","음악 타임스템프이동","음악타임스템프 이동","음악타임스템프이동",
+			"노래 시간","노래시간","노래 시간 이동","노래 시간이동","노래시간 이동","노래시간이동","노래 시간 조정","노래 시간조정","노래시간 조정","노래시간조정",
+			"노래타임스템프","노래 타임스템프","노래 타임스템프 조정","노래 타임스템프조정","노래타임스템프 조정","노래타임스템프조정","노래 타임스템프 이동","노래 타임스템프이동","노래타임스템프 이동","노래타임스템프이동"
+		};
+		reply = "처리중입니다 . . .";
+		func = function(replyMsg,message,args,Content)
+			local rawArgs = Content.rawArgs or "";
+
+			-- check users voice channel
+			local voiceChannel = message.member.voiceChannel;
+			if not voiceChannel then
+				replyMsg:setContent("음성 채팅방에 있지 않습니다! 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다.");
+				return;
+			end
+
+			-- get already exist connection
+			local guildConnection = message.guild.connection;
+			if guildConnection and (guildConnection.channel ~= voiceChannel) then
+				replyMsg:setContent("다른 음성채팅방에서 봇을 사용중입니다, 봇이 있는 음성 채팅방에서 사용해주세요!");
+				return;
+			elseif not guildConnection then
+				replyMsg:setContent("봇이 음성채팅방에 있지 않습니다, 봇이 음성채팅방에 있을때 사용해주세요!");
+				return;
+			end
+
+			-- get player object from playerClass
+			local voiceChannelID = voiceChannel:__hash();
+			local player = playerForChannels[voiceChannelID];
+			local nowPlaying = player and player.nowPlaying;
+			if not player then
+				replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
+				return;
+			elseif nowPlaying then -- if it is not playing then
+				replyMsg:setContent("실행중인 음악이 없습니다!");
+				return;
+			end
+
+			-- get time mode and timestamp with to move
+			local handler = player.handler;
+			local getElapsed = handler and handler.getElapsed;
+			local elapsed = tonumber(getElapsed and getElapsed());
+			local mode, hours, minutes, seconds;
+			local timestamp; do
+				do
+					mode, hours, minutes, seconds = rawArgs:match("([%+%-]?) -(%d+) -: -(%d+) -: -(%d+)");
+					hours = tonumber(hours);
+					minutes = tonumber(minutes);
+					seconds = tonumber(seconds);
+					if hours and minutes and seconds then
+						timestamp = (hours * hourInSecond) + (minutes * minuteInSecond) + (seconds);
+					end
+				end
+				if not timestamp then
+					mode, minutes, seconds = rawArgs:match("([%+%-]?) -(%d+) -: -(%d+)");
+					minutes = tonumber(minutes);
+					seconds = tonumber(seconds);
+					if minutes and seconds then
+						timestamp = (minutes * minuteInSecond) + seconds;
+					end
+				end
+				if not timestamp then
+					mode, hours, minutes, seconds = rawArgs:match("([%+%-]?) -(%d+) -시간 -(%d+) -분 -(%d+) -초");
+					hours = tonumber(hours);
+					minutes = tonumber(minutes);
+					seconds = tonumber(seconds);
+					if hours and minutes and seconds then
+						timestamp = (hours * hourInSecond) + (minutes * minuteInSecond) + (seconds);
+					end
+				end
+				if not timestamp then
+					mode, hours, minutes, seconds = rawArgs:match("([%+%-]?) -(%d+) -분 -(%d+) -초");
+					minutes = tonumber(minutes);
+					seconds = tonumber(seconds);
+					if minutes and seconds then
+						timestamp = (hours * hourInSecond) + (minutes * minuteInSecond) + (seconds);
+					end
+				end
+				if not timestamp then
+					mode,timestamp = rawArgs:match("([%+%-]?) -(%d+)");
+					timestamp = tonumber(timestamp);
+				end
+			end
+			if mode and elapsed then
+				if mode == "+" then
+					timestamp = elapsed + timestamp;
+				elseif mode == "-" then
+					timestamp = elapsed - timestamp;
+				end
+			end
+
+			-- checking time
+			if not timestamp then
+				replyMsg:setContent("원하는 시간을 입력해주세요!");
+				return;
+			elseif timestamp < 0 then
+				replyMsg:setContent("시간은 0 보다 작을 수 없습니다!");
+				return;
+			else
+				local info = nowPlaying.info;
+				local duration = tonumber(info.duration);
+				if duration and (duration < timestamp) then
+					replyMsg:setContent(
+						("곡의 길이보다 더 앞으로 갈 수 없습니다\n> 곡 길이는 %s 입니다!")
+							:format(player.formatTime(duration))
+					);
+					return;
+				end
+			end
+
+			-- seek!
+			player:seek(timestamp);
 		end;
 	};
 	["export music"] = {
