@@ -148,7 +148,7 @@ local export = {
 				-- local dataReadSt = time();
 				-- userData.load()
 				-- local dataReadEd = time();
-				
+
 				new:setContent(
 					("🏓 봇 지연시간\n> 서버 응답시간 : %s`ms`\n> 내부 클럭 속도 : %s`us`\n> 가동시간 : %s\n> 사용 RAM : %dMB")
 					:format(
@@ -207,8 +207,14 @@ local export = {
 			local infoMsg = message:reply(("최근 메시지 %s개를 지웠어요!"):format(RemoveNum));
 
 			timeout(5000,function ()
-				message:delete();
-				infoMsg:delete();
+				local messageDelete = message and message.delete;
+				if messageDelete then
+					messageDelete(message);
+				end
+				local infoDelete = infoMsg and infoMsg.delete;
+				if infoDelete then
+					infoDelete(infoMsg);
+				end
 			end);
 		end;
 	};

@@ -453,11 +453,9 @@ local function processCommand(message)
 		args = strSplit(rawArgs,"\32");
 		local passed,ret = pcall(func,replyMsg,message,args,contents);
 		if not passed then
-			logger.error("an error occurred on running function");
-			logger.errorf(" | original message : %s",tostring(text));
-			logger.error(" | error traceback was");
-			logger.error(tostring(ret));
-			logger.error(" | more information was saved on log/debug.log");
+			logger.error(("an error occurred on running function\n - original message : %s\n - error traceback was\n%s\n - more information was saved on log/debug.log")
+				:format(tostring(text),tostring(ret))
+			);
 			qDebug {
 				title = "an error occurred on running command function";
 				traceback = tostring(ret);
