@@ -771,7 +771,7 @@ local export = {
 	["stop music"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"나가","끄기","off","stop","leave","kill"};
+		command = {"그만","종료","나가","끄기","off","stop","leave","kill"};
 		alias = {
 			"곡 끄기","곡 꺼","곡끄기","곡꺼",
 			"음악 끄기","음악 꺼","음악끄기","음악꺼",
