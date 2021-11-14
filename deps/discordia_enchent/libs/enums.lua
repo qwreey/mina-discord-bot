@@ -28,6 +28,9 @@ local export = {
         pong = 1;
         channelMessageWithSource = 4;
         deferredChannelMessageWithSource = 5;
+        deferredUpdateMessage = 6;
+        updateMessage = 7;
+        applicationCommandAutocompleteResult = 8;
     });
 
     ---@class enchent_enums_componentType_child:number

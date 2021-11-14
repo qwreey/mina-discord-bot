@@ -5,6 +5,8 @@ local format = string.format
 local snowflake = discordia.class.classes.Snowflake
 local deferredChannelMessageWithSource = enums.interactionResponseType.deferredChannelMessageWithSource
 local channelMessageWithSource = enums.interactionResponseType.channelMessageWithSource
+local deferredUpdateMessage = enums.interactionResponseType.deferredUpdateMessage
+local componentButton = enums.componentType.button;
 
 ---@class interaction
 ---@field public message Message If this is message interaction (such as button), this is parent message of interaction else ApplicationCommand, this is nil
@@ -23,8 +25,9 @@ interaction, interactionGetters = discordia.class('Interaction', snowflake)
 
 function interaction:__init(data, parent)
 	local message = data.message
-	local button = data.button
-	local buttonId = button and button.custom_id
+	local this = data.data
+	local componentType = this and this.component_type
+	local buttonId = this and componentType == componentButton and this.custom_id
 
 	local member = data.member
 	local user = data.user
@@ -61,6 +64,7 @@ function interaction:__init(data, parent)
 	self._token = data.token
 	self._version = data.version
 	self._message = messageObject
+	self._isComponent = componentType ~= nil
 end
 
 ---Create a response to an Interaction from the gateway.
@@ -79,7 +83,11 @@ end
 ---Send act response.
 ---@return boolean
 function interaction:ack()
-	return self:createResponse(deferredChannelMessageWithSource)
+	if self._isComponent then
+		return self:createResponse(deferredUpdateMessage)
+	else
+		return self:createResponse(deferredChannelMessageWithSource)
+	end
 end
 
 ---Create reply message.
@@ -212,6 +220,10 @@ end
 
 function interactionGetters:user()
 	return self._user
+end
+
+function interactionGetters:isComponent()
+	return self._isComponent
 end
 
 return interaction

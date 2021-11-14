@@ -1,5 +1,6 @@
-local components = discordia_components;
-local compEnums = components.enums;
+local discordia_enchent = discordia_enchent;
+local compEnums = discordia_enchent.enums;
+local components = discordia_enchent.components;
 local export = {
     ["버튼"] = {
         reply = "디스코드 버튼 컴포넌트 라이브러리 v1 (by Qwreey75)";
@@ -34,6 +35,7 @@ local replysLen = #replys;
 local function buttonPressed(id,object)
     if id == "testingButton" then
         object.message:setContent(replys[cRandom(1,replysLen)]);
+        object:ack();
     end
 end
 client:on("buttonPressed",buttonPressed);

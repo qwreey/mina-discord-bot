@@ -28,7 +28,7 @@ end
 local evnetHandler = require("../../eventHandler");
 evnetHandler.make("INTERACTION_CREATE",function (data, client)
     if data.type == messageComponent then -- button
-        local new = interaction(data);
+        local new = interaction(data,client);
         return true,client:emit('buttonPressed',new.buttonId,new);
     end
     return false;
