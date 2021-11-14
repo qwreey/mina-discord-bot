@@ -92,6 +92,7 @@ local userLearn = require "commands.learning.learn"; -- user learning library
 local data = require "data"; data:setJson(json); _G.data = data; -- Data system
 local userData = require "class.userData"; userData:setJson(json):setlogger(logger):setMakeId(makeId); _G.userData = userData; -- Userdata system
 local serverData = require "class.serverData"; serverData:setJson(json):setlogger(logger):setMakeId(makeId); _G.serverData = serverData; -- Serverdata system
+local interactionData = require "class.interactionData"; interactionData:setJson(json):setlogger(logger):setMakeId(makeId); _G.interactionData = interactionData; -- interactiondata system
 local posixTime = require "libs.posixTime"; _G.posixTime = posixTime; -- get posixTime library
 --#endregion : Load modules
 --#region : Discordia Module
@@ -404,6 +405,8 @@ local function processCommand(message)
 			end
 			return false;
 		end;
+		---@type boolean determine is slash command callback
+		isSlashCommand = isSlashCommand;
 	};
 
 	-- 만약 답변글이 함수면 (지금은 %s 시에요 처럼 쓸 수 있도록) 실행후 결과 가져오기

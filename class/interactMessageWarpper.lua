@@ -29,11 +29,13 @@ function interactMessageWarpper:__edit(d,private)
 	if content then
 		local user = this and this.user;
 		local str = self.commandStr;
-		d.content = ("> %s:%s%s\n"):format(
-			tostring(user and user.mentionString or "@NULL"),
-			(str and str:match("\n")) and "\n> " or " ",
-			tostring(str or "'NULL'"):gsub("\n","\n> ")
-		) .. content;
+		if str and user then
+			d.content = ("> %s:%s%s\n"):format(
+				tostring(user and user.mentionString or "@NULL"),
+				(str and str:match("\n")) and "\n> " or " ",
+				tostring(str or "'NULL'"):gsub("\n","\n> ")
+			) .. content;
+		end
 	end
 
 	-- merge with previous
@@ -80,6 +82,8 @@ function interactMessageWarpper.new(this,commandStr)
 	local self = {
 		this = this;
 		commandStr = commandStr;
+		id = this.id;
+		slashCommand = true;
 	};
 	setmetatable(self,interactMessageWarpper);
 	return self;

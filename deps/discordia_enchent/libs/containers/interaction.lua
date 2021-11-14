@@ -9,7 +9,8 @@ local deferredUpdateMessage = enums.interactionResponseType.deferredUpdateMessag
 local componentButton = enums.componentType.button;
 
 ---@class interaction
----@field public message Message If this is message interaction (such as button), this is parent message of interaction else ApplicationCommand, this is nil
+---@field public message Message If this is message's interaction (such as button), this is parent message of interaction else ApplicationCommand, this is nil
+---@field public parentInteraction interaction If this is slash command's interaction (such as button), this is parent interaction of interaction
 ---@field public version number Always 1
 ---@field public token string token of this interaction
 ---@field public id string id of this interaction
@@ -24,7 +25,10 @@ local interactionGetters
 interaction, interactionGetters = discordia.class('Interaction', snowflake)
 
 function interaction:__init(data, parent)
+	-- print(table.dump(data))
+
 	local message = data.message
+	local messageType = message and message.type
 	local this = data.data
 	local componentType = this and this.component_type
 	local buttonId = this and componentType == componentButton and this.custom_id
@@ -49,9 +53,9 @@ function interaction:__init(data, parent)
 			client:warning('Uncached Guild (%s) on INTERACTION_CREATE', guildId)
 		end
 	elseif user then
-		channelObject = client:getChannel(userId) or user:getPrivateChannel()
+		channelObject = client:getChannel(userId) or userObject:getPrivateChannel()
 	end
-	messageObject = channelObject and message and channelObject._messages:_insert(message)
+	messageObject = messageType == 19 and (channelObject and message and channelObject._messages:_insert(message))
 
 	self._user = userObject
 	self._guild = guildObject
@@ -63,8 +67,9 @@ function interaction:__init(data, parent)
 	self._type = data.type
 	self._token = data.token
 	self._version = data.version
-	self._message = messageObject
 	self._isComponent = componentType ~= nil
+	self._message =  messageObject
+	self._parentInteraction = messageType == 20 and interaction(message.interaction,parent);
 end
 
 ---Create a response to an Interaction from the gateway.
@@ -74,10 +79,12 @@ end
 function interaction:createResponse(type, data)
 	self._type = type
 
-	return self._parent._api:request('POST', format(endpoints.INTERACTION_RESPONSE, self._id, self._token), {
+	-- local api = self.parent._api;
+	self.parent._api:request('POST', format(endpoints.INTERACTION_RESPONSE, self._id, self._token), {
 		type = type,
 		data = data,
 	})
+	-- p(api:request('GET',format(endpoints.GET_ORIGINAL_INTERACTION_RESPONSE, self._id, self._token)))
 end
 
 ---Send act response.
@@ -224,6 +231,10 @@ end
 
 function interactionGetters:isComponent()
 	return self._isComponent
+end
+
+function interactionGetters:parentInteraction()
+	return self._parentInteraction
 end
 
 return interaction

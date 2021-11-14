@@ -5,7 +5,7 @@
 ]=]
 
 return function (TextChannel,PrivateChannel,GuildTextChannel)
-	print(table.dump(TextChannel))
+	-- print(table.dump(TextChannel))
 	local pathjoin = require('pathjoin')
 	local Resolver
 	local requireResolverPassed = pcall(function ()
