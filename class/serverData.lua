@@ -82,7 +82,7 @@ end
 -- this is should be replaced with fs module
 function module:resetData(serverId)
 	userDatas[userId] = nil;
-	fs.unlink(formatFileRoot(serverId);
+	fs.unlink(formatFileRoot(serverId));
 end
 
 return module;
