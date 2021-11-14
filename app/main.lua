@@ -122,7 +122,7 @@ function discordia_Logger:log(level, msg, ...)
 end
 
 ---@diagnostic disable-next-line
-client:useSlashCommands(); --enable slash extension
+discordia_enchent.inject(client);
 --#endregion : Discordia Module
 --#region : Load bot environments
 logger.info("---------------------- [LOAD SETTINGS] ----------------------");

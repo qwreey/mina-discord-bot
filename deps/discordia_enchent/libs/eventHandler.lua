@@ -17,7 +17,7 @@ function this.mount(discordiaEvents)
     for name,funcs in pairs(events) do
         discordiaEvents[name] = function (data,client)
             for _,func in pairs(funcs) do
-                local result = func(data,client);
+                local result = {func(data,client)};
                 local passed = remove(result,1);
                 if passed then
                     return result;

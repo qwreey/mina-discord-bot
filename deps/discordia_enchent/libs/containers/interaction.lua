@@ -6,7 +6,7 @@ local snowflake = discordia.class.classes.Snowflake
 local deferredChannelMessageWithSource = enums.interactionResponseType.deferredChannelMessageWithSource
 local channelMessageWithSource = enums.interactionResponseType.channelMessageWithSource
 
----@class Interaction
+---@class interaction
 ---@field public message Message If this is message interaction (such as button), this is parent message of interaction else ApplicationCommand, this is nil
 ---@field public version number Always 1
 ---@field public token string token of this interaction
@@ -16,6 +16,7 @@ local channelMessageWithSource = enums.interactionResponseType.channelMessageWit
 ---@field public member Member if this interaction is actived on guild, it will member who created this interaction
 ---@field public channel Channel|TextChannel|GuildChannel|GuildTextChannel where this interaction is actived on channel
 ---@field public guild Guild where this interaction is actived on guild
+---@return interaction interaction return new object
 local interaction
 local interactionGetters
 interaction, interactionGetters = discordia.class('Interaction', snowflake)
@@ -37,17 +38,17 @@ function interaction:__init(data, parent)
 	local messageObject
 
 	if guildId then
-		guildObject = client:getGuild(guildId);
+		guildObject = client:getGuild(guildId)
 		if guildObject then
-			memberObject = guildObject:getMember(userId);
-			channelObject = guildObject:getChannel(data.channel_id);
+			memberObject = guildObject:getMember(userId)
+			channelObject = guildObject:getChannel(data.channel_id)
 		else
 			client:warning('Uncached Guild (%s) on INTERACTION_CREATE', guildId)
 		end
 	elseif user then
-		channelObject = client:getChannel(userId) or user:getPrivateChannel();
+		channelObject = client:getChannel(userId) or user:getPrivateChannel()
 	end
-	messageObject = channelObject and message and channelObject._messages:_insert(message);
+	messageObject = channelObject and message and channelObject._messages:_insert(message)
 
 	self._user = userObject
 	self._guild = guildObject
@@ -207,6 +208,10 @@ end
 
 function interactionGetters:message()
 	return self._message
+end
+
+function interactionGetters:user()
+	return self._user
 end
 
 return interaction

@@ -1,12 +1,13 @@
 local discordia = require("discordia")
-local endpoints = require('../endpoints')
+local endpoints = require('../../endpoints')
 local format = string.format
 local applicationCommand = require('./applicationCommand')
 local interaction = require('../interaction')
 local client_m = discordia.Client
 local guild_m = discordia.class.classes.Guild
 local cache_m = discordia.class.classes.Cache
-local enums = require('../enums')
+local enums = require('../../enums')
+local eventHandler = require("../../eventHandler")
 
 local typeConverter = {
 	[enums.optionType.string] = function(val) return val end,
@@ -37,7 +38,6 @@ local function makeParams(data, guild, output)
 	return output
 end
 
-local eventHandler = require("../eventHandler")
 eventHandler.make("INTERACTION_CREATE",function (args, client)
 	if args.type ~= 2 then
 		return false
@@ -53,21 +53,6 @@ eventHandler.make("INTERACTION_CREATE",function (args, client)
 	coroutine.wrap(cb)(ia, params, cmd)
 	return true
 end)
-
-function client_m:useSlashCommands()
-	self._slashCommandsInjected = true
-
-	self:once("ready", function()
-		local id = self:getApplicationInformation().id
-		self._slashid = id
-		self._globalCommands = {}
-		self._guildCommands = {}
-		self:getSlashCommands()
-		self:emit("slashCommandsReady")
-	end)
-
-	return self
-end
 
 function client_m:slashCommand(data)
 	local found
@@ -181,4 +166,19 @@ function client_m:getSlashCommand(id)
 	end
 
 	return nil
+end
+
+return function (self)
+	self._slashCommandsInjected = true
+
+	self:once("ready", function()
+		local id = self:getApplicationInformation().id
+		self._slashid = id
+		self._globalCommands = {}
+		self._guildCommands = {}
+		self:getSlashCommands()
+		self:emit("slashCommandsReady")
+	end)
+
+	return self
 end
