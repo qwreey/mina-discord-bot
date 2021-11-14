@@ -30,7 +30,7 @@ local replysLen = #replys;
 
 ---when button is clicked
 ---@param id string button id
----@param object buttonPressedObject button pressed object
+---@param object interaction button pressed interaction
 local function buttonPressed(id,object)
     if id == "testingButton" then
         object.message:setContent(replys[cRandom(1,replysLen)]);
