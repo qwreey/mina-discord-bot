@@ -99,11 +99,8 @@ logger.info("------------------------ [CLEAN  UP] ------------------------");
 logger.info("wait for discordia ...");
 
 local discordia = require "discordia"; _G.discordia = discordia; ---@type discordia -- 디스코드 lua 봇 모듈 불러오기
-local discordia_slash = require("discordia_slash"); _G.discordia_slash = discordia_slash;
-local discordia_components = require("discordia_components"); _G.discordia_components = discordia_components; ---@type discordia_components
+local discordia_enchent = require "discordia_enchent"; _G.discordia_enchent = discordia_enchent;
 local userInteractWarpper = require("class.userInteractWarpper"); _G.userInteractWarpper = userInteractWarpper;
-require("discordia_voicefix"); -- enable voice fix extension
-require("discordia_api9") -- enable api 9
 
 local discordia_class = require "discordia/libs/class"; _G.discordia_class = discordia_class; ---@type class -- 디스코드 클레스 가져오기
 local discordia_Logger = discordia_class.classes.Logger; ---@type Logger -- 로거부분 가져오기 (통합을 위해 수정)
@@ -124,10 +121,8 @@ function discordia_Logger:log(level, msg, ...)
 	return msg;
 end
 
----@diagnostic disable
+---@diagnostic disable-next-line
 client:useSlashCommands(); --enable slash extension
-client:useComponents();
----@diagnostic enable
 --#endregion : Discordia Module
 --#region : Load bot environments
 logger.info("---------------------- [LOAD SETTINGS] ----------------------");
@@ -496,7 +491,7 @@ client:on("slashCommandsReady", function()
 			{
 				name = "내용";
 				description = "미나와 나눌 대화를 입력해보세요!";
-				type = discordia_slash.enums.optionType.string;
+				type = discordia_enchent.enums.optionType.string;
 				required = true;
 			};
 		};

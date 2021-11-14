@@ -2,6 +2,7 @@ local discordia = require("discordia");
 local client = discordia.Client;
 local discordiaEvents = client._events;
 local classes = discordia.class.classes;
+local eventHandler = require("eventHandler");
 
 -- enable voice fixer
 require("containers/voice/FFmpegProcess")(classes.FFmpegProcess)
@@ -12,9 +13,10 @@ require("containers/voice/VoiceConnection")(
 );
 require("api9"); -- inject api 9
 require("containers/appliactionCommand"); -- inject appliactionCommand into client
-local eventHandler = require("eventHandler");
 
 local export = {
+    ---@type enchent_enums
+    enums = require("enums");
     ---@type Interaction
     interaction = require("interaction");
     components = {
@@ -26,5 +28,4 @@ local export = {
 };
 
 eventHandler.mount(discordiaEvents);
-
 return export;
