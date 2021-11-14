@@ -164,7 +164,6 @@ client:on("slashCommandsReady", function()
 			};
 		};
 		callback = function(interaction, params, cmd)
-            print(interaction.id)
             interaction:reply(
                 makeVote(interaction.id,params["내용"],interaction.token)
             );
