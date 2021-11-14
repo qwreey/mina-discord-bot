@@ -1,12 +1,12 @@
 local discordia = require("discordia")
-local endpoints = require('./endpoints')
-local f = string.format
-local AC = require('./ApplicationCommand')
-local IA = require('./Interaction')
+local endpoints = require('../endpoints')
+local format = string.format
+local applicationCommand = require('./applicationCommand')
+local interaction = require('../interaction')
 local client_m = discordia.Client
 local guild_m = discordia.class.classes.Guild
 local cache_m = discordia.class.classes.Cache
-local enums = require('./enums')
+local enums = require('../enums')
 
 local typeConverter = {
 	[enums.optionType.string] = function(val) return val end,
@@ -37,23 +37,25 @@ local function makeParams(data, guild, output)
 	return output
 end
 
+local eventHandler = require("../eventHandler")
+eventHandler.make("INTERACTION_CREATE",function (args, client)
+	if args.type ~= 2 then
+		return false
+	end
+	local data = args.data
+	local cmd = client:getSlashCommand(data.id)
+	if not cmd then return client:warning('Uncached slash command (%s) on INTERACTION_CREATE', data.id) end
+	if data.name ~= cmd._name then return client:warning('Slash command %s "%s" name doesn\'t match with interaction response, got "%s"! Guild %s, channel %s, member %s', cmd._id, cmd._name, data.name, args.guild_id, args.channel_id, args.member.user.id) end
+	local ia = interaction(args, client)
+	local params = makeParams(data.options, ia.guild)
+	local cb = cmd._callback
+	if not cb then return client:warning('Unhandled slash command interaction: %s "%s" (%s)!', cmd._id, cmd._name, cmd._guild and "Guild " .. cmd._guild.id or "Global") end
+	coroutine.wrap(cb)(ia, params, cmd)
+	return true
+end)
+
 function client_m:useSlashCommands()
 	self._slashCommandsInjected = true
-
-	function self._events.INTERACTION_CREATE(args, client)
-		if args.type ~= 2 then
-			return;
-		end
-		local data = args.data
-		local cmd = client:getSlashCommand(data.id)
-		if not cmd then return client:warning('Uncached slash command (%s) on INTERACTION_CREATE', data.id) end
-		if data.name ~= cmd._name then return client:warning('Slash command %s "%s" name doesn\'t match with interaction response, got "%s"! Guild %s, channel %s, member %s', cmd._id, cmd._name, data.name, args.guild_id, args.channel_id, args.member.user.id) end
-		local ia = IA(args, client)
-		local params = makeParams(data.options, ia.guild)
-		local cb = cmd._callback
-		if not cb then return client:warning('Unhandled slash command interaction: %s "%s" (%s)!', cmd._id, cmd._name, cmd._guild and "Guild " .. cmd._guild.id or "Global") end
-		coroutine.wrap(cb)(ia, params, cmd)
-	end
 
 	self:once("ready", function()
 		local id = self:getApplicationInformation().id
@@ -85,7 +87,7 @@ function client_m:slashCommand(data)
 		end
 	end
 
-	local cmd = AC(data, self)
+	local cmd = applicationCommand(data, self)
 
 	if found then
 		-- p(found) p(cmd)
@@ -125,7 +127,7 @@ function guild_m:slashCommand(data)
 		end
 	end
 
-	local cmd = AC(data, self)
+	local cmd = applicationCommand(data, self)
 
 	if found then
 		if not found:_compare(cmd) then
@@ -147,18 +149,18 @@ function guild_m:slashCommand(data)
 end
 
 function client_m:getSlashCommands()
-	local list, err = self._api:request('GET', f(endpoints.COMMANDS, self._slashid))
+	local list, err = self._api:request('GET', format(endpoints.COMMANDS, self._slashid))
 	if not list then return nil, err end
-	local cache = cache_m(list, AC, self)
+	local cache = cache_m(list, applicationCommand, self)
 	self._globalCommands = cache
 
 	return cache
 end
 
 function guild_m:getSlashCommands()
-	local list, err = self.client._api:request('GET', f(endpoints.COMMANDS_GUILD, self.client._slashid, self.id))
+	local list, err = self.client._api:request('GET', format(endpoints.COMMANDS_GUILD, self.client._slashid, self.id))
 	if not list then return nil, err end
-	local cache = cache_m(list, AC, self)
+	local cache = cache_m(list, applicationCommand, self)
 	self._slashCommands = cache
 	self.client._guildCommands[self] = cache
 

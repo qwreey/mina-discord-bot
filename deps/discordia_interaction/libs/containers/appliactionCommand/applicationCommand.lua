@@ -1,8 +1,8 @@
 local discordia = require("discordia")
-local endpoints = require('./endpoints')
+local endpoints = require('../../endpoints')
 local f = string.format
 local Snowflake_m = discordia.class.classes.Snowflake
-local AC, ACgetters = discordia.class('ApplicationCommand', Snowflake_m)
+local applicationCommand, applicationCommandGetters = discordia.class('ApplicationCommand', Snowflake_m)
 
 local function recursiveOptionsMap(t)
 	local map = {}
@@ -20,7 +20,7 @@ local function recursiveOptionsMap(t)
 	return map
 end
 
-function AC:__init(data, parent)
+function applicationCommand:__init(data, parent)
 	self._id = data.id
 	self._parent = parent
 	self._name = data.name
@@ -35,7 +35,7 @@ function AC:__init(data, parent)
 	end
 end
 
-function AC:publish()
+function applicationCommand:publish()
 	if self._id then return self:edit() end
 	local g = self._guild
 
@@ -74,7 +74,7 @@ function AC:publish()
 	end
 end
 
-function AC:edit()
+function applicationCommand:edit()
 	local g = self._guild
 
 	if not g then
@@ -108,23 +108,23 @@ function AC:edit()
 	end
 end
 
-function AC:setName(name)
+function applicationCommand:setName(name)
 	self._name = name
 end
 
-function AC:setDescription(description)
+function applicationCommand:setDescription(description)
 	self._description = description
 end
 
-function AC:setOptions(options)
+function applicationCommand:setOptions(options)
 	self._options = options
 end
 
-function AC:setCallback(callback)
+function applicationCommand:setCallback(callback)
 	self._callback = callback
 end
 
-function AC:delete()
+function applicationCommand:delete()
 	local g = self._guild
 
 	if not g then
@@ -136,7 +136,7 @@ function AC:delete()
 	end
 end
 
-function AC:getPermissions(g)
+function applicationCommand:getPermissions(g)
 	g = self._guild or g
 
 	if not g then
@@ -152,7 +152,7 @@ function AC:getPermissions(g)
 	end
 end
 
-function AC:addPermission(perm, g)
+function applicationCommand:addPermission(perm, g)
 	g = self._guild or g
 
 	if not g then
@@ -182,7 +182,7 @@ function AC:addPermission(perm, g)
 	})
 end
 
-function AC:removePermission(perm, g)
+function applicationCommand:removePermission(perm, g)
 	g = self._guild or g
 
 	if not g then
@@ -252,7 +252,7 @@ local function table_eq(table1, table2)
 	return recurse(table1, table2)
  end
 
-function AC:_compare(cmd)
+function applicationCommand:_compare(cmd)
 	-- p({
 	-- 	name = cmd._name;
 	-- 	description = cmd._description;
@@ -276,7 +276,7 @@ function AC:_compare(cmd)
 	return true
 end
 
-function AC:_merge(cmd)
+function applicationCommand:_merge(cmd)
 	self._name = cmd._name
 	self._description = cmd._description
 	self._options = cmd._options
@@ -285,28 +285,28 @@ function AC:_merge(cmd)
 	self:edit()
 end
 
-function ACgetters:name()
+function applicationCommandGetters:name()
 	return self._name
 end
 
-function ACgetters:description()
+function applicationCommandGetters:description()
 	return self._description
 end
 
-function ACgetters:options()
+function applicationCommandGetters:options()
 	return self._options
 end
 
-function ACgetters:guild()
+function applicationCommandGetters:guild()
 	return self._guild
 end
 
-function ACgetters:callback()
+function applicationCommandGetters:callback()
 	return self._callback
 end
 
-function ACgetters:version()
+function applicationCommandGetters:version()
 	return self._version
 end
 
-return AC
+return applicationCommand
