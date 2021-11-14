@@ -41,21 +41,17 @@ function module:saveData(interactionId)
 	local interactionData = interactionData[interactionId];
 	if not interactionData then
 		logger.warn("something want wrong... (load interaction data first and save data!)");
-		logger.errorf("un error occur on save interaction data (file or interactionData was not found), interactionId : %s",tostring(interactionId));
+		logger.errorf("An error occur on save interaction data (file or interactionData was not found), interactionId : %s",tostring(interactionId));
 		return;
 	end
 	local raw = json.encode(interactionData);
 
 	-- 파일 열고 쓰고 닫기
-	local passed = fs.writeFileSync(formatFileRoot(interactionId),raw);
+	local passed,errorMsg = fs.writeFileSync(formatFileRoot(interactionId),raw);
 
 	-- 오류 처리 (백업 시키기)
 	if not passed then
-		logger.errorf("un error occur on save data! (%s) : data = %s",interactionId,raw);
-		local now = os.date("*t");
-		local errFile = io.open("data/crash/" .. ("er%s.uid%s.tm%dm%dd%dh%dm%ds"):format(
-			makeId(),interactionId,now.month,now.day,now.hour,now.min,now.sec
-		));
+		logger.errorf("an error occur on save data!\nerror message : %s\nfile : %s\ndata : %s",tostring(errorMsg),interactionId,raw);
 	end
 end
 
@@ -91,9 +87,9 @@ function module:resetData(interactionId)
 	end);
 end
 
-function module:new(interactionId,data)
-	interactionData[interactionId] = data;
-	return fs.writeFile(formatFileRoot(interactionId),json.encode(data));
+function module:resetData(interactionId)
+	userDatas[userId] = nil;
+	fs.unlink(formatFileRoot(interactionId));
 end
 
 return module;
