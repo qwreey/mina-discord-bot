@@ -146,7 +146,7 @@ function this:__play(thing,position) -- PRIVATE
 		-- when errored, replay on errored timestamp (point of stoped)
 		if (ffmpegErrorCount ~= 0) and (type(result) == "number") then -- result is elapsed
 			self.nowPlaying = nil;
-			timeout(self.__play,self,thing,result / 1000); -- adding coroutine on worker
+			timeout(0,self.__play,self,thing,result / 1000); -- adding coroutine on worker
 			return;
 		end
 
