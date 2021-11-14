@@ -166,8 +166,10 @@ client:on("slashCommandsReady", function()
 			};
 		};
 		callback = function(interaction, params, cmd)
-            interaction:reply(
-                makeVote(interaction.id,params["내용"],interaction.token)
+            interaction:reply(header);
+            local message = interaction.channel:send("​"); -- zwsp
+            message:update(
+            	makeVote(message.id,params["내용"],true)
             );
 		end;
 	});
@@ -181,7 +183,7 @@ local export = {
         func = function (replyMsg,message,args,Content)
         	local isSlashCommand = Content.isSlashCommand;
         	if isSlashCommand then
-        		replyMsg = replyMsg;reply("​"); -- zwsp
+        		replyMsg = replyMsg:reply("​"); -- zwsp
         	end
             replyMsg:update(
                 makeVote(replyMsg.id,Content.rawArgs,isSlashCommand)
