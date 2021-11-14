@@ -127,7 +127,7 @@ local function buttonPressed(id,object)
     local parentInteraction = object.parentInteraction;
     if not message and parentInteraction then
         message = interactMessageWarpper.new(parentInteraction);
-        interactMessageWarpper.replyed = true;
+        message.replyed = true;
     end
     if message then
         local voteId = makeId(message.id);
