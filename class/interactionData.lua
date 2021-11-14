@@ -92,4 +92,9 @@ function module:resetData(interactionId)
 	fs.unlink(formatFileRoot(interactionId));
 end
 
+function module:new(interactionId,data)
+	interactionData[interactionId] = data;
+	return fs.writeFile(formatFileRoot(interactionId),json.encode(data));
+end
+
 return module;
