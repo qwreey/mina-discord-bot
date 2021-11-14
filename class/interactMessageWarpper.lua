@@ -76,7 +76,7 @@ function interactMessageWarpper:delete()
 	self.this.delete();
 end
 function interactMessageWarpper:reply(d)
-	self.channel:send(d);
+	self.this.channel:send(d);
 end
 function interactMessageWarpper.new(this,commandStr)
 	local self = {
