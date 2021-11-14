@@ -10,6 +10,12 @@ require("containers/voice/VoiceConnection")(
     }
 );
 require("api9"); -- inject api 9
+require("containers/message");
+require("containers/textChannel")(
+    classes.TextChannel,
+    classes.PrivateChannel,
+    classes.GuildTextChannel
+);
 local appliactionCommand = require("containers/appliactionCommand"); -- inject appliactionCommand into client
 
 local export = {

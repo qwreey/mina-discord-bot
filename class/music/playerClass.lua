@@ -78,6 +78,7 @@ end
 -- play thing
 local getPosixNow = posixTime.now;
 local expireAtLast = 2 * 60;
+local retryRate = 5;
 function this:__play(thing,position) -- PRIVATE
 	-- logginggs
 	logger.infof("playing %s with %s",tostring(thing),tostring(position));
@@ -110,33 +111,25 @@ function this:__play(thing,position) -- PRIVATE
 	coroutine.wrap(function()
 		-- play this song
 		local handler = self.handler;
-		local ffmpegErrorCount = 0;
-		local ffmpegLastError;
+		local ffmpegError;
 		local isPassed,result,reason = pcall(handler.playFFmpeg,handler,thing.audio,nil,position,coroutine.wrap(function (errStr)
 			-- error sending limitation
-			ffmpegErrorCount = ffmpegErrorCount + 1;
-			if ffmpegErrorCount > 1 then
+			if ffmpegError then
 				return;
 			end
+			ffmpegError = true;
 
 			-- error on ffmpeg
 			logger.info("[Music] try to sending error last message");
 			local message = thing.message;
 
-			-- check old message is same with this error
-			local oldError = ffmpegLastError;
-			ffmpegLastError = ("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
-				tostring((thing.info or {title = "unknown"}).title),
-				tostring((errStr .. "\n"):gsub("https?://.-[\n :]",""))
-			);
-			if ffmpegLastError == oldError then
-				return;
-			end
-
 			-- send message
 			if message then
 				message:reply {
-					content = ffmpegLastError;
+					content = ("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```\n오류난 부분에서 다시 재생을 시도합니다!"):format(
+						tostring((thing.info or {title = "unknown"}).title),
+						tostring((errStr .. "\n"):gsub("https?://.-[\n :]",""))
+					);
 					reference = {message = message, mention = false};
 				};
 			end
@@ -144,10 +137,24 @@ function this:__play(thing,position) -- PRIVATE
 
 		-- TODO: hight resolution time required!
 		-- when errored, replay on errored timestamp (point of stoped)
-		if (ffmpegErrorCount ~= 0) and (type(result) == "number") then -- result is elapsed
-			self.nowPlaying = nil;
-			timeout(0,self.__play,self,thing,result / 1000); -- adding coroutine on worker
-			return;
+		if ffmpegError and (type(result) == "number") then -- result is elapsed
+			local lastErrorTime = self.lastErrorTime;
+			local now = posixTime.now();
+			if (not lastErrorTime) or (lastErrorTime+retryRate < now) then
+				self.lastErrorTime = now;
+				self.nowPlaying = nil;
+				timeout(0,self.__play,self,thing,result / 1000); -- adding coroutine on worker
+				return;
+			else
+				self.lastErrorTime = nil;
+				local message = thing.message;
+				if message then
+					message:reply {
+						content = "오류가 너무 많아 이 곡을 건너뜁니다!";
+						reference = {message = message, mention = false};
+					};
+				end
+			end
 		end
 
 		-- is on seeking mode
