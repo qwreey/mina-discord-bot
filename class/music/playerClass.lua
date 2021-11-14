@@ -115,7 +115,7 @@ function this:__play(thing,position) -- PRIVATE
 		local isPassed,result,reason = pcall(handler.playFFmpeg,handler,thing.audio,nil,position,coroutine.wrap(function (errStr)
 			-- error sending limitation
 			ffmpegErrorCount = ffmpegErrorCount + 1;
-			if ffmpegErrorCount > 4 then
+			if ffmpegErrorCount > 1 then
 				return;
 			end
 
