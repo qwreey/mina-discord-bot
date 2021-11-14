@@ -11,9 +11,10 @@ local function makeId(id)
     return "vote_" .. tostring(id);
 end
 
+local header = "**따끈 따끈한 투표!**";
 local function makeVoteText(data,items)
     items = items or data.items;
-    local str = "**따끈 따끈한 투표!**\n";
+    local str = "";
     local selected = data.selected or {};
     local allUserCount = 0;
     for _,v in pairs(selected) do
@@ -57,7 +58,7 @@ local function makeVoteButtons(items)
     return buttons;
 end
 
-local function makeVote(messageId,rawString,slashToken)
+local function makeVote(messageId,rawString,isSlash)
     local items = {};
     for str in rawString:gmatch("[^,]+") do
         local this = str:gsub("\n",""):gsub("*",""):gsub("_",""):gsub(">",""):gsub("`","");
@@ -67,7 +68,8 @@ local function makeVote(messageId,rawString,slashToken)
     local id = makeId(messageId);
     local data = {
         items = items;
-        slashToken = slashToken;
+        --slashToken = slashToken;
+        isSlash = isSlash;
     };
     interactionData:new(id,data);
 
@@ -79,7 +81,7 @@ local function makeVote(messageId,rawString,slashToken)
     end
 
     return {
-        content = makeVoteText(data,items);
+        content = (isSlash and "" or (header .. "\n")) .. makeVoteText(data,items);
         components = makeVoteButtons(items);
     };
 end
@@ -136,14 +138,14 @@ local function buttonPressed(id,object)
             return;
         end
 
-        if parentInteraction then
-            parentInteraction._token = data.slashToken;
-        end
+        --if parentInteraction then
+        --    parentInteraction._token = data.slashToken;
+        --end
 
         updateVote(object.user.id,voteSelection,data);
         message:update({
             components = message.components;
-            content = makeVoteText(data);
+            content = (data.isSlash and "" or (header .. "\n")) ..  makeVoteText(data);
         });
         interactionData:saveData(voteId);
         object:ack();
@@ -174,11 +176,15 @@ end);
 local export = {
     ["투표"] = {
         alias = "선거";
-        reply = "잠시만 기다려주세요!";
+        reply = header;
         command = {"vote"};
         func = function (replyMsg,message,args,Content)
+        	local isSlashCommand = Content.isSlashCommand;
+        	if isSlashCommand then
+        		replyMsg = replyMsg;reply("​"); -- zwsp
+        	end
             replyMsg:update(
-                makeVote(replyMsg.id,Content.rawArgs,Content.isSlashCommand and replyMsg.this.token)
+                makeVote(replyMsg.id,Content.rawArgs,isSlashCommand)
             );
         end;
     };
