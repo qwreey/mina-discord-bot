@@ -3,12 +3,6 @@ local module = {};
 
 local learn = require "commands.learning.learn";
 local errorType = learn.errorType;
---[[
-
-가르치기 명령어
-구현채 부분임
-
-]]
 
 local help = [[
 **가르치기 기능에 대한 도움말입니다**
@@ -38,7 +32,12 @@ local itemsPerPage = 10;
 ---@type table<string, Command>
 local export = {
 	["가르치기 도움말"] = {
-		alias = {"가르치기 사용법","가르치기 사용법 알려줘","가르치기사용법","가르치기 도움말 보여줘","가르치기 help","가르치기도움말"};
+		alias = {
+			"도움말 기억","기억 도움말","기억도움말","도움말기억",
+			"기억 사용법","사용법기억","도움말가르치기","도움말 가르치기",
+			"가르치기 사용법","가르치기 사용법 알려줘","가르치기사용법",
+			"가르치기 도움말 보여줘","가르치기 help","가르치기도움말"
+		};
 		reply = help;
 		sendToDm = "개인 메시지로 도움말이 전송되었습니다!";
 	};
@@ -130,14 +129,15 @@ local export = {
 			end
 
 			-- checking object from learned object
-			local this = learned[#learned - rawArgs];
+			local lenLearned = #learned;
+			local this = learned[lenLearned - rawArgs];
 			if not this then
 				replyMsg:setContent(("%d 번째 반응이 존재하지 않아요!"):format(rawArgs));
 				return;
 			end
 
 			local success = learn.remove(this);
-			remove(learned,rawArgs); -- remove from indexs
+			remove(learned,lenLearned - rawArgs); -- remove from indexs
 			userData.lenLearned = userData.lenLearned - 1;
 			Content.saveUserData();
 			if not success then
@@ -198,6 +198,9 @@ local export = {
 					embed = {
 						title = title;
 						description = "이 페이지에는 기억이 없어요!";
+						footer = {
+							text = ("총 기억 갯수 : %d | 총 페이지수 : %d"):format(lenLearned,ceil(lenLearned / itemsPerPage));
+						};
 					};
 				};
 				return;

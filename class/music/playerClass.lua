@@ -30,7 +30,7 @@ this.formatTime = formatTime;
 -- 이 코드는 신과 나만 읽을 수 있게 만들었습니다
 -- 만약 편집을 기꺼히 원한다면... 그렇게 하도록 하세요
 -- 다만 여기의 이 규칙을 따라주세요
--- local theHourOfAllOfSpentForEditingThis = 45; -- TYPE: number;hour
+-- local theHourOfAllOfSpentForEditingThis = 82; -- TYPE: number;hour
 -- 이 코드를 편집하기 위해 사용한 시간만큼 여기의
 -- 변수에 값을 추가해주세요.
 
@@ -78,7 +78,11 @@ end
 -- play thing
 local getPosixNow = posixTime.now;
 local expireAtLast = 2 * 60;
-function this:__play(thing) -- PRIVATE
+local retryRate = 5;
+function this:__play(thing,position) -- PRIVATE
+	-- logginggs
+	logger.infof("playing %s with %s",tostring(thing),tostring(position));
+
 	-- if thing is nil, return
 	if not thing then
 		return;
@@ -99,7 +103,7 @@ function this:__play(thing) -- PRIVATE
 	-- end
 	local exprie = thing.exprie;
 	local info = thing.info;
-	if exprie and exprie <= (getPosixNow()+(info and info.duration or 0)+expireAtLast) then
+	if exprie and exprie <= (getPosixNow()+(info and info.duration or 0)+expireAtLast-(position or 0)) then
 		this.download();
 	end
 
@@ -107,17 +111,63 @@ function this:__play(thing) -- PRIVATE
 	coroutine.wrap(function()
 		-- play this song
 		local handler = self.handler;
-		local isPassed,result,reason = pcall(handler.playFFmpeg,handler,thing.audio,nil,nil,function (errStr)
+		local ffmpegError;
+		local isPassed,result,reason = pcall(handler.playFFmpeg,handler,thing.audio,nil,position,coroutine.wrap(function (errStr)
+			-- error sending limitation
+			if ffmpegError then
+				return;
+			end
+			ffmpegError = true;
+
 			-- error on ffmpeg
+			logger.info("[Music] try to sending error last message");
 			local message = thing.message;
-			message:reply {
-				content = ("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
-					tostring((thing.info or {title = "unknown"}).title),
-					tostring(errStr:gsub("https?://.-\n",""))
-				);
-				reference = {message = message, mention = false};
-			};
-		end);
+
+			-- send message
+			if message then
+				message:reply {
+					content = ("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```\n오류난 부분에서 다시 재생을 시도합니다!"):format(
+						tostring((thing.info or {title = "unknown"}).title),
+						tostring((errStr .. "\n"):gsub("https?://.-[\n :]",""))
+					);
+					reference = {message = message, mention = false};
+				};
+			end
+		end));
+
+		-- TODO: hight resolution time required!
+		-- when errored, replay on errored timestamp (point of stoped)
+		if ffmpegError and (type(result) == "number") then -- result is elapsed
+			local lastErrorTime = self.lastErrorTime;
+			local now = posixTime.now();
+			if (not lastErrorTime) or (lastErrorTime+retryRate < now) then
+				self.lastErrorTime = now;
+				self.nowPlaying = nil;
+				timeout(0,self.__play,self,thing,result / 1000); -- adding coroutine on worker
+				return;
+			else
+				self.lastErrorTime = nil;
+				local message = thing.message;
+				if message then
+					message:reply {
+						content = "오류가 너무 많아 이 곡을 건너뜁니다!";
+						reference = {message = message, mention = false};
+					};
+				end
+			end
+		end
+
+		-- is on seeking mode
+		local seeking = self.seeking;
+		if seeking then
+			self.seeking = nil;
+			self.nowPlaying = nil;
+			logger.infof("seeking into %s",tostring(seeking));
+			timeout(0,self.__play,self,thing,seeking);
+			return;
+		end
+
+		-- check traceback
 		if self.destroyed then -- none self
 			return;
 		elseif not isPassed then -- errored with lua
@@ -169,7 +219,7 @@ function this:__play(thing) -- PRIVATE
 			end
 		end
 
-		-- when looping is enabled
+		-- when looping is enabled, append this into playlist
 		if self.isLooping and self.nowPlaying then
 			insert(self,thing); -- insert this into end of queue
 		end
@@ -177,8 +227,14 @@ function this:__play(thing) -- PRIVATE
 		-- remove this song from queue
 		self.nowPlaying = nil; -- remove song
 		if selfThis == thing then
-			self:remove(1);
+			-- IMPORTANT! without this, it will take this coroutine until ending of list
+			-- so, it will make coroutine stacks that will take space!
+			timeout(0,function()
+				self:remove(1);
+			end);
 		end
+
+		-- this coroutine will killed on here
 	end)();
 end
 
@@ -356,6 +412,7 @@ local function seekbar(now,atEnd)
 		formatTime(atEnd)
 	);
 end
+this.seekbar = seekbar;
 
 -- display now playing
 function this:embedfiyNowplaying(index)
@@ -400,6 +457,26 @@ function this:embedfiyNowplaying(index)
 		} or nil;
 		color = 16040191;
 	};
+end
+
+-- seek playing position
+function this:seek(timestamp)
+	if not self.nowPlaying then
+		error(
+			("player:seek must be called on playing song (self.nowPlaying == nil)\nplayerId: %s")
+				:format(self.voiceChannelID or "NULL")
+		);
+	else
+		local timestampType = type(timestamp);
+		if timestampType ~= "number" then
+			error(
+				("timestamp must be number value. but got %s (%s)")
+					:format(timestampType,tostring(timestamp))
+			);
+		end
+	end
+	self.seeking = timestamp;
+	self.handler:stopStream();
 end
 
 return this;

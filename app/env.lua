@@ -28,21 +28,23 @@ local function timeAgo(old,now)
 end
 _G.timeAgo = timeAgo;
 
--- google api key, discord token, game api key and more. this is should be protected
-local testing;
-for _,v in pairs(args) do
-	if v == "test" or v == "testing" then
-		testing = true;
-		break;
+-- google api key,z discord token, game api key and more. this is should be protected
+do
+	local testing; -- check testing mode
+	for _,v in pairs(args) do
+		if v == "test" or v == "testing" then
+			testing = true;
+			break;
+		end
 	end
-end
-_G.ACCOUNTData = data.load("data/ACCOUNT.json");
-if testing then
-	local testData = data.load("data/ACCOUNT_test.json");
-	for i,v in pairs(testData) do
-		ACCOUNTData[i] = v;
+	_G.ACCOUNTData = data.load("data/ACCOUNT.json");
+	if testing then
+		local testData = data.load("data/ACCOUNT_test.json");
+		for i,v in pairs(testData) do
+			ACCOUNTData[i] = v;
+		end
+		ACCOUNTData.testing = true;
 	end
-	ACCOUNTData.testing = true;
 end
 
 -- EULA text
@@ -105,7 +107,6 @@ _G.loveCooltime = 3600;
 
 -- this is used on displays disabled on dm message
 _G.disableDm = "이 반응은 DM 에서 사용 할 수 없어요! 서버에서 이용해 주세요";
-
 local eulaComment = (
 	"\n> %s 기능을 사용할 수 없어요!" ..
 	"\n> %s 기능을 사용하려면 **`미나야 약관 동의`** 를 입력해주세요!" ..
@@ -127,6 +128,7 @@ _G.admins = { -- 관리 명령어 권한
 	["756035861250048031"] = true; -- my sub account
 	["647101613047152640"] = true; -- 눈송이
 	["755378215907885116"] = true; -- 삿갓
+	["654245768055619584"] = true; -- 12302
 };
 
 -- the bot prefixs
@@ -233,9 +235,10 @@ end
 _G.reloadBot = reloadBot;
 _G.startBot = startBot;
 
+-- timeout
 -- js's timeout function that inspired by js's timeout function
-local remove = table.remove;
-local unpack = unpack or table.unpack;
+-- local remove = table.remove;
+-- local unpack = unpack or table.unpack;
 -- local pcallWrapper = function (func,promise,...)
 -- 	local result = {pcall(func,...)};
 -- 	local isPassed = remove(result,1);
@@ -247,11 +250,12 @@ local unpack = unpack or table.unpack;
 -- 	end
 -- end;
 local function timeout(delay,func,...)
-	return timer.setTimeout(delay,coroutine.wrap(func));
+	return timer.setTimeout(delay,coroutine.wrap(func),...);
 end
 _G.timeout = timeout;
 
-do -- normal love range
+-- normal love range
+do 
 	local cache = {};
 	_G.loveRang = function (min,max)
 		local key = ("%dx%d"):format(min,max);
@@ -266,3 +270,6 @@ do -- normal love range
 	_G.defaultLove = loveRang(2,8);
 	_G.rmLove = loveRang(-2,-8);
 end
+
+-- report cooltime
+_G.reportCooltime = 60*60;

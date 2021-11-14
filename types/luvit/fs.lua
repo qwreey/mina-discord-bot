@@ -1,3 +1,4 @@
+---@diagnostic disable
 --[[
 
 Copyright 2014-2015 The Luvit Authors. All Rights Reserved.

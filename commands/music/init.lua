@@ -4,6 +4,8 @@ local formatTime = playerClass.formatTime;
 local time = os.time;
 local timer = _G.timer;
 local eulaComment_music = _G.eulaComment_music or makeEulaComment("음악");
+local hourInSecond = 60*60;
+local minuteInSecond = 60;
 
 -- 섞기 움직이기(이동)
 
@@ -156,7 +158,7 @@ local function removeSong(rawArgs,player,replyMsg)
 		end
 	end
 	do -- index by name
-		for index = #player,1,-1 do -- TODO: check this is working?
+		for index = #player,1,-1 do
 			local song = player[index];
 			local info = song.info;
 			if info then
@@ -178,8 +180,9 @@ local export = {
 	["add music"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"add","p","play"};
+		command = {"add","p","play","추가","재생","곡추가"};
 		alias = {
+			"곡 신청","노래 신청","음악 신청","곡신청","노래신청","음악신청",
 			"노래틀어","노래틀어줘","노래추가해","노래추가해줘","노래추가하기","노래추가해봐","노래추가해라","노래추가","노래재생","노래실행",
 			"노래 틀어","노래 틀어줘","노래 추가해","노래 추가해줘","노래 추가하기","노래 추가해봐","노래 추가해라","노래 추가","노래 재생","노래 실행",
 			"음악틀어","음악틀어줘","음악추가해","음악추가해줘","음악추가하기","음악추가해봐","음악추가해라","음악추가","음악재생","음악실행",
@@ -200,6 +203,11 @@ local export = {
 				rawArgs,nth = rawArgs:match("(.-) (%d-)$");
 				nth = tonumber(nth);
 				rawArgs = rawArgs or contentRaw;
+			end
+
+			if rawArgs == "" then
+				replyMsg:setContent("키워드 또는 url 을 입력해주세요!");
+				return;
 			end
 
 			-- check users voice channel
@@ -321,7 +329,7 @@ local export = {
 	["join music"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"add","p","play"};
+		command = {"j","join","참여","참가"};
 		alias = {
 			"보이스채팅참여","보이스채팅참여해","보이스채팅참가","보이스채팅참가해","보이스채팅참가하기","보이스채팅참가해라","보이스채팅참가해봐","보이스채팅참가하자",
 			"보이스채팅 참여","보이스채팅 참여해","보이스채팅 참가","보이스채팅 참가해","보이스채팅 참가하기","보이스채팅 참가해라","보이스채팅 참가해봐","보이스채팅 참가하자",
@@ -391,14 +399,14 @@ local export = {
 	};
 	["list music"] = {
 		disableDm = true;
-		command = {"l","ls","list","q","queue"};
+		command = {"l","ls","list","q","queue","플리","리스트","큐","목록"};
 		alias = {
-			"노래페이지","노래대기열","노래리스트","노래순번","노래페이지",
-			"노래 페이지","노래 대기열","노래 리스트","노래 순번","노래 페이지",
-			"곡페이지","곡대기열","곡리스트","곡순번","곡페이지",
-			"곡 페이지","곡 대기열","곡 리스트","곡 순번","곡 페이지",
-			"음악페이지","음악대기열","음악리스트","음악순번","음악페이지",
-			"음악 페이지","음악 대기열","음악 리스트","음악 순번","음악 페이지",
+			"노래목록","노래페이지","노래대기열","노래리스트","노래순번","노래페이지",
+			"노래 목록","노래 페이지","노래 대기열","노래 리스트","노래 순번","노래 페이지",
+			"곡목록","곡페이지","곡대기열","곡리스트","곡순번","곡페이지",
+			"곡 목록","곡 페이지","곡 대기열","곡 리스트","곡 순번","곡 페이지",
+			"음악목록","음악페이지","음악대기열","음악리스트","음악순번","음악페이지",
+			"음악 목록","음악 페이지","음악 대기열","음악 리스트","음악 순번","음악 페이지",
 			"재생목록","재생 목록","신청 목록","신청목록","플리",
 			"플레이리스트","플레이 리스트",
 			"list music","queue music","music queue","music list",
@@ -420,21 +428,21 @@ local export = {
 			replyMsg:update {
 				embed = player:embedfiyList(tonumber(rawArgs) or tonumber(rawArgs:match("%d+")));
 				content = "현재 이 서버의 플레이리스트입니다!";
-				components = {
-					{
-						type = 1;
-						label = "Test";
-						sytle = 1;
-						custom_id = "test";
-					};
-				};
+				-- components = {
+				-- 	{
+				-- 		type = 1;
+				-- 		label = "Test";
+				-- 		sytle = 1;
+				-- 		custom_id = "test";
+				-- 	};
+				-- };
 			};
 		end;
 	};
 	["song24"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"loop","looping","lp","lop"};
+		command = {"24","24h"};
 		alias = {
 			"song 24","music 24","music24","song 24h","song24h","music24h","music 24h",
 			"노래24","노래 24","노래 24시","노래24시","노래24시간","노래 24시간",
@@ -497,7 +505,7 @@ local export = {
 	["loop"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"loop","looping","lp","lop"};
+		command = {"루프","loop","looping","lp","lop"};
 		alias = {
 			"반복재생",
 			"looping","looping toggle","toggle looping","플레이리스트반복","플레이 리스트 반복","플리 반복",
@@ -550,14 +558,14 @@ local export = {
 		reply = "명령어를 처리하지 못했어요!\n> 음악 기능 도움이 필요하면 '미나 음악 도움말' 을 입력해주세요";
 	};
 	["음악 도움말"] = {
-		alias = {"음악 사용법","음악 사용법 알려줘","음악사용법","음악 도움말 보여줘","음악 help","음악도움말","music help","help music","music 도움말"};
+		alias = {"도움말 음악","도움말 음악봇","음악 사용법","음악 사용법 알려줘","음악사용법","음악 도움말 보여줘","음악 help","음악도움말","music help","help music","music 도움말"};
 		reply = help;
 		sendToDm = "개인 메시지로 도움말이 전송되었습니다!";
 	};
 	["remove music"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"rm","remove","r"};
+		command = {"지워","지워기","없에기","없에","제거","재거","빼기","rm","remove","r"};
 		alias = {
 			"곡 재거","곡재거","음악 재거","음악 재거","노래 재거","노래재거",
 			"곡빼줘","곡제거","곡빼기","곡없에기","곡지우기","곡삭제","곡지워","곡빼","곡없에","곡지워줘","곡없에줘","곡날리기",
@@ -624,7 +632,7 @@ local export = {
 	["skip music"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"sk","skip","s"};
+		command = {"넘겨","넘기기","건너뛰기","스킵","sk","skip","s"};
 		alias = {
 			"곡 넘겨","곡건너뛰기","곡스킵","곡넘어가기","곡넘기기","곡넘겨줘","곡넘어가","곡다음","곡다음으로","곡다음곡",
 			"곡넘겨","곡 건너뛰기","곡 스킵","곡 넘어가기","곡 넘기기","곡 넘겨줘","곡 넘어가","곡 다음","곡 다음으로","곡 다음곡",
@@ -701,7 +709,7 @@ local export = {
 	["pause music"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"pause"};
+		command = {"멈춰","멈처","멈춤","pause"};
 		alias = {
 			"곡 멈추기","곡 멈춰","곡멈추기","곡멈춰",
 			"음악 멈추기","음악 멈춰","음악멈추기","음악멈춰",
@@ -763,7 +771,7 @@ local export = {
 	["stop music"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"off","stop","leave"};
+		command = {"그만","종료","나가","끄기","off","stop","leave","kill"};
 		alias = {
 			"곡 끄기","곡 꺼","곡끄기","곡꺼",
 			"음악 끄기","음악 꺼","음악끄기","음악꺼",
@@ -813,7 +821,7 @@ local export = {
 	};
 	["now music"] = {
 		disableDm = true;
-		command = {"n","np","nowplay","nowplaying","nplay","nplaying","nowp"};
+		command = {"현재","재생중","지금곡","지금노래","n","np","nowplay","nowplaying","nplay","nplaying","nowp"};
 		alias = {
 			"현재재생","지금재생","현재 재생","지금 재생","현재 곡","현재 음악","현재 노래","지금 곡","지금 음악","지금 노래",
 			"현재곡","현재음악","현재노래","지금곡","지금음악","지금노래","지금재생중",
@@ -838,7 +846,7 @@ local export = {
 	};
 	["info music"] = {
 		disableDm = true;
-		command = {"i","info","nowplay","nowplaying","nplay","nplaying","nowp"};
+		command = {"정보","i","info","nowplay","nowplaying","nplay","nplaying","nowp"};
 		alias = {
 			"곡정보","곡 정보","info song","song info","music info","info music","곡 자세히보기",
 			"곡자세히보기","곡설명","곡 설명","song description","description song"
@@ -864,7 +872,7 @@ local export = {
 	["resume music"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"resume"};
+		command = {"재개","resume"};
 		alias = {
 			"곡 다시재생","곡다시재생",
 			"음악 다시재생","음악다시재생",
@@ -909,15 +917,156 @@ local export = {
 				return;
 			end
 
-			-- pause!
+			-- unpause!
 			player:setPaused(false);
 			replyMsg:setContent("성공적으로 음악을 재개했습니다!");
+		end;
+	};
+	["seek music"] = {
+		registeredOnly = eulaComment_music;
+		disableDm = true;
+		command = {"시간","seek","timestamp"};
+		alias = {
+			"timestamp music","music timestamp","music seek",
+			"song music","song timestamp","song seek","seek song",
+			"곡 시간","곡시간","곡 시간 이동","곡 시간이동","곡시간 이동","곡시간이동","곡 시간 조정","곡 시간조정","곡시간 조정","곡시간조정",
+			"곡타임스템프","곡 타임스템프","곡 타임스템프 조정","곡 타임스템프조정","곡타임스템프 조정","곡타임스템프조정","곡 타임스템프 이동","곡 타임스템프이동","곡타임스템프 이동","곡타임스템프이동",
+			"음악 시간","음악시간","음악 시간 이동","음악 시간이동","음악시간 이동","음악시간이동","음악 시간 조정","음악 시간조정","음악시간 조정","음악시간조정",
+			"음악타임스템프","음악 타임스템프","음악 타임스템프 조정","음악 타임스템프조정","음악타임스템프 조정","음악타임스템프조정","음악 타임스템프 이동","음악 타임스템프이동","음악타임스템프 이동","음악타임스템프이동",
+			"노래 시간","노래시간","노래 시간 이동","노래 시간이동","노래시간 이동","노래시간이동","노래 시간 조정","노래 시간조정","노래시간 조정","노래시간조정",
+			"노래타임스템프","노래 타임스템프","노래 타임스템프 조정","노래 타임스템프조정","노래타임스템프 조정","노래타임스템프조정","노래 타임스템프 이동","노래 타임스템프이동","노래타임스템프 이동","노래타임스템프이동"
+		};
+		reply = "처리중입니다 . . .";
+		func = function(replyMsg,message,args,Content)
+			local rawArgs = Content.rawArgs or "";
+
+			-- check users voice channel
+			local voiceChannel = message.member.voiceChannel;
+			if not voiceChannel then
+				replyMsg:setContent("음성 채팅방에 있지 않습니다! 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다.");
+				return;
+			end
+
+			-- get already exist connection
+			local guildConnection = message.guild.connection;
+			if guildConnection and (guildConnection.channel ~= voiceChannel) then
+				replyMsg:setContent("다른 음성채팅방에서 봇을 사용중입니다, 봇이 있는 음성 채팅방에서 사용해주세요!");
+				return;
+			elseif not guildConnection then
+				replyMsg:setContent("봇이 음성채팅방에 있지 않습니다, 봇이 음성채팅방에 있을때 사용해주세요!");
+				return;
+			end
+
+			-- get player object from playerClass
+			local voiceChannelID = voiceChannel:__hash();
+			local player = playerForChannels[voiceChannelID];
+			local nowPlaying = player and player.nowPlaying;
+			if not player then
+				replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
+				return;
+			elseif not nowPlaying then -- if it is not playing then
+				replyMsg:setContent("실행중인 음악이 없습니다!");
+				return;
+			end
+
+			-- get time mode and timestamp with to move
+			local handler = player.handler;
+			local getElapsed = handler and handler.getElapsed;
+			local elapsed = tonumber(getElapsed and getElapsed());
+			elapsed = elapsed and (elapsed / 1000);
+			local mode, hours, minutes, seconds;
+			local timestamp; do
+				do
+					mode, hours, minutes, seconds = rawArgs:match("([%+%-]?) -(%d+) -: -(%d+) -: -(%d+)");
+					hours = tonumber(hours);
+					minutes = tonumber(minutes);
+					seconds = tonumber(seconds);
+					if hours and minutes and seconds then
+						timestamp = (hours * hourInSecond) + (minutes * minuteInSecond) + (seconds);
+					end
+				end
+				if not timestamp then
+					mode, minutes, seconds = rawArgs:match("([%+%-]?) -(%d+) -: -(%d+)");
+					minutes = tonumber(minutes);
+					seconds = tonumber(seconds);
+					if minutes and seconds then
+						timestamp = (minutes * minuteInSecond) + seconds;
+					end
+				end
+				if not timestamp then
+					mode, hours, minutes, seconds = rawArgs:match("([%+%-]?) -(%d+) -시간 -(%d+) -분 -(%d+) -초");
+					hours = tonumber(hours);
+					minutes = tonumber(minutes);
+					seconds = tonumber(seconds);
+					if hours and minutes and seconds then
+						timestamp = (hours * hourInSecond) + (minutes * minuteInSecond) + (seconds);
+					end
+				end
+				if not timestamp then
+					mode, hours, minutes, seconds = rawArgs:match("([%+%-]?) -(%d+) -분 -(%d+) -초");
+					minutes = tonumber(minutes);
+					seconds = tonumber(seconds);
+					if minutes and seconds then
+						timestamp = (hours * hourInSecond) + (minutes * minuteInSecond) + (seconds);
+					end
+				end
+				if not timestamp then
+					local multiple;
+					mode,timestamp,multiple = rawArgs:match("([%+%-]?) -(%d+) -([hHsSmM]?)");
+					timestamp = tonumber(timestamp);
+					if timestamp then
+						if multiple == "h" or multiple == "H" then
+							timestamp = timestamp * hourInSecond;
+						elseif multiple == "m" or multiple == "M" then
+							timestamp = timestamp * minuteInSecond;
+						end
+					end
+				end
+			end
+			if mode and elapsed then
+				if mode == "+" then
+					timestamp = elapsed + timestamp;
+				elseif mode == "-" then
+					timestamp = elapsed - timestamp;
+				end
+			end
+
+			-- checking time
+			local duration;
+			if not timestamp then
+				replyMsg:setContent("원하는 시간을 입력해주세요!");
+				return;
+			elseif timestamp < 0 then
+				replyMsg:setContent("시간은 0 보다 작을 수 없습니다!");
+				return;
+			else
+				local info = nowPlaying.info;
+				duration = tonumber(info.duration);
+				if duration and (duration < timestamp) then
+					replyMsg:setContent(
+						("곡의 길이보다 더 앞으로 갈 수 없습니다\n> 곡 길이는 %s 입니다!")
+							:format(player.formatTime(duration))
+					);
+					return;
+				end
+			end
+
+			-- seek!
+			player:seek(timestamp);
+			replyMsg:update {
+				embed = {
+					title = "재생 위치를 이동했습니다!";
+					description = duration and player.seekbar(timestamp,duration);
+					footer = player:getStatusText();
+				};
+				content = ("%s 로 이동!"):format(player.formatTime(timestamp));
+			};
 		end;
 	};
 	["export music"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"export","e"};
+		command = {"저장","export","e"};
 		alias = {
 			"노래리스트저장하기","노래리스트저장","노래내보내기","노래출력","노래저장","노래저장하기","노래기록","노래기록하기","노래나열하기",
 			"노래 리스트 저장하기","노래 리스트 저장","노래 내보내기","노래 출력","노래 저장","노래 저장하기","노래 기록","노래 기록하기","노래 나열하기",

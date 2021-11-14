@@ -64,7 +64,7 @@ function module.get(name)
 	local path = root:format(id);
 	local maxIndex = tonumber((fs.readFileSync(path .. "/index") or ""):match("%d+"));
 	local removed; do
-		local file = fs.readFileSync(path .. "removed");
+		local file = fs.readFileSync(path .. "/removed");
 		if file then
 			removed = json.decode(("[%s]"):format(file));
 		end
@@ -225,7 +225,7 @@ function module.remove(id)
 	-- local indexPath = path .. "/index";
 
 	-- adding sync?
-	fs.appendFile(path .. "removed",("%s,"):format(tostring(num)));
+	fs.appendFile(path .. "/removed",("%s,"):format(tostring(num)));
 	fs.unlink(this);
 	return true;
 end

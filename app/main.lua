@@ -6,12 +6,12 @@
 	MINA Discord bot
 	https://github.com/qwreey75/MINA_DiscordBot/blob/faf29242b29302341d631513617810d9fe102587/bot.lua
 
-	TODO: 도움말 만들기
 	TODO: 지우기 명령,강퇴,채널잠금,밴 같은거 만들기
 	TODO: 다 못찾으면 !., 같은 기호 지우고 찾기
 	TODO: 그리고도 못찾으면 조사 다 지우고 찾기
 ]]
 
+--#region : sys setup
 -- Setup require system
 process.env.PATH = process.env.PATH .. ";.\\bin"; -- add bin libs path
 package.path = require("app.path")(package.path); -- set require path
@@ -57,7 +57,7 @@ do
 		-- os.execute("chcp 65001>/dev/null")
 	end
 end
-
+--#endregion sys setup
 --#region : Load modules
 local insert = table.insert;
 local utf8 = utf8 or require "utf8"; _G.utf8 = utf8; -- unicode 8 library
@@ -81,7 +81,7 @@ local dumpTable = require "libs.dumpTable"; -- table dump library, this is auto 
 local exitCodes = require("app.exitCodes"); _G.exitCodes = exitCodes; -- get exit codes
 local qDebug = require "app.debug"; _G.qDebug = qDebug; -- my debug system
 local term = require "app.term"; -- setuping REPL terminal
-local commandHandler = require "commandHandler"; _G.commandHandler = commandHandler; -- command decoding-caching-indexing system
+local commandHandler = require "class.commandHandler"; _G.commandHandler = commandHandler; -- command decoding-caching-indexing system
 local cRandom = require "cRandom"; _G.cRandom = cRandom; -- LUA random handler
 local strSplit = require "stringSplit"; _G.strSplit = strSplit; -- string split library
 local urlCode = require "urlCode"; _G.urlCode = urlCode; -- url encoder/decoder library
@@ -92,53 +92,53 @@ local userLearn = require "commands.learning.learn"; -- user learning library
 local data = require "data"; data:setJson(json); _G.data = data; -- Data system
 local userData = require "class.userData"; userData:setJson(json):setlogger(logger):setMakeId(makeId); _G.userData = userData; -- Userdata system
 local serverData = require "class.serverData"; serverData:setJson(json):setlogger(logger):setMakeId(makeId); _G.serverData = serverData; -- Serverdata system
+local interactionData = require "class.interactionData"; interactionData:setJson(json):setlogger(logger):setMakeId(makeId); _G.interactionData = interactionData; -- interactiondata system
 local posixTime = require "libs.posixTime"; _G.posixTime = posixTime; -- get posixTime library
-local inject = require "app.inject"; _G.inject = inject; -- module injection
 --#endregion : Load modules
 --#region : Discordia Module
 logger.info("------------------------ [CLEAN  UP] ------------------------");
 logger.info("wait for discordia ...");
 
--- inject modified objects
-inject("discordia/libs/voice/VoiceConnection","voice/VoiceConnection"); -- inject modified voice connection
-inject("discordia/libs/voice/streams/FFmpegProcess","voice/streams/FFmpegProcess"); -- inject modified stream manager
--- inject("discordia/libs/")
--- inject("discordia/libs/containers/Message","containers/Message"); -- inject button system
--- inject("discordia/libs/containers/abstract/TextChannel","containers/abstract/TextChannel"); -- inject button system
--- inject("discordia/libs/client/EventHandler","client/EventHandler"); -- inject button system
-
 local discordia = require "discordia"; _G.discordia = discordia; ---@type discordia -- 디스코드 lua 봇 모듈 불러오기
+local discordia_enchent = require "discordia_enchent"; _G.discordia_enchent = discordia_enchent;
+local userInteractWarpper = require("class.userInteractWarpper"); _G.userInteractWarpper = userInteractWarpper;
+
 local discordia_class = require "discordia/libs/class"; _G.discordia_class = discordia_class; ---@type class -- 디스코드 클레스 가져오기
 local discordia_Logger = discordia_class.classes.Logger; ---@type Logger -- 로거부분 가져오기 (통합을 위해 수정)
 local enums = discordia.enums; _G.enums = enums; ---@type enums -- 디스코드 enums 가져오기
-local client = discordia.Client(require("app.clientSettings")); _G.client = client; ---@type Client -- 디스코드 클라이언트 만들기
+local client = discordia.Client(require("class.clientSettings")); _G.client = client; ---@type Client -- 디스코드 클라이언트 만들기
 local Date = discordia.Date; _G.Date = Date; ---@type Date
-function discordia_Logger:log(level, msg, ...) -- 디스코드 모듈 로거부분 편집
+
+-- inject logger
+function discordia_Logger:log(level, msg, ...)
 	if self._level < level then return end ---@diagnostic disable-line
 	msg = string.format(msg, ...);
 	local logFn =
 		(level == 3 and logger.debug) or
 		(level == 2 and logger.info) or
 		(level == 1 and logger.warn) or
-		(level == 0 and logger.error);
+		(level == 0 and logger.error) or logger.info;
 	logFn(msg);
 	return msg;
 end
+
+---@diagnostic disable-next-line
+discordia_enchent.inject(client);
 --#endregion : Discordia Module
 --#region : Load bot environments
 logger.info("---------------------- [LOAD SETTINGS] ----------------------");
 
 -- Load environments
 logger.info("load environments ...");
-require("app.env"); -- inject environments
-local adminCmd = require("app.admin"); -- load admin commands
+require("app.env"); -- inject environment
+local adminCmd = require("class.adminCommands"); -- load admin commands
 local hook = require("class.hook");
 local registeLeaderstatus = require("class.registeLeaderstatus");
 
 -- Load commands
 logger.info(" |- load commands from commands folder");
-local otherCommands = {} -- commands 폴더에서 커맨드 불러오기
-for dir in fs.scandirSync("commands") do -- read commands from commands folder
+local otherCommands = {} -- read commands from commands folder
+for dir in fs.scandirSync("commands") do
 	dir = string.gsub(dir,"%.lua$","");
 	logger.info(" |  |- load command dict from : commands." .. dir);
 	otherCommands[#otherCommands+1] = require("commands." .. dir);
@@ -187,13 +187,17 @@ logger.info("----------------------- [SET UP BOT ] -----------------------");
 local findCommandFrom = commandHandler.findCommandFrom;
 local afterHook = hook.afterHook;
 local beforeHook = hook.beforeHook;
-client:on('messageCreate', function(message) -- On messages
+
+-- making command reader
+local function processCommand(message)
 
 	-- get base information from message object
 	local user = message.author;
 	local text = message.content;
 	local channel = message.channel;
-	local isDm = channel.type == enums.channelType.private;
+	local guild = message.guild;
+	local isDm = channel.type == enums.channelType.private; ---@diagnostic disable-line
+	local isSlashCommand = rawget(message,"slashCommand");
 
 	-- check user that is bot; if it is bot, then return (ignore call)
 	if user.bot then
@@ -248,7 +252,23 @@ client:on('messageCreate', function(message) -- On messages
 			break;
 		end
 	end
-	if (not prefix) and (not isDm) then
+
+	-- guild prefix
+	local guildCommandMode;
+	if guild then
+		local guildData = serverData:loadData(guild.id);
+		if guildData then
+			local guildPrefix = guildData.guildPrefix;
+			if guildPrefix then
+				local lenGuildPrefix = #guildPrefix;
+				if guildPrefix == text:sub(1,lenGuildPrefix) then
+					guildCommandMode = true;
+					prefix = guildPrefix;
+				end
+			end
+		end
+	end
+	if (not prefix) and (not isDm) and (not isSlashCommand) then
 		return;
 	end
 	prefix = prefix or "";
@@ -259,9 +279,18 @@ client:on('messageCreate', function(message) -- On messages
 	-- 못찾으면 다시 넘겨서 뒷단어로 넘김
 	-- 찾으면 넘겨서 COMMAND RUN 에 TRY 던짐
 	local rawCommandText = text:sub(#prefix+1,-1); -- 접두사 뺀 글자
-	local splited = strSplit(rawCommandText:lower(),"\32");
-	local Command,CommandName,rawCommandName = findCommandFrom(reacts,rawCommandText,splited);
+	local splited = strSplit(rawCommandText:lower(),"\32\n");
+	local Command,CommandName,rawCommandName = findCommandFrom(guildCommandMode and commands or reacts,rawCommandText,splited);
 	if not Command then
+		-- is guild command mode
+		if guildCommandMode then
+			message:reply {
+				content = ("커맨드 **'%s'** 는 존재하지 않습니다!"):format(rawCommandText);
+				reference = {message = message, mention = false};
+			};
+			return;
+		end
+
 		-- Solve user learn commands
 		local userReact = findCommandFrom(userLearn.get,rawCommandText,splited);
 		if userReact then
@@ -271,18 +300,16 @@ client:on('messageCreate', function(message) -- On messages
 			};
 			return;
 		end
-	end
 
-	-- 커맨드 찾지 못함
-	if not Command then
+		-- not found
 		message:reply({
 			content = unknownReply[cRandom(1,#unknownReply)];
 			reference = {message = message, mention = false};
 		});
-		-- 반응 없는거 기록하기
-		fs.appendFile("log/unknownTexts/raw.txt","\n" .. text);
+		fs.appendFile("log/unknownTexts/raw.txt","\n" .. text); -- save
 		return;
-	else -- 디엠 확인
+	else
+		-- check dm
 		local cmdDisableDm = Command.disableDm;
 		if isDm and cmdDisableDm then
 			message:reply({
@@ -378,11 +405,13 @@ client:on('messageCreate', function(message) -- On messages
 			end
 			return false;
 		end;
+		---@type boolean determine is slash command callback
+		isSlashCommand = isSlashCommand;
 	};
 
 	-- 만약 답변글이 함수면 (지금은 %s 시에요 처럼 쓸 수 있도록) 실행후 결과 가져오기
 	if type(replyText) == "function" then
-		rawArgs = rawCommandText:sub(#CommandName+2,-1);
+		rawArgs = rawCommandText:sub(#rawCommandName+2,-1);
 		args = strSplit(rawArgs,"\32");
 		contents.rawArgs = rawArgs;
 		local passed;
@@ -395,25 +424,25 @@ client:on('messageCreate', function(message) -- On messages
 		end
 	end
 
-	local replyMsg; -- 답변 오브잭트를 담을 변수
-	if replyText then -- 만약 답변글이 있으면 답변 주기
+	local replyMsg; -- Making reply message
+	if replyText then -- if there are reply text
 		local replyTextType = type(replyText);
 		local embed = Command.embed;
-		if replyTextType == "string" then
-			replyText = replyText .. loveText;
-		elseif replyTextType == "table" and replyText.content then
-			embed = replyText.embed or embed;
-			replyText.content = replyText.content .. loveText;
-		end
-		replyMsg = message:reply({
-			embed = embed;
-			content = commandHandler.formatReply(replyText,{
-				Msg = message;
-				user = user;
-				channel = channel;
+		local components = Command.components;
+		if replyTextType == "string" then -- if is string, making new message
+			replyMsg = message:reply({
+				components = components;
+				embed = embed;
+				content = commandHandler.formatReply(replyText .. loveText,{
+					Msg = message;
+					user = user;
+					channel = channel;
+				});
+				reference = {message = message, mention = false};
 			});
-			reference = {message = message, mention = false};
-		});
+		elseif replyTextType == "table" then -- if is message (if func returned), set replyMsg to it
+			replyMsg = replyText;
+		end
 	end
 
 	-- 명령어에 담긴 함수를 실행합니다
@@ -425,11 +454,9 @@ client:on('messageCreate', function(message) -- On messages
 		args = strSplit(rawArgs,"\32");
 		local passed,ret = pcall(func,replyMsg,message,args,contents);
 		if not passed then
-			logger.error("an error occurred on running function");
-			logger.errorf(" | original message : %s",tostring(text));
-			logger.error(" | error traceback was");
-			logger.error(tostring(ret));
-			logger.error(" | more information was saved on log/debug.log");
+			logger.error(("an error occurred on running function\n - original message : %s\n - error traceback was\n%s\n - more information was saved on log/debug.log")
+				:format(tostring(text),tostring(ret))
+			);
 			qDebug {
 				title = "an error occurred on running command function";
 				traceback = tostring(ret);
@@ -453,10 +480,58 @@ client:on('messageCreate', function(message) -- On messages
 		};
 		pcall(thisHook.func,thisHook,hookContent,contents);
 	end
+end
+
+-- on message
+client:on('messageCreate', processCommand);
+
+-- making slash command
+client:on("slashCommandsReady", function()
+	client:slashCommand({ ---@diagnostic disable-line
+		name = "미나";
+		description = "미나와 대화합니다!";
+		options = {
+			{
+				name = "내용";
+				description = "미나와 나눌 대화를 입력해보세요!";
+				type = discordia_enchent.enums.optionType.string;
+				required = true;
+			};
+		};
+		callback = function(interaction, params, cmd)
+			local pass,err = pcall(
+				processCommand,
+				userInteractWarpper(
+					params["내용"],
+					interaction
+				)
+			);
+			if not pass then
+				logger.errorf("Error occurred on executing slash command\n%s",tostring(err));
+			end
+		end;
+	});
 end);
 
-term(); -- Load repl terminal system
-_G.livereloadEnabled = false; -- enable live reload
+-- enable terminal features and live reload system
+do
+	local terminalInputDisabled;
+	local livereload = false;
+	for _,v in pairs(app.args) do
+		if v == "disable_terminal" then
+			terminalInputDisabled = true;
+		elseif v == "enable_livereload" then
+			livereload = true;
+		end
+		if terminalInputDisabled and livereload then
+			break;
+		end
+	end
+	if not terminalInputDisabled then
+		term(); -- Load repl terminal system
+	end
+	_G.livereloadEnabled = livereload; -- enable live reload
+end
 require("app.livereload"); -- loads livereload system; it will make uv event and take file changed signal
-startBot(ACCOUNTData.botToken,ACCOUNTData.testing); -- init bot (init discordia)
+_G.startBot(ACCOUNTData.botToken,ACCOUNTData.testing); -- init bot (init discordia)
 --#endregion : Main logic

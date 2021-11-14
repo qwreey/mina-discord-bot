@@ -60,15 +60,11 @@ function module:saveData(userId)
 	local raw = json.encode(userData);
 
 	-- 파일 열고 쓰고 닫기
-	local passed = fs.writeFileSync(formatFileRoot(userId),raw);
+	local passed,errorMsg = fs.writeFileSync(formatFileRoot(userId),raw);
 
 	-- 오류 처리 (백업 시키기)
 	if not passed then
-		logger.errorf("un error occur on save data! (%s) : data = %s",userId,raw);
-		local now = os.date("*t");
-		local errFile = io.open("data/crash/" .. ("er%s.uid%s.tm%dm%dd%dh%dm%ds"):format(
-			makeId(),userId,now.month,now.day,now.hour,now.min,now.sec
-		));
+		logger.errorf("An error occur on save data!\nerror message : %s\nfile : %s\ndata : %s",tostring(errorMsg),userId,raw);
 	end
 end
 
@@ -97,13 +93,10 @@ function module:loadData(userId)
 	return data; -- 유저 데이터 리턴
 end
 
--- 데이터 파일 지우고 데이터 초기화
--- this is should be replaced with fs module
--- function module:resetData(userId)
--- 	userDatas[userId] = nil;
--- 	return pcall(function ()
--- 		os.remove(formatFileRoot(userId));
--- 	end);
--- end
+-- remove data
+function module:resetData(userId)
+	userDatas[userId] = nil;
+	fs.unlink(formatFileRoot(userId));
+end
 
 return module;

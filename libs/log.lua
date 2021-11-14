@@ -78,7 +78,7 @@ local function runLog(levelName,levelNumber,color,debugInfo,...)
 	end
 	headerLen = headerLen + 3;
 	header = header .. " │ ";
-	msg = msg:gsub("\n","\n" .. (" "):rep(headerLen-2) .. " │ ");
+	msg = msg:gsub("\n","\n" .. (" "):rep(headerLen-2) .. "│ ");
 
 	-- print / build prompt
 	local buildPrompt = _G.buildPrompt;

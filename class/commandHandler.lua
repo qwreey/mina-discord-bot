@@ -19,6 +19,12 @@ Cpu 에 더 좋다 그래서 이렇게 나눠놓는거
 
 local module = {};
 
+---Indexing commands into one table map
+---@param indexTable table want to contain the commands (with name and alias)
+---@param cmds table want to contain the commands (with command option)
+---@param commandName string of this command
+---@param reactInfo Command
+---@return number
 local function indexingReact(indexTable,cmds,commandName,reactInfo)
 	local alias = reactInfo.alias;
 	local aliasType = type(alias);
@@ -48,9 +54,15 @@ local function indexingReact(indexTable,cmds,commandName,reactInfo)
 		cmds[command] = reactInfo;
 	end
 
+	reactInfo.alias = nil;
+	reactInfo.command = nil;
 	return len;
 end
 
+---encoding commands into one table
+---@return table reactionMap maped reactions
+---@return table commandMap maped commands
+---@return number len len of reactions (map length)
 function module.encodeCommands(...)
 	local this,cmds = {},{};
 	local len = 0;
@@ -72,7 +84,8 @@ function module.encodeCommands(...)
 	return this,cmds,len;
 end
 
-local function findCommand(reacts,text)
+-- indexing command/reaction from command/reaction map
+local function findReaction(reacts,text)
 	if type(reacts) == "function" then
 		return reacts(text);
 	end
@@ -86,7 +99,7 @@ end
 ---@return string | nil CommandName Name of command
 ---@return string | nil CommandRawName full of user inputed string
 function module.findCommandFrom(reacts,text,splitCommandText)
-	splitCommandText = splitCommandText or ((type(text) == "table") and text or strSplit(text:lower(),"\32"));
+	splitCommandText = splitCommandText or ((type(text) == "table") and text or strSplit(text:lower(),"\32\n"));
 
 	-- rawText = "find thing like this"
 	-- indexing( "find thing like this" )
@@ -96,7 +109,8 @@ function module.findCommandFrom(reacts,text,splitCommandText)
 	do
 		local this = text;
 		while true do
-			local command = findCommand(reacts,this);
+			local command = findReaction(reacts,this);
+			command = command or findReaction(reacts,this:gsub(" ",""));
 			if command then
 				return command,this,this;
 			end
@@ -131,11 +145,11 @@ function module.findCommandFrom(reacts,text,splitCommandText)
 	-- indexing( "like" )
 	-- indexing( "this" )
 	for findPos,textn in pairs(splitCommandText) do
-		local command = findCommand(reacts,textn);
+		local command = findReaction(reacts,textn);
 		if command then
 			local rawCommand = "";
 			for Index = 1,findPos do
-				rawCommand = rawCommand .. splitCommandText[Index];
+				rawCommand = rawCommand .. splitCommandText[Index] .. (Index == findPos and "" or " ");
 			end
 			return command,textn,rawCommand;
 		end
@@ -166,7 +180,7 @@ end
 	U+유니코드 : 해당 유니코드 글자로 바뀜
 ]]
 
-local function formatRreplyText(Text,Data)
+local function formatReplyText(Text,Data)
 	Text = Text or "";
 	Text = string.gsub(Text,"{#:UserName:#}",Data.user.name);
 	Text = string.gsub(Text,"{#:U%+(%x%x%x%x):#}",function (hex)
@@ -182,13 +196,13 @@ local function formatRreplyText(Text,Data)
 end
 function module.formatReply(RawContent,Data)
 	if type(RawContent) == "table" then
-		RawContent.content = formatRreplyText(RawContent.content,Data);
+		RawContent.content = formatReplyText(RawContent.content,Data);
 		if type(RawContent.embed) == "string" then
-			RawContent.embed = formatRreplyText(RawContent.embed,Data);
+			RawContent.embed = formatReplyText(RawContent.embed,Data);
 		end
 		return RawContent;
 	elseif type(RawContent) == "string" then
-		return formatRreplyText(RawContent,Data);
+		return formatReplyText(RawContent,Data);
 	end
 end
 

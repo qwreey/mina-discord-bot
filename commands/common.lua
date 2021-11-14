@@ -24,6 +24,45 @@ end
 ---@type table<string, Command>
 local export = {
 	--타이머
+	["가위"] = {
+		alias = {"바위","보"};
+		reply = {"**{#:UserName:#}** 님이 이겼어요!","이번판은 미나 승리!","무승부! 똑같아요"};
+		love = defaultLove;
+	};
+	["동전뒤집기"] = {
+		alias = {"동전 뒤집기","동전놀이","동전 놀이","동전던지기","동전 던지기","동전뒤집기","동전게임","동전 게임"};
+		reply = function ()
+			local pF = cRandom(1,11);
+			return pF == 11 and "옆면????" or (pF <= 5 and "앞면!" or "뒷면!");
+		end;
+		love = defaultLove;
+	};
+	["제작진"] = {
+		alias = {"제작사","만든 사람","만든사람","만든 이들","만든이들","크래딧","크레딧","누가만듬?","작자","제작자"};
+		reply = "**총괄**/코드 : 쿼리\n프로필/아이디어 : **상아리**,별이(블스상)\n작명 : 눈송이\n\n테스팅/아이디어 : 팥죽";
+		love = defaultLove;
+	};
+	["주사위 던지기"] = {
+		alias = {
+			"주사위","주사위던지기","주사위던져","주사위 던져",
+			"주사위 굴리기","주사위굴려","주사위 굴려","주사위굴리기"
+		};
+		reply = {
+			"대굴 대굴... **1** 이 나왔넹?";
+			"대굴 대굴... **2** 나왔다!";
+			"대굴 대굴... **3** 나왔어!";
+			"대굴 대굴... **4** !";
+			"대굴 대굴... **5** 가 나왔네!";
+			"대굴 대굴... **6** 나왔당!";
+			function (msg)
+				local newMsg = msg:reply("대굴 대굴... 어? 0? 이게 왜 나왔지?");
+				timeout(500,function ()
+					newMsg:delete();
+				end);
+			end;
+		};
+		love = defaultLove;
+	};
 	["계정나이"] = {
 		alias = "계정 나이";
 		reply = function (message,args,content)
@@ -109,7 +148,7 @@ local export = {
 				-- local dataReadSt = time();
 				-- userData.load()
 				-- local dataReadEd = time();
-				
+
 				new:setContent(
 					("🏓 봇 지연시간\n> 서버 응답시간 : %s`ms`\n> 내부 클럭 속도 : %s`us`\n> 가동시간 : %s\n> 사용 RAM : %dMB")
 					:format(
@@ -168,9 +207,105 @@ local export = {
 			local infoMsg = message:reply(("최근 메시지 %s개를 지웠어요!"):format(RemoveNum));
 
 			timeout(5000,function ()
-				message:delete();
-				infoMsg:delete();
+				local messageDelete = message and message.delete;
+				if messageDelete then
+					messageDelete(message);
+				end
+				local infoDelete = infoMsg and infoMsg.delete;
+				if infoDelete then
+					infoDelete(infoMsg);
+				end
 			end);
+		end;
+	};
+	["미나초대"] = {
+		alias = {"초대","초대링크","미나 초대","초대 링크"};
+		reply = {"쨘!"};
+		embed = {
+			color = 10026831;
+			fields = {{
+				name = "아래의 버튼을 누르면 미나를 다른 서버에 추가 할 수 있어요!";
+				value = ("[초대하기](%s)"):format(ACCOUNTData.InvLink);
+			}};
+		};
+	};
+	["뽑기"] = {
+		alias = {"선택해","선택","추첨","뽑아","추첨해","골라","골라봐"};
+		reply = "결과는?! **(두구두구두구두구)**";
+		func = function(replyMsg,message,args,Content)
+			timeout(2000,function ()
+				local items = {};
+				for str in Content.rawArgs:gmatch("[^,]+") do
+					table.insert(items,str);
+				end
+				replyMsg:setContent(("%s (이)가 뽑혔어요!"):format(
+					tostring(items[cRandom(1,#items)])):gsub("@",""):gsub("#","")
+				);
+			end);
+		end;
+	};
+	["시간"] = {
+		alias = {
+			"안녕 몇시야","안녕 지금 시간 알려줘","지금 시간","몇시야","몇시",
+			"안녕 몇시야?","몇시야?","지금시간","알려줘 시간","what time is",
+			"what time is?","지금은 몇시","지금은 몇시?"
+		};
+		reply = "안뇽! 지금 시간은 {#:T+%I:#}시 {#:T+%M:#}분이야!";
+		love = defaultLove;
+	};
+	["나이"] = {
+		func = function (_,message)
+			--local Year = tostring(math.floor((10000*(os.time() - ACCOUNTData.BirthdayDay) / 31536000))/10000);
+			local Day = math.floor((os.time() - ACCOUNTData.BirthdayDay) / 86400);
+			message:reply(("미나는 %s 일 살았어요"):format(tostring(Day)));
+		end;
+		love = defaultLove;
+	};
+	["생일"] = {
+		alias = {"생일?","생일이언제야?","생일머야","생일뭐야","생일뭐야?","생일머야?"};
+		reply = {
+			"2021 4월 7일이요!"
+		};
+		love = defaultLove;
+	};
+	["문의"] = {
+		alias = {"신고","제의"};
+		reply = "잠시만 기다려주세요";
+		func = function (replyMsg,message,args,Content)
+			local rawArgs = Content.rawArgs;
+			if (not rawArgs) or (rawArgs == "" or rawArgs == "\n") then
+				replyMsg:setContent("문의 내용이 비어있을 수 없습니다!");
+				return;
+			end
+
+			local userData = Content.getUserData();
+			if not userData then
+				replyMsg:setContent("약관 동의가 없어 문의를 요청할 수 없습니다!");
+				return;
+			end
+
+			local lastReportedTime = tonumber(userData.lastReportedTime);
+			local now = posixTime.now();
+			if lastReportedTime and (now < lastReportedTime + _G.reportCooltime) then
+				replyMsg:setContent(
+					("문의는 1 시간당 1 개씩 보낼 수 있습니다!\n> 최근 문의는 %s에 보냈습니다"):format(timeAgo(lastReportedTime,now))
+				);
+				return;
+			end
+
+			local ReportWebhooks = ACCOUNTData.ReportWebhooks;
+			local response = corohttp.request("POST",ReportWebhooks[cRandom(1,#ReportWebhooks)],{{"Content-Type","application/json"}},
+				('{"content":"Report from user %s","embeds":[{"title":"Report","description":"%s"}]}')
+					:format(tostring(Content.user.id),tostring(Content.rawArgs))
+			);
+			if (not response) or (response.code >= 400) then
+				local reason = response and response.reason or "unknown";
+				replyMsg:setContent(("문의중 오류가 발생했습니다!\n```\n%s\n``"):format(reason));
+				return;
+			end
+			userData.lastReportedTime = now;
+			Content.saveUserData();
+			replyMsg:setContent("문의가 발송되었습니다!");
 		end;
 	};
 };
