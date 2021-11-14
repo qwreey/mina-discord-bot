@@ -100,6 +100,7 @@ logger.info("wait for discordia ...");
 
 local discordia = require "discordia"; _G.discordia = discordia; ---@type discordia -- 디스코드 lua 봇 모듈 불러오기
 local discordia_slash = require("discordia_slash"); _G.discordia_slash = discordia_slash;
+local discordia_components = require("discordia_components"); _G.discordia_components = discordia_components; ---@type discordia_components
 local userInteractWarpper = require("class.userInteractWarpper"); _G.userInteractWarpper = userInteractWarpper;
 require("discordia_voicefix"); -- enable voice fix extension
 require("discordia_api9") -- enable api 9
@@ -123,8 +124,10 @@ function discordia_Logger:log(level, msg, ...)
 	return msg;
 end
 
----@diagnostic disable-next-line
+---@diagnostic disable
 client:useSlashCommands(); --enable slash extension
+client:useComponents();
+---@diagnostic enable
 --#endregion : Discordia Module
 --#region : Load bot environments
 logger.info("---------------------- [LOAD SETTINGS] ----------------------");
@@ -423,25 +426,25 @@ local function processCommand(message)
 		end
 	end
 
-	local replyMsg; -- 답변 오브잭트를 담을 변수
-	if replyText then -- 만약 답변글이 있으면 답변 주기
+	local replyMsg; -- Making reply message
+	if replyText then -- if there are reply text
 		local replyTextType = type(replyText);
 		local embed = Command.embed;
-		if replyTextType == "string" then
-			replyText = replyText .. loveText;
-		elseif replyTextType == "table" and replyText.content then
-			embed = replyText.embed or embed;
-			replyText.content = replyText.content .. loveText;
-		end
-		replyMsg = message:reply({
-			embed = embed;
-			content = commandHandler.formatReply(replyText,{
-				Msg = message;
-				user = user;
-				channel = channel;
+		local components = Command.components;
+		if replyTextType == "string" then -- if is string, making new message
+			replyMsg = message:reply({
+				components = components;
+				embed = embed;
+				content = commandHandler.formatReply(replyText .. loveText,{
+					Msg = message;
+					user = user;
+					channel = channel;
+				});
+				reference = {message = message, mention = false};
 			});
-			reference = {message = message, mention = false};
-		});
+		elseif replyTextType == "table" then -- if is message (if func returned), set replyMsg to it
+			replyMsg = replyText;
+		end
 	end
 
 	-- 명령어에 담긴 함수를 실행합니다

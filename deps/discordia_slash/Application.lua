@@ -41,6 +41,9 @@ function client_m:useSlashCommands()
 	self._slashCommandsInjected = true
 
 	function self._events.INTERACTION_CREATE(args, client)
+		if args.type ~= 2 then
+			return;
+		end
 		local data = args.data
 		local cmd = client:getSlashCommand(data.id)
 		if not cmd then return client:warning('Uncached slash command (%s) on INTERACTION_CREATE', data.id) end
