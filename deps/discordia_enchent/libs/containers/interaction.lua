@@ -6,7 +6,9 @@ local snowflake = discordia.class.classes.Snowflake
 local deferredChannelMessageWithSource = enums.interactionResponseType.deferredChannelMessageWithSource
 local channelMessageWithSource = enums.interactionResponseType.channelMessageWithSource
 local deferredUpdateMessage = enums.interactionResponseType.deferredUpdateMessage
-local componentButton = enums.componentType.button;
+local componentButton = enums.componentType.button
+local updateMessage = enums..interactionResponseType.updateMessage
+
 
 ---@class interaction
 ---@field public message Message If this is message's interaction (such as button), this is parent message of interaction else ApplicationCommand, this is nil
@@ -125,6 +127,9 @@ function interaction:update(data)
 		}
 	end
 
+	if self._isComponent then -- if it is component
+		return self:createResponse(updateMessage,data);
+	end
 	return self._parent._api:request('PATCH', format(endpoints.INTERACTION_RESPONSE_MODIFY, self._parent._slashid, self._token), data)
 end
 
