@@ -177,6 +177,7 @@ return function (self)
 		self._guildCommands = {}
 		self:getSlashCommands()
 		self:emit("slashCommandsReady")
+		self:emit("slashCommandsCommited")
 	end)
 
 	return self

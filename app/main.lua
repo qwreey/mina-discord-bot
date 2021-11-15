@@ -510,7 +510,7 @@ _G.processCommand = processCommand;
 client:on('messageCreate', processCommand);
 
 -- making slash command
-client:on("slashCommandsReady", function()
+commandHandler.onSlash(function ()
 	client:slashCommand({ ---@diagnostic disable-line
 		name = "미나";
 		description = "미나와 대화합니다!";
@@ -544,7 +544,10 @@ client:on("slashCommandsReady", function()
 			);
 		end;
 	});
-	logger.infof("[Slash] Loaded main slash command'");
+end,nil,nil,"MAIN");
+
+client:on("slashCommandsCommited",function ()
+	logger.info("[Slash] All slash command loaded!");
 end);
 
 -- enable terminal features and live reload system

@@ -19,6 +19,13 @@ Cpu 에 더 좋다 그래서 이렇게 나눠놓는거
 
 local module = {};
 
+function module.onSlash(onSlash,client,reactInfo,commandName)
+	_G.client:on("slashCommandsReady",function ()
+		onSlash(reactInfo,client);
+		logger.infof("[Slash] Loaded slash command from command '%s'",commandName or reactInfo.name);
+	end);
+end
+
 ---Indexing commands into one table map
 ---@param indexTable table want to contain the commands (with name and alias)
 ---@param cmds table want to contain the commands (with command option)
@@ -60,10 +67,7 @@ local function indexingReact(indexTable,cmds,commandName,reactInfo)
 	local onSlash = reactInfo.onSlash;
 	if onSlash then
 		reactInfo.onSlash = nil;
-		_G.client:on("slashCommandsReady",function ()
-			onSlash(reactInfo,client);
-			logger.infof("[Slash] Loaded slash command from command '%s'",commandName);
-		end);
+		module.onSlash(onSlash,client,reactInfo,commandName);
 	end
 
 	return len;
