@@ -7,7 +7,7 @@ local deferredChannelMessageWithSource = enums.interactionResponseType.deferredC
 local channelMessageWithSource = enums.interactionResponseType.channelMessageWithSource
 local deferredUpdateMessage = enums.interactionResponseType.deferredUpdateMessage
 local componentButton = enums.componentType.button
-local updateMessage = enums..interactionResponseType.updateMessage
+local updateMessage = enums.interactionResponseType.updateMessage
 
 
 ---@class interaction
