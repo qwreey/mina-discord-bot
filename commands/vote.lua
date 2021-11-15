@@ -57,7 +57,7 @@ local function makeVoteButtons(items)
     return buttons;
 end
 
-local function makeVote(messageId,rawString,slashToken)
+local function makeVote(messageId,rawString)
     local items = {};
     for str in rawString:gmatch("[^,]+") do
         local this = str:gsub("\n",""):gsub("*",""):gsub("_",""):gsub(">",""):gsub("`","");
@@ -67,7 +67,7 @@ local function makeVote(messageId,rawString,slashToken)
     local id = makeId(messageId);
     local data = {
         items = items;
-        slashToken = slashToken;
+        --slashToken = slashToken;
     };
     interactionData:new(id,data);
 
@@ -165,7 +165,7 @@ client:on("slashCommandsReady", function()
 		};
 		callback = function(interaction, params, cmd)
             interaction:reply(
-                makeVote(interaction.id,params["내용"],interaction.token)
+                makeVote(interaction.id,params["내용"])
             );
 		end;
 	});
@@ -178,7 +178,7 @@ local export = {
         command = {"vote"};
         func = function (replyMsg,message,args,Content)
             replyMsg:update(
-                makeVote(replyMsg.id,Content.rawArgs,Content.isSlashCommand and replyMsg.this.token)
+                makeVote(replyMsg.id,Content.rawArgs)
             );
         end;
     };
