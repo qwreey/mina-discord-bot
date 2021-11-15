@@ -94,7 +94,7 @@ local userData = require "class.userData"; userData:setJson(json):setlogger(logg
 local serverData = require "class.serverData"; serverData:setJson(json):setlogger(logger):setMakeId(makeId); _G.serverData = serverData; -- Serverdata system
 local interactionData = require "class.interactionData"; interactionData:setJson(json):setlogger(logger):setMakeId(makeId); _G.interactionData = interactionData; -- interactiondata system
 local posixTime = require "libs.posixTime"; _G.posixTime = posixTime; -- get posixTime library
-local commonSlashCommand = require "class.commonSlashCommand";
+local commonSlashCommand = require "class.commonSlashCommand"; _G.commonSlashCommand = commonSlashCommand;
 --#endregion : Load modules
 --#region : Discordia Module
 logger.info("------------------------ [CLEAN  UP] ------------------------");

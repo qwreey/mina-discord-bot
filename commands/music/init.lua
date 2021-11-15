@@ -325,6 +325,35 @@ local export = {
 				);
 			end
 		end;
+		onSlash = function(self,client)
+			local name = self.name;
+			client:slashCommand({ --@diagnostic disable-line
+				name = "곡추가";
+				description = "곡을 추가합니다!";
+				options = {
+					{
+						name = "곡";
+						description = "유튜브에 검색될 키워드 또는 URL 을 입력하세요! (',' 을 이용해 곡을 여러개 추가할 수 있습니다)";
+						type = discordia_enchent.enums.optionType.string;
+						required = true;
+					};
+					{
+						name = "위치";
+						description = "곡이 추가될 위치입니다! (비워두면 자동으로 리스트의 맨뒤에 추가됩니다)";
+						type = discordia_enchent.enums.optionType.integer;
+						required = false;
+					};
+				};
+				callback = function(interaction, params, cmd)
+					local pos = params["위치"];
+					processCommand(userInteractWarpper(
+						("%s %s%s"):format(name,
+							params["곡"],
+							(pos and pos ~= "") and (", " .. tostring(pos)) or ("")
+					),interaction));
+				end;
+			});
+		end;
 	};
 	["join music"] = {
 		registeredOnly = eulaComment_music;
@@ -396,6 +425,11 @@ local export = {
 			end
 			replyMsg:setContent("이미 음성채팅에 참가했습니다!");
 		end;
+		onSlash = commonSlashCommand {
+			description = "음성 채팅방에 참가합니다 (/곡추가 명령어를 사용하면 이 명령어가 자동으로 사용됩니다)";
+			name = "곡참가";
+			noOption = true;
+		};
 	};
 	["list music"] = {
 		disableDm = true;
@@ -438,6 +472,13 @@ local export = {
 				-- };
 			};
 		end;
+		onSlash = commonSlashCommand {
+			description = "곡 리스트를 봅니다!";
+			name = "곡리스트";
+			optionDescription = "리스트의 페이지를 입력하세요! (비워두면 1 페이지를 보여줍니다)";
+			optionsType = discordia_enchent.enums.optionType.integer;
+			optionRequired = false;
+		};
 	};
 	["song24"] = {
 		registeredOnly = eulaComment_music;
@@ -501,6 +542,22 @@ local export = {
 				voiceChannelLeave(Content.user,voiceChannel); -- check there is no users
 			end
 		end;
+		onSlash = commonSlashCommand {
+			description = "24 시간 음악 기능을 켭니다! (이 모드가 켜지면 봇이 자동으로 음성채팅을 나가지 않습니다)";
+			name = "곡24";
+			optionDescription = "24 시간 모드를 켤지 끌지 결정해주세요!";
+			optionRequired = false;
+			optionChoices = {
+				{
+					name = "24 시간 모드를 켭니다!";
+					value = "켜기";
+				};
+				{
+					name = "24 시간 모드를 끕니다!";
+					value = "끄기";
+				};
+			};
+		};
 	};
 	["loop"] = {
 		registeredOnly = eulaComment_music;
@@ -553,6 +610,22 @@ local export = {
 				replyMsg:setContent("성공적으로 플레이리스트 반복을 멈췄습니다!");
 			end
 		end;
+		onSlash = commonSlashCommand {
+			description = "플레이 리스트 루프모드를 켭니다! (이 모드가 켜지면 다 들은 곡은 뒤에 다시 추가됩니다)";
+			name = "곡루프";
+			optionDescription = "루프 모드를 켤지 끌지 결정해주세요!";
+			optionRequired = false;
+			optionChoices = {
+				{
+					name = "루프모드를 켭니다!";
+					value = "켜기";
+				};
+				{
+					name = "루프모드를 끕니다!";
+					value = "끄기";
+				};
+			};
+		};
 	};
 	["음악"] = {
 		reply = "명령어를 처리하지 못했어요!\n> 음악 기능 도움이 필요하면 '미나 음악 도움말' 을 입력해주세요";
@@ -628,6 +701,11 @@ local export = {
 				replyMsg:setContent("아무런 곡도 삭제하지 못했습니다!");
 			end
 		end;
+		onSlash = commonSlashCommand {
+			description = "원하는 곡을 제거합니다!";
+			name = "곡제거";
+			optionDescription = "건너뛸 곡의 이름의 일부 또는 번째를 입력하세요 (여러 곡을 삭제하는 경우 ',' 을 이용하세요)";
+		};
 	};
 	["skip music"] = {
 		registeredOnly = eulaComment_music;
@@ -705,6 +783,13 @@ local export = {
 				(("성공적으로 곡 %s 개를 스킵하였습니다!%s%s"):format(tostring(rawArgs),nowPlaying,loopMsg))
 			);
 		end;
+		onSlash = commonSlashCommand {
+			description = "원하는 갯수만큼의 곡을 스킵합니다! (루프모드의 경우 스킵된 곡은 다시 뒤에 추가됩니다, 없에야 하는 경우 /곡제거 를 이용하세요)";
+			name = "곡스킵";
+			optionDescription = "건너뛸 곡의 갯수를 입력하세요! (비워두면 한개의 곡만 스킵합니다)";
+			optionsType = discordia_enchent.enums.optionType.integer;
+			optionRequired = false;
+		};
 	};
 	["pause music"] = {
 		registeredOnly = eulaComment_music;
@@ -767,6 +852,11 @@ local export = {
 			player:setPaused(true);
 			replyMsg:setContent("성공적으로 음악을 멈췄습니다!");
 		end;
+		onSlash = commonSlashCommand {
+			description = "곡을 잠시 멈춥니다! (/곡재개 를 이용해 다시 재개할 수 있어요)";
+			name = "곡멈춤";
+			noOption = true;
+		};
 	};
 	["stop music"] = {
 		registeredOnly = eulaComment_music;
@@ -818,6 +908,11 @@ local export = {
 			player:kill();
 			replyMsg:setContent("성공적으로 음악을 종료하였습니다!");
 		end;
+		onSlash = commonSlashCommand {
+			description = "모든 음악을 종료하고 통화방에서 나갑니다!";
+			name = "곡종료";
+			noOption = true;
+		};
 	};
 	["now music"] = {
 		disableDm = true;
@@ -843,6 +938,11 @@ local export = {
 				content = "지금 재생중인 곡입니다!";
 			};
 		end;
+		onSlash = commonSlashCommand {
+			description = "현재 재생중인 곡의 정보를 봅니다!";
+			name = "현재재생";
+			noOption = true;
+		};
 	};
 	["info music"] = {
 		disableDm = true;
@@ -868,6 +968,12 @@ local export = {
 				content = (this == 1) and "지금 재생중인 곡입니다!" or (("%d 번째 곡입니다!"):format(this));
 			};
 		end;
+		onSlash = commonSlashCommand {
+			description = "해당 번째의 곡 정보를 봅니다!";
+			name = "곡정보";
+			optionDescription = "곡 번째를 입력하세요";
+			optionsType = discordia_enchent.enums.optionType.integer;
+		};
 	};
 	["resume music"] = {
 		registeredOnly = eulaComment_music;
@@ -921,6 +1027,11 @@ local export = {
 			player:setPaused(false);
 			replyMsg:setContent("성공적으로 음악을 재개했습니다!");
 		end;
+		onSlash = commonSlashCommand {
+			description = "멈춘 곡을 다시 재개합니다!";
+			name = "곡재개";
+			noOption = true;
+		};
 	};
 	["seek music"] = {
 		registeredOnly = eulaComment_music;
@@ -1062,6 +1173,11 @@ local export = {
 				content = ("%s 로 이동!"):format(player.formatTime(timestamp));
 			};
 		end;
+		onSlash = commonSlashCommand {
+			description = "재생 위치를 변경합니다!";
+			name = "곡시간";
+			optionDescription = "더하려면 +, 빼려면 - 를 붇이고 다음과 같이 시간을 입력합니다 시간:분:초 (예 +1:10 -1:10 1:10 ...)";
+		};
 	};
 	["export music"] = {
 		registeredOnly = eulaComment_music;
@@ -1099,6 +1215,11 @@ local export = {
 				:format(export:sub(1,-2))
 			);
 		end;
+		onSlash = commonSlashCommand {
+			description = "곡을 저장합니다!";
+			name = "곡저장";
+			noOption = true;
+		};
 	};
 };
 return export;

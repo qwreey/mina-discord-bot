@@ -13,9 +13,9 @@ local typeConverter = {
 	[enums.optionType.string] = function(val) return val end,
 	[enums.optionType.integer] = function(val) return val end,
 	[enums.optionType.boolean] = function(val) return val end,
-	[enums.optionType.user] = function(val, args) return args:getMember(val) end,
-	[enums.optionType.channel] = function(val, args) return args:getChannel(val) end,
-	[enums.optionType.role] = function(val, args) return args:getRole(val) end,
+	[enums.optionType.user] = function(val, args) return args and args:getMember(val) end,
+	[enums.optionType.channel] = function(val, args) return args and args:getChannel(val) end,
+	[enums.optionType.role] = function(val, args) return args and args:getRole(val) end,
 }
 
 local subCommand = enums.optionType.subCommand
@@ -75,7 +75,6 @@ function client_m:slashCommand(data)
 	local cmd = applicationCommand(data, self)
 
 	if found then
-		-- p(found) p(cmd)
 		if not found:_compare(cmd) then
 			found:_merge(cmd)
 		elseif not found._callback then

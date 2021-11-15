@@ -7,13 +7,16 @@ local client = _G.client;
 local insert = table.insert;
 local remove = table.remove;
 
+local header = "따끈 따끈한 투표!";
+
 local function makeId(id)
 	return "vote_" .. tostring(id);
 end
 
 local function makeVoteText(data,items)
 	items = items or data.items;
-	local str = "**따끈 따끈한 투표!**\n";
+	local title = data.title;
+	local str = ("**%s**\n"):format(title or header);
 	local selected = data.selected or {};
 	local allUserCount = 0;
 	for _,v in pairs(selected) do
@@ -57,7 +60,11 @@ local function makeVoteButtons(items)
 	return buttons;
 end
 
-local function makeVote(messageId,rawString)
+local function makeVote(messageId,rawString,title)
+	if title == "" then
+		title = nil;
+	end
+
 	local items = {};
 	for str in rawString:gmatch("[^,]+") do
 		local this = str:gsub("\n",""):gsub("*",""):gsub("_",""):gsub(">",""):gsub("`","");
@@ -67,6 +74,7 @@ local function makeVote(messageId,rawString)
 	local id = makeId(messageId);
 	local data = {
 		items = items;
+		title = title;
 		--slashToken = slashToken;
 	};
 	interactionData:new(id,data);
@@ -165,10 +173,16 @@ client:on("slashCommandsReady", function()
 				type = discordia_enchent.enums.optionType.string;
 				required = true;
 			};
+			{
+				name = "제목";
+				description = "투표의 제목을 설정합니다! (이 옵션은 비워둘 수 있습니다)";
+				type = discordia_enchent.enums.optionType.string;
+				required = false;
+			};
 		};
 		callback = function(interaction, params, cmd)
 			interaction:reply(
-				makeVote(interaction.id,params["내용"])
+				makeVote(interaction.id,params["내용"],params["제목"])
 			);
 		end;
 	});

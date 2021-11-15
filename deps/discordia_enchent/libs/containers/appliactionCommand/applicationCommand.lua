@@ -30,8 +30,18 @@ function applicationCommand:__init(data, parent)
 	self._callback = data.callback
 	self._guild = parent._id and parent
 
+	local option = self._options
 	if not self._options then
-		self._options = data.options or {}
+		option = data.options or {}
+		self._options = option
+	end
+
+	for _,item in ipairs(option) do
+		if type(item) == "table" then
+			if item.required == false then
+				item.required = nil
+			end
+		end
 	end
 end
 
@@ -253,18 +263,19 @@ local function table_eq(table1, table2)
  end
 
 function applicationCommand:_compare(cmd)
-	-- p({
+	-- print(table.dump{
 	-- 	name = cmd._name;
 	-- 	description = cmd._description;
 	-- 	default_permission = cmd._default_permission;
-	-- 	options = cmd._option;
+	-- 	options = cmd._options;
 	-- })
-	-- p({
+	-- print(table.dump{
 	-- 	name = self._name;
 	-- 	description = self._description;
 	-- 	default_permission = self._default_permission;
-	-- 	options = self._option;
+	-- 	options = self._options;
 	-- })
+
 	if self._name ~= cmd._name or self._description ~= cmd._description or self._default_permission ~= cmd._default_permission then
 		return false
 	end
@@ -272,11 +283,13 @@ function applicationCommand:_compare(cmd)
 		return false
 	end
 	if not table_eq(self._options, cmd._options) then return false end
+	-- print("same!")
 
 	return true
 end
 
 function applicationCommand:_merge(cmd)
+	-- logger.info("updated");
 	self._name = cmd._name
 	self._description = cmd._description
 	self._options = cmd._options

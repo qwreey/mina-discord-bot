@@ -3,6 +3,8 @@ local module = {};
 
 local learn = require "commands.learning.learn";
 local errorType = learn.errorType;
+local discordia_enchent = _G.discordia_enchent;
+local commonSlashCommand = _G.commonSlashCommand;
 
 local help = [[
 **가르치기 기능에 대한 도움말입니다**
@@ -102,6 +104,34 @@ local export = {
 
 			replyMsg:setContent(("'%s' 는 '%s'! 다 외웠어요!\n`호감도 20 을 소모했어요 (현재 호감도는 %d 이에요)`"):format(what,react,userData.love));
 		end;
+		onSlash = function(self,client)
+			local name = self.name;
+			client:slashCommand({ --@diagnostic disable-line
+				name = name;
+				description = "미나에게 반응을 가르칩니다!";
+				options = {
+					{
+						name = "문장";
+						description = "가르칠 문장이나 단어입니다!";
+						type = discordia_enchent.enums.optionType.string;
+						required = true;
+					};
+					{
+						name = "반응";
+						description = "돌아올 반응입니다!";
+						type = discordia_enchent.enums.optionType.string;
+						required = true;
+					};
+				};
+				callback = function(interaction, params, cmd)
+					processCommand(userInteractWarpper(
+						("%s %s=%s"):format(name,
+							params["문장"]:gsub("=",""),
+							params["반응"]:gsub("=","")
+					),interaction));
+				end;
+			});
+		end;
 	};
 	["잊어"] = {
 		alias = {"까먹어","잊어버려","잊어라","잊어줘"};
@@ -147,6 +177,13 @@ local export = {
 
 			replyMsg:setContent("그게 뭐였죠? 기억나지가 않아요");
 		end;
+		onSlash = commonSlashCommand {
+			description = "기억을 잊습니다!";
+			optionName = "지울것";
+			optionDescription = "기억의 번째를 입력하세요!";
+			optionsType = discordia_enchent.enums.optionType.integer;
+			optionRequired = true;
+		};
 	};
 	["기억"] = {
 		alias = {"지식","가르침"};
@@ -223,6 +260,13 @@ local export = {
 				};
 			};
 		end;
+		onSlash = commonSlashCommand {
+			description = "내가 가르친 기억들을 봅니다!";
+			optionName = "페이지";
+			optionDescription = "확인할 페이지를 입력하세요!";
+			optionsType = discordia_enchent.enums.optionType.integer;
+			optionRequired = false;
+		};
 	};
 };
 return export;

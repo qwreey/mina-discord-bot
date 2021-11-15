@@ -8,8 +8,10 @@ local ctime = os.clock;
 
 local leaderstatusWords = _G.leaderstatusWords;
 local timeAgo = _G.timeAgo;
-local floor = math.floor;
+-- local floor = math.floor;
 local posixTime = _G.posixTime;
+local commonSlashCommand = _G.commonSlashCommand;
+local discordia_enchent = _G.discordia_enchent;
 
 local function formatIDTime(this)
 	local thisDate = Date.fromSnowflake(this);
@@ -134,7 +136,63 @@ local export = {
 				end
 			end
 			message:reply("해당 유저는 존재하지 않습니다!");
-		end
+		end;
+		onSlash = function(self,client)
+			local name = self.name;
+			client:slashCommand({ --@diagnostic disable-line
+				name = name;
+				description = "호감도를 보는 명령어입니다!";
+				options = {
+					{
+						name = "목표";
+						description = "어느 대상의 호감도를 볼것인지 정합니다";
+						type = discordia_enchent.enums.optionType.string;
+						required = true;
+						choices = {
+							{
+								name = "순위표를 보여줍니다";
+								value = "순위";
+							};
+							{
+								name = "유저의 호감도를 봅니다";
+								value = "유저";
+							};
+							{
+								name = "자신의 호감도를 봅니다";
+								value = "자신";
+							};
+						};
+					};
+					{
+						name = "유저";
+						description = "대상을 유저로 선택했다면 입력해야 합니다";
+						type = discordia_enchent.enums.optionType.user;
+						required = false;
+					};
+				};
+				callback = function(interaction, params, cmd)
+					local command = name .. " ";
+
+					local target = params["목표"];
+					if target == "순위" then
+						command = command .. "순위";
+					elseif target == "유저" then
+						if not interaction.guild then
+							interaction:reply("서버에서만 유저의 호감도 볼 수 있어요!");
+							return;
+						end
+						local user = params["유저"];
+						if not user then
+							interaction:reply("유저를 입력해주세요!");
+							return;
+						end
+						command = command .. user.id;
+					end
+
+					processCommand(userInteractWarpper(command,interaction));
+				end;
+			});
+		end;
 	};
 	["핑"] = {
 		alias = {"상태","status","ping","지연시간","응답시간"};
@@ -167,7 +225,7 @@ local export = {
 		love = defaultLove;
 	};
 	["지워"] = {
-		disableDm = true;
+		disableDm = "지워 명령어는 서버 채널에서만 사용할 수 있어요!";
 		alias = {"지우개","지워봐","지워라","지우기","삭제해","청소","삭제","청소해","clear"};
 		func = function(replyMsg,message,args,Content)
 			local RemoveNum = Content.rawArgs == "" and 5 or tonumber(Content.rawArgs);
@@ -217,6 +275,13 @@ local export = {
 				end
 			end);
 		end;
+		onSlash = commonSlashCommand {
+			description = "이 채널에서 메시지를 지웁니다! (봇이 해당 채널에 접근할 권한이 있어야 합니다)";
+			optionsType = discordia_enchent.enums.optionType.integer;
+			optionName = "지울수";
+			optionDescription = "지울 메시지의 수 입니다! (최소 2 ~ 최대 100)";
+			optionRequired = false;
+		};
 	};
 	["미나초대"] = {
 		alias = {"초대","초대링크","미나 초대","초대 링크"};
@@ -246,35 +311,39 @@ local export = {
 				);
 			end);
 		end;
-		onSlash = function(self,client)
-			client:slashCommand({ ---@diagnostic disable-line
-				name = "뽑기";
-				description = "렌덤으로 아무거나 뽑습니다!";
-				options = {
-					{
-						name = "내용";
-						description = "뽑을 내용입니다! ',' 을 이용해 개별로 구분하세요!";
-						type = discordia_enchent.enums.optionType.string;
-						required = true;
-					};
-				};
-				callback = function(interaction, params, cmd)
-					local items = {};
-					for str in params["내용"]:gmatch("[^,]+") do
-						insert(items,str);
-					end
-					if #items < 2 then
-						return interaction:reply("뽑을 선택지는 최소한 2개는 있어야해요!");
-					end
-					interaction:reply("결과는?! **(두구두구두구두구)**");
-					timeout(2000,function ()
-						interaction:update(("%s (이)가 뽑혔어요!"):format(
-							tostring(items[cRandom(1,#items)])):gsub("@",""):gsub("#","")
-						);
-					end);
-				end;
-			});
-		end;
+		onSlash = commonSlashCommand {
+			description = "렌덤으로 아무거나 뽑습니다!";
+			optionDescription = "뽑을 내용입니다! ',' 을 이용해 개별로 구분하세요!";
+		};
+		-- onSlash = function(self,client)
+		-- 	client:slashCommand({ --@diagnostic disable-line
+		-- 		name = "뽑기";
+		-- 		description = "렌덤으로 아무거나 뽑습니다!";
+		-- 		options = {
+		-- 			{
+		-- 				name = "내용";
+		-- 				description = "뽑을 내용입니다! ',' 을 이용해 개별로 구분하세요!";
+		-- 				type = discordia_enchent.enums.optionType.string;
+		-- 				required = true;
+		-- 			};
+		-- 		};
+		-- 		callback = function(interaction, params, cmd)
+		-- 			local items = {};
+		-- 			for str in params["내용"]:gmatch("[^,]+") do
+		-- 				insert(items,str);
+		-- 			end
+		-- 			if #items < 2 then
+		-- 				return interaction:reply("뽑을 선택지는 최소한 2개는 있어야해요!");
+		-- 			end
+		-- 			interaction:reply("결과는?! **(두구두구두구두구)**");
+		-- 			timeout(2000,function ()
+		-- 				interaction:update(("%s (이)가 뽑혔어요!"):format(
+		-- 					tostring(items[cRandom(1,#items)])):gsub("@",""):gsub("#","")
+		-- 				);
+		-- 			end);
+		-- 		end;
+		-- 	});
+		-- end;
 	};
 	["시간"] = {
 		alias = {

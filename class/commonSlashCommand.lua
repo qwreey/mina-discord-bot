@@ -6,7 +6,8 @@
 ---@field optionsType number option type, default is string
 ---@field optionRequired boolean is option is required, default is true
 ---@field optionName string name of option
-
+---@field optionChoices table option choices table
+---@field noOption boolean|nil is no option provided
 local defaultOptionName = "내용";
 local defaultOptionDescription = "명령어 사용에 쓰이는 내용입니다";
 
@@ -21,19 +22,20 @@ local function commonSlashCommand(options)
         client:slashCommand({ ---@diagnostic disable-line
             name = options.name or parentName;
             description = options.description;
-            options = {
+            options = (not options.noOption) and {
                 {
                     name = optionName;
                     description = options.optionDescription or defaultOptionDescription;
                     type = options.optionsType or discordia_enchent.enums.optionType.string;
                     required = type(optionRequired) == "nil" or optionRequired;
+                    choices = options.optionChoices;
                 };
             };
             callback = function(interaction, params, cmd)
                 local pass,err = pcall(
                     processCommand,
                     userInteractWarpper(
-                        ("%s %s"):format(parentName,params[optionName]),
+                        ("%s %s"):format(parentName,tostring(params[optionName])),
                         interaction
                     )
                 );
@@ -45,5 +47,5 @@ local function commonSlashCommand(options)
     end
 end
 
-_G.commonSlashCommand = commonSlashCommand;
+-- _G.commonSlashCommand = commonSlashCommand;
 return commonSlashCommand;
