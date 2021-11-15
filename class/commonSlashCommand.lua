@@ -35,7 +35,7 @@ local function commonSlashCommand(options)
                 local pass,err = pcall(
                     processCommand,
                     userInteractWarpper(
-                        ("%s %s"):format(parentName,tostring(params[optionName])),
+                        ("%s %s"):format(parentName,tostring(params[optionName] or "")),
                         interaction
                     )
                 );
