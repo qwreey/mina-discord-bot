@@ -7,12 +7,6 @@ local module = {};
 -- written by qwreey all right of this code had owned by qwreey;
 -- 2021 / 07 / 04
 
-local myXML;
-function module:setMyXML(nMyXML)
-	myXML = nMyXML;
-	return self;
-end
-
 function module:embed(searchKeyword,body,queryStr)
 	local fields = {};
 

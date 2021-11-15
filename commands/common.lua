@@ -233,15 +233,47 @@ local export = {
 		alias = {"선택해","선택","추첨","뽑아","추첨해","골라","골라봐"};
 		reply = "결과는?! **(두구두구두구두구)**";
 		func = function(replyMsg,message,args,Content)
+			local items = {};
+			for str in Content.rawArgs:gmatch("[^,]+") do
+				insert(items,str);
+			end
+			if #items < 2 then
+				return replyMsg:setContent("뽑을 선택지는 최소한 2개는 있어야해요!");
+			end
 			timeout(2000,function ()
-				local items = {};
-				for str in Content.rawArgs:gmatch("[^,]+") do
-					table.insert(items,str);
-				end
 				replyMsg:setContent(("%s (이)가 뽑혔어요!"):format(
 					tostring(items[cRandom(1,#items)])):gsub("@",""):gsub("#","")
 				);
 			end);
+		end;
+		onSlash = function(self,client)
+			client:slashCommand({ ---@diagnostic disable-line
+				name = "뽑기";
+				description = "렌덤으로 아무거나 뽑습니다!";
+				options = {
+					{
+						name = "내용";
+						description = "뽑을 내용입니다! ',' 을 이용해 개별로 구분하세요!";
+						type = discordia_enchent.enums.optionType.string;
+						required = true;
+					};
+				};
+				callback = function(interaction, params, cmd)
+					local items = {};
+					for str in params["내용"]:gmatch("[^,]+") do
+						insert(items,str);
+					end
+					if #items < 2 then
+						return interaction:reply("뽑을 선택지는 최소한 2개는 있어야해요!");
+					end
+					interaction:reply("결과는?! **(두구두구두구두구)**");
+					timeout(2000,function ()
+						interaction:update(("%s (이)가 뽑혔어요!"):format(
+							tostring(items[cRandom(1,#items)])):gsub("@",""):gsub("#","")
+						);
+					end);
+				end;
+			});
 		end;
 	};
 	["시간"] = {

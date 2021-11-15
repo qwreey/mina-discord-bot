@@ -87,13 +87,14 @@ local strSplit = require "stringSplit"; _G.strSplit = strSplit; -- string split 
 local urlCode = require "urlCode"; _G.urlCode = urlCode; -- url encoder/decoder library
 local makeId = require "makeId"; _G.makeId = makeId; -- making id with cRandom library
 local makeSeed = require "libs.makeSeed"; _G.makeSeed = makeSeed; -- making seed library, this is used on cRandom llibrary
-local myXMl = require "myXML"; _G.myXMl = myXMl; -- myXML library
+local myXMl = require "myXML"; _G.myXML = myXMl; -- myXML library
 local userLearn = require "commands.learning.learn"; -- user learning library
 local data = require "data"; data:setJson(json); _G.data = data; -- Data system
 local userData = require "class.userData"; userData:setJson(json):setlogger(logger):setMakeId(makeId); _G.userData = userData; -- Userdata system
 local serverData = require "class.serverData"; serverData:setJson(json):setlogger(logger):setMakeId(makeId); _G.serverData = serverData; -- Serverdata system
 local interactionData = require "class.interactionData"; interactionData:setJson(json):setlogger(logger):setMakeId(makeId); _G.interactionData = interactionData; -- interactiondata system
 local posixTime = require "libs.posixTime"; _G.posixTime = posixTime; -- get posixTime library
+local commonSlashCommand = require "class.commonSlashCommand";
 --#endregion : Load modules
 --#region : Discordia Module
 logger.info("------------------------ [CLEAN  UP] ------------------------");
@@ -134,6 +135,7 @@ require("app.env"); -- inject environment
 local adminCmd = require("class.adminCommands"); -- load admin commands
 local hook = require("class.hook");
 local registeLeaderstatus = require("class.registeLeaderstatus");
+local formatTraceback = _G.formatTraceback;
 
 -- Load commands
 logger.info(" |- load commands from commands folder");
@@ -189,6 +191,7 @@ local afterHook = hook.afterHook;
 local beforeHook = hook.beforeHook;
 
 -- making command reader
+local lower = string.lower;
 local function processCommand(message)
 
 	-- get base information from message object
@@ -237,7 +240,7 @@ local function processCommand(message)
 
 	-- 접두사 구문 분석하기
 	local prefix;
-	local TextLower = string.lower(text); -- make sure text is lower case
+	local TextLower = lower(text); -- make sure text is lower case
 	for _,nprefix in pairs(prefixs) do
 		if nprefix == TextLower then -- 만약 접두사와 글자가 일치하는경우 반응 달기
 			message:reply {
@@ -273,7 +276,6 @@ local function processCommand(message)
 	end
 	prefix = prefix or "";
 
-	-- 알고리즘 작성
 	-- 커맨드 찾기
 	-- 단어 분해 후 COMMAND DICT 에 색인시도
 	-- 못찾으면 다시 넘겨서 뒷단어로 넘김
@@ -336,7 +338,7 @@ local function processCommand(message)
 		or replyText
 	);
 
-	-- 만약 호감도가 있으면 올려주기
+	-- Make love prompt
 	if love then
 		local userId = user.id
 		local thisUserDat = userData:loadData(userId);
@@ -409,22 +411,40 @@ local function processCommand(message)
 		isSlashCommand = isSlashCommand;
 	};
 
-	-- 만약 답변글이 함수면 (지금은 %s 시에요 처럼 쓸 수 있도록) 실행후 결과 가져오기
+	-- if reply text is function, run it and get result
 	if type(replyText) == "function" then
 		rawArgs = rawCommandText:sub(#rawCommandName+2,-1);
 		args = strSplit(rawArgs,"\32");
 		contents.rawArgs = rawArgs;
 		local passed;
-		passed,replyText = pcall(replyText,message,args,contents);
-		if not passed then
-			message:reply({
-				content = ("커맨드 반응 생성중 오류가 발생했습니다!\n```\n%s\n```"):format(tostring(replyText));
+		passed,replyText = xpcall(replyText,function (err)
+			err = tostring(err);
+			local traceback = formatTraceback(debug.traceback());
+			text = tostring(text);
+			logger.errorf("An error occurred on running command function\n - original message : %s\n - error message was :\n%s\n - error traceback was :\n%s\n - more information was saved on log/debug.log",
+				tostring(text),err,traceback
+			);
+			qDebug {
+				title = "an error occurred on running reply function";
+				errorMessage = err;
+				traceback = traceback;
+				originalMsg = text;
+				command = Command;
+			};
+			coroutine.wrap(message.reply)(message,{
+				content = ("커맨드 반응 생성중 오류가 발생했습니다!```log\nError message : %s\n%s```"):format(
+					tostring(err),tostring(traceback)
+				);
 				reference = {message = message, mention = false};
-			});
+			})
+		end,message,args,contents);
+		if not passed then
+			return;
 		end
 	end
 
-	local replyMsg; -- Making reply message
+	-- Making reply message
+	local replyMsg;
 	if replyText then -- if there are reply text
 		local replyTextType = type(replyText);
 		local embed = Command.embed;
@@ -452,21 +472,24 @@ local function processCommand(message)
 		rawArgs = rawArgs or rawCommandText:sub(#CommandName+2,-1);
 		contents.rawArgs = rawArgs;
 		args = strSplit(rawArgs,"\32");
-		local passed,ret = pcall(func,replyMsg,message,args,contents);
-		if not passed then
-			logger.error(("an error occurred on running function\n - original message : %s\n - error traceback was\n%s\n - more information was saved on log/debug.log")
-				:format(tostring(text),tostring(ret))
+		xpcall(func,function (err)
+			err = tostring(err);
+			local traceback = formatTraceback(debug.traceback());
+			text = tostring(text);
+			logger.errorf("An error occurred on running command function\n - original message : %s\n - error message was :\n%s\n - error traceback was :\n%s\n - more information was saved on log/debug.log",
+				tostring(text),err,traceback
 			);
 			qDebug {
 				title = "an error occurred on running command function";
-				traceback = tostring(ret);
-				originalMsg = tostring(text);
+				errorMessage = err;
+				traceback = traceback;
+				originalMsg = text;
 				command = Command;
 			};
-			replyMsg:setContent(("명령어 처리중에 오류가 발생하였습니다\n```%s```")
-				:format(tostring(ret))
+			coroutine.wrap(replyMsg.setContent)(replyMsg,
+				("명령어 처리중에 오류가 발생하였습니다```log\nError message : %s\n%s```"):format(err,traceback)
 			);
-		end
+		end,replyMsg,message,args,contents);
 	end
 
 	-- run after hook
@@ -481,6 +504,7 @@ local function processCommand(message)
 		pcall(thisHook.func,thisHook,hookContent,contents);
 	end
 end
+_G.processCommand = processCommand;
 
 -- on message
 client:on('messageCreate', processCommand);
@@ -499,18 +523,28 @@ client:on("slashCommandsReady", function()
 			};
 		};
 		callback = function(interaction, params, cmd)
-			local pass,err = pcall(
-				processCommand,
+			local pass,err = xpcall(processCommand,
+			function (err)
+					err = tostring(err)
+					local traceback = debug.traceback();
+					logger.errorf(
+						"Error occurred on executing slash command\nError message : %s\nError traceback",
+						err,traceback
+					);
+					interaction:reply(
+						("애플리케이션 명령어 실행중 오류가 발생했습니다!\n```%s\n%s```"):format(
+							err,traceback
+						)
+					);
+				end,
 				userInteractWarpper(
 					params["내용"],
 					interaction
 				)
 			);
-			if not pass then
-				logger.errorf("Error occurred on executing slash command\n%s",tostring(err));
-			end
 		end;
 	});
+	logger.infof("[Slash] Loaded main slash command'");
 end);
 
 -- enable terminal features and live reload system

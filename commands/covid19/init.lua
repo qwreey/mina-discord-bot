@@ -1,7 +1,6 @@
 -- 코로나 현황
 local covid19Request = require "commands.covid19.request";
 local covid19Embed = require "commands.covid19.embed";
-covid19Request:setCoroHttp(corohttp):setMyXML(myXMl);
 
 ---@type table<string, Command>
 local export = {

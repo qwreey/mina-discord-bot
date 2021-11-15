@@ -81,13 +81,6 @@ end
 -- 데이터 파일 지우고 데이터 초기화
 -- this is should be replaced with fs module
 function module:resetData(interactionId)
-	interactionData[interactionId] = nil;
-	return pcall(function ()
-		os.remove(formatFileRoot(interactionId));
-	end);
-end
-
-function module:resetData(interactionId)
 	userDatas[userId] = nil;
 	fs.unlink(formatFileRoot(interactionId));
 end

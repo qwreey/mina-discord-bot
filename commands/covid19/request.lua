@@ -9,16 +9,6 @@
 ]]
 
 local module = {};
-local myXML,corohttp;
-
-function module:setCoroHttp(newCorohttp)
-	corohttp = newCorohttp;
-	return self;
-end
-function module:setMyXML(newMyXML)
-	myXML = newMyXML;
-	return self;
-end
 
 local dayInSec = 86400;
 function module.get(clientData)

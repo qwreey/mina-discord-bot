@@ -1,8 +1,6 @@
 -- 유튜브 검색
 local youtubeEmbed = require "commands.youtube.embed";
 local youtubeSearch = require "commands.youtube.request"; -- 유튜브 검색
-youtubeSearch:setCoroHttp(corohttp):setJson(json):setUrlCode(urlCode); -- 유튜브 검색 셋업
-youtubeEmbed:setMyXML(myXMl);
 
 ---@type table<string, Command>
 local export = {
@@ -23,6 +21,11 @@ local export = {
 				content = ("유튜브에서 '%s' 를 검색한 결과입니다"):format(rawArgs);
 			};
 		end;
+		onSlash = commonSlashCommand {
+			description = "유튜브에서 입력한 내용을 검색합니다!";
+			optionDescription = "검색어를 입력하세요";
+			optionName = "검색어";
+		};
 	};
 };
 return export;

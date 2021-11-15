@@ -56,6 +56,16 @@ local function indexingReact(indexTable,cmds,commandName,reactInfo)
 
 	reactInfo.alias = nil;
 	reactInfo.command = nil;
+
+	local onSlash = reactInfo.onSlash;
+	if onSlash then
+		reactInfo.onSlash = nil;
+		_G.client:on("slashCommandsReady",function ()
+			onSlash(reactInfo,client);
+			logger.infof("[Slash] Loaded slash command from command '%s'",commandName);
+		end);
+	end
+
 	return len;
 end
 

@@ -254,7 +254,7 @@ end
 _G.timeout = timeout;
 
 -- normal love range
-do 
+do
 	local cache = {};
 	_G.loveRang = function (min,max)
 		local key = ("%dx%d"):format(min,max);
@@ -268,6 +268,15 @@ do
 	end;
 	_G.defaultLove = loveRang(2,8);
 	_G.rmLove = loveRang(-2,-8);
+end
+
+--format traceback
+function _G.formatTraceback(msg)
+	msg = tostring(msg);
+	return msg:gsub(" -%a:[/\\]Users[/\\].-[/\\][Dd]esktop[/\\].-[/\\]","")
+		:gsub("[\\/]",".")
+		:gsub(".lua$","")
+		:gsub("	","    ");
 end
 
 -- report cooltime
