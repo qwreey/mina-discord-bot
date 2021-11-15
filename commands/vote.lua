@@ -92,12 +92,12 @@ local function updateVote(userId,selectionNumber,data)
         data.selected = selected;
     end
 
-    for _,seletedList in pairs(selected) do
-        local removed;
-        for seletedIndex,seletedUserId in ipairs(seletedList) do
-            if seletedUserId == userId then
-                remove(seletedList,seletedIndex);
-                removed = true;
+    local removed;
+    for selectedIndex,selectedList in pairs(selected) do
+        for selectedUserIndex,selectedUserId in ipairs(selectedList) do
+            if selectedUserId == userId then
+                remove(selectedList,selectedUserIndex);
+                removed = selectedIndex;
                 break;
             end
         end
@@ -106,6 +106,9 @@ local function updateVote(userId,selectionNumber,data)
         end
     end
 
+    if removed == selectionNumber then
+    	return;
+    end
     local this = selected[selectionNumber];
     if not this then
         this = {};
