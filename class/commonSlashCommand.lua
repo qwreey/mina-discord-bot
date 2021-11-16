@@ -18,7 +18,7 @@ local defaultOptionDescription = "명령어 사용에 쓰이는 내용입니다"
 local function commonSlashCommand(options)
     return function (self,client)
         local optionRequired = options.optionRequired;
-        local noInteractionHead = not option.headerEnabled;
+        local noInteractionHead = not options.headerEnabled;
         local parentName = self.name;
         local optionName = options.optionName or defaultOptionName;
         client:slashCommand({ ---@diagnostic disable-line
