@@ -77,7 +77,7 @@ local split = require "coro-split"; _G.split = split; -- run splitted coroutines
 local sha1 = require "sha1"; _G.sha1 = sha1; -- sha1
 local osTime = os.time; _G.osTime = osTime; -- time
 local logger = require "log"; _G.logger = logger; -- log library
-local dumpTable = require "libs.dumpTable"; -- table dump library, this is auto injecting dump function on global 'table'
+local dumpTable = require "libs.dumpTable"; _G.dumpTable = dumpTable; -- table dump library, this is auto injecting dump function on global 'table'
 local exitCodes = require("app.exitCodes"); _G.exitCodes = exitCodes; -- get exit codes
 local qDebug = require "app.debug"; _G.qDebug = qDebug; -- my debug system
 local term = require "app.term"; -- setuping REPL terminal
@@ -90,9 +90,9 @@ local makeSeed = require "libs.makeSeed"; _G.makeSeed = makeSeed; -- making seed
 local myXML = require "myXML"; _G.myXML = myXML; -- myXML library
 local userLearn = require "commands.learning.learn"; -- user learning library
 local data = require "data"; data:setJson(json); _G.data = data; -- Data system
-local userData = require "class.userData"; userData:setJson(json):setlogger(logger):setMakeId(makeId); _G.userData = userData; -- Userdata system
-local serverData = require "class.serverData"; serverData:setJson(json):setlogger(logger):setMakeId(makeId); _G.serverData = serverData; -- Serverdata system
-local interactionData = require "class.interactionData"; interactionData:setJson(json):setlogger(logger):setMakeId(makeId); _G.interactionData = interactionData; -- interactiondata system
+local userData = require "class.userData"; _G.userData = userData; -- Userdata system
+local serverData = require "class.serverData"; _G.serverData = serverData; -- Serverdata system
+local interactionData = require "class.interactionData"; _G.interactionData = interactionData; -- interactiondata system
 local posixTime = require "libs.posixTime"; _G.posixTime = posixTime; -- get posixTime library
 local commonSlashCommand = require "class.commonSlashCommand"; _G.commonSlashCommand = commonSlashCommand;
 --#endregion : Load modules

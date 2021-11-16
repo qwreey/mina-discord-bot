@@ -1,3 +1,4 @@
+local interactMessageWarpper = require("class.interactMessageWarpper");
 local interactionData = _G.interactionData;
 local discordia_enchent = _G.discordia_enchent;
 local components = discordia_enchent.components;
@@ -6,12 +7,10 @@ local client = _G.client;
 
 local insert = table.insert;
 local remove = table.remove;
-
-local header = "따끈 따끈한 투표!";
-
 local function makeId(id)
 	return "vote_" .. tostring(id);
 end
+local header = "따끈 따끈한 투표!";
 
 local function makeVoteText(data,items)
 	items = items or data.items;
@@ -75,7 +74,6 @@ local function makeVote(messageId,rawString,title)
 	local data = {
 		items = items;
 		title = title;
-		--slashToken = slashToken;
 	};
 	interactionData:new(id,data);
 
@@ -125,7 +123,6 @@ local function updateVote(userId,selectionNumber,data)
 	insert(this,userId);
 end
 
-local interactMessageWarpper = require("class.interactMessageWarpper");
 ---@param id string
 ---@param object interaction
 local function buttonPressed(id,object)
@@ -147,46 +144,15 @@ local function buttonPressed(id,object)
 			return;
 		end
 
-		--if parentInteraction then
-		--	parentInteraction._token = data.slashToken;
-		--end
-
 		updateVote(object.user.id,voteSelection,data);
 		object:update({
 			components = message.components;
 			content = makeVoteText(data);
 		});
 		interactionData:saveData(voteId);
-		--object:ack();
 	end
 end
 client:on("buttonPressed",buttonPressed);
-
-client:on("slashCommandsReady", function()
-	client:slashCommand({ ---@diagnostic disable-line
-		name = "투표";
-		description = "투표를 만듭니다!";
-		options = {
-			{
-				name = "내용";
-				description = "투표 내용입니다! ',' 을 이용해 개별로 구분하세요!";
-				type = discordia_enchent.enums.optionType.string;
-				required = true;
-			};
-			{
-				name = "제목";
-				description = "투표의 제목을 설정합니다! (이 옵션은 비워둘 수 있습니다)";
-				type = discordia_enchent.enums.optionType.string;
-				required = false;
-			};
-		};
-		callback = function(interaction, params, cmd)
-			interaction:reply(
-				makeVote(interaction.id,params["내용"],params["제목"])
-			);
-		end;
-	});
-end);
 
 local export = {
 	["투표"] = {
@@ -197,6 +163,31 @@ local export = {
 			replyMsg:update(
 				makeVote(replyMsg.id,Content.rawArgs)
 			);
+		end;
+		onSlash = function ()
+			client:slashCommand({ ---@diagnostic disable-line
+			name = "투표";
+			description = "투표를 만듭니다!";
+			options = {
+				{
+					name = "내용";
+					description = "투표 내용입니다! ',' 을 이용해 개별로 구분하세요!";
+					type = discordia_enchent.enums.optionType.string;
+					required = true;
+				};
+				{
+					name = "제목";
+					description = "투표의 제목을 설정합니다! (이 옵션은 비워둘 수 있습니다)";
+					type = discordia_enchent.enums.optionType.string;
+					required = false;
+				};
+			};
+			callback = function(interaction, params, cmd)
+				interaction:reply(
+					makeVote(interaction.id,params["내용"],params["제목"])
+				);
+			end;
+		});
 		end;
 	};
 };

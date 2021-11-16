@@ -4,27 +4,6 @@ local module = {};
 local serverDatas = {};
 module.serverDatas = serverDatas;
 
--- JSON 가져오기
-local json;
-function module:setJson(newJson)
-	json = newJson;
-	return self;
-end
-
--- 로거 가져오기
-local logger;
-function module:setlogger(newlogger)
-	logger = newlogger;
-	return self;
-end
-
--- MakeId 를 가져오기
-local makeId;
-function module:setMakeId(newMakeId)
-	makeId = newMakeId;
-	return self;
-end
-
 local function formatFileRoot(serverId)
 	return ("data/serverData/%s.json"):format(serverId);
 end
@@ -81,7 +60,7 @@ end
 -- 데이터 파일 지우고 데이터 초기화
 -- this is should be replaced with fs module
 function module:resetData(serverId)
-	userDatas[userId] = nil;
+	serverDatas[serverId] = nil;
 	fs.unlink(formatFileRoot(serverId));
 end
 

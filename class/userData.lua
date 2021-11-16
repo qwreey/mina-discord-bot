@@ -4,27 +4,6 @@ local module = {};
 local userDatas = {};
 module.userDatas = userDatas;
 
--- JSON 가져오기
-local json;
-function module:setJson(newJson)
-	json = newJson;
-	return self;
-end
-
--- 로거 가져오기
-local logger;
-function module:setlogger(newlogger)
-	logger = newlogger;
-	return self;
-end
-
--- MakeId 를 가져오기
-local makeId;
-function module:setMakeId(newMakeId)
-	makeId = newMakeId;
-	return self;
-end
-
 local function formatFileRoot(userId)
 	return ("data/userData/%s.json"):format(userId);
 end
