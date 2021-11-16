@@ -78,7 +78,8 @@ end
 -- play thing
 local getPosixNow = posixTime.now;
 local expireAtLast = 2 * 60;
-local retryRate = 5;
+local retryRate = 20;
+local maxRetrys = 7;
 function this:__play(thing,position) -- PRIVATE
 	-- logginggs
 	logger.infof("playing %s with %s",tostring(thing),tostring(position));
@@ -117,22 +118,22 @@ function this:__play(thing,position) -- PRIVATE
 			if ffmpegError then
 				return;
 			end
-			ffmpegError = true;
+			ffmpegError = errStr;
 
 			-- error on ffmpeg
-			logger.info("[Music] try to sending error last message");
-			local message = thing.message;
+			-- logger.info("[Music] try to sending error last message");
+			-- local message = thing.message;
 
 			-- send message
-			if message then
-				message:reply {
-					content = ("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```\n오류난 부분에서 다시 재생을 시도합니다!"):format(
-						tostring((thing.info or {title = "unknown"}).title),
-						tostring((errStr .. "\n"):gsub("https?://.-[\n :]",""))
-					);
-					reference = {message = message, mention = false};
-				};
-			end
+			-- if message then
+			-- 		message:reply {
+			-- 		content = ("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```\n오류난 부분에서 다시 재생을 시도합니다!"):format(
+			-- 			tostring((thing.info or {title = "unknown"}).title),
+			-- 			tostring((errStr .. "\n"):gsub("https?://.-[\n :]",""))
+			-- 		);
+			-- 		reference = {message = message, mention = false};
+			-- 	};
+			-- end
 		end));
 
 		-- TODO: hight resolution time required!
@@ -140,22 +141,29 @@ function this:__play(thing,position) -- PRIVATE
 		if ffmpegError and (type(result) == "number") then -- result is elapsed
 			local lastErrorTime = self.lastErrorTime;
 			local now = posixTime.now();
-			if (not lastErrorTime) or (lastErrorTime+retryRate < now) then
-				self.lastErrorTime = now;
+			local lastErrorRetrys = self.lastErrorRetrys or 0;
+			local unrated = (not lastErrorTime) or (lastErrorTime+retryRate < now);
+			if unrated or (lastErrorRetrys < maxRetrys) then
+				if unrated then
+					lastErrorRetrys = 0;
+					self.lastErrorTime = now;
+				end
+				self.lastErrorRetrys = lastErrorRetrys + 1;
 				self.nowPlaying = nil;
 				timeout(0,self.__play,self,thing,result / 1000); -- adding coroutine on worker
 				return;
 			else
-				self.lastErrorTime = nil;
 				local message = thing.message;
 				if message then
 					message:reply {
-						content = "오류가 너무 많아 이 곡을 건너뜁니다!";
+						content = ("오류가 너무 많아 이 곡을 건너뜁니다! 가장 최근 오류 :```log\n%s```"):format(ffmpegError);
 						reference = {message = message, mention = false};
 					};
 				end
 			end
 		end
+		self.lastErrorTime = nil;
+		self.lastErrorRetrys = nil;
 
 		-- is on seeking mode
 		local seeking = self.seeking;
