@@ -26,7 +26,7 @@ function interactMessageWarpper:__edit(d,private)
 	end
 
 	local content = d.content;
-	if content then
+	if (not self.noInteractionHeader) and content then
 		local user = this and this.user;
 		local str = self.commandStr;
 		if str and user then
@@ -78,12 +78,13 @@ end
 function interactMessageWarpper:reply(d)
 	return self.this.channel:send(d);
 end
-function interactMessageWarpper.new(this,commandStr)
+function interactMessageWarpper.new(this,commandStr,noInteractionHeader)
 	local self = {
 		this = this;
 		commandStr = commandStr;
 		id = this.id;
 		slashCommand = true;
+		noInteractionHeader = noInteractionHeader;
 	};
 	setmetatable(self,interactMessageWarpper);
 	return self;

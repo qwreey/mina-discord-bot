@@ -7,7 +7,7 @@ return function (content,interaction,noInteractionHeader)
 	return {
 		reply = function(self,d,private)
 			if not replyMessage then
-				replyMessage = interactMessageWarpper.new(interaction,content);
+				replyMessage = interactMessageWarpper.new(interaction,content,noInteractionHeader);
 				replyMessage:update(d,private);
 				return replyMessage;
 			end
@@ -19,6 +19,5 @@ return function (content,interaction,noInteractionHeader)
 		member = interaction.member;
 		author = interaction.user;
 		slashCommand = true;
-		noInteractionHeader = noInteractionHeader;
 	};
 end;
