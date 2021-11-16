@@ -11,6 +11,7 @@ return function (FFmpegProcess)
 		local stderr = uv.new_pipe(false)
 
 		local args = {
+			'-fflags', '+discardcorrupt'
 			'-i', path,
 			'-ar', rate,
 			'-ac', channels,
