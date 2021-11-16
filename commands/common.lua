@@ -28,7 +28,7 @@ local export = {
 	--타이머
 	["소라고동"] = {
 		alias = {"마법의 소라고동","마법의소라고동"};
-		reply = {"그럴껄","아니겠지","아마도","아닐껄","당연히","절대","맞아","그럴리가","그래","아니야","그럼","아니","그렇치","안 돼.","다시한번 물어봐요","언젠가는"};
+		reply = {"그럴껄","아냐","물론","아니겠지","아마도","아닐껄","당연히","절대","맞아","그럴리가","그래","아니야","그럼","아니","그렇치","안 돼.","다시한번 물어봐요","언젠가는"};
 		love = defaultLove;
 		onSlash = commonSlashCommand {
 			description = "글쌔 그럴까?";
@@ -198,7 +198,7 @@ local export = {
 						command = command .. user.id;
 					end
 
-					processCommand(userInteractWarpper(command,interaction));
+					processCommand(userInteractWarpper(command,interaction,true));
 				end;
 			});
 		end;

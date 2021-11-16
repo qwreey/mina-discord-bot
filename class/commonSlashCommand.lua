@@ -36,7 +36,7 @@ local function commonSlashCommand(options)
                     processCommand,
                     userInteractWarpper(
                         ("%s %s"):format(parentName,tostring(params[optionName] or "")),
-                        interaction
+                        interaction,true
                     )
                 );
                 if not pass then

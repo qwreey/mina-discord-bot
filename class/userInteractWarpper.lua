@@ -2,7 +2,7 @@
 
 local interactMessageWarpper = require("class.interactMessageWarpper");
 
-return function (content,interaction)
+return function (content,interaction,noInteractionHeader)
 	local replyMessage;
 	return {
 		reply = function(self,d,private)
@@ -19,5 +19,6 @@ return function (content,interaction)
 		member = interaction.member;
 		author = interaction.user;
 		slashCommand = true;
+		noInteractionHeader = noInteractionHeader;
 	};
 end;

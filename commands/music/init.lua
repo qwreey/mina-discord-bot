@@ -350,7 +350,7 @@ local export = {
 						("%s %s%s"):format(name,
 							params["곡"],
 							(pos and pos ~= "") and (", " .. tostring(pos)) or ("")
-					),interaction));
+					),interaction,true));
 				end;
 			});
 		end;
