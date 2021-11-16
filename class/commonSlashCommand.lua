@@ -8,6 +8,7 @@
 ---@field optionName string name of option
 ---@field optionChoices table option choices table
 ---@field noOption boolean|nil is no option provided
+---@field headerEnabled boolean|nil is interaction header enabled 
 local defaultOptionName = "내용";
 local defaultOptionDescription = "명령어 사용에 쓰이는 내용입니다";
 
@@ -17,6 +18,7 @@ local defaultOptionDescription = "명령어 사용에 쓰이는 내용입니다"
 local function commonSlashCommand(options)
     return function (self,client)
         local optionRequired = options.optionRequired;
+        local noInteractionHead = not option.headerEnabled;
         local parentName = self.name;
         local optionName = options.optionName or defaultOptionName;
         client:slashCommand({ ---@diagnostic disable-line
@@ -36,7 +38,7 @@ local function commonSlashCommand(options)
                     processCommand,
                     userInteractWarpper(
                         ("%s %s"):format(parentName,tostring(params[optionName] or "")),
-                        interaction,true
+                        interaction,noInteractionHead
                     )
                 );
                 if not pass then

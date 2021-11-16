@@ -33,6 +33,7 @@ local export = {
 		onSlash = commonSlashCommand {
 			description = "글쌔 그럴까?";
 			optionDescription = "소라고동에게 물어보세요!";
+			headerEnabled = true;
 		};
 	};
 	["가위"] = {
@@ -47,6 +48,11 @@ local export = {
 			return pF == 11 and "옆면????" or (pF <= 5 and "앞면!" or "뒷면!");
 		end;
 		love = defaultLove;
+		onSlash = commonSlashCommand {
+			description = "동전을 뒤집습니다!";
+			name = "동전";
+			noOption = true;
+		};
 	};
 	["제작진"] = {
 		alias = {"제작사","만든 사람","만든사람","만든 이들","만든이들","크래딧","크레딧","누가만듬?","작자","제작자"};
@@ -71,6 +77,11 @@ local export = {
 					newMsg:delete();
 				end);
 			end;
+			onSlash = commonSlashCommand {
+				description = "주사위를 던집니다";
+				name = "주사위";
+				noOption = true;
+			};
 		};
 		love = defaultLove;
 	};
@@ -321,6 +332,7 @@ local export = {
 			end);
 		end;
 		onSlash = commonSlashCommand {
+			headerEnabled = true;
 			description = "렌덤으로 아무거나 뽑습니다!";
 			optionDescription = "뽑을 내용입니다! ',' 을 이용해 개별로 구분하세요!";
 		};
