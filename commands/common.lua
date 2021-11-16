@@ -26,6 +26,15 @@ end
 ---@type table<string, Command>
 local export = {
 	--타이머
+	["소라고동"] = {
+		alias = {"마법의 소라고동","마법의소라고동"};
+		reply = {"당연히","절대","맞아","그럴리가","그래","아니야","그럼","아니","그렇치","안 돼.","다시한번 물어봐요","언젠가는"};
+		love = defaultLove;
+		onSlash = commonSlashCommand {
+			description = "글쌔 그럴까?";
+			optionDescription = "소라고동에게 물어보세요!";
+		};
+	};
 	["가위"] = {
 		alias = {"바위","보"};
 		reply = {"**{#:UserName:#}** 님이 이겼어요!","이번판은 미나 승리!","무승부! 똑같아요"};
