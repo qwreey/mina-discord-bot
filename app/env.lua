@@ -244,7 +244,6 @@ os.exit = coroutine.wrap(function (code)
 
 	xpcall(client.emit,errorHandler,client,"stoping",code);
 	xpcall(client.stop,errorHandler,client);
-	-- xpcall(process.exit,errorHandler,process,code);
 	xpcall(luaExit,errorHandler,code);
 end);
 _G.reloadBot = reloadBot;
