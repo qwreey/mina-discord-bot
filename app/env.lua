@@ -238,12 +238,15 @@ local function reloadBot() -- 봇 종료 함수
 end
 local luaExit = os.exit;
 os.exit = coroutine.wrap(function (code)
-	pcall(client.emit,client,"stoping",code);
-	client:stop();
-	process:exit(code);
-	luaExit(code);
+	local function errorHandler(err)
+		logger.errorf("An error occurred on killing process.\nerror message was : %s",err);
+	end
+
+	xpcall(client.emit,errorHandler,client,"stoping",code);
+	xpcall(client.stop,errorHandler,client);
+	-- xpcall(process.exit,errorHandler,process,code);
+	xpcall(luaExit,errorHandler,code);
 end);
-_G.kill = kill;
 _G.reloadBot = reloadBot;
 _G.startBot = startBot;
 

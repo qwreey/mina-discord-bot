@@ -103,7 +103,7 @@ local function voiceChannelLeave(member,channel)
 				logger.infof("voice channel timeouted! killing player now [channel:%s]",channelId);
 				local connection = guild.connection;
 				if connection then
-					pcall(player.destroy,player);
+					pcall(player.kill,player);
 					pcall(connection.close,connection);
 					playerForChannels[channelId] = nil;
 				end

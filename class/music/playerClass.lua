@@ -295,7 +295,7 @@ function this:remove(start,counts)
 	return popedLast,indexLast,popedAll;
 end
 
--- kill bot
+-- disconnect voice connection and remove self from cache list
 function this:kill()
 	local handler = self.handler;
 	if handler then
