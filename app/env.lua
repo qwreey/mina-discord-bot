@@ -166,8 +166,12 @@ _G.unknownReply = { -- 반응 없을때 띄움
 -- bot managing functions
 local ctime = os.clock;
 local status = {
+	("미나 버전 `%s`!"):format(_G.app.version);
 	"'미나야 도움말' 을 이용해 도움말을 얻거나 '미나야 <할말>' 을 이용해 미나와 대화하세요!";
-	function ()
+	function (client)
+		return ("%d 개의 서버에서 %d 명의 유저들과 소통하는중!"):format(client.guilds:count() or 0,client.users:count());
+	end;
+	function (client)
 		return ("미나 가동시간 %s!"):format(timeAgo(0,ctime()));
 	end;
 };
@@ -175,6 +179,8 @@ local statusLen = #status;
 _G.status = status;
 _G.ping = "Unknown";
 local function startBot(botToken,isTesting) -- 봇 시작시키는 함수
+	local client = _G.client;
+
 	-- 토큰주고 시작
 	logger.debug("starting bot ...");
 	client:run(("Bot %s"):format(botToken));
@@ -196,7 +202,7 @@ local function startBot(botToken,isTesting) -- 봇 시작시키는 함수
 	local function nextStatus()
 		local this = status[statusPos];
 		if type(this) == "function" then
-			this = this();
+			this = this(client);
 		end
 		-- local st = time();
 		client:setGame(this);
@@ -229,8 +235,17 @@ startBot = coroutine.wrap(startBot);
 local function reloadBot() -- 봇 종료 함수
 	logger.info("try restarting ...");
 	client:setGame("재시작중...");
-	client:stop();
 end
+local luaExit = os.exit;
+os.exit = coroutine.wrap(function (code)
+	local function errorHandler(err)
+		logger.errorf("An error occurred on killing process.\nerror message was : %s",err);
+	end
+
+	xpcall(client.emit,errorHandler,client,"stoping",code);
+	xpcall(client.stop,errorHandler,client);
+	xpcall(luaExit,errorHandler,code);
+end);
 _G.reloadBot = reloadBot;
 _G.startBot = startBot;
 

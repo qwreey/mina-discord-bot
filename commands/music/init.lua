@@ -1,14 +1,12 @@
-local playerForChannels = {}; _G.playerForChannels = playerForChannels;
 local playerClass = require "class.music.playerClass";
+local playerForChannels = playerClass.playerForChannels;
 local formatTime = playerClass.formatTime;
 local time = os.time;
 local timer = _G.timer;
 local eulaComment_music = _G.eulaComment_music or makeEulaComment("음악");
 local hourInSecond = 60*60;
 local minuteInSecond = 60;
-
--- 섞기 움직이기(이동)
-
+local client = _G.client;
 local help = [[
 **음악 기능에 대한 도움말입니다**
 > 주의! 이 기능은 아직 불완전합니다. 오류로 인해 몇몇 곡이 스킵 될 수도 있습니다!
@@ -61,6 +59,7 @@ local help = [[
 ]];
 local killTimer = 60 * 5 * 1000;
 
+-- 섞기 움직이기(이동)
 --이외에도, 곡을 음악/노래 등으로 바꾸는것 처럼 비슷한 말로 명령어를 사용할 수도 있습니다
 
 -- make auto leave for none-using channels
@@ -84,7 +83,6 @@ client:on("voiceChannelJoin",function (...)
 		logger.errorf("Error message was : %s",result);
 	end
 end);
-
 local function voiceChannelLeave(member,channel)
 	local channelId = channel:__hash();
 	local player = playerForChannels[channelId];
@@ -105,7 +103,7 @@ local function voiceChannelLeave(member,channel)
 				logger.infof("voice channel timeouted! killing player now [channel:%s]",channelId);
 				local connection = guild.connection;
 				if connection then
-					pcall(player.destroy,player);
+					pcall(player.kill,player);
 					pcall(connection.close,connection);
 					playerForChannels[channelId] = nil;
 				end
@@ -125,11 +123,25 @@ client:on("voiceChannelLeave",function (...)
 	end
 end);
 
-local function playerDestroy(self)
-	playerForChannels[self.voiceChannelID] = nil;
-	self.destroyed = true;
-end
+-- restore datas
+client:on("ready", function ()
+	local lastData = fs.readFileSync("./data/lastMusicStatus.json")
+	if lastData and lastData ~= "" then
+		local data = json.decode(lastData);
+		if data then
+			playerClass.restore(data);
+			logger.info("Restored all song playing data!");
+		end
+	end
+	fs.writeFileSync("./data/lastMusicStatus.json","");
+end);
 
+client:on('stoping',function ()
+	fs.writeFileSync("./data/lastMusicStatus.json",json.encode(playerClass.save()));
+	logger.info("Saved all song playing data!");
+end);
+
+-- remove songs wrapping
 local function removeSong(rawArgs,player,replyMsg)
 	do -- remove by number of rawArgs
 		local this = tonumber(rawArgs);
@@ -239,9 +251,7 @@ local export = {
 					voiceChannel = voiceChannel;
 					voiceChannelID = voiceChannelID;
 					handler = handler;
-					destroy = playerDestroy;
 				};
-				playerForChannels[voiceChannelID] = player;
 			end
 
 			-- if nth is bigger then playerlist len, just adding song on end of list
@@ -405,7 +415,6 @@ local export = {
 
 			-- get player object from playerClass
 			local voiceChannelID = voiceChannel:__hash();
-			local player = playerForChannels[voiceChannelID];
 			if not guildConnection then -- if connections is not exist, create new one
 				local handler = voiceChannel:join();
 				if not handler then
@@ -413,13 +422,11 @@ local export = {
 					return;
 				end
 				guild.me:deafen(); -- deafen it selfs
-				player = playerClass.new {
+				playerClass.new {
 					voiceChannel = voiceChannel;
 					voiceChannelID = voiceChannelID;
 					handler = handler;
-					destroy = playerDestroy;
 				};
-				playerForChannels[voiceChannelID] = player;
 				replyMsg:setContent("성공적으로 음성채팅에 참가했습니다!");
 				return;
 			end
@@ -904,7 +911,6 @@ local export = {
 			end
 
 			-- pause!
-			player:destroy();
 			player:kill();
 			replyMsg:setContent("성공적으로 음악을 종료하였습니다!");
 		end;

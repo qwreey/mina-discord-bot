@@ -136,6 +136,8 @@ local adminCmd = require("class.adminCommands"); -- load admin commands
 local hook = require("class.hook");
 local registeLeaderstatus = require("class.registeLeaderstatus");
 local formatTraceback = _G.formatTraceback;
+local admins = _G.admins;
+local testingMode = ACCOUNTData.testing;
 
 -- Load commands
 logger.info(" |- load commands from commands folder");
@@ -209,7 +211,11 @@ local function processCommand(message)
 
 	-- run admin command if exist
 	if admins[user.id] then
-		adminCmd(text,message);
+		local cmdText = text;
+		if testingMode then
+			cmdText = cmdText:sub(2,-1);
+		end
+		adminCmd(cmdText,message);
 	end
 
 	-- run before hook
@@ -570,5 +576,5 @@ do
 	_G.livereloadEnabled = livereload; -- enable live reload
 end
 require("app.livereload"); -- loads livereload system; it will make uv event and take file changed signal
-_G.startBot(ACCOUNTData.botToken,ACCOUNTData.testing); -- init bot (init discordia)
+_G.startBot(ACCOUNTData.botToken,testingMode); -- init bot (init discordia)
 --#endregion : Main logic

@@ -155,6 +155,12 @@ function module.put(name,value,author,when,userData)
 	local id = indexedCache[hash];
 	local path;
 	local index;
+	local learned = userData.learned;
+	if not learned then
+		learned = {};
+		userData.learned = learned;
+		userData.lenLearned = 0;
+	end
 	if not id then -- write new
 		id = makeId(); -- make new identifier
 		indexedCache[hash] = id;
@@ -167,7 +173,7 @@ function module.put(name,value,author,when,userData)
 	else
 		-- check is exist already (learn by that user)
 		local already;
-		for _,this in pairs(userData.learned) do -- 최적화 필요
+		for _,this in pairs(learned) do -- 최적화 필요
 			if this:sub(1,18) == id then
 				local file = fs.readFileSync(root:format(this));
 				if file then
@@ -198,12 +204,6 @@ function module.put(name,value,author,when,userData)
 
 	-- save into user data
 	userData.lastLearnTime = when;
-	local learned = userData.learned;
-	if not learned then
-		learned = {};
-		userData.learned = learned;
-		userData.lenLearned = 0;
-	end
 	insert(learned,("%s/%d"):format(id,index));
 	userData.lenLearned = userData.lenLearned + 1;
 end

@@ -93,6 +93,14 @@ local export = {
 			return formatIDTime(this);
 		end;
 	};
+	["채널나이"] = {
+		alias = "채널 나이";
+		reply = function (message,args,content)
+			local this = content.rawArgs:match("%d+");
+			this = this or content.channel.id;
+			return formatIDTime(this);
+		end;
+	};
 	["서버나이"] = {
 		disableDm = true;
 		alias = "서버 나이";

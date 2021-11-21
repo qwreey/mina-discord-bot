@@ -2,6 +2,7 @@
 
 local this = {};
 this.__index = this;
+this.playerForChannels = {};
 
 local ytDownload = require("class.music.youtubeStream");--require("commands.music.youtubeDownload");
 
@@ -27,6 +28,22 @@ local function formatTime(t)
 end
 this.formatTime = formatTime;
 
+local function sendMessage(thing,msg)
+	local message = thing.message;
+	if type(message) == "table" then
+		message:reply {
+			content = msg;
+			reference = {message = message, mention = false};
+		};
+	else
+		local channel = thing.channel;
+		if type(channel) == "table" then
+			channel:send(msg);
+		end
+	end
+end
+this.sendMessage = sendMessage;
+
 -- 이 코드는 신과 나만 읽을 수 있게 만들었습니다
 -- 만약 편집을 기꺼히 원한다면... 그렇게 하도록 하세요
 -- 다만 여기의 이 규칙을 따라주세요
@@ -48,6 +65,18 @@ function this.new(props)
 	return new;
 end
 
+-- init player object
+function this:__init(props)
+	local voiceChannelID = props.voiceChannelID;
+	self.voiceChannelID = voiceChannelID;
+	self.nowPlaying = nil;
+	self.handler = props.handler;
+	self.isPaused = false;
+	self.isLooping = false;
+	self.timestamp = props.timestamp;
+	self.playerForChannels[voiceChannelID] = self;
+end
+
 -- download music for prepare playing song
 function this.download(thing)
 	local audio,info,url,vid = ytDownload.download(thing.url);
@@ -63,16 +92,6 @@ function this.download(thing)
 	return true;
 end
 
--- init player object
-function this:__init(props)
-	self.voiceChannelID = props.voiceChannelID;
-	self.nowPlaying = nil;
-	self.handler = props.handler;
-	self.isPaused = false;
-	self.isLooping = false;
-	self.destroy = props.destroy;
-end
-
 --#region : Stream handling methods
 
 -- play thing
@@ -82,6 +101,8 @@ local retryRate = 20;
 local maxRetrys = 7;
 function this:__play(thing,position) -- PRIVATE
 	-- logginggs
+	position = position or self.timestamp;
+	self.timestamp = nil;
 	logger.infof("playing %s with %s",tostring(thing),tostring(position));
 
 	-- if thing is nil, return
@@ -105,7 +126,7 @@ function this:__play(thing,position) -- PRIVATE
 	local exprie = thing.exprie;
 	local info = thing.info;
 	if exprie and exprie <= (getPosixNow()+(info and info.duration or 0)+expireAtLast-(position or 0)) then
-		this.download();
+		this.download(thing);
 	end
 
 	-- run asynchronously task for playing song
@@ -114,31 +135,19 @@ function this:__play(thing,position) -- PRIVATE
 		local handler = self.handler;
 		local ffmpegError;
 		local isPassed,result,reason = pcall(handler.playFFmpeg,handler,thing.audio,nil,position,coroutine.wrap(function (errStr)
-			-- error sending limitation
-			if ffmpegError then
-				return;
-			end
-			ffmpegError = errStr;
-
-			-- error on ffmpeg
-			-- logger.info("[Music] try to sending error last message");
-			-- local message = thing.message;
-
-			-- send message
-			-- if message then
-			-- 		message:reply {
-			-- 		content = ("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```\n오류난 부분에서 다시 재생을 시도합니다!"):format(
-			-- 			tostring((thing.info or {title = "unknown"}).title),
-			-- 			tostring((errStr .. "\n"):gsub("https?://.-[\n :]",""))
-			-- 		);
-			-- 		reference = {message = message, mention = false};
-			-- 	};
-			-- end
+			ffmpegError = (ffmpegError or "") .. "\n" .. errStr; -- set error
 		end));
 
 		-- TODO: hight resolution time required!
 		-- when errored, replay on errored timestamp (point of stoped)
+		result = result or position;
 		if ffmpegError and (type(result) == "number") then -- result is elapsed
+			local ffmpegErrorLow = ffmpegError:lower();
+			print(ffmpegErrorLow);
+			if ffmpegErrorLow:match("access denied") or ffmpegErrorLow:match("Forbidden") then -- if expried
+				logger.warnf("stream url expried, re-downloading ... (%s)",thing.url);
+				self.download(thing);
+			end
 			local lastErrorTime = self.lastErrorTime;
 			local now = posixTime.now();
 			local lastErrorRetrys = self.lastErrorRetrys or 0;
@@ -153,13 +162,7 @@ function this:__play(thing,position) -- PRIVATE
 				timeout(0,self.__play,self,thing,result / 1000); -- adding coroutine on worker
 				return;
 			else
-				local message = thing.message;
-				if message then
-					message:reply {
-						content = ("오류가 너무 많아 이 곡을 건너뜁니다! 가장 최근 오류 :```log\n%s```"):format(ffmpegError);
-						reference = {message = message, mention = false};
-					};
-				end
+				sendMessage(thing,("오류가 너무 많아 이 곡을 건너뜁니다! 가장 최근 오류 :```log\n%s```"):format(ffmpegError));
 			end
 		end
 		self.lastErrorTime = nil;
@@ -170,7 +173,7 @@ function this:__play(thing,position) -- PRIVATE
 		if seeking then
 			self.seeking = nil;
 			self.nowPlaying = nil;
-			logger.infof("seeking into %s",tostring(seeking));
+			-- logger.infof("seeking into %s",tostring(seeking));
 			timeout(0,self.__play,self,thing,seeking);
 			return;
 		end
@@ -181,50 +184,31 @@ function this:__play(thing,position) -- PRIVATE
 		elseif not isPassed then -- errored with lua
 			self.error = result;
 			logger.errorf("Play failed : %s",result);
-			local message = thing.message;
-			if message then -- display error message
-				message:reply {
-					content = ("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
-						tostring((thing.info or {title = "unknown"}).title),
-						tostring(result)
-					);
-					reference = {message = message, mention = false};
-				};
-			end
+			sendMessage(thing,("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
+				tostring((thing.info or {title = "unknown"}).title),
+				tostring(result)
+			));
 		elseif reason == "Connection is not ready" then -- just unconnected from discord
-			-- connection destroyed
 			local destroy = self.destroy;
 			if destroy then
 				pcall(destroy,self);
 			end
 			return;
 		elseif reason and (reason ~= "stream stopped") and (reason ~= "stream exhausted or errored") then -- steam error
-			local message = thing.message;
 			logger.errorf("Play failed : %s",reason);
-			if message then -- display error message
-				message:reply {
-					content = ("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
-						tostring((thing.info or {title = "unknown"}).title),
-						tostring(reason)
-					);
-					reference = {message = message, mention = false};
-				};
-			end
+			sendMessage(thing,("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
+				tostring((thing.info or {title = "unknown"}).title),
+				tostring(reason)
+			));
 		end
 
-		-- show next song
+		-- show next song info into channel
 		local selfThis = self[1];
 		local upnext = self[2];
 		if (selfThis == thing) and upnext then
-			local message = upnext.message;
-			if message then
-				message:reply {
-					content = ("지금 '%s' 를(을) 재생합니다!"):format(
-						tostring((upnext.info or {title = "unknown"}).title)
-					);
-					reference = {message = message, mention = false};
-				};
-			end
+			sendMessage(thing,("지금 '%s' 를(을) 재생합니다!"):format(
+				tostring((upnext.info or {title = "unknown"}).title)
+			));
 		end
 
 		-- when looping is enabled, append this into playlist
@@ -274,6 +258,8 @@ end
 
 --- insert new song
 function this:add(thing,onIndex)
+	local message = thing.message;
+	thing.channel = thing.channel or (message and message.channel);
 	self.download(thing);
 	if not thing.audio then
 		error("fail to download");
@@ -309,12 +295,14 @@ function this:remove(start,counts)
 	return popedLast,indexLast,popedAll;
 end
 
--- kill bot
+-- disconnect voice connection and remove self from cache list
 function this:kill()
 	local handler = self.handler;
 	if handler then
 		handler:close();
 	end
+	self.destroyed = true;
+	self.playerForChannels[self.voiceChannelID] = nil;
 end
 
 -- set resume, pause
@@ -444,7 +432,7 @@ function this:embedfiyNowplaying(index)
 	local thumbnails = info.thumbnails;
 	local handler = self.handler;
 	local getElapsed = handler.getElapsed;
-	local elapsed = getElapsed() / 1000;
+	local elapsed = getElapsed and (getElapsed() / 1000) or 0;
 	local duration = info.duration;
 	return {
 		footer = self:getStatusText();
@@ -485,6 +473,52 @@ function this:seek(timestamp)
 	end
 	self.seeking = timestamp;
 	self.handler:stopStream();
+end
+
+-- restore saved status
+function this.restore(data)
+	local client = _G.client;
+	for _,playerData in ipairs(data) do
+		local voiceChannelId = playerData.channel;
+		local voiceChannel = client:getChannel(voiceChannelId); ---@type GuildVoiceChannel
+		local songs = playerData.songs;
+
+		if voiceChannel and songs and (#songs ~= 0) then
+			local player = this.new {
+				voiceChannelID = voiceChannelId;
+				handler = voiceChannel:join();
+				timestamp = playerData.timestamp;
+			};
+			for _,song in ipairs(songs) do
+				song.channel = client:getChannel(song.channel);
+				pcall(player.add,player,song);
+			end
+		end
+	end
+end
+
+-- save status
+function this.save()
+	local data = {};
+	for voiceChannelId,player in pairs(this.playerForChannels) do
+		local playerData = {channel = voiceChannelId};
+		local songs = {};
+		playerData.songs = songs;
+		local handler = player.handler;
+		local getElapsed = handler and rawget(handler,"getElapsed");
+		local timestamp = getElapsed and (getElapsed() / 1000);
+		playerData.timestamp = timestamp;
+		for _,song in ipairs(player) do
+			insert(songs,{
+				channel = song.channel.id;
+				whenAdded = song.whenAdded;
+				username = song.username;
+				url = song.url;
+			});
+		end
+		insert(data,playerData);
+	end
+	return data;
 end
 
 return this;
