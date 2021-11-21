@@ -2,7 +2,7 @@ local discordia = require("discordia")
 local classes = discordia.class.classes
 local Emitter = classes.Emitter
 
-function​ ​Emitter:emit​(​name​, ...)
+function​ ​Emitter:emit​(name​, ...)
 	local​ listeners ​=​ ​self​.​_listeners​[name]
 	if​ ​not​ listeners ​then​ ​return​ ​end
 ​	for​ i ​=​ ​1​, ​#​listeners ​do
