@@ -8,12 +8,12 @@ local unpack = unpack or table.unpack;
 
 function json.decode(...)
 	local result = {pcall(decode,...)};
-	local passed = remove(1,result);
+	local passed = remove(result,1);
 
 	if passed then
 		return unpack(result);
 	else
-		local errorMsg = remove(1,result);
+		local errorMsg = remove(result,1);
 		logger.errorf("json decode failed! error message was\n%s",tostring(errorMsg));
 		return nil;
 	end
@@ -21,7 +21,7 @@ end
 
 function json.encode(...)
 	local result = {pcall(encode,...)};
-	local passed = remove(1,result);
+	local passed = remove(result,1);
 
 	if passed then
 		return unpack(result);
