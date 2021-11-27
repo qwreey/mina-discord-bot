@@ -100,6 +100,8 @@ local commonSlashCommand = require "class.commonSlashCommand"; _G.commonSlashCom
 logger.info("------------------------ [CLEAN  UP] ------------------------");
 logger.info("wait for discordia ...");
 
+require("app.jsonErrorWrapper"); -- enable pcall wrapped json en-decoder
+
 local discordia = require "discordia"; _G.discordia = discordia; ---@type discordia -- 디스코드 lua 봇 모듈 불러오기
 local discordia_enchent = require "discordia_enchent"; _G.discordia_enchent = discordia_enchent;
 local userInteractWarpper = require("class.userInteractWarpper"); _G.userInteractWarpper = userInteractWarpper;
@@ -300,13 +302,15 @@ local function processCommand(message)
 		end
 
 		-- Solve user learn commands
-		local userReact = findCommandFrom(userLearn.get,rawCommandText,splited);
-		if userReact then
+		local pass,userReact = pcall(findCommandFrom,userLearn.get,rawCommandText,splited);
+		if pass and userReact then
 			message:reply {
 				content = userLearn.format(userReact);
 				reference = {message = message, mention = false};
 			};
 			return;
+		elseif not pass then
+			logger.errorf("Error occurred on loading userLearn data! Error message was\n%s",tostring(userReact));
 		end
 
 		-- not found

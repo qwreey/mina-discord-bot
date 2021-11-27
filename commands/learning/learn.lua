@@ -40,11 +40,10 @@ function module.format(userReact)
 	local authorId = userReact.author;
 	local when = userReact.when;
 	local content = userReact.content;
-	local author = userData:loadData(authorId);
+	local author = authorId and userData:loadData(authorId);
 
-	-- p(author,authorId,when,content);
-
-	if (not authorId) or (not author) or (not when) or (not content) then
+	if (not author) or (not when) or (not content) then
+		logger.errof("Error occurred on formatting learn data '%s' (id)\nObject was : %s",tostring(userReact),table.dump(userReact or {}));
 		return "오류가 발생했어요!\n> 유저 반응이 잘못되었습니다\n```app.main : formatUserLearnReact(userReact) -> userReact has missing properties```";
 	end
 
@@ -63,10 +62,14 @@ function module.get(name)
 
 	local path = root:format(id);
 	local maxIndex = tonumber((fs.readFileSync(path .. "/index") or ""):match("%d+"));
-	local removed; do
+	local removed,passed; do
 		local file = fs.readFileSync(path .. "/removed");
 		if file then
-			removed = json.decode(("[%s]"):format(file));
+			passed,removed = json.decode(("[%s]"):format(file));
+			if (not passed) or (not removed) then
+				logger.errorf("Error occurred on loading json data '%s/removed'\nError message was : %s",path,tostring(removed));
+				return {};
+			end
 		end
 	end
 
@@ -75,7 +78,13 @@ function module.get(name)
 	end
 
 	local index = cRandom(1,maxIndex,removed);
-	local this = json.decode(fs.readFileSync(("%s/%d"):format(path,index)));
+	local this;
+	passed,this = json.decode(fs.readFileSync(("%s/%d"):format(path,index)));
+
+	if not passed then
+		logger.errorf("Error occurred on loading json data '%s/%d'\nError messate was : %s",path,index,tostring(this));
+		return {};
+	end
 
 	return this;
 end
