@@ -73,7 +73,7 @@ function interactMessageWarpper:setEmbed(embed)
 	self:__edit({embeds = {embed}});
 end
 function interactMessageWarpper:delete()
-	self.this.delete();
+	self.this:delete();
 end
 function interactMessageWarpper:reply(d)
 	return self.this.channel:send(d);

@@ -150,3 +150,69 @@ function API:request(method, endpoint, payload, query, files)
 	end
 
 end
+
+function API:commit(method, url, req, payload, retries)
+
+	local client = self._client
+	local options = client._options
+	local delay = options.routeDelay
+
+	local success, res, msg = pcall(request, method, url, req, payload)
+
+	if not success then
+		return nil, res, delay
+	end
+
+	for i, v in ipairs(res) do
+		res[v[1]:lower()] = v[2]
+		res[i] = nil
+	end
+
+	if res['x-ratelimit-remaining'] == '0' then
+		delay = max(1000 * res['x-ratelimit-reset-after'], delay)
+	end
+
+	local data = res['content-type'] == JSON and decode(msg, 1, null) or msg
+
+	if res.code < 300 then
+
+		client:debug('%i - %s : %s %s', res.code, res.reason, method, url)
+		return data, nil, delay
+
+	else
+
+		if type(data) == 'table' then
+
+			local retry
+			if res.code == 429 then -- TODO: global ratelimiting
+				delay = data.retry_after
+				retry = retries < options.maxRetries
+			elseif res.code == 502 then
+				delay = delay + random(2000)
+				retry = retries < options.maxRetries
+			end
+
+			if retry then
+				client:warning('%i - %s : retrying after %i ms : %s %s', res.code, res.reason, delay, method, url)
+				sleep(delay)
+				return self:commit(method, url, req, payload, retries + 1)
+			end
+
+			if data.code and data.message then
+				msg = f('HTTP Error %i : %s', data.code, data.message)
+			else
+				msg = 'HTTP Error'
+			end
+			if data.errors then
+				msg = parseErrors({msg}, data.errors)
+			end
+
+		end
+
+		client:error('%i - %s : %s %s\n%s', res.code, res.reason, method, url,tostring(msg))
+		return nil, msg, delay
+
+	end
+
+end
+

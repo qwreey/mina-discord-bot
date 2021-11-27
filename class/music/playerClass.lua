@@ -31,14 +31,14 @@ this.formatTime = formatTime;
 local function sendMessage(thing,msg)
 	local message = thing.message;
 	if type(message) == "table" then
-		message:reply {
+		return message:reply {
 			content = msg;
 			reference = {message = message, mention = false};
 		};
 	else
 		local channel = thing.channel;
 		if type(channel) == "table" then
-			channel:send(msg);
+			return channel:send(msg);
 		end
 	end
 end
@@ -206,7 +206,14 @@ function this:__play(thing,position) -- PRIVATE
 		local selfThis = self[1];
 		local upnext = self[2];
 		if (selfThis == thing) and upnext then
-			sendMessage(thing,("지금 '%s' 를(을) 재생합니다!"):format(
+			local lastMsg = self.lastUpnextMessage;
+			if lastMsg then
+				local delete = lastMsg.delete;
+				if delete then
+					pcall(delete,lastMsg);
+				end
+			end
+			self.lastUpnextMessage = sendMessage(thing,("지금 '%s' 를(을) 재생합니다!"):format(
 				tostring((upnext.info or {title = "unknown"}).title)
 			));
 		end
