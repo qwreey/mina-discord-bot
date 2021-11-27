@@ -32,7 +32,7 @@ function json.encode(...)
 	end
 end
 
-json.rawEncode = encode:
+json.rawEncode = encode;
 json.rawDecode = decode;
 
 logger.info("json module was warpped with pcall protection!");
