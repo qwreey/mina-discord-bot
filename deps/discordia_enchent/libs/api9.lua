@@ -151,6 +151,11 @@ function API:request(method, endpoint, payload, query, files)
 
 end
 
+local timer = require('timer')
+local sleep = timer.sleep
+local http = require('coro-http')
+local request = http.request
+
 function API:commit(method, url, req, payload, retries)
 
 	local client = self._client
