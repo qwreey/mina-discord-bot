@@ -7,6 +7,7 @@ local json = require('json')
 local f, gsub, byte = string.format, string.gsub, string.byte
 local random = math.random
 local encode = json.encode
+local decode = json.decode
 local insert, concat = table.insert, table.concat
 local running = coroutine.running
 
