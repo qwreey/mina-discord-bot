@@ -1,15 +1,17 @@
--- print("Data server")
+local corohttp = require 'coro-http';
 
-local res_payload = "Hello!"
-local res_headers = {
-   {"Content-Length", tostring(#res_payload)}, -- Must always be set if a payload is returned
-   {"Content-Type", "text/plain"}, -- Type of the response's payload (res_payload)
-   {"Connection", "close"}, -- Whether to keep the connection alive, or close it
-   code = 200,
-   reason = "OK",
-}
+corohttp.createServer("http://127.0.0.1",25363,function (req, body)
+    print(req.method,req.params.name);
+    local payload = "testing";
 
-local corohttp = require "coro-http";
-corohttp.createServer("127.0.0.1",21456,function(this)
-    return res_headers,res_payload;
+    local header = {
+        {"Content-Type","application/json"};
+        {"Content-Length",tostring(#payload)};
+        {"Connection", "close"};
+    };
+
+    header.code = 200;
+    header.reason = "OK";
+
+    return header,payload;
 end);
