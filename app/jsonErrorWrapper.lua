@@ -26,10 +26,13 @@ function json.encode(...)
 	if passed then
 		return unpack(result);
 	else
-		local errorMsg = remove(1,result);
+		local errorMsg = remove(result,1);
 		logger.errorf("json decode failed! error message was\n%s",tostring(errorMsg));
 		return nil;
 	end
 end
+
+json.rawEncode = encode:
+json.rawDecode = decode;
 
 logger.info("json module was warpped with pcall protection!");

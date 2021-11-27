@@ -33,7 +33,7 @@ module.errorType = errorType;
 ---@param userReact learnObject what you want to stringify
 ---@return string formatted formatted string of learnObject
 function module.format(userReact)
-	if not userReact then
+	if type(userReact) ~= "table" then
 		return "오류가 발생했어요!\n> 알 수 없는 유저 반응을 호출하려고 시도합니다\n```app.main : formatUserLearnReact(userReact) -> userReact == nil```";
 	end
 
@@ -65,9 +65,9 @@ function module.get(name)
 	local removed,passed; do
 		local file = fs.readFileSync(path .. "/removed");
 		if file then
-			passed,removed = json.decode(("[%s]"):format(file));
+			passed,removed = pcall(json.rawDecode or json.decode,("[%s]"):format(file));
 			if (not passed) or (not removed) then
-				logger.errorf("Error occurred on loading json data '%s/removed'\nError message was : %s",path,tostring(removed));
+				logger.errorf("Error occurred on loading json data '%s/removed'\nError message was : %s\nFile data was : %s",path,tostring(removed),tostring(file));
 				return {};
 			end
 		end
@@ -78,13 +78,18 @@ function module.get(name)
 	end
 
 	local index = cRandom(1,maxIndex,removed);
+	local thisRaw = fs.readFileSync(("%s/%d"):format(path,index));
 	local this;
-	passed,this = json.decode(fs.readFileSync(("%s/%d"):format(path,index)));
-
+	if not thisRaw then
+		logger.errorf("Fail to read file '%s/%s'",path,index);
+		return {};
+	end
+	passed,this = pcall(json.rawDecode or json.decode,thisRaw);
 	if not passed then
 		logger.errorf("Error occurred on loading json data '%s/%d'\nError messate was : %s",path,index,tostring(this));
 		return {};
 	end
+	logger.info(thisRaw);
 
 	return this;
 end
