@@ -43,7 +43,7 @@ function module.format(userReact)
 	local author = authorId and userData:loadData(authorId);
 
 	if (not author) or (not when) or (not content) then
-		logger.errof("Error occurred on formatting learn data '%s' (id)\nObject was : %s",tostring(userReact),table.dump(userReact or {}));
+		logger.errorf("Error occurred on formatting learn data '%s' (id)\nObject was : %s",tostring(userReact.id or userReact),table.dump(userReact or {}));
 		return "오류가 발생했어요!\n> 유저 반응이 잘못되었습니다\n```app.main : formatUserLearnReact(userReact) -> userReact has missing properties```";
 	end
 
@@ -78,19 +78,21 @@ function module.get(name)
 	end
 
 	local index = cRandom(1,maxIndex,removed);
-	local thisRaw = fs.readFileSync(("%s/%d"):format(path,index));
+	local id = ("%s/%d"):format(path,index);
+	local thisRaw = fs.readFileSync(id);
 	local this;
 	if not thisRaw then
-		logger.errorf("Fail to read file '%s/%s'",path,index);
-		return {};
+		logger.errorf("Fail to read file '%s'",id);
+		return {id = id};
 	end
 	passed,this = pcall(json.rawDecode or json.decode,thisRaw);
-	if not passed then
-		logger.errorf("Error occurred on loading json data '%s/%d'\nError messate was : %s",path,index,tostring(this));
-		return {};
+	if (not passed) or (type(this) ~= "table") then
+		logger.errorf("Error occurred on loading json data '%s'\nError messate was : %s",id,tostring(this));
+		return {id = id};
 	end
-	logger.info(thisRaw);
+	-- logger.info(thisRaw);
 
+	this.id = id;
 	return this;
 end
 
