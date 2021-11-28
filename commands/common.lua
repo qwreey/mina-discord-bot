@@ -1,10 +1,12 @@
 local insert = table.insert;
 
+local API = client._api;
 local uv = uv or require("uv");
 local time = uv.hrtime;
 local msOffset = 1e6;
 local usOffset = 1e3;
 local ctime = os.clock;
+local floor = math.floor;
 
 local leaderstatusWords = _G.leaderstatusWords;
 local timeAgo = _G.timeAgo;
@@ -224,20 +226,46 @@ local export = {
 	};
 	["핑"] = {
 		alias = {"상태","status","ping","지연시간","응답시간"};
-		reply = function (msg)
+		---@param contents commandContent
+		reply = function (msg,args,contents)
 			local send = time();
 			local new = msg:reply("🏓 봇 지연시간\n전송중 . . .");
 			local msgPing = tostring((time()-send)/msOffset);
 			local before = time();
 			timeout(0,function ()
 				local clock = tostring((time()-before)/usOffset);
-				-- local dataReadSt = time();
-				-- userData.load()
-				-- local dataReadEd = time();
+				local dataReadSt = time();
+				local userData = contents.getUserData()
+				local dataReadTime = tostring((time()-dataReadSt)/usOffset);
+				local dataWriteTime;
+				if userData then
+					local dataWriteSt = time();
+					contents.saveUserData();
+					dataWriteTime = (time()-dataWriteSt)/usOffset;
+				end
+
+				local latency = API._latency;
+				local avgLatency;
+				if latency then
+					local lenLatency = #latency;
+					if lenLatency ~= 0 then
+						avgLatency = 0;
+						for i = 1,lenLatency do
+							local this = latency[i];
+							if this then
+								avgLatency = avgLatency + this;
+							end
+						end
+						avgLatency = tostring(floor(avgLatency / lenLatency));
+					end
+				end
 
 				new:setContent(
-					("🏓 봇 지연시간\n> 서버 응답시간 : %s`ms`\n> 내부 클럭 속도 : %s`us`\n> 가동시간 : %s\n> 사용 RAM : %dMB")
+					("🏓 봇 지연시간\n> 데이터 서버 응답시간 (불러오기) : %s\n> 데이터 서버 응답시간 (저장하기) : %s\n> API 응답시간 : %s\n> 메시지 응답시간 : %s`ms`\n> 루프 속도 : %s`us`\n> 가동시간 : %s\n> 사용 RAM : %dMB")
 					:format(
+						userData and (dataReadTime .. "`us`") or "확인 불가능",
+						dataWriteTime and (tostring(dataWriteTime) .. "`us`") or "확인 불가능",
+						avgLatency and (avgLatency .. "`ms`") or "확인 불가능",
 						msgPing,
 						clock,
 						timeAgo(0,ctime()),

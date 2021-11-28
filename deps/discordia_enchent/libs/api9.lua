@@ -1,10 +1,14 @@
 local discordia = require("discordia");
 local classes = discordia.class.classes;
 local API = classes.API;
+local uv = require("uv");
+local hrtime = uv.hrtime;
+local msOffset = 1e6;
 
 local json = require('json')
 local null = json.null
 
+local remove = table.remove
 local max = math.max
 local f, gsub, byte = string.format, string.gsub, string.byte
 local random = math.random
@@ -165,7 +169,18 @@ function API:commit(method, url, req, payload, retries)
 	local options = client._options
 	local delay = options.routeDelay
 
+	local startAt = hrtime()
 	local success, res, msg = pcall(request, method, url, req, payload)
+	local thisLatency = (hrtime()-startAt)/msOffset
+	local latency = self._latency
+	if not latency then
+		latency = {}
+		self._latency = latency
+	end
+	insert(latency,1,thisLatency);
+	if #latency > 10 then
+		remove(latency)
+	end
 
 	if not success then
 		return nil, res, delay
