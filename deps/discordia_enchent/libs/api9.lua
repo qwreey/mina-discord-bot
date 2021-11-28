@@ -3,7 +3,9 @@ local classes = discordia.class.classes;
 local API = classes.API;
 
 local json = require('json')
+local null = json.null
 
+local max = math.max
 local f, gsub, byte = string.format, string.gsub, string.byte
 local random = math.random
 local encode = json.encode
