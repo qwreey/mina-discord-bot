@@ -48,12 +48,11 @@ local function makeVoteButtons(items)
 			lastRow = row.components;
 			insert(buttons,row);
 		end
-		local button = components.button.new {
+		insert(lastRow,components.button.new {
 			custom_id = ("action_vote_%d"):format(i);
 			label = tostring(i);
 			style = enums.buttonStyle.primary;
-		};
-		insert(lastRow,button);
+		});
 	end
 
 	return buttons;
