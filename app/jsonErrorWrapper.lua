@@ -4,7 +4,7 @@ local encode = json.encode;
 local decode = json.decode;
 local remove = table.remove;
 local logger = _G.logger;
-local unpack = unpack or table.unpack;
+local unpack = unpack or table.unpack; ---@diagnostic disable-line
 
 function json.decode(...)
 	local result = {pcall(decode,...)};
