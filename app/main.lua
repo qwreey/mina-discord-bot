@@ -60,6 +60,7 @@ end
 --#endregion sys setup
 --#region : Load modules
 local insert = table.insert;
+local promise = require "promise"; _G.promise = promise;
 local utf8 = utf8 or require "utf8"; _G.utf8 = utf8; -- unicode 8 library
 local uv = require "uv"; _G.uv = uv; -- load uv library
 local prettyPrint = require "pretty-print"; _G.prettyPrint = prettyPrint; -- print many typed object on terminal

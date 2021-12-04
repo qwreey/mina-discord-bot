@@ -11,6 +11,7 @@ local insert = table.insert;
 local time = os.time;
 local floor = math.floor;
 local timeAgo = _G.timeAgo;
+local promise = _G.promise;
 
 local function formatTime(t)
 	if not t then
@@ -130,20 +131,34 @@ function this:__play(thing,position) -- PRIVATE
 	end
 
 	-- run asynchronously task for playing song
-	coroutine.wrap(function()
-		-- play this song
-		local handler = self.handler;
-		local ffmpegError;
-		local isPassed,result,reason = pcall(handler.playFFmpeg,handler,thing.audio,nil,position,coroutine.wrap(function (errStr)
-			ffmpegError = (ffmpegError or "") .. "\n" .. errStr; -- set error
-		end));
+	-- play this song
+	local handler = self.handler;
+	local ffmpegError;
+	_G.player = promise.new(handler.playFFmpeg,handler,thing.audio,nil,position,coroutine.wrap(function (errStr)
+		ffmpegError = (ffmpegError or "") .. "\n" .. errStr; -- set error
+	end)):andThen(function (result,reason)
+		if self.destroyed then -- is destroyed
+			return;
+		elseif reason == "Connection is not ready" then -- discord connection error
+			local destroy = self.destroy;
+			if destroy then
+				pcall(destroy,self);
+			end
+			return;
+		elseif reason and (reason ~= "stream stopped") and (reason ~= "stream exhausted or errored") then -- idk
+			logger.errorf("Play failed : %s",reason);
+			sendMessage(thing,("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
+				tostring((thing.info or {title = "unknown"}).title),
+				tostring(reason)
+			));
+			return;
+		end
 
 		-- TODO: hight resolution time required!
 		-- when errored, replay on errored timestamp (point of stoped)
 		result = result or position;
 		if ffmpegError and (type(result) == "number") then -- result is elapsed
 			local ffmpegErrorLow = ffmpegError:lower();
-			print(ffmpegErrorLow);
 			if ffmpegErrorLow:match("access denied") or ffmpegErrorLow:match("Forbidden") then -- if expried
 				logger.warnf("stream url expried, re-downloading ... (%s)",thing.url);
 				self.download(thing);
@@ -159,7 +174,7 @@ function this:__play(thing,position) -- PRIVATE
 				end
 				self.lastErrorRetrys = lastErrorRetrys + 1;
 				self.nowPlaying = nil;
-				timeout(0,self.__play,self,thing,result / 1000); -- adding coroutine on worker
+				promise.spawn(self.__play,self,thing,result / 1000); -- adding coroutine on worker
 				return;
 			else
 				sendMessage(thing,("오류가 너무 많아 이 곡을 건너뜁니다! 가장 최근 오류 :```log\n%s```"):format(ffmpegError));
@@ -168,38 +183,14 @@ function this:__play(thing,position) -- PRIVATE
 		self.lastErrorTime = nil;
 		self.lastErrorRetrys = nil;
 
-		-- is on seeking mode
+		-- when seeking
 		local seeking = self.seeking;
 		if seeking then
 			self.seeking = nil;
 			self.nowPlaying = nil;
-			-- logger.infof("seeking into %s",tostring(seeking));
-			timeout(0,self.__play,self,thing,seeking);
+			logger.infof("seeking into %s",tostring(seeking));
+			promise.spawn(self.__play,self,thing,seeking);
 			return;
-		end
-
-		-- check traceback
-		if self.destroyed then -- none self
-			return;
-		elseif not isPassed then -- errored with lua
-			self.error = result;
-			logger.errorf("Play failed : %s",result);
-			sendMessage(thing,("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
-				tostring((thing.info or {title = "unknown"}).title),
-				tostring(result)
-			));
-		elseif reason == "Connection is not ready" then -- just unconnected from discord
-			local destroy = self.destroy;
-			if destroy then
-				pcall(destroy,self);
-			end
-			return;
-		elseif reason and (reason ~= "stream stopped") and (reason ~= "stream exhausted or errored") then -- steam error
-			logger.errorf("Play failed : %s",reason);
-			sendMessage(thing,("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
-				tostring((thing.info or {title = "unknown"}).title),
-				tostring(reason)
-			));
 		end
 
 		-- show next song info into channel
@@ -223,18 +214,126 @@ function this:__play(thing,position) -- PRIVATE
 			insert(self,thing); -- insert this into end of queue
 		end
 
-		-- remove this song from queue
+		-- remove this song from queue and play next
 		self.nowPlaying = nil; -- remove song
 		if selfThis == thing then
 			-- IMPORTANT! without this, it will take this coroutine until ending of list
 			-- so, it will make coroutine stacks that will take space!
-			timeout(0,function()
-				self:remove(1);
-			end);
+			promise.spawn(self.remove,self,1);
 		end
+	end):catch(function (err) -- lua error on running
+		self.error = err;
+		logger.errorf("Play failed : %s",err);
+		sendMessage(thing,("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
+			tostring((thing.info or {title = "unknown"}).title),
+			tostring(err)
+		));
+	end);
+	-- coroutine.wrap(function()
+	-- 	-- play this song
+	-- 	local handler = self.handler;
+	-- 	local ffmpegError;
+	-- 	local isPassed,result,reason = pcall(handler.playFFmpeg,handler,thing.audio,nil,position,coroutine.wrap(function (errStr)
+	-- 		ffmpegError = (ffmpegError or "") .. "\n" .. errStr; -- set error
+	-- 	end));
 
-		-- this coroutine will killed on here
-	end)();
+	-- 	-- TODO: hight resolution time required!
+	-- 	-- when errored, replay on errored timestamp (point of stoped)
+	-- 	result = result or position;
+	-- 	if ffmpegError and (type(result) == "number") then -- result is elapsed
+	-- 		local ffmpegErrorLow = ffmpegError:lower();
+	-- 		print(ffmpegErrorLow);
+	-- 		if ffmpegErrorLow:match("access denied") or ffmpegErrorLow:match("Forbidden") then -- if expried
+	-- 			logger.warnf("stream url expried, re-downloading ... (%s)",thing.url);
+	-- 			self.download(thing);
+	-- 		end
+	-- 		local lastErrorTime = self.lastErrorTime;
+	-- 		local now = posixTime.now();
+	-- 		local lastErrorRetrys = self.lastErrorRetrys or 0;
+	-- 		local unrated = (not lastErrorTime) or (lastErrorTime+retryRate < now);
+	-- 		if unrated or (lastErrorRetrys < maxRetrys) then
+	-- 			if unrated then
+	-- 				lastErrorRetrys = 0;
+	-- 				self.lastErrorTime = now;
+	-- 			end
+	-- 			self.lastErrorRetrys = lastErrorRetrys + 1;
+	-- 			self.nowPlaying = nil;
+	-- 			timeout(0,self.__play,self,thing,result / 1000); -- adding coroutine on worker
+	-- 			return;
+	-- 		else
+	-- 			sendMessage(thing,("오류가 너무 많아 이 곡을 건너뜁니다! 가장 최근 오류 :```log\n%s```"):format(ffmpegError));
+	-- 		end
+	-- 	end
+	-- 	self.lastErrorTime = nil;
+	-- 	self.lastErrorRetrys = nil;
+
+	-- 	-- is on seeking mode
+	-- 	local seeking = self.seeking;
+	-- 	if seeking then
+	-- 		self.seeking = nil;
+	-- 		self.nowPlaying = nil;
+	-- 		-- logger.infof("seeking into %s",tostring(seeking));
+	-- 		timeout(0,self.__play,self,thing,seeking);
+	-- 		return;
+	-- 	end
+
+	-- 	-- check traceback
+	-- 	if self.destroyed then -- none self
+	-- 		return;
+	-- 	elseif not isPassed then -- errored with lua
+	-- 		self.error = result;
+	-- 		logger.errorf("Play failed : %s",result);
+	-- 		sendMessage(thing,("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
+	-- 			tostring((thing.info or {title = "unknown"}).title),
+	-- 			tostring(result)
+	-- 		));
+	-- 	elseif reason == "Connection is not ready" then -- just unconnected from discord
+	-- 		local destroy = self.destroy;
+	-- 		if destroy then
+	-- 			pcall(destroy,self);
+	-- 		end
+	-- 		return;
+	-- 	elseif reason and (reason ~= "stream stopped") and (reason ~= "stream exhausted or errored") then -- steam error
+	-- 		logger.errorf("Play failed : %s",reason);
+	-- 		sendMessage(thing,("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
+	-- 			tostring((thing.info or {title = "unknown"}).title),
+	-- 			tostring(reason)
+	-- 		));
+	-- 	end
+
+	-- 	-- show next song info into channel
+	-- 	local selfThis = self[1];
+	-- 	local upnext = self[2];
+	-- 	if (selfThis == thing) and upnext then
+	-- 		local lastMsg = self.lastUpnextMessage;
+	-- 		if lastMsg then
+	-- 			local delete = lastMsg.delete;
+	-- 			if delete then
+	-- 				pcall(delete,lastMsg);
+	-- 			end
+	-- 		end
+	-- 		self.lastUpnextMessage = sendMessage(thing,("지금 '%s' 를(을) 재생합니다!"):format(
+	-- 			tostring((upnext.info or {title = "unknown"}).title)
+	-- 		));
+	-- 	end
+
+	-- 	-- when looping is enabled, append this into playlist
+	-- 	if self.isLooping and self.nowPlaying then
+	-- 		insert(self,thing); -- insert this into end of queue
+	-- 	end
+
+	-- 	-- remove this song from queue
+	-- 	self.nowPlaying = nil; -- remove song
+	-- 	if selfThis == thing then
+	-- 		-- IMPORTANT! without this, it will take this coroutine until ending of list
+	-- 		-- so, it will make coroutine stacks that will take space!
+	-- 		timeout(0,function()
+	-- 			self:remove(1);
+	-- 		end);
+	-- 	end
+
+	-- 	-- this coroutine will killed on here
+	-- end)();
 end
 
 -- stop now playing
@@ -335,8 +434,11 @@ function this:getStatusText()
 		duration = duration + song.info.duration;
 	end
 	local len = #self;
+	local handler = self.handler;
+	local getElapsed = handler and rawget(handler,"getElapsed");
+	local elapsed = getElapsed and (getElapsed() / 1000) or 0;
 	return {
-		text = ("총 곡 수 : %d | 총 페이지 수 : %d | 총 길이 : %s"):format(len,ceil(len / 10),formatTime(duration))
+		text = ("총 곡 수 : %d | 총 페이지 수 : %d | 총 길이 : %s"):format(len,ceil(len / 10),formatTime(duration - (elapsed or 0)))
 		 .. (self.isLooping and "\n플레이리스트 루프중" or "")
 		 .. (self.isPaused and "\n재생 멈춤" or "");
 	};
@@ -345,6 +447,10 @@ end
 local itemPerPage = 10;
 -- display list of songs
 function this:embedfiyList(page)
+	local handler = self.handler;
+	local getElapsed = handler and rawget(handler,"getElapsed");
+	local elapsed = getElapsed and (getElapsed() / 1000) or 0;
+
 	local now = time();
 	page = tonumber(page) or 1;
 	local atStart,atEnd = itemPerPage * (page-1) + 1,page * itemPerPage
@@ -353,7 +459,7 @@ function this:embedfiyList(page)
 		local song = self[index];
 		if song then
 			insert(fields,{
-				name = (index == 1) and "현재 재생중" or (("%d 번째 곡 (%s)"):format(index,formatTime((song.info or {}).duration)));
+				name = (index == 1) and ("현재 재생중 (%s/%s)"):format(formatTime((song.info or {}).duration),formatTime(elapsed)) or (("%d 번째 곡 (%s)"):format(index,formatTime((song.info or {}).duration)));
 				value = ("[%s](%s)\n`신청자 : %s (%s)`"):format(
 					(song.info or {title = "NULL"}).title:gsub("\"","\\\""),
 					song.url,

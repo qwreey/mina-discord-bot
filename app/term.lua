@@ -3,6 +3,7 @@ local editor = readline.Editor.new({stdin = process.stdin.handle, stdout = proce
 local app = app;
 local version = app and app.version;
 local prettyPrint = prettyPrint or require("pretty-print");
+local promise = _G.promise;
 
 local colors = {
 	black = {30,40};
@@ -150,12 +151,13 @@ return function ()
 				error(tostring(err));
 			end,runEnv) -- 명령어 분석
 			coroutine.wrap(function ()
-				local pass,dat = pcall(envfunc); -- 보호 모드로 명령어를 실행
-				if not pass then -- 오류 나면
-					logger.error("LUA | error : " .. dat);
-				else
-					prettyPrint.stdout:write{"\27[2K\r → ",prettyPrint.dump(dat),"\n",buildPrompt()};
-				end
+				promise.new(envfunc)
+					:andThen(function (dat)
+						prettyPrint.stdout:write{"\27[2K\r → ",prettyPrint.dump(dat),"\n",buildPrompt()};
+					end)
+					:catch(function (err)
+						logger.errorf("LUA | error : %s",err);
+					end);
 			end)();
 		else
 			process:exit();

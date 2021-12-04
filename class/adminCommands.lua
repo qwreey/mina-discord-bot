@@ -2,8 +2,8 @@
 Admin command
 ]]
 
-local injectLogger = {};
 local prettyPrint = prettyPrint or require("pretty-print");
+local promise = _G.promise;
 
 ---@param Text string
 ---@param message Message
@@ -74,12 +74,14 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		if not setfenvPassed then
 			new:setContent("[ERROR] Error occured on setting env! traceback : " .. tostring(setfenvTraceback));
 		end
-		local passed,value = pcall(setfenvTraceback);
-		if passed then
-			new:setContent("[INFO] Execution success! traceback : ```\n" .. (type(value) == "string" and value or tostring(prettyPrint.dump(value,nil,true))) .. "\n```");
-		else -- on error
-			new:setContent("[ERROR] Error occured running function! traceback : ```\n" .. tostring(value) .. "\n```");
-		end
+		promise.new(setfenvTraceback)
+			:andThen(function (value)
+				new:setContent("[INFO] Execution success! traceback : ```\n" .. (type(value) == "string" and value or tostring(prettyPrint.dump(value,nil,true))) .. "\n```");
+			end)
+			:catch(function (err)
+				new:setContent(("[ERROR] Error occured running function! traceback : ```\n%s\n```"):format(tostring(err)));
+			end)
+			:wait();
 		return true;
 	end
 end
