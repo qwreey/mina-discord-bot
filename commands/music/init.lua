@@ -75,13 +75,14 @@ local function voiceChannelJoin(member,channel)
 	end
 end
 client:on("voiceChannelJoin",function (...)
-	local passed,result = pcall(voiceChannelJoin,...);
-	if not passed then
-		logger.errorf("An error occurred while trying adding killing music player queue [channel:%s]",
-			(select(2,...) or {__hash = function () return "unknown"; end}):__hash()
-		);
-		logger.errorf("Error message was : %s",result);
-	end
+	local channel = select(2,...);
+	promise.new(voiceChannelJoin,...)
+		:catch(function (result)
+			logger.errorf("An error occurred while trying adding killing music player queue [channel:%s]",
+				(channel or {__hash = function () return "unknown"; end}):__hash()
+			);
+			logger.errorf("Error message was : %s",result);
+		end);
 end);
 local function voiceChannelLeave(member,channel)
 	local channelId = channel:__hash();
@@ -114,13 +115,14 @@ local function voiceChannelLeave(member,channel)
 	end
 end
 client:on("voiceChannelLeave",function (...)
-	local passed,result = pcall(voiceChannelLeave,...);
-	if not passed then
-		logger.errorf("An error occurred while trying adding killing music player queue [channel:%s]",
-			(select(2,...) or {__hash = function () return "unknown"; end}):__hash()
-		);
-		logger.errorf("Error message was : %s",result);
-	end
+	local channel = select(2,...);
+	promise.new(voiceChannelLeave,...)
+		:catch(function (result)
+			logger.errorf("An error occurred while trying adding killing music player queue [channel:%s]",
+				(channel or {__hash = function () return "unknown"; end}):__hash()
+			);
+			logger.errorf("Error message was : %s",result);
+		end);
 end);
 
 -- restore datas
@@ -319,16 +321,18 @@ local export = {
 						whenAdded = whenAdded;
 						username = username;
 					};
-					local passed,back = pcall(player.add,player,this,nth);
-					if not passed then
-						message:reply(("곡 '%s' 를 추가하는데 실패하였습니다\n```%s```"):format(tostring(item),tostring(back)));
-					else
-						ok = ok + 1;
-						local info = this.info;
-						if info then
-							duration = duration + (info.duration or 0);
-						end
-					end
+					promise.new(player.add,player,this,nth)
+						:andThen(function ()
+							ok = ok + 1;
+							local info = this.info;
+							if info then
+								duration = duration + (info.duration or 0);
+							end
+						end)
+						:catch(function (err)
+							message:reply(("곡 '%s' 를 추가하는데 실패하였습니다\n```%s```"):format(tostring(item),tostring(err)));
+						end)
+						:wait();
 				end
 				replyMsg:setContent(("성공적으로 곡 %d 개를 추가하였습니다! `(%s)`")
 					:format(ok,formatTime(duration))
