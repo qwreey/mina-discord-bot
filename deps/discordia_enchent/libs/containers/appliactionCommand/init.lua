@@ -170,12 +170,7 @@ end
 return function (self)
 	self._slashCommandsInjected = true
 
-	local loaded;
-	self:on("ready", function()
-		if loaded then
-			return;
-		end
-		loaded = true;
+	self:once("ready", function()
 		local id = self:getApplicationInformation().id
 		self._slashid = id
 		self._globalCommands = {}

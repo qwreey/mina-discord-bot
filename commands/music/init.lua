@@ -134,6 +134,7 @@ client:on("ready", function ()
 	loaded = true;
 	local lastData = fs.readFileSync("./data/lastMusicStatus.json")
 	if lastData and lastData ~= "" then
+		logger.info("found music backup data! restoring ...");
 		local data = json.decode(lastData);
 		if data then
 			promise.spawn(playerClass.restore,data);
