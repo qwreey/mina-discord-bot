@@ -125,13 +125,18 @@ client:on("voiceChannelLeave",function (...)
 		end);
 end);
 
--- restore datas
+-- restore data
+local loaded;
 client:on("ready", function ()
+	if loaded then
+		return;
+	end
+	loaded = true;
 	local lastData = fs.readFileSync("./data/lastMusicStatus.json")
 	if lastData and lastData ~= "" then
 		local data = json.decode(lastData);
 		if data then
-			playerClass.restore(data);
+			promise.spawn(playerClass.restore,data);
 			logger.info("Restored all song playing data!");
 		end
 	end

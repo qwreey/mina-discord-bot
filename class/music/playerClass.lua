@@ -134,7 +134,7 @@ function this:__play(thing,position) -- PRIVATE
 	-- play this song
 	local handler = self.handler;
 	local ffmpegError;
-	_G.player = promise.new(handler.playFFmpeg,handler,thing.audio,nil,position,coroutine.wrap(function (errStr)
+	promise.new(handler.playFFmpeg,handler,thing.audio,nil,position,coroutine.wrap(function (errStr)
 		ffmpegError = (ffmpegError or "") .. "\n" .. errStr; -- set error
 	end)):andThen(function (result,reason)
 		if self.destroyed then -- is destroyed
