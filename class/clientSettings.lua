@@ -2,8 +2,8 @@
 local floor = math.floor;
 _G.clientSettings = {
 	routeDelay = floor(1000/50);
-	largeThreshold = 28;--2048;
-	cacheAllMembers = true;
+	largeThreshold = 4000;--2048;
+	cacheAllMembers = false;
 	compress = true;
 	bitrate = 64000; -- 72000
 	logFile = nil;
