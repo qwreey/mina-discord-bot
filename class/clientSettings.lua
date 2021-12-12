@@ -7,5 +7,10 @@ _G.clientSettings = {
 	compress = true;
 	bitrate = 64000; -- 72000
 	logFile = nil;
+	wssProps = {
+		['$os'] = "iOS",
+		['$browser'] = "Discord iOS";
+		['$device'] = "Discord iOS";
+	}
 };
 return _G.clientSettings;

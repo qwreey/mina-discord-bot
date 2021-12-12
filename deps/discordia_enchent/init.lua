@@ -9,6 +9,7 @@ require("containers/voice/VoiceConnection")(
         FFmpegProcess = classes.FFmpegProcess;
     }
 );
+require("shard")
 require("emitter"); -- pcall emitter
 require("api9"); -- inject api 9
 require("containers/message");
