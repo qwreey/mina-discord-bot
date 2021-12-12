@@ -189,7 +189,10 @@ local function startBot(botToken,isTesting) -- 봇 시작시키는 함수
 
 	-- 토큰주고 시작
 	logger.debug("starting bot ...");
-	client:run(("Bot %s"):format(botToken));
+	client:run(("Bot %s"):format(botToken),{
+		type = 3;
+		browser = "DISCORD IOS";
+	});
 	if isTesting then
 		_G.livereloadEnabled = true;
 		local prefixs = _G.prefixs;
