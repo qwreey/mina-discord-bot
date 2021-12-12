@@ -220,12 +220,12 @@ local function startBot(botToken,isTesting) -- 봇 시작시키는 함수
 				-- logger.info("Made heartbeat http on discord.com/api/v9");
 				timeout(300000,heartbeatHTTP);
 			end
-			heartbeatHTTP();
+			promise.spawn(heartbeatHTTP);
 			break;
 		end
 	end
 end
-startBot = coroutine.wrap(startBot);
+-- startBot = coroutine.wrap(startBot);
 local function reloadBot() -- 봇 종료 함수
 	logger.info("try restarting ...");
 	client:setGame("재시작중...");
