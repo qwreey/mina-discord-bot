@@ -1,6 +1,7 @@
-local discordia = require("discordia");
-local classes = discordia.class.classes;
-local Shard = classes.Shard;
+local discordia = require("discordia")
+local classes = discordia.class.classes
+local Shard = classes.Shard
+local wrap = coroutine.wrap
 
 local function merge(A,B)
 	if not B then return A end
@@ -10,6 +11,7 @@ local function merge(A,B)
 	return A
 end
 
+local IDENTIFY = 2
 function Shard:identify()
 
 	local client = self._client
