@@ -169,7 +169,7 @@ local status = {
 	("미나 버전 `%s`!"):format(_G.app.version);
 	"'미나야 도움말' 을 이용해 도움말을 얻거나 '미나야 <할말>' 을 이용해 미나와 대화하세요!";
 	function (client)
-		return ("%d 개의 서버에서 %d 명의 유저들과 소통하는중!"):format(client.guilds:count() or 0,client.users:count());
+		return ("%d 개의 서버에서 %d 명의 유저들과 소통하는중!"):format(guilds:count() or 0,client.users:count() or 0);
 	end;
 	function (client)
 		return ("미나 가동시간 %s!"):format(timeAgo(0,ctime()));
@@ -196,18 +196,12 @@ local function startBot(botToken,isTesting) -- 봇 시작시키는 함수
 	end
 
 	local statusPos = 1;
-	-- local uv = uv or require("uv");
-	-- local time = uv.hrtime;
-	-- local msOffset = 1e6;
 	local function nextStatus()
 		local this = status[statusPos];
 		if type(this) == "function" then
 			this = this(client);
 		end
-		-- local st = time();
 		client:setGame(this);
-		-- local ed = time();
-		-- _G.ping = (ed - st) / msOffset;
 		if statusPos == statusLen then
 			statusPos = 1;
 		else
@@ -215,7 +209,7 @@ local function startBot(botToken,isTesting) -- 봇 시작시키는 함수
 		end
 		timeout(10000,nextStatus);
 	end
-	nextStatus();
+	client:once("ready",nextStatus);
 
 	local args = app.args;
 	for _,v in ipairs(args) do

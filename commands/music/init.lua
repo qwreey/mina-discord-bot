@@ -127,7 +127,7 @@ end);
 
 -- restore data
 local loaded;
-client:on("ready", function ()
+client:once("ready", function ()
 	if loaded then
 		return;
 	end
