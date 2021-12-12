@@ -168,11 +168,13 @@ function client_m:getSlashCommand(id)
 end
 
 return function (self)
+	if self._slashCommandInjected then
+		return
+	end
 	self._slashCommandsInjected = true
 
 	self:once("ready", function()
-		local id = self:getApplicationInformation().id
-		self._slashid = id
+		self._slashid = self:getApplicationInformation().id
 		self._globalCommands = {}
 		self._guildCommands = {}
 		self:getSlashCommands()
