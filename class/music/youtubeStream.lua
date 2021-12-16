@@ -9,7 +9,8 @@ module.redownload = true;
 local function download(url)
 	local newProcess = spawn("youtube-dl",{
 		args = {
-			'--verbose','-q','-s','-g','--print-json','--cache-dir','./data/youtubeCache',url
+			-- '--verbose','-q','-s','-g','--print-json','--cache-dir','./data/youtubeCache',url
+			'-q','-s','-g','--print-json',url
 		};
 		hide = true;
 		cwd = "./";
