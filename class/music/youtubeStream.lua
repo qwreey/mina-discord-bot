@@ -7,7 +7,8 @@ end
 module.redownload = true;
 
 local function download(url)
-	local newProcess = spawn("youtube-dl",{
+	-- local newProcess = spawn("youtube-dl",{
+	local newProcess = spawn("yt-dlp",{
 		args = {
 			-- '--verbose','-q','-s','-g','--print-json','--cache-dir','./data/youtubeCache',url
 			'-q','-s','-g','--print-json',url
