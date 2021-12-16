@@ -17,32 +17,38 @@ local function download(url)
 	});
 	local stdout = "";
 	for str in newProcess.stdout.read do
-		stdout = stdout .. str;
+		stdout = stdout .. (str or "");
+	end
+	local stderr = "";
+	for str in newProcess.stderr.read do
+		stderr = stderr .. (str or "");
 	end
 	local splitted = strSplit(stdout,"\n");
 	-- newProcess.waitExit(); -- ah... it ok? idk. i just think, it should be on top of stdout.read
-	return splitted[2], splitted[3], stdout, newProcess;
+	return splitted[2], splitted[3], stdout, stderr, newProcess;
 end
 
 function module.download(vid)
 	vid = module.getVID(vid);
 	if not vid then
-		error("You inputed invalid video id!");
+		error("got invalid video id!");
 	end
 	local url = ('https://www.youtube.com/watch?v=%s'):format(vid);
 
 	-- if not exist already, create new it
-	local audio,info,traceback,newProcess = download(url);
+	local audio,info,stdout,stderr,newProcess = download(url);
 	if isExistString(info) and isExistString(audio) then
 		return audio,json.decode(info),url,vid;
 	end
 
 	-- video was not found from youtube? or something want wrongly
-	local errormsg = ("something want wrong! video was not found from youtube or youtube-dl process was terminated with exit!");
+	local errormsg = ("something want wrong! video was not found from youtube or youtube-dl process was terminated with exit!\nstderr : %s"):format(
+		tostring(stderr)
+	);
 	logger.error(errormsg);
 	qDebug {
 		title = "failed to download video from youtube";
-		traceback = traceback;
+		traceback = stderr;
 		process = newProcess;
 		vid = vid;
 		status = "error";

@@ -194,6 +194,21 @@ end
 	U+유니코드 : 해당 유니코드 글자로 바뀜
 ]]
 
+local unitSec = 1;
+local unitMin = 60;
+local unitHour = unitMin * 60;
+local unitDay = unitHour * 24;
+local units = {
+	s = unitSec;
+	m = unitMin;
+	h = unitHour;
+	d = unutDay;
+};
+local signs = {
+	["+"] = 1;
+	["-"] = -1;
+};
+local date = os.date;
 local function formatReplyText(Text,Data)
 	Text = Text or "";
 	Text = string.gsub(Text,"{#:UserName:#}",Data.user.name);
@@ -203,8 +218,15 @@ local function formatReplyText(Text,Data)
 		end);
 		return pass and text or "?";
 	end);
+	local now;
 	Text = string.gsub(Text,"{#:T%+(.-):#}",function (format)
-		return os.date(format);
+		now = now or posixTime.now();
+		local offset = 0;
+		format = format:gsub("%(o:([smhd])([%-%+])(%d+)%)",function (unit,sign,num)
+			offset = offset + (tonumber(num) * units[unit] * signs[sign]);
+			return "";
+		end);
+		return date(format,now + offset);
 	end);
 	return Text;
 end
