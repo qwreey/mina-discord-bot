@@ -4,7 +4,13 @@ local this = {};
 this.__index = this;
 this.playerForChannels = {};
 
-local ytDownload = require("class.music.youtubeStream");--require("commands.music.youtubeDownload");
+local ytHandler; ---@module "class.music.youtubeStream";
+for _,str in ipairs(app.args) do
+	if str == "voice.useStream" then
+		ytHandler = require("class.music.youtubeStream");
+	end
+end
+ytHandler = ytHandler or require("class.music.youtubeDownload");
 
 local remove = table.remove;
 local insert = table.insert;
@@ -80,7 +86,7 @@ end
 
 -- download music for prepare playing song
 function this.download(thing)
-	local audio,info,url,vid = ytDownload.download(thing.url);
+	local audio,info,url,vid = ytHandler.download(thing.url);
 	if not audio then
 		return;
 	end

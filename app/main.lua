@@ -95,6 +95,7 @@ local userData = require "class.userData"; _G.userData = userData; -- Userdata s
 local serverData = require "class.serverData"; _G.serverData = serverData; -- Serverdata system
 local interactionData = require "class.interactionData"; _G.interactionData = interactionData; -- interactiondata system
 local posixTime = require "libs.posixTime"; _G.posixTime = posixTime; -- get posixTime library
+local mutex = require "libs.mutex"; _G.mutex = mutex;
 local commonSlashCommand = require "class.commonSlashCommand"; _G.commonSlashCommand = commonSlashCommand;
 --#endregion : Load modules
 --#region : Discordia Module

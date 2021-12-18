@@ -32,7 +32,7 @@ _G.timeAgo = timeAgo;
 do
 	local testing; -- check testing mode
 	for _,v in pairs(args) do
-		if v == "test" or v == "testing" then
+		if v == "env.testing" or v == "test" or v == "testing" then
 			testing = true;
 			break;
 		end
@@ -220,9 +220,8 @@ local function startBot(botToken,isTesting) -- 봇 시작시키는 함수
 	end
 	client:once("ready",nextStatus);
 
-	local args = app.args;
-	for _,v in ipairs(args) do
-		if v == "http_heartbeat" then
+	for _,v in ipairs(app.args) do
+		if v == "env.httpHeartbeat" then
 			logger.info("HTTP Heartbeat mode enabled");
 			local function heartbeatHTTP()
 				corohttp.request("GET","https://discord.com/api/v9");

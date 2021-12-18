@@ -4,7 +4,45 @@ local app = app;
 local version = app and app.version;
 local prettyPrint = prettyPrint or require("pretty-print");
 local promise = _G.promise;
+local wrap = coroutine.wrap;
+local insert = table.insert;
+local unpack = unpack or table.unpack;
+local pack = table.pack;
 
+local utf8Len = utf8.len;
+local utf8Offset = utf8.offset;
+local function strcut(str,targetLen)
+	local esp = str:gsub("\27%[.-;",function (this)
+		return "";
+	end);
+	if utf8Len(esp) <= targetLen then
+		return str;
+	end
+
+	local ret = "";
+	local len = 0;
+	local last = str:gsub("((.-)(\27%[.-m))",function(all,front,color)
+		if len == targetLen then
+			return "";
+		end
+		local frontLen = utf8Len(front);
+		local sumLen = len + frontLen;
+		if sumLen > targetLen then
+			ret = ret .. front:sub(1,utf8Offset(front,targetLen-len));
+			sumLen = targetLen;
+		else
+			ret = ret .. front .. color;
+		end
+		len = sumLen;
+		return "";
+	end);
+	if len < targetLen then
+		ret = ret .. last:sub(1,utf8Offset(last,targetLen-len));
+	end
+	return ret .. ("\27[0m   [Cutted to %d words]"):format(targetLen);
+end
+
+local outputMaxlength = 5000;
 local colors = {
 	black = {30,40};
 	red = {31,41};
@@ -41,7 +79,7 @@ local function buildPrompt()
 	local str = "";
 
 	if lastLine then
-		str = "❯ ";
+		str = "";
 	else
 		str = str .. buildLine(colors.blue,"APP");
 		str = str .. buildLine(colors.yellow," " .. version);
@@ -132,9 +170,15 @@ return function ()
 			end
 
 			-- lua wants more line, bypass running
-			if err and err:match "'<eof>'$" then
+			if err and (err:match "'<eof>'$" or
+						err:match "unexpected symbol near '%['" or
+						err:match "unexpected symbol near '%]'" or
+						err:match "unexpected symbol near '{'" or
+						err:match "unexpected symbol near '}'" or
+						err:match "unexpected symbol near '%('" or
+						err:match "unexpected symbol near '%)'") then
 				if not lastLine then
-					prettyPrint.stdout:write{"\27[92mMulti line mode . . .\n\27[32m","❯ ",line,"\n"};
+					prettyPrint.stdout:write{"\27[92mMulti line mode . . .\n\27[32m","",line,"\n"};
 				end
 				lastLine = line;
 			else
@@ -142,22 +186,38 @@ return function ()
 			end
 
 			-- continue read lines
-			editor:readLine(buildPrompt(), onLine);
 			if lastLine or cmdMode then
+				editor:readLine(buildPrompt(), onLine);
 				return;
 			end
 
+			-- execute lua
 			local envfunc = setfenv(func or function ()
 				error(tostring(err));
 			end,runEnv) -- 명령어 분석
-			coroutine.wrap(function ()
+			wrap(function ()
 				promise.new(envfunc)
-					:andThen(function (dat)
-						prettyPrint.stdout:write{"\27[2K\r → ",prettyPrint.dump(dat),"\n",buildPrompt()};
+					:andThen(function (...)
+						local printing = {"\27[2K\r → \27[0m"};
+						local args = pack(...);
+						local len = args.n;
+						for i,this in ipairs({...}) do
+							insert(printing,strcut(prettyPrint.dump(this),outputMaxlength));
+							if i ~= len then
+								insert(printing,",\n\27[2K\r · \27[0m");
+							end
+						end
+						if len == 0 then
+							insert(printing,prettyPrint.dump(nil));
+						end
+						insert(printing,"\n");
+						prettyPrint.stdout:write{unpack(printing)};
 					end)
 					:catch(function (err)
 						logger.errorf("LUA | error : %s",err);
-					end);
+						prettyPrint.stdout:write "\27[2K\r";
+					end):wait();
+				editor:readLine(buildPrompt(), onLine);
 			end)();
 		else
 			process:exit();

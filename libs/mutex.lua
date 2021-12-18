@@ -1,3 +1,4 @@
+---@class mutex
 local mutex = {};
 mutex.__index = mutex;
 
@@ -8,12 +9,12 @@ local running = coroutine.running;
 local yield = coroutine.yield;
 local wrap = coroutine.wrap;
 
-function mutex:lock(this)
-    local this = this or running();
+--- wait for mutex is unlocked
+function mutex:wait(this)
+    this = this or running();
     if not this then
-        error("mutex:lock() must be runned on coroutine!");
+        error("mutex:wait() must be runned on coroutine!");
     end
-
     if self.__locked then
         local wait = self.__wait;
         if not wait then
@@ -23,7 +24,14 @@ function mutex:lock(this)
         insert(wait,this);
         return yield(mutex);
     end
+end
 
+function mutex:lock(this)
+    this = this or running();
+    if not this then
+        error("mutex:lock() must be runned on coroutine!");
+    end
+    self:wait(this);
     self.__locked = true;
 end
 
@@ -46,5 +54,6 @@ function mutex.new()
     setmetatable(new,mutex);
     return new;
 end
+mutex.__index = mutex;
 
 return mutex;
