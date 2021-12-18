@@ -101,29 +101,37 @@ local expireAtLast = 2 * 60;
 local retryRate = 20;
 local maxRetrys = 7;
 function this:__play(thing,position) -- PRIVATE
-	-- logginggs
-	position = position or self.timestamp;
-	self.timestamp = nil;
-	logger.infof("playing %s with %s",tostring(thing),tostring(position));
-
-	-- if thing is nil, return
-	if not thing then
+	-- chack errors
+	if not thing then -- if thing is nil, return
 		return;
 	end
-
-	-- if already playing something, kill it
-	if self.nowPlaying then
-		self:__stop();
+	local handler = self.handler;
+	do
+		local voiceId = self.voiceChannelID;
+		if not self.playerForChannels[voiceId] then
+			logger.warnf("Ignored playing from channel '%s' (self is not cached on playerForChannels)",voiceId);
+			return;
+		elseif not self[1] ~= thing then
+			logger.warnf("Ignored playing from channel '%s' (first and thing is not matched)",voiceId);
+			return;
+		elseif not handler.channel.guild.connection then
+			logger.warnf("Ignored playing from channel '%s' (Connection destroyed)",voiceId);
+			self:kill();
+			return;
+		end
 	end
 
 	-- set state to playing
+	position = position or self.timestamp;
+	logger.infof("playing %s with %s",tostring(thing),tostring(position)); -- logging
+	self.timestamp = nil;
 	self.nowPlaying = thing; -- set playing song
 	self.isPaused = false; -- set paused state to false
+	if self.nowPlaying then -- if already playing something, kill it
+		self:__stop();
+	end
 
-	-- if it needs redownload, try it now
-	-- if (ytDownload.redownload) and (time() - thing.whenDownloaded > 10) then
-	-- 	pcall(self.download,thing);
-	-- end
+	-- if it needs redownload, try it nowd
 	local exprie = thing.exprie;
 	local info = thing.info;
 	if exprie and exprie <= (getPosixNow()+(info and info.duration or 0)+expireAtLast-(position or 0)) then
@@ -132,7 +140,6 @@ function this:__play(thing,position) -- PRIVATE
 
 	-- run asynchronously task for playing song
 	-- play this song
-	local handler = self.handler;
 	local ffmpegError;
 	promise.new(handler.playFFmpeg,handler,thing.audio,nil,position,coroutine.wrap(function (errStr)
 		ffmpegError = (ffmpegError or "") .. "\n" .. errStr; -- set error
@@ -140,11 +147,7 @@ function this:__play(thing,position) -- PRIVATE
 		if self.destroyed then -- is destroyed
 			return;
 		elseif reason == "Connection is not ready" then -- discord connection error
-			local destroy = self.destroy;
-			if destroy then
-				pcall(destroy,self);
-			end
-			return;
+			return pcall(self.destroy,self);
 		elseif reason and (reason ~= "stream stopped") and (reason ~= "stream exhausted or errored") then -- idk
 			logger.errorf("Play failed : %s",reason);
 			sendMessage(thing,("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
@@ -194,9 +197,9 @@ function this:__play(thing,position) -- PRIVATE
 		end
 
 		-- show next song info into channel
-		local selfThis = self[1];
+		local now = self[1];
 		local upnext = self[2];
-		if (selfThis == thing) and upnext then
+		if (now == thing) and upnext then
 			local lastMsg = self.lastUpnextMessage;
 			if lastMsg then
 				local delete = lastMsg.delete;
@@ -216,7 +219,7 @@ function this:__play(thing,position) -- PRIVATE
 
 		-- remove this song from queue and play next
 		self.nowPlaying = nil; -- remove song
-		if selfThis == thing then
+		if now == thing then
 			-- IMPORTANT! without this, it will take this coroutine until ending of list
 			-- so, it will make coroutine stacks that will take space!
 			promise.spawn(self.remove,self,1);
@@ -229,111 +232,6 @@ function this:__play(thing,position) -- PRIVATE
 			tostring(err)
 		));
 	end);
-	-- coroutine.wrap(function()
-	-- 	-- play this song
-	-- 	local handler = self.handler;
-	-- 	local ffmpegError;
-	-- 	local isPassed,result,reason = pcall(handler.playFFmpeg,handler,thing.audio,nil,position,coroutine.wrap(function (errStr)
-	-- 		ffmpegError = (ffmpegError or "") .. "\n" .. errStr; -- set error
-	-- 	end));
-
-	-- 	-- TODO: hight resolution time required!
-	-- 	-- when errored, replay on errored timestamp (point of stoped)
-	-- 	result = result or position;
-	-- 	if ffmpegError and (type(result) == "number") then -- result is elapsed
-	-- 		local ffmpegErrorLow = ffmpegError:lower();
-	-- 		print(ffmpegErrorLow);
-	-- 		if ffmpegErrorLow:match("access denied") or ffmpegErrorLow:match("Forbidden") then -- if expried
-	-- 			logger.warnf("stream url expried, re-downloading ... (%s)",thing.url);
-	-- 			self.download(thing);
-	-- 		end
-	-- 		local lastErrorTime = self.lastErrorTime;
-	-- 		local now = posixTime.now();
-	-- 		local lastErrorRetrys = self.lastErrorRetrys or 0;
-	-- 		local unrated = (not lastErrorTime) or (lastErrorTime+retryRate < now);
-	-- 		if unrated or (lastErrorRetrys < maxRetrys) then
-	-- 			if unrated then
-	-- 				lastErrorRetrys = 0;
-	-- 				self.lastErrorTime = now;
-	-- 			end
-	-- 			self.lastErrorRetrys = lastErrorRetrys + 1;
-	-- 			self.nowPlaying = nil;
-	-- 			timeout(0,self.__play,self,thing,result / 1000); -- adding coroutine on worker
-	-- 			return;
-	-- 		else
-	-- 			sendMessage(thing,("오류가 너무 많아 이 곡을 건너뜁니다! 가장 최근 오류 :```log\n%s```"):format(ffmpegError));
-	-- 		end
-	-- 	end
-	-- 	self.lastErrorTime = nil;
-	-- 	self.lastErrorRetrys = nil;
-
-	-- 	-- is on seeking mode
-	-- 	local seeking = self.seeking;
-	-- 	if seeking then
-	-- 		self.seeking = nil;
-	-- 		self.nowPlaying = nil;
-	-- 		-- logger.infof("seeking into %s",tostring(seeking));
-	-- 		timeout(0,self.__play,self,thing,seeking);
-	-- 		return;
-	-- 	end
-
-	-- 	-- check traceback
-	-- 	if self.destroyed then -- none self
-	-- 		return;
-	-- 	elseif not isPassed then -- errored with lua
-	-- 		self.error = result;
-	-- 		logger.errorf("Play failed : %s",result);
-	-- 		sendMessage(thing,("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
-	-- 			tostring((thing.info or {title = "unknown"}).title),
-	-- 			tostring(result)
-	-- 		));
-	-- 	elseif reason == "Connection is not ready" then -- just unconnected from discord
-	-- 		local destroy = self.destroy;
-	-- 		if destroy then
-	-- 			pcall(destroy,self);
-	-- 		end
-	-- 		return;
-	-- 	elseif reason and (reason ~= "stream stopped") and (reason ~= "stream exhausted or errored") then -- steam error
-	-- 		logger.errorf("Play failed : %s",reason);
-	-- 		sendMessage(thing,("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
-	-- 			tostring((thing.info or {title = "unknown"}).title),
-	-- 			tostring(reason)
-	-- 		));
-	-- 	end
-
-	-- 	-- show next song info into channel
-	-- 	local selfThis = self[1];
-	-- 	local upnext = self[2];
-	-- 	if (selfThis == thing) and upnext then
-	-- 		local lastMsg = self.lastUpnextMessage;
-	-- 		if lastMsg then
-	-- 			local delete = lastMsg.delete;
-	-- 			if delete then
-	-- 				pcall(delete,lastMsg);
-	-- 			end
-	-- 		end
-	-- 		self.lastUpnextMessage = sendMessage(thing,("지금 '%s' 를(을) 재생합니다!"):format(
-	-- 			tostring((upnext.info or {title = "unknown"}).title)
-	-- 		));
-	-- 	end
-
-	-- 	-- when looping is enabled, append this into playlist
-	-- 	if self.isLooping and self.nowPlaying then
-	-- 		insert(self,thing); -- insert this into end of queue
-	-- 	end
-
-	-- 	-- remove this song from queue
-	-- 	self.nowPlaying = nil; -- remove song
-	-- 	if selfThis == thing then
-	-- 		-- IMPORTANT! without this, it will take this coroutine until ending of list
-	-- 		-- so, it will make coroutine stacks that will take space!
-	-- 		timeout(0,function()
-	-- 			self:remove(1);
-	-- 		end);
-	-- 	end
-
-	-- 	-- this coroutine will killed on here
-	-- end)();
 end
 
 -- stop now playing
