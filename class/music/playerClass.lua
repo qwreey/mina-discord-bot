@@ -111,7 +111,7 @@ function this:__play(thing,position) -- PRIVATE
 		if not self.playerForChannels[voiceId] then
 			logger.warnf("Ignored playing from channel '%s' (self is not cached on playerForChannels)",voiceId);
 			return;
-		elseif not self[1] ~= thing then
+		elseif self[1] ~= thing then
 			logger.warnf("Ignored playing from channel '%s' (first and thing is not matched)",voiceId);
 			return;
 		elseif not handler.channel.guild.connection then
