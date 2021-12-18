@@ -15,8 +15,11 @@ for _,path in pairs({
 		recursive = true;
 	},function (err,fname,status)
 		if(err) then
-			logger.debug("Error ", err);
+			logger.debugf("Error ", err);
 		else
+			if fname:match("%.git") then
+				return;
+			end
 			logger.infof("Some file was changed : %s", fname);
 			if _G.livereloadEnabled then
 				logger.infof("Try to do live reloading . . .");

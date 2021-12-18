@@ -124,12 +124,12 @@ function this:__play(thing,position) -- PRIVATE
 	-- set state to playing
 	position = position or self.timestamp;
 	logger.infof("playing %s with %s",tostring(thing),tostring(position)); -- logging
-	self.timestamp = nil;
-	self.nowPlaying = thing; -- set playing song
-	self.isPaused = false; -- set paused state to false
 	if self.nowPlaying then -- if already playing something, kill it
 		self:__stop();
 	end
+	self.timestamp = nil;
+	self.nowPlaying = thing; -- set playing song
+	self.isPaused = false; -- set paused state to false
 
 	-- if it needs redownload, try it nowd
 	local exprie = thing.exprie;
@@ -250,11 +250,13 @@ end
 -- apply play queue
 function this:apply()
 	local song = self[1];
+	logger.infof("aplly np : '%s' song : '%s'",tostring(self.nowPlaying),tostring(song));
 	if self.nowPlaying == song then
 		return;
 	end
+	logger.info("apply requested");
 	if not song then
-		self:__stop();
+		return self:__stop();
 	end
 	self:__play(song);
 	return true;
@@ -301,6 +303,7 @@ end
 
 -- disconnect voice connection and remove self from cache list
 function this:kill()
+	self:__stop();
 	local handler = self.handler;
 	if handler then
 		handler:close();
@@ -337,8 +340,8 @@ function this:getStatusText()
 	local elapsed = getElapsed and (getElapsed() / 1000) or 0;
 	return {
 		text = ("총 곡 수 : %d | 총 페이지 수 : %d | 총 길이 : %s"):format(len,ceil(len / 10),formatTime(duration - (elapsed or 0)))
-		 .. (self.isLooping and "\n플레이리스트 루프중" or "")
-		 .. (self.isPaused and "\n재생 멈춤" or "");
+		.. (self.isLooping and "\n플레이리스트 루프중" or "")
+		.. (self.isPaused and "\n재생 멈춤" or "");
 	};
 end
 
