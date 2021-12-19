@@ -1149,11 +1149,80 @@ local export = {
 					end
 				end
 				if not timestamp then
-					mode, hours, minutes, seconds = rawArgs:match("([%+%-]?) -(%d+) -분 -(%d+) -초");
+					mode, hours, minutes, seconds = rawArgs:match("([%+%-]?) -(%d+) -시 -(%d+) -분 -(%d+) -초");
+					hours = tonumber(hours);
+					minutes = tonumber(minutes);
+					seconds = tonumber(seconds);
+					if hours and minutes and seconds then
+						timestamp = (hours * hourInSecond) + (minutes * minuteInSecond) + (seconds);
+					end
+				end
+				if not timestamp then
+					mode, minutes, seconds = rawArgs:match("([%+%-]?) -(%d+) -분 -(%d+) -초");
 					minutes = tonumber(minutes);
 					seconds = tonumber(seconds);
 					if minutes and seconds then
-						timestamp = (hours * hourInSecond) + (minutes * minuteInSecond) + (seconds);
+						timestamp = (minutes * minuteInSecond) + (seconds);
+					end
+				end
+				if not timestamp then
+					mode, hours, seconds = rawArgs:match("([%+%-]?) -(%d+) -시간 -(%d+) -초");
+					seconds = tonumber(seconds);
+					hours = tonumber(hours);
+					if hours and seconds then
+						timestamp = (hours * hourInSecond) + (seconds);
+					end
+				end
+				if not timestamp then
+					mode, hours, seconds = rawArgs:match("([%+%-]?) -(%d+) -시 -(%d+) -초");
+					seconds = tonumber(seconds);
+					hours = tonumber(hours);
+					if hours and seconds then
+						timestamp = (hours * hourInSecond) + (seconds);
+					end
+				end
+				if not timestamp then
+					mode, hours, minutes = rawArgs:match("([%+%-]?) -(%d+) -시간 -(%d+) -분");
+					minutes = tonumber(minutes);
+					hours = tonumber(hours);
+					if minutes and hours then
+						timestamp = (hours * hourInSecond) + (minutes * minuteInSecond);
+					end
+				end
+				if not timestamp then
+					mode, hours, minutes = rawArgs:match("([%+%-]?) -(%d+) -시 -(%d+) -분");
+					minutes = tonumber(minutes);
+					hours = tonumber(hours);
+					if minutes and hours then
+						timestamp = (hours * hourInSecond) + (minutes * minuteInSecond);
+					end
+				end
+				if not timestamp then
+					mode, minutes = rawArgs:match("([%+%-]?) -(%d+) -분");
+					minutes = tonumber(minutes);
+					if minutes then
+						timestamp = (minutes * minuteInSecond);
+					end
+				end
+				if not timestamp then
+					mode, hours = rawArgs:match("([%+%-]?) -(%d+) -시간");
+					hours = tonumber(hours);
+					if hours then
+						timestamp = (hours * hourInSecond);
+					end
+				end
+				if not timestamp then
+					mode, hours = rawArgs:match("([%+%-]?) -(%d+) -시");
+					hours = tonumber(hours);
+					if hours then
+						timestamp = (hours * hourInSecond);
+					end
+				end
+				if not timestamp then
+					mode, seconds = rawArgs:match("([%+%-]?) -(%d+) -초");
+					seconds = tonumber(seconds);
+					if seconds then
+						timestamp = (seconds * minuteInSecond);
 					end
 				end
 				if not timestamp then
