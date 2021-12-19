@@ -5,13 +5,13 @@ local function isExistString(str)
 	return str and str ~= "" and str ~= " " and str ~= "\n";
 end
 
-module.redownload = true;
+module.redownload = false;
 local timeoutMessage = "Timeout! Audio Download takes too much time!";
 module.timeoutMessage = timeoutMessage;
 
 local insert = table.insert;
 local musicFile = "./data/youtubeFiles/%s";
-local timeoutMs = 45 * 1000;
+local timeoutMs = 4500 * 1000;
 local mutexs = setmetatable({},{__mode = "kv"});
 local function download(url,vid)
     local file = musicFile:format(vid:gsub("%-","."));
@@ -32,10 +32,8 @@ local function download(url,vid)
     end
     insert(args,url);
 
-	-- local newProcess = spawn("youtube-dl",{
 	local newProcess = spawn("yt-dlp",{
 		args = args;
-		hide = true;
 		cwd = "./";
 		stdio = {nil,true,true};
 	});
@@ -49,15 +47,6 @@ local function download(url,vid)
 			uv.process_kill(newProcess.handle);
         end
     end);
-    newProcess.waitExit();
-    if finished then
-		fs.unlinkSync(file);
-		fs.unlinkSync(file .. ".part");
-        error(timeoutMessage);
-    end
-    finished = true;
-    pcall(timer.clearTimer,killer);
-	downloadMutex:unlock();
 
 	local stdout = "";
 	for str in newProcess.stdout.read do
@@ -67,6 +56,17 @@ local function download(url,vid)
 	for str in newProcess.stderr.read do
 		stderr = stderr .. (str or "");
 	end
+    newProcess.waitExit();
+
+    if finished then
+		fs.unlinkSync(file);
+		fs.unlinkSync(file .. ".part");
+        error(timeoutMessage);
+    end
+    finished = true;
+    pcall(timer.clearTimer,killer);
+	downloadMutex:unlock();
+
 	return file, stdout, stderr, newProcess;
 end
 
