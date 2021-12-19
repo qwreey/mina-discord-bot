@@ -1,12 +1,14 @@
 -- music channel player instance class for playing user's queued music
-
+---@class playerClass
 local this = {};
 this.__index = this;
 this.playerForChannels = {};
 
+local isStreamMode;
 local ytHandler; ---@module "class.music.youtubeStream";
 for _,str in ipairs(app.args) do
 	if str == "voice.useStream" then
+		isStreamMode = true;
 		ytHandler = require("class.music.youtubeStream");
 	end
 end
@@ -65,6 +67,8 @@ new.playIndex
 ]]
 
 -- make new playerClass instnace
+
+---@return playerClass
 function this.new(props)
 	local new = {};
 	setmetatable(new,this);
@@ -79,8 +83,9 @@ function this:__init(props)
 	self.nowPlaying = nil;
 	self.handler = props.handler;
 	self.isPaused = false;
-	self.isLooping = false;
+	self.isLooping = props.isLooping;
 	self.timestamp = props.timestamp;
+	self.mode24 = props.mode24;
 	self.playerForChannels[voiceChannelID] = self;
 end
 
@@ -95,7 +100,9 @@ function this.download(thing)
 	thing.audio = audio;
 	thing.info = info;
 	thing.vid = vid;
-	thing.exprie = tonumber(audio:match("expire=(%d+)&"));
+	if isStreamMode then
+		thing.exprie = tonumber(audio:match("expire=(%d+)&"));
+	end
 	return true;
 end
 
@@ -508,10 +515,15 @@ function this.restore(data)
 				voiceChannelID = voiceChannelId;
 				handler = voiceChannel:join();
 				timestamp = playerData.timestamp;
+				isLooping = playerData.isLooping;
+				mode24 = playerData.mode24;
 			};
 			for _,song in ipairs(songs) do
 				song.channel = client:getChannel(song.channel);
 				pcall(player.add,player,song);
+			end
+			if playerData.isPaused then
+				player:setPaused(true);
 			end
 		end
 	end
@@ -521,7 +533,7 @@ end
 function this.save()
 	local data = {};
 	for voiceChannelId,player in pairs(this.playerForChannels) do
-		local playerData = {channel = voiceChannelId};
+		local playerData = {channel = voiceChannelId,isLooping = player.isLooping,isPaused = player.isPaused,mode24 = player.mode24};
 		local songs = {};
 		playerData.songs = songs;
 		local handler = player.handler;
