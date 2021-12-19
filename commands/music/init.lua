@@ -7,6 +7,7 @@ local eulaComment_music = _G.eulaComment_music or makeEulaComment("음악");
 local hourInSecond = 60*60;
 local minuteInSecond = 60;
 local client = _G.client;
+local timeoutMessage = playerClass.timeoutMessage;
 local help = [[
 **음악 기능에 대한 도움말입니다**
 > 주의! 이 기능은 아직 불완전합니다. 오류로 인해 몇몇 곡이 스킵 될 수도 있습니다!
@@ -63,7 +64,12 @@ local killTimer = 60 * 5 * 1000;
 --이외에도, 곡을 음악/노래 등으로 바꾸는것 처럼 비슷한 말로 명령어를 사용할 수도 있습니다
 
 -- make auto leave for none-using channels
+---@param member Member
+---@param channel GuildVoiceChannel
 local function voiceChannelJoin(member,channel)
+	if member and member.bot then ---@diagnostic disable-line
+		return;
+	end
 	local channelId = channel:__hash();
 	local player = playerForChannels[channelId];
 	if player then
@@ -84,9 +90,15 @@ client:on("voiceChannelJoin",function (...)
 			logger.errorf("Error message was : %s",result);
 		end);
 end);
-local function voiceChannelLeave(member,channel)
+---@param member Member
+---@param channel GuildVoiceChannel
+---@param player playerClass
+local function voiceChannelLeave(member,channel,player)
+	if member and member.bot then ---@diagnostic disable-line
+		return;
+	end
 	local channelId = channel:__hash();
-	local player = playerForChannels[channelId];
+	player = player or playerForChannels[channelId];
 	local guild = channel.guild;
 	if player and guild.connection then
 		if player.mode24 then
@@ -126,18 +138,21 @@ client:on("voiceChannelLeave",function (...)
 end);
 
 -- restore data
-local loaded;
 client:once("ready", function ()
-	if loaded then
-		return;
-	end
-	loaded = true;
 	local lastData = fs.readFileSync("./data/lastMusicStatus.json")
 	if lastData and lastData ~= "" then
 		logger.info("found music backup data! restoring ...");
 		local data = json.decode(lastData);
 		if data then
 			promise.spawn(playerClass.restore,data);
+			---@type playerClass
+			for _,player in pairs(playerForChannels) do
+				local handler = player and player.handler;
+				local channel = handler and handler.channel;
+				if channel then
+					voiceChannelLeave(nil,channel,player);
+				end
+			end
 			logger.info("Restored all song playing data!");
 		end
 	end
@@ -282,9 +297,13 @@ local export = {
 
 				-- when failed to adding song into playlist
 				if (not passed) or (not this.info) then
-					replyMsg:setContent(("오류가 발생하였습니다! 영상이 존재하지 않거나 다운로드에 실패하였을 수 있습니다, 다시 시도해주세요\n```FALLBACK :\n%s```")
-						:format(tostring(back))
-					);
+					if back:match(": (.+)") == timeoutMessage then
+						replyMsg:setContent("시간 초과! 영상을 불러오는데 시간이 너무 많이 걸려 취소되었어요!");
+					else
+						replyMsg:setContent(("오류가 발생하였습니다! 영상이 존재하지 않거나 다운로드에 실패하였을 수 있습니다, 다시 시도해주세요\n```FALLBACK :\n%s```")
+							:format(tostring(back))
+						);
+					end
 					-- debug
 					logger.errorf("Failed to add music '%s' on player:%s",rawArgs,voiceChannelID);
 					logger.errorf("traceback : %s",back)
@@ -791,7 +810,7 @@ local export = {
 			end
 			local loopMsg = (looping and "\n(루프 모드가 켜져있어 스킵된 곡은 가장 뒤에 다시 추가되었습니다)" or "");
 			local new = player[1];
-			new = new and player.info;
+			new = new and new.info;
 			new = new and new.title
 			local nowPlaying = (new and ("다음으로 재생되는 곡은 '%s' 입니다\n"):format(new) or "");
 			replyMsg:setContent( -- !!REVIEW NEEDED!!

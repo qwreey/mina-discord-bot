@@ -13,6 +13,8 @@ for _,str in ipairs(app.args) do
 	end
 end
 ytHandler = ytHandler or require("class.music.youtubeDownload");
+this.ytHandler = ytHandler;
+this.timeoutMessage = ytHandler.timeoutMessage;
 
 local remove = table.remove;
 local insert = table.insert;
@@ -354,6 +356,7 @@ function this:getStatusText()
 	return {
 		text = ("총 곡 수 : %d | 총 페이지 수 : %d | 총 길이 : %s"):format(len,ceil(len / 10),formatTime(duration - (elapsed or 0)))
 		.. (self.isLooping and "\n플레이리스트 루프중" or "")
+		.. (self.mode24 and "\n24 시간 모드 켜짐" or "")
 		.. (self.isPaused and "\n재생 멈춤" or "");
 	};
 end

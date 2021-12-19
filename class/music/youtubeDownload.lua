@@ -1,10 +1,13 @@
 local module = {};
 
+local uv = require("uv");
 local function isExistString(str)
 	return str and str ~= "" and str ~= " " and str ~= "\n";
 end
 
 module.redownload = true;
+local timeoutMessage = "Timeout! Audio Download takes too much time!";
+module.timeoutMessage = timeoutMessage;
 
 local insert = table.insert;
 local musicFile = "./data/youtubeFiles/%s";
@@ -41,14 +44,17 @@ local function download(url,vid)
 
     local finished;
     local killer = timeout(timeoutMs,function ()
+		logger.warnf("[YT-DL] Timeout to download '%s' from youtube",vid);
         if not finished then
             finished = true;
-            newProcess.handle:close();
+			uv.process_kill(newProcess.handle);
         end
     end);
     newProcess.waitExit();
     if finished then
-        error "Timeout! Audio Download takes too much time!";
+		fs.unlink(file);
+		fs.unlink(file .. ".part");
+        error(timeoutMessage);
     end
     finished = true;
     pcall(timer.clearTimer,killer);
