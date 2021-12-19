@@ -144,7 +144,7 @@ client:once("ready", function ()
 		logger.info("found music backup data! restoring ...");
 		local data = json.decode(lastData);
 		if data then
-			promise.spawn(playerClass.restore,data):wait();
+			promise.new(playerClass.restore,data):wait();
 			---@type playerClass
 			for _,player in pairs(playerForChannels) do
 				local handler = player and player.handler;
