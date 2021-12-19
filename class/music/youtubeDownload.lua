@@ -39,7 +39,6 @@ local function download(url,vid)
 		cwd = "./";
 		stdio = {nil,true,true};
 	});
-	downloadMutex:unlock();
 	mutexs[vid] = nil;
 
     local finished;
@@ -52,12 +51,13 @@ local function download(url,vid)
     end);
     newProcess.waitExit();
     if finished then
-		fs.unlink(file);
-		fs.unlink(file .. ".part");
+		fs.unlinkSync(file);
+		fs.unlinkSync(file .. ".part");
         error(timeoutMessage);
     end
     finished = true;
     pcall(timer.clearTimer,killer);
+	downloadMutex:unlock();
 
 	local stdout = "";
 	for str in newProcess.stdout.read do
