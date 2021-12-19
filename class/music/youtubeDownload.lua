@@ -11,7 +11,7 @@ module.timeoutMessage = timeoutMessage;
 
 local insert = table.insert;
 local musicFile = "./data/youtubeFiles/%s";
-local timeoutMs = 4500 * 1000;
+local timeoutMs = 15 * 1000;
 local mutexs = setmetatable({},{__mode = "kv"});
 local function download(url,vid)
     local file = musicFile:format(vid:gsub("%-","."));
