@@ -61,11 +61,18 @@ end
 local function makeVote(messageId,rawString,title)
 	if title == "" then
 		title = nil;
+	elseif title then
+		title = title:gsub("<[@&](%d)+>",function (str)
+			return ("@%s"):format(tostring(str));
+		end):gsub("@everyone","everyone"):gsub("@here","here");
 	end
 
 	local items = {};
 	for str in rawString:gmatch("[^,]+") do
-		local this = str:gsub("\n",""):gsub("*",""):gsub("_",""):gsub(">",""):gsub("`","");
+		local this = str:gsub("\n",""):gsub("*",""):gsub("_",""):gsub(">",""):gsub("`","")
+			:gsub("<[@&](%d)+>",function (str)
+				return ("@%s"):format(tostring(str));
+			end):gsub("@everyone","everyone"):gsub("@here","here");
 		insert(items,this);
 	end
 
