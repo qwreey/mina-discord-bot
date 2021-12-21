@@ -11,6 +11,9 @@ local channelId = "918679407382642711";
 ---@field hints table a array of hint string that user can use it for guessing this
 ---@field question string the first hint of string name
 local db = json.decode(fs.readFileSync("commands/lrvc/db.json") or fs.readFileSync("data/event/lrvc.json"));
+if not db then
+    return db;
+end
 local lenDb = #db;
 local lastSelected = 0;
 local guessGameHook;
