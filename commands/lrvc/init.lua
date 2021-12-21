@@ -1,8 +1,8 @@
 
-if not _G.app.args["event"] then
-    return {};
-end
-logger.info("학교 부스 축제용 코드 적용됨!");
+--if not _G.app.args["event"] then
+--    return {};
+--end
+--logger.info("학교 부스 축제용 코드 적용됨!");
 
 local channelId = "918679407382642711";
 
@@ -52,6 +52,7 @@ local export = {
             local ans = selected.name;
             local typeAns = type(ans);
             local hints = selected.hints;
+            local hintsLen = #hints
             local lenHints = #hints;
             local question = selected.question or (hints[cRandom(1,lenHints)]);
             local trailing = selected.trailing or "";
@@ -85,12 +86,25 @@ local export = {
                         reference = {message = this, mention = true};
                     };
                 elseif hint[text] then -- 힌트
+                    if hintsLen > hintCount then
+                        this:reply{
+                            content = "사용 할 수 있는 모든 힌드를 다 사용했어요";
+                            embed = {
+                                title = "힌트";
+                                description = "더이상 힌트가 없습니다";
+                            };
+                            reference = {message = this,mention = true};
+                        };
+                        return;
+                    end
                     hintCount = hintCount + 1;
+                    local pick = cRandom(1,lenHints,hintPicked);
+                    insert(hintPicked,pick);
                     this:reply{
                         content = "힌트를 사용했습니다!";
                         embed = {
                             title = "힌트";
-                            description = hints[cRandom(1,lenHints)];
+                            description = hints[pick];
                         };
                         reference = {message = this,mention = true};
                     };
