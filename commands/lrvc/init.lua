@@ -12,7 +12,7 @@ local channelId = "918679407382642711";
 ---@field question string the first hint of string name
 local db = json.decode(fs.readFileSync("commands/lrvc/db.json") or fs.readFileSync("data/event/lrvc.json"));
 if not db then
-    return db;
+    return {};
 end
 local lenDb = #db;
 local lastSelected = 0;
