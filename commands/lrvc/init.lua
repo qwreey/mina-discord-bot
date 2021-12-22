@@ -35,6 +35,7 @@ end
 -- > 사용 힌트 수 : %d
 
 local hook = _G.hook;
+local insert = table.insert;
 ---@type table<string, Command>
 local export = {
     ["추리게임"] = {
@@ -67,6 +68,7 @@ local export = {
 
             local hintCount = 0;
             local tryCount = 0;
+            local hintPicked = {};
 
             ---@param self hook
             ---@param content hookContent
