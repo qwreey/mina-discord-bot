@@ -15,8 +15,8 @@ if not db then
     return {};
 end
 local lenDb = #db;
-local lastSelected = 0;
 local guessGameHook;
+local lastSelected = {};
 
 local giveup = {
     ["포기"] = true;
@@ -49,8 +49,11 @@ local export = {
                 return replyMsg:setContent("이 명령어는 이벤트 체널에서만 이용 가능합니다!");
             end
 
-            local index = cRandom(1,lenDb,{lastSelected});
-            lastSelected = index;
+            local index = cRandom(1,lenDb,lastSelected);
+            insert(lastSelected,index);
+            if #lastSelected >= lenDb then
+                lastSelected = {};
+            end
             local selected = db[index];
 
             local ans = selected.name;
