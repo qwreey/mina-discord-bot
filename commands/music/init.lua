@@ -261,13 +261,18 @@ local export = {
 			end
 
 			-- get player object from playerClass
+			-- ! 여기에는 해결되지 않은 미지의 오류가 있음
+			-- ? 아마도 클라이언트가 voiceChannelConnection 을 똑바로 수거하지 못하는듯 함
+			-- todo: 이거 고쳐야됨
+			-- * 오 색갈 이뿌다
 			local voiceChannelID = voiceChannel:__hash();
 			local player = playerForChannels[voiceChannelID];
 			if not guildConnection then -- if connections is not exist, create new one
-				local handler = voiceChannel:join();
-				if not handler then
-					replyMsg:setContent("채널에 참가할 수 없습니다, 봇이 유효한 권한을 가지고 있는지 확인해주세요!");
-					return;
+				local handler,err = voiceChannel:join(); --* 여기서 음챗에 들어감
+				--* 음챗 연결이 성공적으로 나오면 handler 라는게 비어있으면 안됨
+				if not handler then --? 근데 연결이 없다? ㅇㅅㅇ?????? 그대로 끝내버림
+					replyMsg:setContent(("채널에 참가할 수 없습니다, 봇이 유효한 권한을 가지고 있는지 확인해주세요!\n```\n%s\n```"):format(err));
+					return; --? 다시 시도 같은 구현이 하나도 없어서 그냥 나감
 				end
 				guild.me:deafen(); -- deafen it selfs
 				player = playerClass.new {
