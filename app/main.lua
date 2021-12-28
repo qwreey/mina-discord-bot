@@ -153,8 +153,8 @@ for dir in fs.scandirSync("commands") do
 end
 
 -- Load command indexer
-local reacts,commands,commandsLen;
-reacts,commands,commandsLen = commandHandler.encodeCommands({
+local reacts,commands,noPrefix,commandsLen;
+reacts,commands,noPrefix,commandsLen = commandHandler.encodeCommands({
 	-- 특수기능
 	["약관동의"] = {
 		alias = {"EULA동의","약관 동의","사용계약 동의"};
@@ -303,25 +303,29 @@ local function processCommand(message)
 			return;
 		end
 
-		-- Solve user learn commands
-		local pass,userReact = pcall(findCommandFrom,userLearn.get,rawCommandText,splited);
-		if pass and userReact then
-			message:reply {
-				content = userLearn.format(userReact);
-				reference = {message = message, mention = false};
-			};
-			return;
-		elseif not pass then
-			logger.errorf("Error occurred on loading userLearn data! Error message was\n%s",tostring(userReact));
-		end
+		-- find from none prefixed commands table
+		Command,CommandName,rawCommandName = findCommandFrom(noPrefix,rawCommandText,splited);
+		if not Command then
+			-- Solve user learn commands
+			local pass,userReact = pcall(findCommandFrom,userLearn.get,rawCommandText,splited);
+			if pass and userReact then
+				message:reply {
+					content = userLearn.format(userReact);
+					reference = {message = message, mention = false};
+				};
+				return;
+			elseif not pass then
+				logger.errorf("Error occurred on loading userLearn data! Error message was\n%s",tostring(userReact));
+			end
 
-		-- not found
-		message:reply({
-			content = unknownReply[cRandom(1,#unknownReply)];
-			reference = {message = message, mention = false};
-		});
-		fs.appendFile("log/unknownTexts/raw.txt","\n" .. text); -- save
-		return;
+			-- not found
+			message:reply({
+				content = unknownReply[cRandom(1,#unknownReply)];
+				reference = {message = message, mention = false};
+			});
+			fs.appendFile("log/unknownTexts/raw.txt","\n" .. text); -- save
+			return;
+		end
 	else
 		-- check dm
 		local cmdDisableDm = Command.disableDm;
