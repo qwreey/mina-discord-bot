@@ -188,6 +188,8 @@ reacts,commands,noPrefix,commandsLen = commandHandler.encodeCommands({
 	};
 },unpack(otherCommands));
 _G.reacts = reacts;
+_G.commands = commands;
+_G.noPrefix = noPrefix;
 logger.info(" |- command indexing end!");
 --#endregion : Load bot environments
 --#region : Main logic
