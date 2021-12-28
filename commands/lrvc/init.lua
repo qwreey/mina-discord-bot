@@ -115,6 +115,9 @@ local export = {
                         embed = {
                             title = "힌트";
                             description = hints[pick];
+                            footer = {
+                                text = "포기하려면 '포기', 힌트를 얻으려면 '힌트'를 입력하세요.";
+                            };
                         };
                         reference = {message = this,mention = true};
                     };
@@ -157,6 +160,9 @@ local export = {
                                 title = "틀렸어요";
                                 description = ("%d 번째 시도에요"):format(tryCount);
                             };
+                            footer = {
+                                text = "포기하려면 '포기', 힌트를 얻으려면 '힌트'를 입력하세요.";
+                            };
                         };
                     end
                 end
@@ -170,6 +176,9 @@ local export = {
                 embed = {
                     title = "맞춰보세요!";
                     description = question;
+                    footer = {
+                        text = "포기하려면 '포기', 힌트를 얻으려면 '힌트'를 입력하세요.";
+                    };
                 };
             };
         end;
