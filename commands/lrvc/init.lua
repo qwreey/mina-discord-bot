@@ -93,6 +93,7 @@ local export = {
                         };
                         reference = {message = this, mention = true};
                     };
+                    guessGameHook = nil;
                 elseif hint[text] then -- 힌트
                     if hintsLen > hintCount then
                         this:reply{
@@ -147,6 +148,7 @@ local export = {
                             reference = {message = this,mention = true};
                         };
                         self:detach();
+                        guessGameHook = nil;
                     else
                         this:reply{
                             content = "땡! 틀렸어요";
