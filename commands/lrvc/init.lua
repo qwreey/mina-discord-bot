@@ -95,7 +95,7 @@ local export = {
                     };
                     guessGameHook = nil;
                 elseif hint[text] then -- 힌트
-                    if hintsLen > hintCount then
+                    if hintCount > hintsLen then
                         this:reply{
                             content = "사용 할 수 있는 모든 힌드를 다 사용했어요";
                             embed = {
