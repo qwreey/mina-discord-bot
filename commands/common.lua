@@ -261,7 +261,7 @@ local export = {
 				end
 
 				new:setContent(
-					("🏓 봇 지연시간\n> 데이터 서버 응답시간 (불러오기) : %s\n> 데이터 서버 응답시간 (저장하기) : %s\n> API 응답시간 : %s\n> 메시지 응답시간 : %s`ms`\n> 루프 속도 : %s`us`\n> 가동시간 : %s\n> 사용 RAM : %dMB")
+					("🏓 봇 지연시간\n> 데이터 서버 응답시간 (불러오기) : %s\n> 데이터 서버 응답시간 (저장하기) : %s\n> API 응답시간 : %s\n> 메시지 응답시간 : %s`ms`\n> 루프 속도 : %s`us`\n> 가동시간 : %s\n> 사용 RAM : %dMB\n> 로드된 유저수 : %s")
 					:format(
 						userData and (dataReadTime .. "`us`") or "확인 불가능",
 						dataWriteTime and (tostring(dataWriteTime) .. "`us`") or "확인 불가능",
@@ -269,7 +269,8 @@ local export = {
 						msgPing,
 						clock,
 						timeAgo(0,ctime()),
-						(collectgarbage("count")*1024 + uv.resident_set_memory())/1000000
+						(collectgarbage("count")*1024 + uv.resident_set_memory())/1000000,
+						tostring(client.users:count() or "확인 불가능")
 					)
 				);
 			end);

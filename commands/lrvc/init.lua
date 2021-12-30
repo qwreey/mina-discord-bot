@@ -39,6 +39,7 @@ local insert = table.insert;
 ---@type table<string, Command>
 local export = {
     ["추리게임"] = {
+        noPrefix = true;
         alias = {"부스게임","추리 게임","부스 게임","부스"};
         disableDm = "이 명령어는 개인 DM 에서 사용 할 수 없습니다";
         reply = "잠시만 기다려 주세요!";
@@ -88,15 +89,16 @@ local export = {
                         embed = {
                             title = "정답은";
                             description = ("`%s`%s 이였습니다!"):format(
-                                typeAns == "table" and typeAns[1] or typeAns,trailing
+                                typeAns == "table" and typeAns[1] or ans,trailing
                             );
                         };
                         reference = {message = this, mention = true};
                     };
+                    guessGameHook = nil;
                 elseif hint[text] then -- 힌트
-                    if hintsLen > hintCount then
+                    if hintCount > hintsLen then
                         this:reply{
-                            content = "사용 할 수 있는 모든 힌드를 다 사용했어요";
+                            content = "사용 할 수 있는 모든 힌트를 다 사용했어요";
                             embed = {
                                 title = "힌트";
                                 description = "더이상 힌트가 없습니다";
@@ -113,6 +115,9 @@ local export = {
                         embed = {
                             title = "힌트";
                             description = hints[pick];
+                            footer = {
+                                text = "포기하려면 '포기', 힌트를 얻으려면 '힌트'를 입력하세요.";
+                            };
                         };
                         reference = {message = this,mention = true};
                     };
@@ -147,12 +152,16 @@ local export = {
                             reference = {message = this,mention = true};
                         };
                         self:detach();
+                        guessGameHook = nil;
                     else
                         this:reply{
                             content = "땡! 틀렸어요";
                             embed = {
                                 title = "틀렸어요";
                                 description = ("%d 번째 시도에요"):format(tryCount);
+                            };
+                            footer = {
+                                text = "포기하려면 '포기', 힌트를 얻으려면 '힌트'를 입력하세요.";
                             };
                         };
                     end
@@ -167,6 +176,9 @@ local export = {
                 embed = {
                     title = "맞춰보세요!";
                     description = question;
+                    footer = {
+                        text = "포기하려면 '포기', 힌트를 얻으려면 '힌트'를 입력하세요.";
+                    };
                 };
             };
         end;

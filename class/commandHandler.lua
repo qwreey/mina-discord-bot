@@ -32,7 +32,7 @@ end
 ---@param commandName string of this command
 ---@param reactInfo Command
 ---@return number
-local function indexingReact(indexTable,cmds,commandName,reactInfo)
+local function indexingReact(indexTable,cmds,noPrefix,commandName,reactInfo)
 	local alias = reactInfo.alias;
 	local aliasType = type(alias);
 	local len = 1;
@@ -60,6 +60,9 @@ local function indexingReact(indexTable,cmds,commandName,reactInfo)
 	elseif commandType == "string" then
 		cmds[command] = reactInfo;
 	end
+	if reactInfo.noPrefix then
+		noPrefix[commandName] = reactInfo;
+	end
 
 	reactInfo.alias = nil;
 	reactInfo.command = nil;
@@ -78,7 +81,7 @@ end
 ---@return table commandMap maped commands
 ---@return number len len of reactions (map length)
 function module.encodeCommands(...)
-	local this,cmds = {},{};
+	local this,cmds,noPrefix = {},{},{};
 	local len = 0;
 
 	for _,commandPackage in pairs({...}) do
@@ -90,12 +93,12 @@ function module.encodeCommands(...)
 		end
 		for commandName,commandInfo in pairs(commandPackage) do
 			if type(commandInfo) == "table" then
-				len = len + indexingReact(this,cmds,commandName,commandInfo);
+				len = len + indexingReact(this,cmds,noPrefix,commandName,commandInfo);
 			end
 		end
 	end
 
-	return this,cmds,len;
+	return this,cmds,noPrefix,len;
 end
 
 -- indexing command/reaction from command/reaction map
