@@ -7,31 +7,132 @@
 -- under the terms of the MIT license. See LICENSE for details.
 --
 
--- Load env
-local app = _G.app;
-local options = app and app.options;
-local date = os.date;
-local fs = _G.fs;
--- Make log module object
-local log = {
-	_version = "0.1.0";
-	buildPrompt = _G.buildPrompt;
-	prefix = options["--logger_prefix"];
-	usecolor = true;
-	outfile = nil;
-	minLevel = 1;
-	disable = false;
-};
-local root = process and process.cwd();
-if not root then
-	local new = io.popen("cd");
-	root = new:read("*l");
-	new:close();
-end
-log.root = root;
-local rootLen = #root;
+--#region : Setup
 
--- Base
+-- Load env
+local date = os.date;
+local fs = require "fs";
+local prettyPrint = require "pretty-print"
+local insert = table.insert;
+local argParser = {};
+function argParser.decode(split,optionArgs)
+	optionArgs = optionArgs or {};
+	local option = {};
+	local args = {};
+
+	local lastOpt;
+
+	for i,this in ipairs(split) do
+		if i >= 1 then
+			if this:sub(1,1) == "-" then -- this = option
+				option[this] = true;
+				if optionArgs[this] then
+					lastOpt = this;
+				else lastOpt = nil;
+				end
+			elseif lastOpt then -- set option
+				option[lastOpt] = this;
+				lastOpt = nil;
+			else
+				insert(args,this);
+			end
+		end
+	end
+
+	return args,option;
+end
+
+-- Read process args
+local options = _G.loggerOption
+if not options then
+	_,options = argParser.decode(_G.args or {},{ ---@diagnostic disable-line
+		["--logger_prefix"] = true;
+		["--logger_outfile"] = true;
+		["--logger_minLevel"] = true;
+		["--logger_color"] = true;
+		["--logger_disabled"] = true;
+	})
+end
+local log = {
+	_version = "1.0.3";
+	buildPrompt = _G.buildPrompt; ---@diagnostic disable-line
+	prefix = options["--logger_prefix"];
+	usecolor = (
+		type(options["--logger_color"]) == "nil" or
+		options["--logger_color"] == true or
+		(
+			type(options["--logger_color"]) == "string" and
+			options["--logger_color"]:lower() == "true"
+		) or false
+	);
+	outfile = options["--logger_outfile"];
+	minLevel = tonumber(options["--logger_minLevel"]) or 1;
+	disable = (
+		options["--logger_disabled"] == true or
+		(
+			type(options["--logger_disabled"]) == "string" and
+			options["--logger_disabled"]:lower() == "true"
+		) or false
+	);
+}
+
+-- get cwd
+local root = process and process.cwd()
+if not root then
+	local new = io.popen("cd")
+	root = new:read("*l")
+	new:close()
+end
+log.root = root
+local rootLen = #root
+
+--#endregion : Setup
+--#region : Processing
+
+-- ascii formatting
+local ansii = {
+	-- [0] = "NUL";
+	[1] = "SOH";
+	[2] = "STX";
+	[3] = "ETX";
+	[4] = "EOT";
+	[5] = "ENQ";
+	[7] = "BEL";
+	[8] = "BS";
+	[9] = "TAB"; -- tab character
+	[11] = "VT"; -- vertical tab character
+	[12] = "FF"; -- form feed character
+	[14] = "SO";
+	[15] = "SI";
+	[16] = "DEL";
+	[17] = "DC1";
+	[18] = "DC2";
+	[19] = "DC3";
+	[20] = "DC4";
+	[21] = "NAK";
+	[22] = "SYN";
+	[23] = "ETB";
+	[24] = "CAN";
+	[25] = "EM";
+	[26] = "SUB";
+	[27] = "ESC";
+	[28] = "FS";
+	[29] = "GS";
+	[30] = "RS";
+	[31] = "US";
+	[127] = "DEL";
+}
+local char = string.char
+local spcColor = "\27[30;45m"
+local function processMessage(str,useColor)
+	local color = useColor and spcColor or ""
+	for i,v in pairs(ansii) do
+		str = str:gsub(char(i),("%s[%s]\27[0m"):format(color,v))
+	end
+	return str
+end
+
+-- base function
 local function runLog(levelName,levelNumber,color,debugInfo,...)
 	if log.disable then -- If log is disabled, return this
 		return;
@@ -41,10 +142,10 @@ local function runLog(levelName,levelNumber,color,debugInfo,...)
 
 	local msg = tostring(...); -- msg
 
-	-- Get file name and line
+	-- Get file name and line number
 	local src = debugInfo.short_src;
-	if string.sub(src,1,rootLen) == root then -- remove root prefix
-		src = string.sub(src,rootLen+2,-1);
+	if src:sub(1,rootLen) == root then -- remove root prefix
+		src = src:sub(rootLen+2,-1);
 	end
 	src = (src
 		:gsub("%.lua$","") -- remove .lua
@@ -57,7 +158,7 @@ local function runLog(levelName,levelNumber,color,debugInfo,...)
 	-- Make header
 	local usecolor = log.usecolor;
 	local prefix = log.prefix;
-	local header = string.format("%s[%-6s%s]%s %s%s",
+	local header = ("%s[%-6s%s]%s %s%s"):format(
 		usecolor and color or "",
 		levelName, -- Level
 		date("%H:%M"), -- add date
@@ -69,7 +170,7 @@ local function runLog(levelName,levelNumber,color,debugInfo,...)
 		) or "", -- print perfix
 		lineinfo -- line info
 	);
-	local headerLen = #(header:gsub("\27%[%d+m",""));
+	local headerLen = #(header:gsub("\27%[%d+m","")); -- Make 6*x len char
 	local liner = headerLen%6;
 	if liner ~= 0 then
 		local adding = 6 - liner;
@@ -78,17 +179,14 @@ local function runLog(levelName,levelNumber,color,debugInfo,...)
 	end
 	headerLen = headerLen + 3;
 	header = header .. " │ ";
-	msg = msg:gsub("\n","\n" .. (" "):rep(headerLen-2) .. "│ ");
+
+	-- formatting msg
+	local fmsg = processMessage(msg,usecolor):gsub("\n","\n" .. (" "):rep(headerLen-2) .. "│ ");
 
 	-- print / build prompt
-	local buildPrompt = _G.buildPrompt;
-	local str = buildPrompt and {"\27[2K\r\27[0m",header,msg,"\n",buildPrompt()} or {"\27[2K\r\27[0m",header,msg,"\n"};
-	local prettyPrint = _G.prettyPrint;
-	if prettyPrint then
-		prettyPrint.stdout:write(str);
-	else
-		io.write(unpack(str));
-	end
+	local buildPrompt = log.buildPrompt or _G.buildPrompt; ---@diagnostic disable-line
+	local str = buildPrompt and {"\27[2K\r\27[0m",header,fmsg,"\n",buildPrompt()} or {"\27[2K\r\27[0m",header,fmsg,"\n"};
+	prettyPrint.stdout:write(str);
 
 	-- Adding message into output
 	if log.outfile then
@@ -105,7 +203,9 @@ local function runLog(levelName,levelNumber,color,debugInfo,...)
 	return str;
 end
 
--- 모드들
+--#endregion : Processing
+--#region : Setup Modes
+
 local modes = {
 	[-2] = {name = "cmd",color = "\27[95m"};
 	[-1] = {name = "exit",color = "\27[95m"};
@@ -128,6 +228,9 @@ for i,v in pairs(modes) do
 		return runLog(v.upName,v.level,v.color,debug.getinfo(2, "Sl"),string.format(...));
 	end;
 end
+
+--#endregion
+--#region : Typing
 
 ---@class loggerPrint
 ---@param message string what you want to print
@@ -158,5 +261,7 @@ log.error	= log.error;  ---@type loggerPrint
 log.errorf	= log.errorf; ---@type loggerFormat
 log.fatal	= log.fatal;  ---@type loggerPrint
 log.fatalf	= log.fatalf; ---@type loggerFormat
+
+--#endregion
 
 return log;

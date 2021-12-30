@@ -204,5 +204,20 @@ function promise.spawn(func,...)
 	wrap(func)(...);
 end
 
+local waitter = {};
+waitter.__index = waitter;
+function waitter:wait()
+	for index,this in ipairs(waitter) do
+		this:wait();
+		self[index] = nil;
+	end
+end
+function waitter:add(this)
+	return insert(self,this);
+end
+function promise.waitter()
+	return setmetatable({},waitter);
+end
+
 _G.promise = promise;
 return promise;
