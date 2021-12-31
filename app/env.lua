@@ -165,22 +165,26 @@ _G.unknownReply = { -- 반응 없을때 띄움
 
 -- bot managing functions
 local ctime = os.clock;
+--local status = {
+--	("미나 버전 `%s`!"):format(_G.app.version);
+--	"'미나야 도움말' 을 이용해 도움말을 얻거나 '미나야 <할말>' 을 이용해 미나와 대화하세요!";
+--	function (client)
+--		local guildCount = 0;
+--		local memberCount = 0;
+--		for guild in client.guilds:iter() do
+--			guildCount = guildCount + 1;
+--			memberCount = memberCount + (guild.totalMemberCount or 1) - 1;
+--		end
+--		return ("%d 개의 서버에서 %d 명의 유저들과 소통하는중!"):format(guildCount,memberCount);
+--	end;
+--	function (client)
+--		return ("미나 가동시간 %s!"):format(timeAgo(0,ctime()));
+--	end;
+--};
 local status = {
-	("미나 버전 `%s`!"):format(_G.app.version);
-	"'미나야 도움말' 을 이용해 도움말을 얻거나 '미나야 <할말>' 을 이용해 미나와 대화하세요!";
-	function (client)
-		local guildCount = 0;
-		local memberCount = 0;
-		for guild in client.guilds:iter() do
-			guildCount = guildCount + 1;
-			memberCount = memberCount + (guild.totalMemberCount or 1) - 1;
-		end
-		return ("%d 개의 서버에서 %d 명의 유저들과 소통하는중!"):format(guildCount,memberCount);
-	end;
-	function (client)
-		return ("미나 가동시간 %s!"):format(timeAgo(0,ctime()));
-	end;
-};
+"★☆ 해피 뉴 이어 ☆★";
+"새해 복 많이 받으세요~";
+}
 local statusLen = #status;
 _G.status = status;
 _G.ping = "Unknown";
