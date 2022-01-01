@@ -1,3 +1,4 @@
+---@class promise
 local promise = {};
 promise.__index = promise;
 
@@ -207,7 +208,7 @@ end
 local waitter = {};
 waitter.__index = waitter;
 function waitter:wait()
-	for index,this in ipairs(waitter) do
+	for index,this in ipairs(self) do
 		this:wait();
 		self[index] = nil;
 	end
