@@ -9,11 +9,15 @@ local uv = require("uv");
 local exitCodes = require("app.exitCodes");
 local spawn = require("coro-spawn");
 local prettyPrint = require("pretty-print");
+local jit = require("jit");
 args[0] = nil;
 args[1] = "app/main";
+local bin = {
+    Windows = "./bin/Windows_%s/luvit.exe";
+    Linux = "./bin/Linux_%s/luvit";
+};
 
 local function spawnProcess(path,thisArgs)
-	-- return os.execute("bin\\luvit.exe " .. path .. table.concat(thisArgs or {}, " "));
 	local newArgs = {};
 	for i,v in pairs(args) do
 		newArgs[i] = v;
@@ -27,14 +31,11 @@ local function spawnProcess(path,thisArgs)
 		end
 	end
 
-	local newProcess = spawn("./bin/luvit",{
+	local newProcess = spawn(bin[jit.os]:format(jit.arch),{
 		stdio = {0,1,2};
 		args = newArgs;
 		cwd = "./";
 	});
-	-- for str in newProcess.stdout.read do
-	-- 	prettyPrint.stdout:write(str);
-	-- end
 	return newProcess.waitExit();
 end
 
