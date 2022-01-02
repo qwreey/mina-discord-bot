@@ -1,4 +1,4 @@
-slocal jit = require "jit";
+local jit = require "jit";
 return function (path)
     local jitos = jit.os;
 	local function add(newPath)
