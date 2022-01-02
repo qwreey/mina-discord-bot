@@ -11,7 +11,9 @@ return function (path)
 		path = path .. newPath .. ";";
 	end
 
-    local jitarch = jit.arch
+    local jitarch = jit.arc
+    add("?.lua");
+    add("?/init.lua");
    	add("./?.lua");
    	add("./?/init.lua");
    	add("./libs/?.lua");
