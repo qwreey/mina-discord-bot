@@ -1,3 +1,11 @@
+-- TODO: 가사 찾기 구현하기
+-- TODO: 볼륨 평준화 구현하기
+-- TODO: 애코 효과 구현하기
+-- TODO: 갠디를 통한 도움말 구현하기
+-- TODO: 유튜브 링크만 던지면 자동으로 곡추가 구현하기
+-- TODO: prefix 기능 활성화 하기
+-- TODO: 프리미엄 기능 배포하기
+
 local playerClass = require "class.music.playerClass";
 local playerForChannels = playerClass.playerForChannels;
 local formatTime = playerClass.formatTime;
