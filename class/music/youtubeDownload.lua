@@ -9,6 +9,13 @@ module.redownload = false;
 local timeoutMessage = "Timeout! Audio Download takes too much time!";
 module.timeoutMessage = timeoutMessage;
 
+local ytdl = "yt-dlp";
+for _,str in ipairs(app.args) do
+    if str == "voice.ytdl" then
+        ytdl = "youtube-dl";
+    end
+end
+
 local insert = table.insert;
 local musicFile = "./data/youtubeFiles/%s";
 local timeoutMs = 15 * 1000;
@@ -32,7 +39,7 @@ local function download(url,vid)
     end
     insert(args,url);
 
-	local newProcess = spawn("yt-dlp",{
+	local newProcess = spawn(ytdl,{
 		args = args;
 		cwd = "./";
 		stdio = {nil,true,true};
