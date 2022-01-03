@@ -46,7 +46,7 @@ _G.app = {
 os.execute("title " .. _G.app.name);
 
 -- Set utf-8 terminal
-do
+if jit.os == "Windows" then
 	local chcpStatus do
 		local file = io.popen("chcp");
 		chcpStatus = file:read("*a");
