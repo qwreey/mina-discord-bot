@@ -162,7 +162,7 @@ function this:__play(thing,position) -- PRIVATE
 		if self.destroyed then -- is destroyed
 			return;
 		elseif reason == "Connection is not ready" then -- discord connection error
-			return pcall(self.destroy,self);
+			return pcall(self.kill,self);
 		elseif reason and (reason ~= "stream stopped") and (reason ~= "stream exhausted or errored") then -- idk
 			logger.errorf("Play failed : %s",reason);
 			sendMessage(thing,("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
