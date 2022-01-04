@@ -40,6 +40,7 @@ _G.app = {
 	version = version;
 	args = args;
 	options = options;
+	changelog = require "app.changelog";
 };
 
 -- Set title of terminal

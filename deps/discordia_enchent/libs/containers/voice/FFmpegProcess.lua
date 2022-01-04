@@ -1,9 +1,11 @@
 return function (FFmpegProcess)
-	local floor = math.floor;
-	local insert = table.insert;
+	local floor = math.floor
+	local insert = table.insert
 	local uv = require('uv')
 	local yield, resume, running = coroutine.yield, coroutine.resume, coroutine.running
 	local function onExit() end
+	local moreArgs = {}
+	rawset(FFmpegProcess,"args",moreArgs)
 	function FFmpegProcess:__init(path, rate, channels, position, errorHandler)
 		position = tonumber(position)
 
@@ -23,6 +25,9 @@ return function (FFmpegProcess)
 			'-vn', '-dn', '-sn', '-f', 's16le', 'pipe:1',
 			'-loglevel', 'warning', '-ignore_unknown', '-copy_unknown'
 		}
+		for i,v in ipairs(moreArgs) do
+			insert(args,i+4,v);
+		end
 		if position then
 			-- logger.infof("seeked %s",tostring(position));
 			insert(args,1,'-ss')

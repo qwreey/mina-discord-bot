@@ -23,6 +23,14 @@ local floor = math.floor;
 local timeAgo = _G.timeAgo;
 local promise = _G.promise;
 
+local args = discordia_class.classes.FFmpegProcess.args;
+if args then
+	insert(args,"-b:a");
+	insert(args,"64k");
+	insert(args,"-af");
+	insert(args,"loudnorm");
+end
+
 local function formatTime(t)
 	if not t then
 		return "NULL";
