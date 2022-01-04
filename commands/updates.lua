@@ -4,7 +4,7 @@ local export = {
 		reply = "링크를 확인해주세요!";
 		embed = {
             title = "변경사항";
-            description = ("**가장 최근 변경사항**\n%s\n%s"):format(app.changelog.last,app.changelog.page)
+            description = ("**가장 최근 변경사항**\n%s\n[전체보기](%s)"):format(app.changelog.last,app.changelog.page)
         };
 	};
 };
