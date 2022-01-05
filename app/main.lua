@@ -6,9 +6,9 @@
 	MINA Discord bot
 	https://github.com/qwreey75/MINA_DiscordBot/blob/faf29242b29302341d631513617810d9fe102587/bot.lua
 
-	TODO: 지우기 명령,강퇴,채널잠금,밴 같은거 만들기
-	TODO: 다 못찾으면 !., 같은 기호 지우고 찾기
-	TODO: 그리고도 못찾으면 조사 다 지우고 찾기
+	-- TODO: 지우기 명령,강퇴,채널잠금,밴 같은거 만들기
+	-- TODO: 다 못찾으면 !., 같은 기호 지우고 찾기
+	-- TODO: 그리고도 못찾으면 조사 다 지우고 찾기
 ]]
 
 --#region : sys setup

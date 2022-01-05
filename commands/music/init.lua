@@ -5,6 +5,8 @@
 -- TODO: 유튜브 링크만 던지면 자동으로 곡추가 구현하기
 -- TODO: prefix 기능 활성화 하기
 -- TODO: 프리미엄 기능 배포하기
+-- TODO: 플레이리스트 지원
+-- TODO: 사운드 클라우드, 스포티파이 지원
 
 local playerClass = require "class.music.playerClass";
 local playerForChannels = playerClass.playerForChannels;
