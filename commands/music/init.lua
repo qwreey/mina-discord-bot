@@ -840,8 +840,8 @@ local export = {
 			local nowPlaying = (new and ("다음으로 재생되는 곡은 '%s' 입니다\n"):format(new) or "");
 			replyMsg:setContent( -- !!REVIEW NEEDED!!
 				rawArgs == 1 and
-				(("성공적으로 곡 '%s' 를 스킵하였습니다%s%s"):format(tostring(lastOne and lastOne.info and lastOne.info.title),nowPlaying,loopMsg)) or
-				(("성공적으로 곡 %s 개를 스킵하였습니다!%s%s"):format(tostring(rawArgs),nowPlaying,loopMsg))
+				(("성공적으로 곡 '%s' 를 스킵하였습니다 %s%s"):format(tostring(lastOne and lastOne.info and lastOne.info.title),nowPlaying,loopMsg)) or
+				(("성공적으로 곡 %s 개를 스킵하였습니다! %s%s"):format(tostring(rawArgs),nowPlaying,loopMsg))
 			);
 		end;
 		onSlash = commonSlashCommand {
