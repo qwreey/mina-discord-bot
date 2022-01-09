@@ -16,6 +16,29 @@ local bin = {
     Windows = "./bin/Windows_%s/luvit.exe";
     Linux = "./bin/Linux_%s/luvit";
 };
+local listOfBinFiles = {
+	"lit","luvi","luvit","yt-dlp"
+};
+
+---Change mode of file, it will only works on linux
+---@param k string the mode to change or add or remove (like chmod command)
+---@param v string the file to change
+---@return boolean passed is passed successfully
+---@return string resultsOrErrors if it was passed successfully, this value is result of command (stdout) or it was failed, this value is error of command (stderr or stdout)
+---@return number exitCode the process exit code (in number)
+local function chmod(k,v)
+	local proc = io.popen(("chmod %s %s"):format(k,v));
+	local results = proc:read();
+	local passed,exitSig,exitCode = proc:close();
+	proc = nil;
+	return passed,passed and results or exitSig,exitCode;
+end
+if jit.os == "Linux" then -- if this os is linux, adding executing permissions to bin files
+	local binPath = ("./bin/Linux_%s"):format(jit.arch);
+	for _,binFile in ipairs(listOfBinFiles) do
+		chmod("a+x",("%s/%s"):format(binPath,binFile)); -- adding execute permissions on bin files
+	end
+end
 
 local function spawnProcess(path,thisArgs)
 	local newArgs = {};
