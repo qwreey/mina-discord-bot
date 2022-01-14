@@ -184,9 +184,14 @@ local function runLog(levelName,levelNumber,color,debugInfo,...)
 	local fmsg = processMessage(msg,usecolor):gsub("\n","\n" .. (" "):rep(headerLen-2) .. "│ ");
 
 	-- print / build prompt
-	local buildPrompt = log.buildPrompt or _G.buildPrompt; ---@diagnostic disable-line
+	local refreshLine = log.refreshLine;
+	local buildPrompt = refreshLine and (log.buildPrompt or _G.buildPrompt); ---@diagnostic disable-line
 	local str = buildPrompt and {"\27[2K\r\27[0m",header,fmsg,"\n",buildPrompt()} or {"\27[2K\r\27[0m",header,fmsg,"\n"};
 	prettyPrint.stdout:write(str);
+
+	if refreshLine then
+		refreshLine();
+	end
 
 	-- Adding message into output
 	if log.outfile then

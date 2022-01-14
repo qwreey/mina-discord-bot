@@ -142,6 +142,7 @@ setmetatable(runEnv,{ -- lua can use metable env... cuz lua's global is a table!
 	__newindex = _G;
 });
 _G.loadstringEnv = runEnv;
+
 -- 라인 읽기 함수
 return function ()
 	local function onLine(err, line, ...)
@@ -224,4 +225,8 @@ return function ()
 		end
 	end
 	editor:readLine(buildPrompt(), onLine); -- 라인 읽기 시작
+	-- 로거에 글자 리프래셔 저장
+	function logger.refreshLine()
+		editor:refreshLine();
+	end
 end
