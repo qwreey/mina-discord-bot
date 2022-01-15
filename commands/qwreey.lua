@@ -113,10 +113,10 @@ local export = {
 		reply = string.rep("? ",3);
 		love = defaultLove;
 	};
-	["정웅이"] = {
-		reply = string.rep("축하해 ",12);
-		love = defaultLove;
-	};
+	-- ["정웅이"] = {
+	-- 	reply = string.rep("축하해 ",12);
+	-- 	love = defaultLove;
+	-- };
 	-- ["냥"] = {
 	-- 	alias = {"냥냥","냥냥냥","냥냥냥","고양이 소리 내봐"};
 	-- 	reply = {"~~귀척?~~ 냥냥","~~ㅈㄹ하네~~ 냥냥"};
