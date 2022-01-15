@@ -10,39 +10,80 @@
 --#region : Setup
 
 -- Load env
-local date = os.date;
-local fs = require "fs";
-local prettyPrint = require "pretty-print"
-local insert = table.insert;
+local fs do
+	local passed
+	passed,fs = pcall(require,"fs")
+	fs = passed and fs
+end
+local appendFile = fs and fs.appendFile
+local prettyPrint do
+	local passed
+	passed,prettyPrint = pcall(require,"pretty-print")
+	prettyPrint = passed and prettyPrint
+end
+local process = _G.process do
+	if not process then
+		local passed
+		passed,process = pcall(require,"process")
+		process = passed and process.globalProcess and (process.globalProcess())
+	end
+end
+local jit = _G.jit do
+	if not jit then
+		local passed
+		passed,jit = pcall(require,"jit")
+		jit = passed and jit
+	end
+end
+local stdout = prettyPrint and prettyPrint.stdout
+local stdoutWrite = stdout and stdout.write
+local dump = prettyPrint and prettyPrint.dump
+local date = os.date
+local insert = table.insert
+local getinfo = debug.getinfo
+local format = string.format
+local upper = string.upper
+local char = string.char
+local gsub = string.gsub
+local sub = string.sub
+local rep = string.rep
+local len = string.len
+local iopen = io.open
+local popen = io.popen
+local iwrite = io.write
+local tostring = tostring
+local type = type
+local pairs = pairs
+local concat = table.concat
+
+-- Read process args
 local argParser = {};
 function argParser.decode(split,optionArgs)
-	optionArgs = optionArgs or {};
-	local option = {};
-	local args = {};
+	optionArgs = optionArgs or {}
+	local option = {}
+	local args = {}
 
-	local lastOpt;
+	local lastOpt
 
 	for i,this in ipairs(split) do
 		if i >= 1 then
 			if this:sub(1,1) == "-" then -- this = option
-				option[this] = true;
+				option[this] = true
 				if optionArgs[this] then
-					lastOpt = this;
-				else lastOpt = nil;
+					lastOpt = this
+				else lastOpt = nil
 				end
 			elseif lastOpt then -- set option
-				option[lastOpt] = this;
-				lastOpt = nil;
+				option[lastOpt] = this
+				lastOpt = nil
 			else
-				insert(args,this);
+				insert(args,this)
 			end
 		end
 	end
 
-	return args,option;
+	return args,option
 end
-
--- Read process args
 local options = _G.loggerOption
 if not options then
 	_,options = argParser.decode(_G.args or {},{ ---@diagnostic disable-line
@@ -51,6 +92,7 @@ if not options then
 		["--logger_minLevel"] = true;
 		["--logger_color"] = true;
 		["--logger_disabled"] = true;
+		["--logger_outfile_dateformat"] = true;
 	})
 end
 local log = {
@@ -74,12 +116,21 @@ local log = {
 			options["--logger_disabled"]:lower() == "true"
 		) or false
 	);
+	outfileDateFormat = options["--logger_outfile_dateformat"] or "%y %h %d %H:%M:%S"
 }
 
 -- get cwd
 local root = process and process.cwd()
 if not root then
-	local new = io.popen("cd")
+	local cmd
+	if jit then
+		cmd = jit.os == "Windows" and "cd" or "pwd"
+	else
+		local checkOs = popen("where cmd.exe")
+		local _,_,exitCode = checkOs:close()
+		cmd = exitCode == 0 and "cd" or "pwd"
+	end
+	local new = popen(cmd or "cd")
 	root = new:read("*l")
 	new:close()
 end
@@ -90,122 +141,140 @@ local rootLen = #root
 --#region : Processing
 
 -- ascii formatting
+local ansiiFormat = "%s[%s]\27[0m"
 local ansii = {
-	-- [0] = "NUL";
-	[1] = "SOH";
-	[2] = "STX";
-	[3] = "ETX";
-	[4] = "EOT";
-	[5] = "ENQ";
-	[7] = "BEL";
-	[8] = "BS";
-	[9] = "TAB"; -- tab character
-	[11] = "VT"; -- vertical tab character
-	[12] = "FF"; -- form feed character
-	[14] = "SO";
-	[15] = "SI";
-	[16] = "DEL";
-	[17] = "DC1";
-	[18] = "DC2";
-	[19] = "DC3";
-	[20] = "DC4";
-	[21] = "NAK";
-	[22] = "SYN";
-	[23] = "ETB";
-	[24] = "CAN";
-	[25] = "EM";
-	[26] = "SUB";
-	[27] = "ESC";
-	[28] = "FS";
-	[29] = "GS";
-	[30] = "RS";
-	[31] = "US";
-	[127] = "DEL";
+	[char(1)]   = "SOH";
+	[char(2)]   = "STX";
+	[char(3)]   = "ETX";
+	[char(4)]   = "EOT";
+	[char(5)]   = "ENQ";
+	[char(7)]   = "BEL";
+	[char(8)]   = "BS";
+	[char(9)]   = "TAB"; -- tab character
+	[char(11)]  = "VT"; -- vertical tab character
+	[char(12)]  = "FF"; -- form feed character
+	[char(14)]  = "SO";
+	[char(15)]  = "SI";
+	[char(16)]  = "DEL";
+	[char(17)]  = "DC1";
+	[char(18)]  = "DC2";
+	[char(19)]  = "DC3";
+	[char(20)]  = "DC4";
+	[char(21)]  = "NAK";
+	[char(22)]  = "SYN";
+	[char(23)]  = "ETB";
+	[char(24)]  = "CAN";
+	[char(25)]  = "EM";
+	[char(26)]  = "SUB";
+	[char(27)]  = "ESC";
+	[char(28)]  = "FS";
+	[char(29)]  = "GS";
+	[char(30)]  = "RS";
+	[char(31)]  = "US";
+	[char(127)] = "DEL";
 }
-local char = string.char
 local spcColor = "\27[30;45m"
 local function processMessage(str,useColor)
 	local color = useColor and spcColor or ""
 	for i,v in pairs(ansii) do
-		str = str:gsub(char(i),("%s[%s]\27[0m"):format(color,v))
+		str = gsub(str,i,format(ansiiFormat,color,v))
 	end
 	return str
 end
 
 -- base function
-local function runLog(levelName,levelNumber,color,debugInfo,...)
-	if log.disable then -- If log is disabled, return this
-		return;
-	elseif levelNumber < log.minLevel then -- If it not enough to display, return this
-		return;
-	end
-
-	local msg = tostring(...); -- msg
+local function base(levelName,levelNumber,color,debugInfo,object)
+	-- check / load settings
+	if log.disable then return -- If log is disabled, return this
+	elseif levelNumber < log.minLevel then return end -- If it not enough to display, return this
+	local msg = dump and (type(object) == "string" and object or dump(object)) or tostring(object) -- stringify message
+	local refreshLine = log.refreshLine;
+	local buildPrompt = (not refreshLine) and (log.buildPrompt or _G.buildPrompt); ---@diagnostic disable-line
+	local usecolor = log.usecolor
+	local prefix = log.prefix
+	local outfile = log.outfile
 
 	-- Get file name and line number
-	local src = debugInfo.short_src;
-	if src:sub(1,rootLen) == root then -- remove root prefix
-		src = src:sub(rootLen+2,-1);
+	local src = debugInfo.short_src
+	if sub(src,1,rootLen) == root then -- remove root prefix
+		src = sub(src,rootLen+2,-1)
 	end
-	src = (src
-		:gsub("%.lua$","") -- remove .lua
-		:gsub("^%.[/\\]","") -- remove ./
-		:gsub("[\\//]",".")
-		:gsub("%.init$","") -- remove .init
-	); -- change \ and / into .
-	local lineinfo = ("%s:%s"):format(src,tostring(debugInfo.currentline)); -- source:line
+	src = gsub(gsub(gsub(gsub(src,
+		"%.lua$",""),  -- remove .lua
+		"%.lua$",""),  -- remove ./
+		"[\\//]","."), -- change / and \ into .
+		"%.init$",""   -- remove .init
+	)
+	-- src = (src
+	-- 	:gsub("%.lua$","") -- remove .lua
+	-- 	:gsub("^%.[/\\]","") -- remove ./
+	-- 	:gsub("[\\//]",".") -- change \ and / into .
+	-- 	:gsub("%.init$","") -- remove .init
+	-- )
+	local lineinfo = format("%s:%s",src,tostring(debugInfo.currentline)) -- source:line
 
 	-- Make header
-	local usecolor = log.usecolor;
-	local prefix = log.prefix;
-	local header = ("%s[%-6s%s]%s %s%s"):format(
+	local header = format("%s[%-6s%s]%s %s%s",
 		usecolor and color or "",
 		levelName, -- Level
 		date("%H:%M"), -- add date
 		usecolor and "\27[0m" or "", -- reset color
-		prefix and ("%s(%s)%s "):format(
+		prefix and format("%s(%s)%s ",
 			usecolor and "\27[93m" or "",
 			tostring(prefix),
 			usecolor and "\27[0m" or ""
 		) or "", -- print perfix
 		lineinfo -- line info
-	);
-	local headerLen = #(header:gsub("\27%[%d+m","")); -- Make 6*x len char
-	local liner = headerLen%6;
+	)
+	local headerLen = len(gsub(header,"\27%[%d+m","")) -- Make 6*x len char
+	local liner = headerLen%6
 	if liner ~= 0 then
-		local adding = 6 - liner;
-		headerLen = headerLen + adding;
-		header = header .. (" "):rep(adding);
+		local adding = 6 - liner
+		headerLen = headerLen + adding
+		header = header .. rep(" ",adding)
 	end
-	headerLen = headerLen + 3;
-	header = header .. " │ ";
+	headerLen = headerLen + 3
+	header = header .. " │ "
 
 	-- formatting msg
-	local fmsg = processMessage(msg,usecolor):gsub("\n","\n" .. (" "):rep(headerLen-2) .. "│ ");
+	local fmsg = gsub(
+		processMessage(msg,usecolor),"\n",
+		format("\n%s│ ",rep(" ",headerLen-2))
+	)
 
 	-- print / build prompt
-	local refreshLine = log.refreshLine;
-	local buildPrompt = refreshLine and (log.buildPrompt or _G.buildPrompt); ---@diagnostic disable-line
-	local str = buildPrompt and {"\27[2K\r\27[0m",header,fmsg,"\n",buildPrompt()} or {"\27[2K\r\27[0m",header,fmsg,"\n"};
-	prettyPrint.stdout:write(str);
+	local str = buildPrompt and {"\27[2K\r\27[0m",header,fmsg,"\n",buildPrompt()} or {"\27[2K\r\27[0m",header,fmsg,"\n"}
 
-	if refreshLine then
-		refreshLine();
+	-- write into stdout
+	if stdoutWrite then
+		-- use luvit's prettyPrint library
+		stdoutWrite(stdout,str)
+	else
+		-- use lua standard library
+		iwrite(concat(str))
 	end
 
-	-- Adding message into output
-	if log.outfile then
-		local data = ("[%-6s%s] %s: %s\n"):format(levelName, os.date(), lineinfo, msg);
-		if fs then
-			fs.appendFile(log.outfile,data);
+	-- refresh readline
+	if refreshLine then
+		refreshLine()
+	end
+
+	-- Append into file
+	if outfile then
+		local data = format("[%-6s%s] %s: %s\n",levelName, date(log.outfileDateFormat), lineinfo, msg)
+		if appendFile then
+			-- use luvit's fs library
+			appendFile(outfile,data)
 		else
-			local fp = io.open(log.outfile, "a");
-			fp:write();
-			fp:close();
+			-- use lua standard library
+			local file = iopen(outfile, "a")
+			file:write()
+			file:close()
+			file = nil
 		end
 	end
 
-	return str;
+	return str
 end
 
 --#endregion : Processing
@@ -221,17 +290,19 @@ local modes = {
 	[4] = {name = "warn", color = "\27[33m"};
 	[5] = {name = "error",color = "\27[31m"};
 	[6] = {name = "fatal",color = "\27[35m"};
-};
-for i,v in pairs(modes) do
-	v.level = i;
-	v.upName = string.upper(v.name);
+}
+for level,v in pairs(modes) do
+	local name = v.name
+	local upName,color = upper(name),v.color
+	v.level = level
+	v.upName = upName
 
-	log[v.name] = function (...)
-		return runLog(v.upName,v.level,v.color,debug.getinfo(2, "Sl"),...);
-	end;
-	log[v.name .. "f"] = function (...)
-		return runLog(v.upName,v.level,v.color,debug.getinfo(2, "Sl"),string.format(...));
-	end;
+	log[name] = function (object)
+		return base(upName,level,color,getinfo(2, "Sl"),object)
+	end
+	log[name .. "f"] = function (...)
+		return base(upName,level,color,getinfo(2, "Sl"),format(...))
+	end
 end
 
 --#endregion
@@ -248,24 +319,24 @@ local function loggerPrint(message) end
 ---@return string printData
 local function loggerFormat(message,format,...) end
 
-log.cmd		= log.cmd;    ---@type loggerPrint
-log.cmdf	= log.cmdf;   ---@type loggerFormat
-log.exit	= log.exit;   ---@type loggerPrint
-log.exitf	= log.exitf;  ---@type loggerFormat
-log.setup	= log.setup;  ---@type loggerPrint
-log.setupf	= log.setupf; ---@type loggerFormat
-log.trace	= log.trace;  ---@type loggerPrint
-log.tracef	= log.trace;  ---@type loggerFormat
-log.debug	= log.debug;  ---@type loggerPrint
-log.debugf	= log.debugf; ---@type loggerFormat
-log.info	= log.info;   ---@type loggerPrint
-log.infof	= log.infof;  ---@type loggerFormat
-log.warn	= log.warn;   ---@type loggerPrint
-log.warnf	= log.warnf;  ---@type loggerFormat
-log.error	= log.error;  ---@type loggerPrint
-log.errorf	= log.errorf; ---@type loggerFormat
-log.fatal	= log.fatal;  ---@type loggerPrint
-log.fatalf	= log.fatalf; ---@type loggerFormat
+log.cmd		= log.cmd    ---@type loggerPrint
+log.cmdf	= log.cmdf   ---@type loggerFormat
+log.exit	= log.exit   ---@type loggerPrint
+log.exitf	= log.exitf  ---@type loggerFormat
+log.setup	= log.setup  ---@type loggerPrint
+log.setupf	= log.setupf ---@type loggerFormat
+log.trace	= log.trace  ---@type loggerPrint
+log.tracef	= log.tracef ---@type loggerFormat
+log.debug	= log.debug  ---@type loggerPrint
+log.debugf	= log.debugf ---@type loggerFormat
+log.info	= log.info   ---@type loggerPrint
+log.infof	= log.infof  ---@type loggerFormat
+log.warn	= log.warn   ---@type loggerPrint
+log.warnf	= log.warnf  ---@type loggerFormat
+log.error	= log.error  ---@type loggerPrint
+log.errorf	= log.errorf ---@type loggerFormat
+log.fatal	= log.fatal  ---@type loggerPrint
+log.fatalf	= log.fatalf ---@type loggerFormat
 
 --#endregion
 
