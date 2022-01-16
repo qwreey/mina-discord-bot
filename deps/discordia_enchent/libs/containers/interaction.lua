@@ -88,6 +88,9 @@ function interaction:createResponse(type, data)
 	})
 	-- p(api:request('GET',format(endpoints.GET_ORIGINAL_INTERACTION_RESPONSE, self._id, self._token)))
 end
+function interaction:createFollowup(data)
+	self.parent._api:request('POST', format(endpoints.INTERACTION_FOLLOWUP_CREATE, self._id, self._token), data)
+end
 
 ---Send act response.
 ---@return boolean
@@ -113,6 +116,12 @@ function interaction:reply(data, private)
 	if private then
 		data.flags = 64
 	end
+
+	if self._initialResponse then
+		return self:createFollowup(data);
+	end
+
+	self._initialResponse = data;
 
 	return self:createResponse(channelMessageWithSource, data)
 end

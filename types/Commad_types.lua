@@ -7,6 +7,8 @@
 ---@field public reply table|function|string
 ---@field public func function | nil
 ---@field public sendToDm string | boolean | nil whether this command should be sent to direct message. if this value is string it will shows on channel
+---@field public embed table | nil The option embed object, must be used with reply string
+---@field public components table | nil The option components object contains buttons, menu and more, must be used with reply string
 local Command = {};
 
 ---Make new reply message, this is can be string or function or table
@@ -22,3 +24,4 @@ function Command.reply(message,args,content) end
 ---@param Content commandContent inclueds command contents
 ---@return nil
 function Command.func(replyMsg,message,args,Content) end
+

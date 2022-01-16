@@ -160,6 +160,7 @@ local function buttonPressed(id,object)
 end
 client:on("buttonPressed",buttonPressed);
 
+---@type table<string, Command>
 local export = {
 	["투표"] = {
 		alias = "선거";
@@ -172,28 +173,28 @@ local export = {
 		end;
 		onSlash = function ()
 			client:slashCommand({ ---@diagnostic disable-line
-			name = "투표";
-			description = "투표를 만듭니다!";
-			options = {
-				{
-					name = "내용";
-					description = "투표 내용입니다! ',' 을 이용해 개별로 구분하세요!";
-					type = discordia_enchent.enums.optionType.string;
-					required = true;
+				name = "투표";
+				description = "투표를 만듭니다!";
+				options = {
+					{
+						name = "내용";
+						description = "투표 내용입니다! ',' 을 이용해 개별로 구분하세요!";
+						type = discordia_enchent.enums.optionType.string;
+						required = true;
+					};
+					{
+						name = "제목";
+						description = "투표의 제목을 설정합니다! (이 옵션은 비워둘 수 있습니다)";
+						type = discordia_enchent.enums.optionType.string;
+						required = false;
+					};
 				};
-				{
-					name = "제목";
-					description = "투표의 제목을 설정합니다! (이 옵션은 비워둘 수 있습니다)";
-					type = discordia_enchent.enums.optionType.string;
-					required = false;
-				};
-			};
-			callback = function(interaction, params, cmd)
-				interaction:reply(
-					makeVote(interaction.id,params["내용"],params["제목"])
-				);
-			end;
-		});
+				callback = function(interaction, params, cmd)
+					interaction:reply(
+						makeVote(interaction.id,params["내용"],params["제목"])
+					);
+				end;
+			});
 		end;
 	};
 };

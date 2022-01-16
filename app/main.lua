@@ -394,6 +394,7 @@ local function processCommand(message)
 	-- 함수 실행을 위한 콘탠츠 만들기
 	---@class commandContent
 	local contents = {
+		guild = guild; ---@type Guild a guild that where used this command
 		user = user; ---@type User a user that called this command
 		channel = channel; ---@type Channel|TextChannel|GuildChannel|PrivateChannel|GuildTextChannel a channel that this command is called on
 		isDm = isDm; ---@type boolean whether this channel is dm
