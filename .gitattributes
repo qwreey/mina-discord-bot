@@ -1,6 +1,6 @@
-types/** linguist-detectable=false
-deps/** linguist-detectable=false
-archive/** linguist-detectable=false
-log/** linguist-detectable=false
-test/** linguist-detectable=false
+types/** linguist-vendored
+deps/** linguist-vendored
+archive/** linguist-vendored
+log/** linguist-vendored
+test/** linguist-vendored
 
