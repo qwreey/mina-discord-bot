@@ -80,7 +80,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 			new:setContent("[ERROR] Error occured on setting env! traceback : " .. tostring(setfenvTraceback));
 		end
 		promise.new(setfenvTraceback)
-			:andThen(function (value)
+			:andThen(function (value) -- ansi\n\033[91m
 				new:setContent("[INFO] Execution success! traceback : ```ansi\n" .. (type(value) == "string" and value or tostring(prettyPrint.dump(value,nil,true))) .. "\n```");
 			end)
 			:catch(function (err)
