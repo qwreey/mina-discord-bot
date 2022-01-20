@@ -59,7 +59,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 			'!!!sync : 클라우드와 코드를 동기화 시킵니다 (차이 비교후 병합)\n'
 		);
 		return true;
-	elseif (cmd == "!!!exe" or cmd == "!!!exec" or cmd == "!!!execute" or cmd == "loadstring") then
+	elseif (cmd == "!!!exe" or cmd == "!!!exec" or cmd == "!!!execute" or cmd == "!!!loadstring") then
 		local new = message:reply("Executing!");
 		-- first, decoding lua
 		local func,err = loadstring("return " .. args);
@@ -70,13 +70,18 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 			new:setContent("[ERROR] Error occured on loadstring! traceback : " .. tostring(err));
 			return;
 		end
-		local setfenvPassed,setfenvTraceback = pcall(setfenv,func,_G.loadstringEnv);
+		local loadstringEnv = _G.loadstringEnv;
+		function loadstringEnv.send(str)
+			new:reply(str);
+		end
+		local setfenvPassed,setfenvTraceback = pcall(setfenv,func,loadstringEnv);
+		loadstringEnv.send = nil;
 		if not setfenvPassed then
 			new:setContent("[ERROR] Error occured on setting env! traceback : " .. tostring(setfenvTraceback));
 		end
 		promise.new(setfenvTraceback)
 			:andThen(function (value)
-				new:setContent("[INFO] Execution success! traceback : ```\n" .. (type(value) == "string" and value or tostring(prettyPrint.dump(value,nil,true))) .. "\n```");
+				new:setContent("[INFO] Execution success! traceback : ```ansi\n" .. (type(value) == "string" and value or tostring(prettyPrint.dump(value,nil,true))) .. "\n```");
 			end)
 			:catch(function (err)
 				new:setContent(("[ERROR] Error occured running function! traceback : ```\n%s\n```"):format(tostring(err)));
