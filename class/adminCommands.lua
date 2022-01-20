@@ -27,7 +27,7 @@ local customLogger = setmetatable({},{
 ---@param Text string
 ---@param message Message
 local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
-	local cmd = Text:match("^[^ ]+");
+	local cmd = Text:match("^[^ \n]+");
 	if not cmd then return; end
 	local args = Text:sub(#cmd+2,-1);
 	if (cmd == "!!!stop" or cmd == "!!!kill") then
@@ -107,6 +107,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 			new:setContent(("[ERROR] Error occured running function! traceback : ```\n%s\n```"):format(tostring(err)));
 			end)
 			:wait();
+		loadstringEnv.logger = ologger;
 		loadstringEnv.__disable();
 		loadstringEnv.send = nil;
 		return true;
