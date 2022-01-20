@@ -9,6 +9,7 @@ for _,path in pairs({
 	"./commands";
 	"./deps";
 	"./libs";
+	"./class";
 }) do
 	local fse = uv.new_fs_event();
 	uv.fs_event_start(fse,path,{

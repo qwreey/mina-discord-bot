@@ -120,14 +120,17 @@ function runEnv.print(...)
 end
 runEnv.__last = {};
 function runEnv.__enable()
-	runEnv.__last.logger_prefix = _G.logger.prefix;
-	_G.logger_lineinfo = "";
-	_G.logger.prefix = "cmd";
+	local logger = _G.logger;
+	runEnv.__last.logger_prefix = logger.prefix;
+	logger.__lineinfo = "";
+	logger.prefix = "cmd";
 end
 function runEnv.__disable()
-	_G.logger_lineinfo = nil;
-	_G.logger.prefix = runEnv.__last.logger_prefix;
-	runEnv.__last.logger_prefix = nil;
+	local logger = _G.logger;
+	local last = runEnv.__last;
+	logger.__lineinfo = nil;
+	logger.prefix = last.logger_prefix;
+	last.logger_prefix = nil;
 end
 _G.print = runEnv.print;
 runEnv.restart = runEnv.reload;
@@ -202,14 +205,9 @@ return function ()
 				editor:readLine(buildPrompt(), onLine);
 				return;
 			end
-
-			-- execute lua
-			local envfunc = setfenv(func or function ()
-				error(tostring(err));
-			end,runEnv) -- 명령어 분석
 			wrap(function ()
 				runEnv.__enable();
-				promise.new(envfunc)
+				promise.new(setfenv(func,runEnv))
 					:andThen(function (...)
 						local printing = {"\27[2K\r → \27[0m"};
 						local args = pack(...);

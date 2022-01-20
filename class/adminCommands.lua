@@ -3,19 +3,21 @@ Admin command
 ]]
 
 local prettyPrint = prettyPrint or require("pretty-print");
-local promise = promise;
-local ologger = logger;
 local remove = table.remove;
 local concat = table.concat;
-local customLogger = setmetatable({},{
+local ologger = logger;
+local customLogger = setmetatable({__last = ""},{
 	__index = function (self,index)
 		local object = ologger[index];
 		local objectType = type(object);
 		if objectType == "function" then
 			local function this(...)
 				local output = object(...);
+				if output == nil then return end
 				remove(output,1);
-				return concat(output);
+				local str = concat(output);
+				self.__last = self.__last .. str;
+				return str;
 			end
 			self[index] = this;
 			return this;
@@ -80,7 +82,8 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		return true;
 	elseif (cmd == "!!!exe" or cmd == "!!!exec" or cmd == "!!!execute" or cmd == "!!!loadstring") then
 		local new = message:reply("Executing!");
-		-- first, decoding lua
+
+		-- load string to function
 		local func,err = loadstring("return " .. args);
 		if not func then
 			func,err = loadstring(args);
@@ -89,27 +92,32 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 			new:setContent("[ERROR] Error occured on loadstring! traceback : " .. tostring(err));
 			return;
 		end
-		local loadstringEnv = _G.loadstringEnv;
+
+		-- get env
 		loadstringEnv.__enable();
-		loadstringEnv.logger = customLogger;
-		function loadstringEnv.send(str)
+		rawset(loadstringEnv,"logger",customLogger);
+		rawset(loadstringEnv,"send",function (str)
 			new:reply(str);
-		end
-		local setfenvPassed,setfenvTraceback = pcall(setfenv,func,loadstringEnv);
-		if not setfenvPassed then
-			new:setContent("[ERROR] Error occured on setting env! traceback : " .. tostring(setfenvTraceback));
-		end
-		promise.new(setfenvTraceback)
-		:andThen(function (value) -- ansi\n\033[91m
-			new:setContent("[INFO] Execution success! traceback : ```ansi\n" .. (type(value) == "string" and value or tostring(prettyPrint.dump(value,nil,true))) .. "\n```");
-		end)
-		:catch(function (err)
-			new:setContent(("[ERROR] Error occured running function! traceback : ```\n%s\n```"):format(tostring(err)));
+		end);
+		customLogger.__last = "";
+
+		-- execute
+		promise.new(setfenv(func,loadstringEnv))
+			:andThen(function (value)
+				local loggerString = "\n---logger---\n" .. customLogger.__last;
+				if value == loggerString then
+					loggerString = "";
+				end
+				new:setContent("```ansi\n" .. (type(value) == "string" and value or tostring(prettyPrint.dump(value,nil,true))) .. loggerString .. "\n```");
 			end)
-			:wait();
-		loadstringEnv.logger = ologger;
+			:catch(function (err)
+				new:setContent(("[ERROR] Error occured running function! traceback : ```ansi\n%s\n```"):format(tostring(err)));
+			end):wait();
+
+		-- unload env
+		rawset(loadstringEnv,"logger",nil);
+		rawset(loadstringEnv,"send",nil);
 		loadstringEnv.__disable();
-		loadstringEnv.send = nil;
 		return true;
 	end
 end

@@ -108,7 +108,7 @@ local log = {
 		) or false
 	);
 	outfile = options["--logger_outfile"];
-	minLevel = tonumber(options["--logger_minLevel"]) or 1;
+	minLevel = tonumber(options["--logger_minLevel"]) or -2;
 	disable = (
 		options["--logger_disabled"] == true or
 		(
@@ -212,7 +212,7 @@ local function base(levelName,levelNumber,color,debugInfo,object)
 	-- 	:gsub("%.init$","") -- remove .init
 	-- )
 	local lineinfo = format("%s:%s",src,tostring(debugInfo.currentline)) -- source:line
-	lineinfo = _G.logger_lineinfo or lineinfo
+	lineinfo = log.__lineinfo or lineinfo
 
 	-- Make header
 	local header = format("%s[%-6s%s]%s %s%s",
