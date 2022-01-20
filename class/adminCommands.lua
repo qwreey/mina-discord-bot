@@ -3,13 +3,13 @@ Admin command
 ]]
 
 local prettyPrint = prettyPrint or require("pretty-print");
-local promise = _G.promise;
-
+local promise = promise;
+local ologger = logger;
 local remove = table.remove;
 local concat = table.concat;
 local customLogger = setmetatable({},{
 	__index = function (self,index)
-		local object = logger[index];
+		local object = ologger[index];
 		local objectType = type(object);
 		if objectType == "function" then
 			local function this(...)
