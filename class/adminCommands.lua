@@ -75,7 +75,6 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 			new:reply(str);
 		end
 		local setfenvPassed,setfenvTraceback = pcall(setfenv,func,loadstringEnv);
-		loadstringEnv.send = nil;
 		if not setfenvPassed then
 			new:setContent("[ERROR] Error occured on setting env! traceback : " .. tostring(setfenvTraceback));
 		end
@@ -87,6 +86,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 				new:setContent(("[ERROR] Error occured running function! traceback : ```\n%s\n```"):format(tostring(err)));
 			end)
 			:wait();
+		loadstringEnv.send = nil;
 		return true;
 	end
 end
