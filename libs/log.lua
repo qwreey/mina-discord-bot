@@ -212,6 +212,7 @@ local function base(levelName,levelNumber,color,debugInfo,object)
 	-- 	:gsub("%.init$","") -- remove .init
 	-- )
 	local lineinfo = format("%s:%s",src,tostring(debugInfo.currentline)) -- source:line
+	lineinfo = _G.logger_lineinfo or lineinfo
 
 	-- Make header
 	local header = format("%s[%-6s%s]%s %s%s",
@@ -227,9 +228,9 @@ local function base(levelName,levelNumber,color,debugInfo,object)
 		lineinfo -- line info
 	)
 	local headerLen = len(gsub(header,"\27%[%d+m","")) -- Make 6*x len char
-	local liner = headerLen%6
+	local liner = headerLen%5
 	if liner ~= 0 then
-		local adding = 6 - liner
+		local adding = 5 - liner
 		headerLen = headerLen + adding
 		header = header .. rep(" ",adding)
 	end

@@ -5,6 +5,25 @@ Admin command
 local prettyPrint = prettyPrint or require("pretty-print");
 local promise = _G.promise;
 
+local remove = table.remove;
+local concat = table.concat;
+local customLogger = setmetatable({},{
+	__index = function (self,index)
+		local object = logger[index];
+		local objectType = type(object);
+		if objectType == "function" then
+			local function this(...)
+				local output = object(...);
+				remove(output,1);
+				return concat(output);
+			end
+			self[index] = this;
+			return this;
+		end
+		return object;
+	end;
+});
+
 ---@param Text string
 ---@param message Message
 local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
@@ -71,6 +90,8 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 			return;
 		end
 		local loadstringEnv = _G.loadstringEnv;
+		loadstringEnv.__enable();
+		loadstringEnv.logger = customLogger;
 		function loadstringEnv.send(str)
 			new:reply(str);
 		end
@@ -79,13 +100,14 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 			new:setContent("[ERROR] Error occured on setting env! traceback : " .. tostring(setfenvTraceback));
 		end
 		promise.new(setfenvTraceback)
-			:andThen(function (value) -- ansi\n\033[91m
-				new:setContent("[INFO] Execution success! traceback : ```ansi\n" .. (type(value) == "string" and value or tostring(prettyPrint.dump(value,nil,true))) .. "\n```");
-			end)
-			:catch(function (err)
-				new:setContent(("[ERROR] Error occured running function! traceback : ```\n%s\n```"):format(tostring(err)));
+		:andThen(function (value) -- ansi\n\033[91m
+			new:setContent("[INFO] Execution success! traceback : ```ansi\n" .. (type(value) == "string" and value or tostring(prettyPrint.dump(value,nil,true))) .. "\n```");
+		end)
+		:catch(function (err)
+			new:setContent(("[ERROR] Error occured running function! traceback : ```\n%s\n```"):format(tostring(err)));
 			end)
 			:wait();
+		loadstringEnv.__disable();
 		loadstringEnv.send = nil;
 		return true;
 	end

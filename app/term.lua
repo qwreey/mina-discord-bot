@@ -118,6 +118,17 @@ function runEnv.print(...)
 	end
 	io.write("\n",buildPrompt());
 end
+runEnv.__last = {};
+function runEnv.__enable()
+	runEnv.__last.logger_prefix = _G.logger.prefix;
+	_G.logger_lineinfo = "";
+	_G.logger.prefix = "cmd";
+end
+function runEnv.__disable()
+	_G.logger_lineinfo = nil;
+	_G.logger.prefix = runEnv.__last.logger_prefix;
+	runEnv.__last.logger_prefix = nil;
+end
 _G.print = runEnv.print;
 runEnv.restart = runEnv.reload;
 function runEnv.help() -- 도움말
@@ -197,6 +208,7 @@ return function ()
 				error(tostring(err));
 			end,runEnv) -- 명령어 분석
 			wrap(function ()
+				runEnv.__enable();
 				promise.new(envfunc)
 					:andThen(function (...)
 						local printing = {"\27[2K\r → \27[0m"};
@@ -218,6 +230,7 @@ return function ()
 						logger.errorf("LUA | error : %s",err);
 						prettyPrint.stdout:write "\27[2K\r";
 					end):wait();
+				runEnv.__disable();
 				editor:readLine(buildPrompt(), onLine);
 			end)();
 		else
