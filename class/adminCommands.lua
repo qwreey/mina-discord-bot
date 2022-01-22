@@ -82,6 +82,9 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		return true;
 	elseif (cmd == "!!!exe" or cmd == "!!!exec" or cmd == "!!!execute" or cmd == "!!!loadstring") then
 		local new = message:reply("Executing!");
+		if not new then
+			logger.error "adminCommands : cannot make new message. skipping...";
+		end
 
 		-- load string to function
 		local func,err = loadstring("return " .. args);

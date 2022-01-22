@@ -18,7 +18,7 @@ end
 
 local insert = table.insert;
 local musicFile = "./data/youtubeFiles/%s";
-local timeoutMs = 25 * 1000;
+local timeoutMs = 45 * 1000;
 local mutexs = setmetatable({},{__mode = "kv"});
 local function download(url,vid)
     local file = musicFile:format(vid:gsub("%-","."));
