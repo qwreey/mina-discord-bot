@@ -23,3 +23,7 @@ sodium.dll
 
 # 로그 파일
 log/*
+
+# disbucket
+disbucket/**
+disbucket.json
