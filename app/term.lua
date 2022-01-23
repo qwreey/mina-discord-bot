@@ -1,5 +1,5 @@
 local history = readline.History.new(); -- 히스토리 홀더 만들기
-local editor = readline.Editor.new({stdin = process.stdin.handle, stdout = process.stdout.handle, history = history});
+local editor = readline.Editor.new({stdin = process.stdin.handle, stdout = process.stdout.handle, history = history}); _G.editor = editor;
 local app = app;
 local version = app and app.version;
 local prettyPrint = prettyPrint or require("pretty-print");
@@ -159,6 +159,18 @@ _G.loadstringEnv = runEnv;
 
 -- 라인 읽기 함수
 return function ()
+	local loaded = false;
+	local function bindOnLine(func)
+		if prettyPrint.stdin.set_mode then
+			editor:readLine(buildPrompt(), func);
+		elseif not loaded then
+			process.stdin:on(function (str)
+				func(nil,func);
+			end);
+		end
+		loaded = true
+	end
+
 	local function onLine(err, line, ...)
 		if line then
 
@@ -229,13 +241,13 @@ return function ()
 						prettyPrint.stdout:write "\27[2K\r";
 					end):wait();
 				runEnv.__disable();
-				editor:readLine(buildPrompt(), onLine);
+				bindOnLine(onLine);
 			end)();
 		else
 			process:exit();
 		end
 	end
-	editor:readLine(buildPrompt(), onLine); -- 라인 읽기 시작
+	bindOnLine(onLine); -- 라인 읽기 시작
 	-- 로거에 글자 리프래셔 저장
 	function logger.refreshLine()
 		editor:refreshLine();
