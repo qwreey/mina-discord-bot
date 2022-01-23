@@ -214,7 +214,7 @@ return function ()
 
 			-- continue read lines
 			if lastLine or cmdMode then
-				editor:readLine(buildPrompt(), onLine);
+				bindOnLine(onLine)
 				return;
 			end
 			wrap(function ()
@@ -249,7 +249,9 @@ return function ()
 	end
 	bindOnLine(onLine); -- 라인 읽기 시작
 	-- 로거에 글자 리프래셔 저장
-	function logger.refreshLine()
-		editor:refreshLine();
+	if prettyPrint.stdin.set_mode then
+		function logger.refreshLine()
+			editor:refreshLine();
+		end
 	end
 end
