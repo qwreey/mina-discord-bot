@@ -29,13 +29,6 @@
 -- * 아니 페이팔 계정을 어캐 만드냐고
 -- * 19 세 이상 아니면 사업자 용으로 못만들던데?
 
--- TODO: 플레이리스트 지원
--- * 문제는 그 미친 길이는 어캐 커버하냐임
--- * 해결 방법으론 google api 로 전채 정보 담아서 불러온 후 가짜 곡 정보를 만들고
--- * 첫 번째 꺼를 불러 온 다음 실행시켜주고
--- * 나머지는 차근차근 불러오는거. 주의 해야 할 점은 mutex 로 불러옴 기다림을 넣어줘야됨
--- * 그래서 곡에는 이런 값이 생김 .loadmutex
-
 -- TODO: 사운드 클라우드, 스포티파이 지원
 -- * 글쌔,, 사운드 클라우드는 괜찮은데 스포티파이는 폐쇠적임
 
@@ -56,6 +49,7 @@
 -- * 지금의 경우는 그냥 20 분 넘는 곡은 loudnorm 필터를 끄기로 함
 -- * 나중에 dual pass 로 바꿔보고 실험 해봐야할듯
 
+local youtubePlaylist = require "class.music.youtubePlaylist";
 local playerClass = require "class.music.playerClass";
 local playerForChannels = playerClass.playerForChannels;
 local formatTime = playerClass.formatTime;
@@ -332,7 +326,6 @@ local export = {
 			-- ! 여기에는 해결되지 않은 미지의 오류가 있음
 			-- ? 아마도 클라이언트가 voiceChannelConnection 을 똑바로 수거하지 못하는듯 함
 			-- todo: 이거 고쳐야됨
-			-- * 오 색갈 이뿌다
 			local voiceChannelID = voiceChannel:__hash();
 			local player = playerForChannels[voiceChannelID];
 			if not guildConnection then -- if connections is not exist, create new one
@@ -355,11 +348,12 @@ local export = {
 				nth = nil;
 			end
 
-			if not rawArgs:match(",") then -- once
-				local member = message.member;
-				local nickname = member and member.nickname;
-				local authorName = message.author.name:gsub("`","\\`");
-				local username = nickname and (nickname:gsub("`","\\`") .. (" (%s)"):format(authorName)) or authorName;
+			local member = message.member;
+			local nickname = member and member.nickname;
+			local authorName = message.author.name:gsub("`","\\`");
+			local username = nickname and (nickname:gsub("`","\\`") .. (" (%s)"):format(authorName)) or authorName;
+			local playlist = youtubePlaylist.getPID(rawArgs);
+			if not (rawArgs:match(",") or playlist) then -- once
 				local this = {
 					message = message;
 					url = rawArgs;
@@ -398,20 +392,27 @@ local export = {
 					replyMsg:setContent("성공적으로 곡 'NULL' 을(를) 추가하였습니다! `(0:0)`");
 				end
 			else -- batch add
-				local list = {};
-				for item in rawArgs:gmatch("[^,]+") do
-					table.insert(list,item);
+				local list;
+				local listLen;
+				if playlist then
+					list = youtubePlaylist.getPlaylist(playlist);
+					listLen = list and #list;
+					if (not list) or listLen == 0 then
+						return replyMsg:setContent("유튜브 플레이 리스트를 가져오는데 실패하였습니다!");
+					end
+				else
+					list = {};
+					for item in rawArgs:gmatch("[^,]+") do
+						table.insert(list,item);
+					end
+					listLen = #list
 				end
 				local ok = 0;
 				local whenAdded = time();
-				local member = message.member;
-				local nickname = member and member.nickname;
-				local authorName = message.author.name:gsub("`","\\`");
-				local username = nickname and (nickname:gsub("`","\\`") .. (" (%s)"):format(authorName)) or authorName;
 				local duration = 0;
-				for _,item in ipairs(list) do
-					if not guild.connection then -- if it killed by user
-						return;
+				for index,item in ipairs(list) do
+					if not guild.connection then -- if it killed user
+						return replyMsg:setConetnt("추가 도중 취소되었습니다");
 					end
 					local this = {
 						message = message;
@@ -426,6 +427,7 @@ local export = {
 							if info then
 								duration = duration + (info.duration or 0);
 							end
+							message:setContent(youtubePlaylist.display(listLen,index,info));
 						end)
 						:catch(function (err)
 							message:reply(("곡 '%s' 를 추가하는데 실패하였습니다\n```%s```"):format(tostring(item),tostring(err)));

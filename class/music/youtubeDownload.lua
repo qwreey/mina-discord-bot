@@ -28,9 +28,6 @@ local function download(url,vid)
         '--cache-dir','./data/youtubeCache', -- chache
         '-q','--print-json' -- print json
     };
-	-- if ytdl == "yt-dlp" then
-	-- 	insert(args,'--audio-multistreams')
-	-- end
 	---@type mutex
 	local downloadMutex = mutexs[vid] or mutex.new();
 	mutexs[vid] = downloadMutex;
@@ -128,6 +125,7 @@ function module.search(url)
 	if not id then return end
 	return id.videoId;
 end
+---returns the video id of link
 function module.getVID(url)
 	return url:match(vidWatch) or url:match(vidShort) or (url:gsub("^ +",""):gsub(" +$",""):match(vidFormat)) or module.search(url);
 end
