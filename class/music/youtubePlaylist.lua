@@ -73,9 +73,9 @@ local rep = string.rep;
 local progress_block = "█";
 local progress_air   = "░";
 local progress_len   = 23;
-local playlistDisplay = "> 플레이 리스트의 음악을 추가중입니다"
-                     .. "> \\|%s%s\\|"
-                     .. "> 추가중인 곡 명 : %s"
+local playlistDisplay = "> 플레이 리스트의 음악을 추가중입니다\n"
+                     .. "> \\|%s%s\\|\n"
+                     .. "> 추가중인 곡 명 : %s\n"
                      .. "> (%d 개중에 %d개)";
 function module.display(total,index,songName)
     local per = index/total;

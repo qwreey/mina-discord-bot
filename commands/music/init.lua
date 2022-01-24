@@ -414,6 +414,7 @@ local export = {
 					if not guild.connection then -- if it killed user
 						return replyMsg:setConetnt("추가 도중 취소되었습니다");
 					end
+					--TODO: 도중 취소 기능 (버튼으로) 구현하기
 					local this = {
 						message = message;
 						url = item;
@@ -427,7 +428,7 @@ local export = {
 							if info then
 								duration = duration + (info.duration or 0);
 							end
-							replyMsg:setContent(youtubePlaylist.display(listLen,index,info));
+							replyMsg:setContent(youtubePlaylist.display(listLen,index,info.title));
 						end)
 						:catch(function (err)
 							message:reply(("곡 '%s' 를 추가하는데 실패하였습니다\n```%s```"):format(tostring(item),tostring(err)));
