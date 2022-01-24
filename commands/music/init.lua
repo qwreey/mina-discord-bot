@@ -427,7 +427,7 @@ local export = {
 							if info then
 								duration = duration + (info.duration or 0);
 							end
-							message:setContent(youtubePlaylist.display(listLen,index,info));
+							replyMsg:setContent(youtubePlaylist.display(listLen,index,info));
 						end)
 						:catch(function (err)
 							message:reply(("곡 '%s' 를 추가하는데 실패하였습니다\n```%s```"):format(tostring(item),tostring(err)));
