@@ -9,7 +9,7 @@ local function formatFileRoot(serverId)
 end
 
 -- 데이터 저장하기 (로드를 먼저 해야 작동함)
-function module.saveData(serverId)
+function module.saveData(serverId,overwrite)
 	if not serverId then
 		return;
 	end
@@ -17,11 +17,13 @@ function module.saveData(serverId)
 	serverId = tostring(serverId);
 
 	-- serverData 가져오기
-	local serverData = serverDatas[serverId];
+	local serverData = overwrite or serverDatas[serverId];
 	if not serverData then
 		logger.warn("something want wrong... (load server data first and save data!)");
 		logger.errorf("un error occur on save server data (file or serverData was not found), serverId : %s",tostring(serverId));
 		return;
+	elseif overwrite then
+		serverDatas[serverId] = overwrite;
 	end
 	local raw = json.encode(serverData);
 

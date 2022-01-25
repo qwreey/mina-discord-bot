@@ -435,8 +435,8 @@ local function processCommand(message)
 		loadServerData = function ()
 			return serverData.loadData(guild.id)
 		end;
-		saveServerData = function ()
-			return serverData.saveData(guild.id);
+		saveServerData = function (overwrite)
+			return serverData.saveData(guild.id,overwrite);
 		end;
 	};
 
