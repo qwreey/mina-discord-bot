@@ -52,11 +52,12 @@ for name,setting in pairs(settings) do
 end
 settingsHelp  = settingsHelp .. "설정에 대한 자세한 정보는 `설정 도움말 [설정이름]` 를 확인하세요";
 local settingsNotFound = "설정 '%s' 는 존재하지 않습니다\n> 모든 설정을 보려면 `미나 설정` 을 입력하세요";
-local settingHelpFormat = "**%s**\n%s";
+local settingHelpFormat = "**%s**\n%s%s";
 local saved = "설정 '%s' 를 저장했습니다!";
 local invalid = "설정 '%s' 의 값 '%s' 는 유효하지 않습니다\n> %s";
 local resetNameMiss = "초기화할 설정 이름을 적어주세요!";
 local resetFormat = "설정 '%s' 를 초기화했습니다!";
+local nowFormat = "> 현재 값은 '%s' 입니다\n";
 
 local function reply(message,str)
     return message:reply({
@@ -93,8 +94,10 @@ local export = {
                     return reply(message,settingsNotFound:format(value));
                 end
                 local description = setting.description;
+                local now = data[value];
                 return reply(message,settingHelpFormat:format(
-                    value,type(description) == "function" and description(setting,data) or description
+                    value,now and nowFormat:format(tostring(now)) or "",
+                    type(description) == "function" and description(setting,data) or description
                 ));
             elseif name == "초기화" then
                 if value == "" then
@@ -115,8 +118,10 @@ local export = {
                 return reply(message,settingsNotFound:format(name));
             elseif value == "" then
                 local description = setting.description;
+                local now = data[name];
                 return reply(message,settingHelpFormat:format(
-                    name,type(description) == "function" and description(setting,data) or description
+                    name,now and nowFormat:format(tostring(now)) or "",
+                    type(description) == "function" and description(setting,data) or description
                 ));
             end
 
