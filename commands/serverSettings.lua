@@ -94,18 +94,20 @@ local export = {
                     return reply(message,settingsNotFound:format(value));
                 end
                 local description = setting.description;
-                local now = data[value];
+                local now = data[setting.id];
                 return reply(message,settingHelpFormat:format(
-                    value,now and nowFormat:format(tostring(now)) or "",
+                    value,now and nowFormat:format(tostring(now):gsub("`","\\`")) or "",
                     type(description) == "function" and description(setting,data) or description
                 ));
             elseif name == "초기화" then
                 if value == "" then
                     return reply(message,resetNameMiss);
-                elseif settings[value] == nil then
+                end
+                local setting = settings[value]
+                if setting == nil then
                     return reply(message,settingsNotFound:format(value))
                 end
-                data[value] = nil;
+                data[setting.id] = nil;
                 content.saveServerData(overwrite and data);
                 return reply(message,resetFormat:format(value));
             elseif name == "" or name == "도움말" then
@@ -118,9 +120,9 @@ local export = {
                 return reply(message,settingsNotFound:format(name));
             elseif value == "" then
                 local description = setting.description;
-                local now = data[name];
+                local now = data[setting.id];
                 return reply(message,settingHelpFormat:format(
-                    name,now and nowFormat:format(tostring(now)) or "",
+                    name,now and nowFormat:format(tostring(now):gsub("`","\\`")) or "",
                     type(description) == "function" and description(setting,data) or description
                 ));
             end
@@ -136,7 +138,7 @@ local export = {
                     )
                 );
             end
-            data[name] = value;
+            data[setting.id] = value;
 
             content.saveServerData(overwrite and data);
             return reply(message,saved:format(name));
