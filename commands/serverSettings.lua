@@ -33,7 +33,7 @@ local settings = {
         description = function (self,serverSettings)
             local prefix = (serverSettings and serverSettings[self.id]) or "$";
             return "일부 명령어(예: 음악)에 대한 특수한 접두사를 부여합니다. 다음과 같이 적용됩니다\n"
-                   .. (prefix == "$" and musicCommandHelp or (musicCommandHelp:gsub("$",prefix)));
+                   .. (prefix == "$" and musicCommandHelp or (musicCommandHelp:gsub("%$",prefix)));
         end;
         id = "guildPrefix";
         formatting = function (value)
