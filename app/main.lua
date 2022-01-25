@@ -160,21 +160,20 @@ reacts,commands,noPrefix,commandsLen = commandHandler.encodeCommands({
 	-- 특수기능
 	["약관동의"] = {
 		alias = {"EULA동의","약관 동의","사용계약 동의"};
-		reply = function (message,args,c)
-			local this = c.loadUserData(); -- 내 호감도 불러오기
+		reply = function (message,args,content)
+			local this = content.loadUserData(); -- 내 호감도 불러오기
 			if this then -- 약관 동의하지 않았으면 리턴
 				return "**{#:UserName:#}** 님은 이미 약관을 동의하셨어요!";
 			end
-			local userId = tostring(message.author.id);
-			-- userData.loadData
-			fs.writeFileSync(("data/userData/%s.json"):format(userId),
-				("{" ..
-					('"latestName":"%s",'):format(message.author.name) ..
-					'"love":0,' ..
-					('"lastName":["%s"],'):format(message.author.name) ..
-					'"lastCommand":{}' ..
-				"}")
-			);
+			local author = message.author;
+			local id = author.id;
+			local name = author.name;
+			userData.saveData(id,{
+				latestName = name;
+				lastName = {name};
+				lastCommand = {};
+				love = 20;
+			});
 			return "안녕하세요 {#:UserName:#} 님!\n사용 약관에 동의해주셔서 감사합니다!\n사용 약관을 동의하였기 때문에 다음 기능을 사용 할 수 있게 되었습니다!\n\n> 미나야 배워 (미출시 기능)\n";
 		end;
 	};

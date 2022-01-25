@@ -22,7 +22,7 @@ end
 ---Save user data to userdata storage
 ---@param userId Snowflake pointing data what want to save
 ---@return nil
-function module.saveData(userId)
+function module.saveData(userId,overwrite)
 	if not userId then
 		return;
 	end
@@ -30,11 +30,13 @@ function module.saveData(userId)
 	userId = tostring(userId);
 
 	-- userData 가져오기
-	local userData = userDatas[userId];
+	local userData = overwrite or userDatas[userId];
 	if not userData then
 		logger.warn("something want wrong... (load user data first and save data!)");
 		logger.errorf("un error occur on save user data (file or userData was not found), UserId : %s",tostring(userId));
 		return;
+	elseif overwrite then
+		userDatas[userId] = overwrite;
 	end
 	local raw = json.encode(userData);
 
