@@ -120,7 +120,7 @@ local export = {
 			local rawArgs = content.rawArgs;
 			rawArgs = rawArgs:gsub("^ +",""):gsub(" +$","");
 			if rawArgs == "" then -- 내 호감도 불러오기
-				local this = content.getUserData();
+				local this = content.loadUserData();
 				if this == nil then -- 약관 동의하지 않았으면 리턴
 					return eulaComment_love;
 				end
@@ -154,7 +154,7 @@ local export = {
 			else
 				local id = rawArgs:match("%d+");
 				if id and id ~= "" then
-					local data = userData:loadData(id);
+					local data = userData.loadData(id);
 					if data then
 						local love = data.love;
 						local name = data.latestName;
@@ -235,7 +235,7 @@ local export = {
 			timeout(0,function ()
 				local clock = tostring((time()-before)/usOffset);
 				local dataReadSt = time();
-				local userData = contents.getUserData()
+				local userData = contents.loadUserData()
 				local dataReadTime = tostring((time()-dataReadSt)/usOffset);
 				local dataWriteTime;
 				if userData then
@@ -437,7 +437,7 @@ local export = {
 				return;
 			end
 
-			local userData = Content.getUserData();
+			local userData = Content.loadUserData();
 			if not userData then
 				replyMsg:setContent("약관 동의가 없어 문의를 요청할 수 없습니다!");
 				return;

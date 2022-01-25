@@ -161,11 +161,12 @@ reacts,commands,noPrefix,commandsLen = commandHandler.encodeCommands({
 	["약관동의"] = {
 		alias = {"EULA동의","약관 동의","사용계약 동의"};
 		reply = function (message,args,c)
-			local this = c.getUserData(); -- 내 호감도 불러오기
+			local this = c.loadUserData(); -- 내 호감도 불러오기
 			if this then -- 약관 동의하지 않았으면 리턴
 				return "**{#:UserName:#}** 님은 이미 약관을 동의하셨어요!";
 			end
 			local userId = tostring(message.author.id);
+			-- userData.loadData
 			fs.writeFileSync(("data/userData/%s.json"):format(userId),
 				("{" ..
 					('"latestName":"%s",'):format(message.author.name) ..
@@ -273,7 +274,7 @@ local function processCommand(message)
 	-- guild prefix
 	local guildCommandMode;
 	if guild then
-		local guildData = serverData:loadData(guild.id);
+		local guildData = serverData.loadData(guild.id);
 		if guildData then
 			local guildPrefix = guildData.guildPrefix;
 			if guildPrefix then
@@ -361,7 +362,7 @@ local function processCommand(message)
 	-- Make love prompt
 	if love then
 		local userId = user.id
-		local thisUserDat = userData:loadData(userId);
+		local thisUserDat = userData.loadData(userId);
 
 		if thisUserDat then
 			local username = user.name;
@@ -383,7 +384,7 @@ local function processCommand(message)
 			else
 				thisUserDat.love = thisUserDat.love + love;
 				lastCommand[CommandID] = osTime();
-				userData:saveData(user.id);
+				userData.saveData(user.id);
 				registeLeaderstatus(userId,thisUserDat);
 			end
 		else
@@ -407,18 +408,18 @@ local function processCommand(message)
 		---@type function Save this user's data with userData library
 		---@return nil
 		saveUserData = function ()
-			return userData:saveData(user.id);
+			return userData.saveData(user.id);
 		end;
 		---@type function Save this user's data with userData library
 		---@return userDataObject userDataObject User's Data
-		getUserData = function ()
-			return userData:loadData(user.id);
+		loadUserData = function ()
+			return userData.loadData(user.id);
 		end;
 		loveText = loveText; ---@type string love earned text
 		---@type function Get user's premium status
-		---@return boolean whether user's premium exist
+		---@return boolean isPremium whether user's premium exist
 		isPremium = function ()
-			local uData = userData:loadData(user.id);
+			local uData = userData.loadData(user.id);
 			if not uData then
 				return;
 			end
@@ -430,6 +431,14 @@ local function processCommand(message)
 		end;
 		---@type boolean determine is slash command callback
 		isSlashCommand = isSlashCommand;
+		---@type function Get server's settings
+		---@return table|nil serverData
+		loadServerData = function ()
+			return serverData.loadData(guild.id)
+		end;
+		saveServerData = function ()
+			return serverData.saveData(guild.id);
+		end;
 	};
 
 	-- if reply text is function, run it and get result

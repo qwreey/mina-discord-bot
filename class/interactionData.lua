@@ -9,7 +9,7 @@ local function formatFileRoot(interactionId)
 end
 
 -- 데이터 저장하기 (로드를 먼저 해야 작동함)
-function module:saveData(interactionId)
+function module.saveData(interactionId)
 	if not interactionId then
 		return;
 	end
@@ -35,7 +35,7 @@ function module:saveData(interactionId)
 end
 
 -- 데이터 읽어들이기
-function module:loadData(interactionId)
+function module.loadData(interactionId)
 	if not interactionId then
 		return;
 	end

@@ -152,7 +152,7 @@ msg (메시지 개체) 받아서 편집도 가능함,
         rawArgs = string; -- args 스트링 (커스텀 분석용)
         rawCommandName = string; -- 커맨드 이름 (앞에 무시된거 포함됨)
         self = Command:table; -- 지금 이 커맨드 개체를 반환
-        getUserData = func; -- 유저 데이터 테이블 가져오기
+        loadUserData = func; -- 유저 데이터 테이블 가져오기
         saveUserData = func; -- 유저 데이터 저장하기 (넘겨 받은 테이블 고치고 수행)
         isPremium = func; -- 프리미엄 상태 확인
     }); -- 함수

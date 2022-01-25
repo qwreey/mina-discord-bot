@@ -40,7 +40,7 @@ function module.format(userReact)
 	local authorId = userReact.author;
 	local when = userReact.when;
 	local content = userReact.content;
-	local author = authorId and userData:loadData(authorId);
+	local author = authorId and userData.loadData(authorId);
 
 	if (not author) or (not when) or (not content) then
 		local id = tostring(userReact.id or userReact);

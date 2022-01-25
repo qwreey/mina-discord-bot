@@ -9,7 +9,7 @@ local function formatFileRoot(serverId)
 end
 
 -- 데이터 저장하기 (로드를 먼저 해야 작동함)
-function module:saveData(serverId)
+function module.saveData(serverId)
 	if not serverId then
 		return;
 	end
@@ -35,7 +35,7 @@ function module:saveData(serverId)
 end
 
 -- 데이터 읽어들이기
-function module:loadData(serverId)
+function module.loadData(serverId)
 	if not serverId then
 		return;
 	end

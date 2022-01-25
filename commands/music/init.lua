@@ -1147,7 +1147,7 @@ local export = {
 	["seek music"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"시간","seek","timestamp"};
+		command = {"위치","시간","seek","timestamp"};
 		alias = {
 			"timestamp music","music timestamp","music seek",
 			"song music","song timestamp","song seek","seek song",

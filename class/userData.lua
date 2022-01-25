@@ -22,7 +22,7 @@ end
 ---Save user data to userdata storage
 ---@param userId Snowflake pointing data what want to save
 ---@return nil
-function module:saveData(userId)
+function module.saveData(userId)
 	if not userId then
 		return;
 	end
@@ -50,7 +50,7 @@ end
 ---Get user data from userdata storage
 ---@param userId Snowflake pointing data what want to get
 ---@return userDataObject | nil userDataObject user's data
-function module:loadData(userId)
+function module.loadData(userId)
 	if not userId then
 		return;
 	end

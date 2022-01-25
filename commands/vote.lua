@@ -145,7 +145,7 @@ local function buttonPressed(id,object)
 	end
 	if message then
 		local voteId = makeId(message.id);
-		local data = interactionData:loadData(voteId);
+		local data = interactionData.loadData(voteId);
 		if not data then
 			return;
 		end
@@ -155,7 +155,7 @@ local function buttonPressed(id,object)
 			components = message.components;
 			content = makeVoteText(data);
 		});
-		interactionData:saveData(voteId);
+		interactionData.saveData(voteId);
 	end
 end
 client:on("buttonPressed",buttonPressed);

@@ -141,15 +141,15 @@ function runEnv.help() -- 도움말
 		reload = "reload code";
 		restart = "same with reload";
 		help = "show this msg";
-		getUserData = "get user data table";
+		loadUserData = "get user data table";
 		saveUserData = "save user data table";
 	};
 end
-function runEnv.getUserData(id)
-	return userData:loadData(id);
+function runEnv.loadUserData(id)
+	return userData.loadData(id);
 end
 function runEnv.saveUserData(id)
-	return userData:saveData(id);
+	return userData.saveData(id);
 end
 setmetatable(runEnv,{ -- lua can use metable env... cuz lua's global is a table!!
 	__index = _G;

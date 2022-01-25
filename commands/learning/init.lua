@@ -53,7 +53,7 @@ local export = {
 			what = (what or ""):gsub("^ +",""):gsub(" +$","");
 			react = (react or ""):gsub("^ +",""):gsub(" +$","");
 
-			local userData = Content.getUserData();
+			local userData = Content.loadUserData();
 			local user = Content.user;
 			local result = learn.put(what,react,user.id,time(),userData);
 			if result then
@@ -147,7 +147,7 @@ local export = {
 			end
 
 			-- get user data
-			local userData = Content.getUserData();
+			local userData = Content.loadUserData();
 			if not userData then
 				replyMsg:setContent("유저 데이터를 찾지 못했습니다!￦n> 약관 동의가 되어 있는지 확인하세요!");
 				return;
@@ -195,7 +195,7 @@ local export = {
 				replyMsg:setContent("페이지에 마이너스는 없는것 같아요!");
 				return;
 			end
-			local userData = Content.getUserData();
+			local userData = Content.loadUserData();
 			if not userData then
 				replyMsg:setContent("유저 데이터가 존재하지 않습니다!\n유저 데이터는 약관 동의 후 부터 저장될 수 있어요!");
 				return;

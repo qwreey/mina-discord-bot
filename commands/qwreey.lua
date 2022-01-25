@@ -7,7 +7,7 @@
 		rawArgs = rawArgs; -- args 스트링 (커스텀 분석용)
 		rawCommandName = rawCommandName; -- 커맨드 이름 (앞에 무시된거 포함됨)
 		self = Command; -- 지금 이 커맨드 개체를 반환
-		getUserData = fnc; -- 유저 데이터 테이블 가져오기
+		loadUserData = fnc; -- 유저 데이터 테이블 가져오기
 		saveUserData = fnc; 유저 데이터 저장하기 (넘겨 받은 테이블 고치고 수행)
 	}); -- 함수
 	love = 1; -- love 주는 정도 (1시간 쿨탐 가짐, 선택사항)
