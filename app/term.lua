@@ -171,6 +171,7 @@ return function ()
 		loaded = true
 	end
 
+	local protectedOnLine;
 	local function onLine(err, line, ...)
 		if line then
 
@@ -208,13 +209,15 @@ return function ()
 					prettyPrint.stdout:write{"\27[92mMulti line mode . . .\n\27[32m","",line,"\n"};
 				end
 				lastLine = line;
+			elseif err or (not func) then
+				logger.errorf("Cannot make function from console, error was\n%s",tostring(err));
 			else
 				lastLine = nil;
 			end
 
 			-- continue read lines
 			if lastLine or cmdMode then
-				bindOnLine(onLine)
+				bindOnLine(protectedOnLine)
 				return;
 			end
 			wrap(function ()
@@ -241,13 +244,20 @@ return function ()
 						prettyPrint.stdout:write "\27[2K\r";
 					end):wait();
 				runEnv.__disable();
-				bindOnLine(onLine);
+				bindOnLine(protectedOnLine);
 			end)();
 		else
 			process:exit();
 		end
 	end
-	bindOnLine(onLine); -- 라인 읽기 시작
+	local traceback = debug.traceback;
+	local function catch(err)
+		logger.errorf("Error on console execution\n%s\n%s",err,traceback());
+	end
+	function protectedOnLine(...)
+		xpcall(onLine,catch,...);
+	end
+	bindOnLine(protectedOnLine); -- 라인 읽기 시작
 	-- 로거에 글자 리프래셔 저장
 	if prettyPrint.stdin.set_mode then
 		function logger.refreshLine()
