@@ -223,7 +223,7 @@ local function processCommand(message)
 		if testingMode then
 			cmdText = cmdText:sub(2,-1);
 		end
-		adminCmd(cmdText,message);
+		pcall(adminCmd,cmdText,message);
 	end
 
 	-- run before hook
