@@ -431,9 +431,8 @@ function this:embedfiyList(page)
 end
 
 -- seekbar object
-local seekbarForward = "━";
-local seekbarBackward = "─";
-local seekbarString = "%s %s⬤%s %s\n";
+local seekbarLine = "─";
+local seekbarString = "%s %s%s%s⬤%s %s\n";
 local seekbarLen = 14;
 local function seekbar(now,atEnd)
 	local per = now / atEnd;
@@ -441,8 +440,10 @@ local function seekbar(now,atEnd)
 	local backward = math.floor(seekbarLen - forward);
 	return seekbarString:format(
 		formatTime(now),
-		seekbarForward:rep(forward),
-		seekbarBackward:rep(backward),
+		forward > 0 and "**" or "",
+		seekbarLine:rep(forward),
+		forward > 0 and "**" or "",
+		seekbarLine:rep(backward),
 		formatTime(atEnd)
 	);
 end
