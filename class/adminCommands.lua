@@ -84,6 +84,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		local new = message:reply("Executing!");
 		if not new then
 			logger.error "adminCommands : cannot make new message. skipping...";
+			return;
 		end
 
 		-- load string to function
