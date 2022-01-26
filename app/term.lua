@@ -217,8 +217,8 @@ return function ()
 
 			-- continue read lines
 			if lastLine or cmdMode or err then
-				bindOnLine(protectedOnLine)
-				editor:refreshLine()
+				bindOnLine(protectedOnLine);
+				editor:refreshLine();
 				return;
 			end
 			wrap(function ()
