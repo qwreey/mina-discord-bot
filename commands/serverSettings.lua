@@ -58,6 +58,7 @@ local invalid = "설정 '%s' 의 값 '%s' 는 유효하지 않습니다\n> %s";
 local resetNameMiss = "초기화할 설정 이름을 적어주세요!";
 local resetFormat = "설정 '%s' 를 초기화했습니다!";
 local nowFormat = "> 현재 값은 '%s' 입니다\n";
+local notPermitted = "권한이 부족합니다!\n> 설정을 지정하려면 관리자 권한이 필요합니다";
 
 local function reply(message,str)
     return message:reply({
@@ -70,6 +71,7 @@ end
 local export = {
     ---@type Command
     ["설정"] = {
+        disableDm = true;
         ---@param message Message
         ---@param args table
         ---@param content commandContent
@@ -77,7 +79,7 @@ local export = {
             local rawArgs = content.rawArgs;
             local name = rawArgs:match("^(.-) ") or rawArgs;
             local value = rawArgs:sub(#name + 2,-1);
-            logger.infof("Set setting '%s' to '%s'",name,value)
+            -- logger.infof("Set setting '%s' to '%s'",name,value)
 
             -- load server data
             local data = content.loadServerData();
@@ -100,6 +102,9 @@ local export = {
                     type(description) == "function" and description(setting,data) or description
                 ));
             elseif name == "초기화" then
+                if not message.member:hasPermission(enums.permission.administrator) then
+                    return reply(message,notPermitted);
+                end
                 if value == "" then
                     return reply(message,resetNameMiss);
                 end
@@ -128,6 +133,9 @@ local export = {
             end
 
             -- set value
+            if not message.member:hasPermission(enums.permission.administrator) then
+                return reply(message,notPermitted);
+            end
             local passed;
             passed,value = setting.formatting(value);
             if not passed then
