@@ -48,6 +48,10 @@ end
 this.formatTime = formatTime;
 
 local function sendMessage(thing,msg)
+	if thing and message then
+		logger.errorf("playerClass.sendMessage, arg thing or msg was invalid (thing: %s, msg: %s)",tostring(thing),tostring(msg));
+		return;
+	end
 	local message = thing.message;
 	if type(message) == "table" then
 		return message:reply {

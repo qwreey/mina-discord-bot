@@ -189,6 +189,9 @@ return function ()
 				prettyPrint.stdout:write{" → ",prettyPrint.dump(returncode),"\n"};
 				uv.sleep(20);
 				_G.livereloadEnabled = lastStatus;
+				bindOnLine(protectedOnLine);
+				editor:refreshLine();
+				return;
 			end
 
 			-- first, decoding lua
@@ -216,7 +219,7 @@ return function ()
 			end
 
 			-- continue read lines
-			if lastLine or cmdMode or err then
+			if lastLine or err then
 				bindOnLine(protectedOnLine);
 				editor:refreshLine();
 				return;

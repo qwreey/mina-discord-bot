@@ -132,6 +132,7 @@ local function voiceChannelJoin(member,channel)
 		local timeout = player.timeout;
 		if timeout then
 			logger.infof("Someone joined voice channel, stop killing player [channel:%s]",channelId);
+			player.timeout = nil;
 			pcall(timer.clearTimer,timeout);
 		end
 	end
@@ -157,6 +158,11 @@ local function voiceChannelLeave(member,channel,player)
 	player = player or playerForChannels[channelId];
 	local guild = channel.guild;
 	if player and guild.connection then
+		local timeout = player.timeout;
+		if timeout then
+			player.timeout = nil;
+			pcall(timer.clearTimer,timeout);
+		end
 		local tryKill = true;
 		for _,user in pairs(channel.connectedMembers or {}) do
 			if not user.bot then
@@ -165,7 +171,7 @@ local function voiceChannelLeave(member,channel,player)
 		end
 		if tryKill and player.nowPlaying and (not player.isPaused) then -- pause
 			player.isPausedByNoUser = true;
-			player.sendMessage(player[1],"음성채팅방에 아무도 없어 음악을 일시 중지했어요! (다시 입장시 자동으로 재개해요)");
+			player.sendMessage(player[1] or player.nowPlaying,"음성채팅방에 아무도 없어 음악을 일시 중지했어요! (다시 입장시 자동으로 재개해요)");
 			player:setPaused(true);
 		end
 		if player.mode24 then -- check mode that prevent killed
@@ -177,7 +183,7 @@ local function voiceChannelLeave(member,channel,player)
 				local connection = guild.connection;
 				if connection then
 					logger.infof("voice channel timeouted! killing player now [channel:%s]",channelId);
-					player.sendMessage(player[1],"5분동안 사람이 없어 음성채팅방에서 나갔어요!");
+					player.sendMessage(player[1] or player.nowPlaying,"5분동안 사람이 없어 음성채팅방에서 나갔어요!");
 					pcall(player.kill,player);
 					pcall(connection.close,connection);
 					playerForChannels[channelId] = nil;

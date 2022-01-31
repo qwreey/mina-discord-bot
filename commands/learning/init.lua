@@ -201,7 +201,7 @@ local export = {
 				return;
 			end
 			local learned = userData.learned;
-			if not learned then
+			if (not learned) or (#learned == 0) then
 				replyMsg:setContent(("**%s** 님이 가르친건 하나도 없어요 :cry:"):format(Content.user.name));
 				return;
 			end

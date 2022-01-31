@@ -149,6 +149,13 @@ _G.prefixs = {
 	"민나";
 	"민나야";
 	"민아야";
+	"미냐";
+	"미냐야";
+	"미냐는";
+	"미나가";
+	"미냐가";
+	"미냐갸";
+	"미나갸";
 };
 
 -- this is used on display when user messaged only perfixs
