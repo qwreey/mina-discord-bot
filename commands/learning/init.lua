@@ -140,7 +140,7 @@ local export = {
 
 			-- checking arg
 			local rawArgs = Content.rawArgs;
-			rawArgs = tonumber(rawArgs:match("%d+")) - 1;
+			rawArgs = tonumber(rawArgs:match("%d+"));
 			if not rawArgs then
 				replyMsg:setContent("지울 반응의 아이디를 입력해주세요!￦n> 반응 아이디는 리스트에서 확인할 수 있습니다");
 				return;
@@ -160,7 +160,7 @@ local export = {
 
 			-- checking object from learned object
 			local lenLearned = #learned;
-			local this = learned[lenLearned - rawArgs];
+			local this = learned[lenLearned - rawArgs - 1];
 			if not this then
 				replyMsg:setContent(("%d 번째 반응이 존재하지 않아요!"):format(rawArgs));
 				return;
