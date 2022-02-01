@@ -140,7 +140,7 @@ local export = {
 
 			-- checking arg
 			local rawArgs = Content.rawArgs;
-			rawArgs = tonumber(rawArgs:match("%d+"));
+			rawArgs = tonumber(rawArgs:match("%d+")) - 1;
 			if not rawArgs then
 				replyMsg:setContent("지울 반응의 아이디를 입력해주세요!￦n> 반응 아이디는 리스트에서 확인할 수 있습니다");
 				return;
@@ -209,7 +209,7 @@ local export = {
 			local title = ("**%d** 페이지"):format(rawArgs);
 
 			local fields = {};
-			local startAt,endAt = ((rawArgs-1)*itemsPerPage)+1,rawArgs*itemsPerPage;
+			local startAt,endAt = ((rawArgs-1)*itemsPerPage),rawArgs*itemsPerPage-1;
 			local lenLearned = #learned;
 			for index = startAt,endAt do
 				local thisId = learned[lenLearned - index];
@@ -220,7 +220,7 @@ local export = {
 				if this then
 					local when = this.when;
 					insert(fields, {
-						name = ("%d 번째 : %s"):format(index,tostring(name));
+						name = ("%d 번째 : %s"):format(index + 1,tostring(name));
 						value = ("%s%s"):format(
 							tostring(this.content):gsub("`","\\`"),
 							when and (("\n> %s"):format(timeAgo(when,time()))) or ""
