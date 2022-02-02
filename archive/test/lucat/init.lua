@@ -7,7 +7,6 @@ local strParser = require("str").run;
 -- ]]);
 
 local extensions = {
-	require("semi").run;
 	require("let").run;
 	require("neq").run;
 	require("not").run;
