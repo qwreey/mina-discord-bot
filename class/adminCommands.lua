@@ -113,7 +113,12 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 				if value == loggerString or loggerStringRaw == "" then
 					loggerString = "";
 				end
-				new:setContent("```ansi\n" .. (type(value) == "string" and value or tostring(prettyPrint.dump(value,nil,true))) .. loggerString .. "\n```");
+				local valueType = type(value);
+				new:setContent("```ansi\n" .. (
+					(valueType == "nil" and loggerString ~= "" and "")
+					or (valueType == "string" and value)
+					or tostring(prettyPrint.dump(value,nil,true))
+				) .. loggerString .. "\n```");
 			end)
 			:catch(function (err)
 				new:setContent(("[ERROR] Error occured running function! traceback : ```ansi\n%s\n```"):format(tostring(err)));
