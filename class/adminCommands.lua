@@ -110,7 +110,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 			:andThen(function (value)
 				local loggerStringRaw = customLogger.__last;
 				local loggerString = "\n---logger---\n" .. loggerStringRaw
-				if value == loggerString or loggerStringRaw == "" then
+				if value == loggerStringRaw or loggerStringRaw == "" then
 					loggerString = "";
 				end
 				local valueType = type(value);
