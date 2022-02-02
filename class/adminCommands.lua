@@ -108,8 +108,9 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		-- execute
 		promise.new(setfenv(func,loadstringEnv))
 			:andThen(function (value)
-				local loggerString = "\n---logger---\n" .. customLogger.__last;
-				if value == loggerString then
+				local loggerStringRaw = customLogger.__last;
+				local loggerString = "\n---logger---\n" .. loggerStringRaw
+				if value == loggerString or loggerStringRaw == "" then
 					loggerString = "";
 				end
 				new:setContent("```ansi\n" .. (type(value) == "string" and value or tostring(prettyPrint.dump(value,nil,true))) .. loggerString .. "\n```");
