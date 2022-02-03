@@ -163,7 +163,7 @@ local export = {
 				for sampleIndex=lenLearned-1,0,-1 do
 					local sample = learned[sampleIndex];
 					if sample and sample:sub(1,18) == id then
-						index = sampleIndex;
+						index = lenLearned - sampleIndex + 1;
 					end
 				end
 				if not index then
@@ -180,7 +180,7 @@ local export = {
 			userData.lenLearned = userData.lenLearned - 1;
 			if not success then
 				Content.saveUserData();
-				return replyMsg:setContent(("처리중에 오류가 발생했어요!\n> 오류 내용 : %s"):format(index,tostring(name)));
+				return replyMsg:setContent(("처리중에 오류가 발생했어요!\n> 오류 내용 : %s"):format(tostring(name)));
 			end
 
 			userData.love = userData.love + 10;
@@ -189,7 +189,7 @@ local export = {
 			if not data then
 				return replyMsg:setContent(("'%s' 그게 뭐였죠? 기억나지가 않아요\n> 데이터가 손상되어 표시할 수 없습니다\n`❤ + 10 (호감도를 50%% 반환받았습니다)`"):format(tostring(name)));
 			end
-			replyMsg:setContent(("'%s' 그게 뭐였죠? 기억나지가 않아요\n> 가르치신 '%s' 를 잊었습니다!\n`❤ + 10 (호감도를 50% 반환받았습니다)`"):format(tostring(name),tostring(data.content)));
+			replyMsg:setContent(("'%s' 그게 뭐였죠? 기억나지가 않아요\n> 가르치신 '%s' 를 잊었습니다!\n`❤ + 10 (호감도를 50%% 반환받았습니다)`"):format(tostring(name),tostring(data.content)));
 		end;
 		onSlash = commonSlashCommand {
 			description = "기억을 잊습니다!";
@@ -211,13 +211,11 @@ local export = {
 			end
 			local userData = Content.loadUserData();
 			if not userData then
-				replyMsg:setContent("유저 데이터가 존재하지 않습니다!\n유저 데이터는 약관 동의 후 부터 저장될 수 있어요!");
-				return;
+				return replyMsg:setContent("유저 데이터가 존재하지 않습니다!\n유저 데이터는 약관 동의 후 부터 저장될 수 있어요!");
 			end
 			local learned = userData.learned;
 			if (not learned) or (#learned == 0) then
-				replyMsg:setContent(("**%s** 님이 가르친건 하나도 없어요 :cry:"):format(Content.user.name));
-				return;
+				return replyMsg:setContent(("**%s** 님이 가르친건 하나도 없어요 :cry:"):format(Content.user.name));
 			end
 			local content = ("**%s** 의 기억"):format(Content.user.name);
 			local title = ("**%d** 페이지"):format(rawArgs);
@@ -243,7 +241,7 @@ local export = {
 					});
 				else
 					insert(fields,{
-						name = "%d 번째 : (손상됨)";
+						name = ("%d 번째 : (손상됨)"):format(index + 1);
 						value = "`값이 손상되었습니다 (파일 시스템 오류일 수 있습니다)`";
 					});
 				end
