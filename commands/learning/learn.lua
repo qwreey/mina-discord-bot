@@ -3,6 +3,7 @@ local indexedFile = "data/userLearn/index";
 local indexedCache = json.decode(
 	("{%s}"):format(fs.readFileSync(indexedFile))
 );
+_G.learnIndexedCache = indexedCache;
 local module = {};
 
 local errorType = {
@@ -234,7 +235,7 @@ end
 function module.remove(id)
 	local this = root:format(id);
 	if not fs.existsSync(this) then
-		return;
+		return false,"file not found (maybe file was corrupted?)";
 	end
 
 	local pathId,num = id:match("(.-)/(%d+)");
@@ -243,8 +244,13 @@ function module.remove(id)
 
 	-- adding sync?
 	fs.appendFile(path .. "/removed",("%s,"):format(tostring(num)));
+	local file = fs.readFileSync(this);
 	fs.unlink(this);
-	return true;
+	return file,fs.readFileSync(path .. "/name");
+end
+
+function module.getId(name)
+	return indexedCache[sha1(name)];
 end
 
 return module;
