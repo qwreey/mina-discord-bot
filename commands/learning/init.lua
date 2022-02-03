@@ -187,7 +187,7 @@ local export = {
 			Content.saveUserData();
 			local data = json.decode(success);
 			if not data then
-				return replyMsg:setContent(("'%s' 그게 뭐였죠? 기억나지가 않아요\n> 데이터가 손상되어 표시할 수 없습니다\n`❤ + 10 (호감도를 50% 반환받았습니다)`"):format(tostring(name)));
+				return replyMsg:setContent(("'%s' 그게 뭐였죠? 기억나지가 않아요\n> 데이터가 손상되어 표시할 수 없습니다\n`❤ + 10 (호감도를 50%% 반환받았습니다)`"):format(tostring(name)));
 			end
 			replyMsg:setContent(("'%s' 그게 뭐였죠? 기억나지가 않아요\n> 가르치신 '%s' 를 잊었습니다!\n`❤ + 10 (호감도를 50% 반환받았습니다)`"):format(tostring(name),tostring(data.content)));
 		end;
