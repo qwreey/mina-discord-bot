@@ -606,8 +606,10 @@ function this.showList(guildOrPlayer,page)
 			};
 		end
 	end
+	local embed = player:embedfiyList(page);
 	return {
-		embeds = {player:embedfiyList(page)};
+		embed = embed;
+		embeds = {embed};
 		content = "현재 이 서버의 플레이리스트입니다!";
 		components = player:pageIndicator(page);
 	};

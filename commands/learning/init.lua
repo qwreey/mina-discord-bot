@@ -72,9 +72,9 @@ local export = {
 				elseif result == errorType.devDefined then
 					return replyMsg:setContent("개발자가 이미 가르친 내용이에요!");
 				elseif result == errorType.nullName then
-					return replyMsg:setContent("가르치려는 이름이 비어 있으면 안돼요!");
+					return replyMsg:setContent("가르치려는 이름이 비어 있으면 안돼요!\n> 사용법 : `미나 배워 이름=내용`");
 				elseif result == errorType.nullValue then
-					return replyMsg:setContent("가르치려는 내용이 비어 있으면 안돼요!");
+					return replyMsg:setContent("가르치려는 내용이 비어 있으면 안돼요!\n> 사용법 : `미나 배워 이름=내용`");
 				elseif result == errorType.tooLongName then
 					return replyMsg:setContent(("'%s' 는 너무 길어요! 가르치려는 이름은 100 자보다 길면 안돼요!"):format(what));
 				elseif result == errorType.tooLongValue then
@@ -126,8 +126,8 @@ local export = {
 				callback = function(interaction, params, cmd)
 					processCommand(userInteractWarpper(
 						("%s %s=%s"):format(name,
-							params["문장"]:gsub("=",""),
-							params["반응"]:gsub("=","")
+						params["문장"]:gsub("=",""),
+						params["반응"]:gsub("=","")
 					),interaction));
 				end;
 			});
@@ -143,7 +143,7 @@ local export = {
 			local id = learn.getId(rawArgs)
 			local index = tonumber(rawArgs:match("%d+"));
 			if (not index) and (not id) then
-				return replyMsg:setContent("지울 반응의 아이디를 입력해주세요!\n> 반응 아이디는 리스트에서 확인할 수 있습니다");
+				return replyMsg:setContent("지울 반응의 번째 또는 이름를 입력해주세요!\n> 가르친 반응 목록은 `미나 기억` 으로 확인할 수 있습니다");
 			end
 
 			-- get user data
@@ -156,27 +156,29 @@ local export = {
 				return replyMsg:setContent("아직 가르친 반응이 하나도 없어요!");
 			end
 
-			
 			-- checking object from learned object
 			local lenLearned = #learned;
+			local reversedIndex,this;
 			if id then
-				for sampleIndex=lenLearned-1,0,-1 do
+				for sampleIndex=1,lenLearned do
 					local sample = learned[sampleIndex];
 					if sample and sample:sub(1,18) == id then
-						index = lenLearned - sampleIndex + 1;
+						reversedIndex,this = sampleIndex,sample;
 					end
 				end
-				if not index then
-					replyMsg:setContent(("'%s' 는 가르치신적이 없는거 같아요!"):format(id));
+				if not reversedIndex then
+					return replyMsg:setContent(("'%s' 는 가르치신적이 없는거 같아요!"):format(rawArgs));
 				end
-			end
-			local this = learned[lenLearned - index - 1];
-			if not this then
-				return replyMsg:setContent(("%d 번째 반응이 존재하지 않아요!"):format(index));
+			else
+				reversedIndex = lenLearned - index - 1;
+				this = learned[reversedIndex];
+				if not this then
+					return replyMsg:setContent(("%s 번째 반응이 존재하지 않아요!"):format(tostring(index)));
+				end
 			end
 
 			local success,name = learn.remove(this);
-			remove(learned,lenLearned - index); -- remove from indexs
+			remove(learned,reversedIndex); -- remove from indexs
 			userData.lenLearned = userData.lenLearned - 1;
 			if not success then
 				Content.saveUserData();
