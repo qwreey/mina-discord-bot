@@ -596,6 +596,8 @@ function this.showList(guildOrPlayer,page)
 			return {
 				content = "현재 이 서버에서는 음악 기능을 사용하고 있지 않습니다\n> 음악 실행중이 아님";
 				components = this.pageIndicator();
+				embed = {};
+				embeds = {};
 			};
 		end
 		player = this.playerForChannels[guildConnection.channel:__hash()];
@@ -603,6 +605,8 @@ function this.showList(guildOrPlayer,page)
 			return {
 				content = "오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음";
 				components = this.pageIndicator();
+				embed = {};
+				embeds = {};
 			};
 		end
 	end

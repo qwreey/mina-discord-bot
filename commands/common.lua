@@ -290,27 +290,27 @@ local export = {
 				message:reply("잘못된 명령어 사용법이에요!\n\n**올바른 사용 방법**\n> 미나야 지워 <지울 수>\n지울수 : 2 에서 100 까지의 숫자 (정수)");
 				return;
 			elseif (RemoveNum % 1) ~= 0 then -- 소숫점을 입력함
-				local Remsg = message:reply("~~메시지를 반으로 쪼개서 지우라는거야? ㅋㅋㅋ~~");
-				timeout(800,function()
-					Remsg:setContent("<지울 수> 는 정수만 사용 가능해요!");
+				local remsg = message:reply("~~메시지를 어떻게 반으로 쪼개죠??~~");
+				timeout(1200,function()
+					remsg:setContent("<지울 수> 는 정수만 사용 가능해요!");
 				end);
 				return;
 			elseif RemoveNum < 0 then -- 마이너스를 입력함
-				local Remsg = message:reply("~~메시지를 더 늘려달라는거야? ㅋㅋㅋ~~");
-				timeout(800,function()
-					Remsg:setContent("적어도 2개 이상부터 지울 수 있어요!");
+				local remsg = message:reply("~~메시지를 만들어 드릴까요?~~");
+				timeout(1200,function()
+					remsg:setContent("적어도 2개 이상부터 지울 수 있어요!");
 				end);
 				return;
 			elseif RemoveNum > 100 then -- 너무 많음
-				local Remsg = message:reply("~~미쳤나봐... 작작 일 시켜~~");
-				timeout(800,function()
-					Remsg:setContent("100 개 이상의 메시지는 지울 수 없어요!");
+				local remsg = message:reply("~~적당이해애애ㅐ 나죽ㅇㅇ어ㅓㅓㅓ~~");
+				timeout(1200,function()
+					remsg:setContent("100 개 이상의 메시지는 지울 수 없어요!");
 				end);
 				return;
 			elseif RemoveNum < 2 then -- 범위를 넘어감
-				local Remsg = message:reply("~~그정도는 니 손으로 좀 지워라~~");
-				timeout(800,function()
-					Remsg:setContent("너무 적어요! 2개 이상부터 지울 수 있어요!");
+				local remsg = message:reply("~~손이 없으신거에요?~~");
+				timeout(1200,function()
+					remsg:setContent("너무 적어요! 2개 이상부터 지울 수 있어요!");
 				end);
 				return;
 			elseif not message.member:hasPermission(message.channel,enums.permission.manageMessages) then
@@ -322,14 +322,14 @@ local export = {
 			local infoMsg = message:reply(("최근 메시지 %s개를 지웠어요!"):format(RemoveNum));
 
 			timeout(5000,function ()
-				local messageDelete = message and message.delete;
-				if messageDelete then
-					messageDelete(message);
+				local removes = {};
+				if message then
+					insert(removes,message);
 				end
-				local infoDelete = infoMsg and infoMsg.delete;
-				if infoDelete then
-					infoDelete(infoMsg);
+				if infoMsg then
+					insert(removes,infoMsg);
 				end
+				message.channel:bulkDelete(removes);
 			end);
 		end;
 		onSlash = commonSlashCommand {

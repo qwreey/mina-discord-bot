@@ -173,6 +173,7 @@ local export = {
 				reversedIndex = lenLearned - index - 1;
 				this = learned[reversedIndex];
 				if not this then
+					logger.infof("not fount learning data %d",reversedIndex);
 					return replyMsg:setContent(("%s 번째 반응이 존재하지 않아요!"):format(tostring(index)));
 				end
 			end
