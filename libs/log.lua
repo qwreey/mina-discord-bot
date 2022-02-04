@@ -1,10 +1,14 @@
 --
+-- FORKED FROM rxi's log.lua
+--
 -- log.lua
 --
 -- Copyright (c) 2016 rxi
 --
 -- This library is free software; you can redistribute it and/or modify it
 -- under the terms of the MIT license. See LICENSE for details.
+--
+-- MODIFYED BY qwreey75
 --
 
 --#region : Setup
@@ -108,7 +112,7 @@ local log = {
 		) or false
 	);
 	outfile = options["--logger_outfile"];
-	minLevel = tonumber(options["--logger_minLevel"]) or -2;
+	minLevel = tonumber(options["--logger_minLevel"]) or 1;
 	disable = (
 		options["--logger_disabled"] == true or
 		(
@@ -142,6 +146,7 @@ local rootLen = #root
 
 -- ascii formatting
 local ansiiFormat = "%s[%s]\27[0m"
+local tab = char(9);
 local ansii = {
 	[char(1)]   = "SOH";
 	[char(2)]   = "STX";
@@ -150,7 +155,7 @@ local ansii = {
 	[char(5)]   = "ENQ";
 	[char(7)]   = "BEL";
 	[char(8)]   = "BS";
-	[char(9)]   = "TAB"; -- tab character
+	-- [char(9)]   = "TAB"; -- tab character
 	[char(11)]  = "VT"; -- vertical tab character
 	[char(12)]  = "FF"; -- form feed character
 	[char(14)]  = "SO";
@@ -166,19 +171,27 @@ local ansii = {
 	[char(24)]  = "CAN";
 	[char(25)]  = "EM";
 	[char(26)]  = "SUB";
-	[char(27)]  = "ESC";
+	-- [char(27)]  = "ESC";
 	[char(28)]  = "FS";
 	[char(29)]  = "GS";
 	[char(30)]  = "RS";
 	[char(31)]  = "US";
 	[char(127)] = "DEL";
 }
-local spcColor = "\27[30;45m"
+-- local esc = "(" .. char(27).."(%[?))"
+local tabChar = " →  │"
+local tabCharColor = "\27[90m" .. tabChar .. "\27[0m"
+local spcColor = "\27[30;45m" -- 4 (underline)
 local function processMessage(str,useColor)
 	local color = useColor and spcColor or ""
 	for i,v in pairs(ansii) do
 		str = gsub(str,i,format(ansiiFormat,color,v))
 	end
+	str = gsub(str,tab,useColor and tabCharColor or tabChar)
+	-- for colors end ansi terminal escapes
+	-- str = gsub(str,esc,function (all,isEscape)
+	-- 	return (isEscape == "") and format(ansiiFormat,color,"ESC") or str
+	-- end)
 	return str
 end
 
@@ -187,7 +200,8 @@ local function base(levelName,levelNumber,color,debugInfo,object)
 	-- check / load settings
 	if log.disable then return -- If log is disabled, return this
 	elseif levelNumber < log.minLevel then return end -- If it not enough to display, return this
-	local msg = dump and (type(object) == "string" and object or dump(object)) or tostring(object) -- stringify message
+	local objectType = type(object)
+	local msg = dump and (objectType == "string" and object or dump(object)) or tostring(object) -- stringify message
 	local refreshLine = log.refreshLine;
 	local buildPrompt = (not refreshLine) and (log.buildPrompt or _G.buildPrompt); ---@diagnostic disable-line
 	local usecolor = log.usecolor
@@ -212,7 +226,6 @@ local function base(levelName,levelNumber,color,debugInfo,object)
 	-- 	:gsub("%.init$","") -- remove .init
 	-- )
 	local lineinfo = format("%s:%s",src,tostring(debugInfo.currentline)) -- source:line
-	lineinfo = log.__lineinfo or lineinfo
 
 	-- Make header
 	local header = format("%s[%-6s%s]%s %s%s",
@@ -228,9 +241,9 @@ local function base(levelName,levelNumber,color,debugInfo,object)
 		lineinfo -- line info
 	)
 	local headerLen = len(gsub(header,"\27%[%d+m","")) -- Make 6*x len char
-	local liner = headerLen%5
+	local liner = headerLen%6
 	if liner ~= 0 then
-		local adding = 5 - liner
+		local adding = 6 - liner
 		headerLen = headerLen + adding
 		header = header .. rep(" ",adding)
 	end
@@ -262,7 +275,10 @@ local function base(levelName,levelNumber,color,debugInfo,object)
 
 	-- Append into file
 	if outfile then
-		local data = format("[%-6s%s] %s: %s\n",levelName, date(log.outfileDateFormat), lineinfo, msg)
+		local data = format("[%-6s%s] %s: %s\n",
+			levelName, date(log.outfileDateFormat),
+			lineinfo, dump and (objectType == "string" and object or dump(object,nil,true)) or object
+		)
 		if appendFile then
 			-- use luvit's fs library
 			appendFile(outfile,data)

@@ -276,8 +276,15 @@ _G.startBot = startBot;
 -- 		end
 -- 	end
 -- end;
+local wrap = coroutine.wrap;
+local traceback = debug.traceback;
+local function timeoutError(err)
+	logger.errorf("[Timeout] Errored on timeout function, error message was\n%s\n%s",
+		tostring(err),tostring(traceback())
+	);
+end
 local function timeout(delay,func,...)
-	return timer.setTimeout(delay,coroutine.wrap(func),...);
+	return timer.setTimeout(delay,wrap(xpcall),func,timeoutError,...);
 end
 _G.timeout = timeout;
 

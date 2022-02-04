@@ -1,24 +1,33 @@
+local components = discordia_enchent.components;
+local discordia_enchent_enums = discordia_enchent.enums;
+
+local insert = table.insert;
 local function combine(self,message)
     if type(message) == "string" then
-        return {components = self,content = message};
+        return {components = {components.actionRow.new{self}},content = message};
     end
-    message.components = self;
+    local tcomponents = message.components or {components.actionRow.new()};
+    message.components = tcomponents;
+    insert(tcomponents[1].components,self);
     return message;
 end
 
-local components = discordia_enchent.components;
-local discordia_enchent_enums = discordia_enchent.enums;
 return {
     action_remove = setmetatable(components.button.new{
         custom_id = "action_remove";
         style = discordia_enchent_enums.buttonStyle.danger;
         label = "메시지 삭제";
         emoji = components.emoji.new "✖";
+        ---@param object interaction
         func = function(object)
             local message = object.message;
+            local channel = object.channel; ---@type GuildTextChannel
             if message then
                 local referencedMessage = message.referencedMessage;
                 if referencedMessage then
+                    if channel then
+                        pcall(channel.bulkDelete,channel,{referencedMessage,message});
+                    end
                     pcall(referencedMessage.delete,referencedMessage);
                 end
                 pcall(message.delete,message);

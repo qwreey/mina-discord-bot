@@ -22,9 +22,6 @@
 -- TODO: 유튜브 링크만 던지면 자동으로 곡추가 구현하기
 -- * 채널 명에 '미나' 적혀 있으면 수행 하는걸로
 
--- TODO: prefix 기능 활성화 하기 (서버 설정 기능)
--- * 개귀찮아
-
 -- TODO: 프리미엄 기능 배포하기
 -- * 아니 페이팔 계정을 어캐 만드냐고
 -- * 19 세 이상 아니면 사업자 용으로 못만들던데?
@@ -38,16 +35,7 @@
 -- TODO: 듣는 중에 호감도 주는 기능
 -- * 남용될꺼 같음..
 
--- TODO: 볼륨 평준화 구현하기 (ffmpeg loudnorm dual pass mode + caching)
--- * 볼륨 평준화에 일어난 문제
--- ! 볼륨 평화화를 넣음으로써 좀 이상한 일이 발생함
--- ! 전채 볼륨 분석후 높으면 내리고 낮으면 올리는 방식이다 보니
--- ! 플레이리스트와 같이 여러 곡이 모여 있는 긴 파일은
--- ! 평균 볼륨이 모든 곡의 볼륨의 합 평균이라 *낮은 곡이 거기 끼면 작아짐
--- ! 이래서 오히려 작은 곡이 더 안들리기도 함
--- ! 물론 너무 시끄러운건 없지만 ..
--- * 지금의 경우는 그냥 20 분 넘는 곡은 loudnorm 필터를 끄기로 함
--- * 나중에 dual pass 로 바꿔보고 실험 해봐야할듯
+-- TODO: Button 으로 Playlist 추가 멈추기
 
 local youtubePlaylist = require "class.music.youtubePlaylist";
 local playerClass = require "class.music.playerClass";
@@ -157,11 +145,12 @@ local function voiceChannelLeave(member,channel,player)
 	local channelId = channel:__hash();
 	player = player or playerForChannels[channelId];
 	local guild = channel.guild;
-	if player and guild.connection then
-		local timeout = player.timeout;
-		if timeout then
+	local connection = guild.connection;
+	if player and connection then
+		local playerTimeout = player.timeout;
+		if playerTimeout then
 			player.timeout = nil;
-			pcall(timer.clearTimer,timeout);
+			pcall(timer.clearTimer,playerTimeout);
 		end
 		local tryKill = true;
 		for _,user in pairs(channel.connectedMembers or {}) do
@@ -169,10 +158,17 @@ local function voiceChannelLeave(member,channel,player)
 				tryKill = false;
 			end
 		end
-		if tryKill and player.nowPlaying and (not player.isPaused) then -- pause
-			player.isPausedByNoUser = true;
-			player.sendMessage(player[1] or player.nowPlaying,"음성채팅방에 아무도 없어 음악을 일시 중지했어요! (다시 입장시 자동으로 재개해요)");
-			player:setPaused(true);
+		local nowPlaying = player.nowPlaying;
+		if tryKill then -- pause
+			if nowPlaying and (not player.isPaused) then
+				player.isPausedByNoUser = true;
+				player.sendMessage(player[1] or player.nowPlaying,"음성채팅방에 아무도 없어 음악을 일시 중지했어요! (다시 입장시 자동으로 재개해요)");
+				player:setPaused(true);
+			elseif nowPlaying == nil and (not player[1]) then
+				pcall(player.kill,player);
+				pcall(connection.close,connection);
+				playerForChannels[channelId] = nil;
+			end
 		end
 		if player.mode24 then -- check mode that prevent killed
 			return;
@@ -514,36 +510,33 @@ local export = {
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
 			if not voiceChannel then
-				replyMsg:setContent(self.joinFailNoChannel);
-				return;
+				return replyMsg:update(self.joinFailNoChannel);
 			end
 
 			-- get already exist connection
 			local guild = message.guild;
 			local guildConnection = guild.connection;
-			if guildConnection and (guildConnection.channel ~= voiceChannel) then
-				replyMsg:setContent(self.joinFailOtherChannel);
-				return;
+			if guildConnection then
+				if guildConnection.channel ~= voiceChannel then
+					return replyMsg:update(self.joinFailOtherChannel);
+				end
+				return replyMsg:update(self.joinedAlready);
 			end
 
 			-- get player object from playerClass
 			local voiceChannelID = voiceChannel:__hash();
-			if not guildConnection then -- if connections is not exist, create new one
-				local handler = voiceChannel:join();
-				if not handler then
-					replyMsg:setContent(self.joinFail);
-					return;
-				end
-				guild.me:deafen(); -- deafen it selfs
-				playerClass.new {
-					voiceChannel = voiceChannel;
-					voiceChannelID = voiceChannelID;
-					handler = handler;
-				};
-				replyMsg:setContent(self.joinSuccess);
+			local handler = voiceChannel:join();
+			if not handler then
+				replyMsg:update(self.joinFail);
 				return;
 			end
-			replyMsg:setContent(self.joinedAlready);
+			guild.me:deafen(); -- deafen it selfs
+			playerClass.new {
+				voiceChannel = voiceChannel;
+				voiceChannelID = voiceChannelID;
+				handler = handler;
+			};
+			return replyMsg:update(self.joinSuccess);
 		end;
 		onSlash = commonSlashCommand {
 			description = "음성 채팅방에 참가합니다 (/곡추가 명령어를 사용하면 이 명령어가 자동으로 사용됩니다)";
