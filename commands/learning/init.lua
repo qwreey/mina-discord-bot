@@ -170,7 +170,8 @@ local export = {
 					return replyMsg:setContent(("'%s' 는 가르치신적이 없는거 같아요!"):format(rawArgs));
 				end
 			else
-				reversedIndex = lenLearned - index - 1;
+				reversedIndex = lenLearned - index + 1;
+				logger.infof("%d",reversedIndex)
 				this = learned[reversedIndex];
 				if not this then
 					logger.infof("not fount learning data %d",reversedIndex);
