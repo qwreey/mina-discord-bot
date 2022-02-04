@@ -539,7 +539,7 @@ local noPage = {components.actionRow.new{
 		custom_id = "music_page_1";
 		style = discordia_enchent_enums.buttonStyle.success;
 		label = "새로고침";
-		emoji = components.emoji.new "🔄";
+		emoji = components.emoji.new"🔄";
 	};
 	buttons.action_remove;
 }};
@@ -547,31 +547,28 @@ function this.pageIndicator(self,page)
 	if (not page) or (not self) then
 		return noPage;
 	end
-	local buttonList = {};
-	insert(buttonList,components.button.new{
-		custom_id = ("music_page_%d"):format(page);
-		style = discordia_enchent_enums.buttonStyle.success;
-		label = "새로고침";
-		emoji = components.emoji.new "🔄";
-	});
-	if page > 1 then
-		insert(buttonList,components.button.new{
+	return {components.actionRow.new{
+		components.button.new{
+			custom_id = ("music_page_%d"):format(page);
+			style = discordia_enchent_enums.buttonStyle.success;
+			label = "새로고침";
+			emoji = components.emoji.new "🔄";
+		};
+		components.button.new{
 			custom_id = ("music_page_%d"):format(page-1);
 			style = discordia_enchent_enums.buttonStyle.primary;
 			label = "이전 페이지";
 			emoji = components.emoji.new "⬅";
-		});
-	end
-	if page < self:totalPages() then
-		insert(buttonList,components.button.new{
+			disabled = page <= 1;
+		};
+		components.button.new{
 			custom_id = ("music_page_%d"):format(page+1);
 			style = discordia_enchent_enums.buttonStyle.primary;
 			label = "다음 페이지";
 			emoji = components.emoji.new "➡";
-		});
-	end
-	insert(buttonList,buttons.action_remove);
-	return {components.actionRow.new(buttonList)};
+			disabled = page >= self:totalPages();
+		};
+	}};
 end
 ---@param id string
 ---@param object interaction

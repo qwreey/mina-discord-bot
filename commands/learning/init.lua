@@ -5,6 +5,8 @@ local learn = require "commands.learning.learn";
 local errorType = learn.errorType;
 local discordia_enchent = _G.discordia_enchent;
 local commonSlashCommand = _G.commonSlashCommand;
+local components = discordia_enchent.components;
+local discordia_enchent_enums = discordia_enchent.enums;
 
 local help = [[
 **가르치기 기능에 대한 도움말입니다**
@@ -171,7 +173,6 @@ local export = {
 				end
 			else
 				reversedIndex = lenLearned - index + 1;
-				logger.infof("%d",reversedIndex)
 				this = learned[reversedIndex];
 				if not this then
 					logger.infof("not fount learning data %d",reversedIndex);
@@ -260,6 +261,14 @@ local export = {
 						footer = {
 							text = ("총 기억 갯수 : %d | 총 페이지수 : %d"):format(lenLearned,ceil(lenLearned / itemsPerPage));
 						};
+						-- components = {
+						-- 	components.actionRow.new{
+						-- 		components.button.new{
+						-- 			emoji =  components.emoji.new "🔄";
+						-- 			label = 
+						-- 		};
+						-- 	};
+						-- };
 					};
 				};
 				return;
