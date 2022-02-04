@@ -151,7 +151,7 @@ end);
 ---@param channel GuildVoiceChannel
 ---@param player playerClass
 local function voiceChannelLeave(member,channel,player)
-	if member and member.bot then ---@diagnostic disable-line
+	if (not member) or member.bot then ---@diagnostic disable-line
 		return;
 	end
 	local channelId = channel:__hash();
