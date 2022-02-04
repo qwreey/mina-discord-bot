@@ -109,7 +109,7 @@ require("app.jsonErrorWrapper"); -- enable pcall wrapped json en-decoder
 local discordia = require "discordia"; _G.discordia = discordia; ---@type discordia -- 디스코드 lua 봇 모듈 불러오기
 local discordia_enchent = require "discordia_enchent"; _G.discordia_enchent = discordia_enchent;
 local userInteractWarpper = require("class.userInteractWarpper"); _G.userInteractWarpper = userInteractWarpper;
-local commonButtons = require "class.commonButtons";
+local commonButtons = require "class.commonButtons"; _G.buttons = commonButtons;
 
 local discordia_class = require "discordia/libs/class"; _G.discordia_class = discordia_class; ---@type class -- 디스코드 클레스 가져오기
 local discordia_Logger = discordia_class.classes.Logger; ---@type Logger -- 로거부분 가져오기 (통합을 위해 수정)
@@ -578,8 +578,6 @@ end,nil,nil,"MAIN");
 
 client:on("slashCommandsCommited",function ()
 	logger.info("[Slash] All slash command loaded");
-	commonButtons.init();
-	logger.info("[Button] Common buttons actions loaded");
 end);
 
 -- enable terminal features and live reload system

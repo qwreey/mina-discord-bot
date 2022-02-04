@@ -50,9 +50,9 @@ function module.getPlaylist(playlistId)
 
     local pageToken = firstPage.nextPageToken;
     while pageToken do
-        base:format(playlistId)
+        logger.info(pageToken);
         _,body = corohttp.request("GET",
-            base:format(playlist) .. pageFormat:format(pageToken)
+            base:format(playlistId) .. pageFormat:format(pageToken)
         );
         local page = json.decode(body);
         pageToken = page.nextPageToken; ---@diagnostic disable-line

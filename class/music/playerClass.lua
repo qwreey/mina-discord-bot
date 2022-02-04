@@ -213,6 +213,11 @@ function this:__play(thing,position) -- PRIVATE
 		self.lastErrorTime = nil;
 		self.lastErrorRetrys = nil;
 
+		-- if no connection, return
+		if self.handler.channel.guild.connection ~= self.handler then
+			return;
+		end
+
 		-- when seeking
 		local seeking = self.seeking;
 		if seeking then
@@ -277,7 +282,7 @@ end
 -- apply play queue
 function this:apply()
 	local song = self[1];
-	logger.infof("aplly np : '%s' song : '%s'",tostring(self.nowPlaying),tostring(song));
+	logger.infof("apply np : '%s' song : '%s'",tostring(self.nowPlaying),tostring(song));
 	if self.nowPlaying == song then
 		return;
 	end
@@ -355,7 +360,16 @@ function this:setLooping(looping)
 	self.isLooping = looping;
 end
 
+local itemPerPage = 10;
 local ceil = math.ceil;
+-- get total pages
+function this:totalPages()
+	if type(self) == "table" then
+		self = #self;
+	end
+	return ceil(self / itemPerPage);
+end
+
 function this:getStatusText()
 	local duration = 0;
 	for _,song in ipairs(self) do
@@ -366,14 +380,13 @@ function this:getStatusText()
 	local getElapsed = handler and rawget(handler,"getElapsed");
 	local elapsed = getElapsed and (getElapsed() / 1000) or 0;
 	return {
-		text = ("총 곡 수 : %d | 총 페이지 수 : %d | 총 길이 : %s"):format(len,ceil(len / 10),formatTime(duration - (elapsed or 0)))
+		text = ("총 곡 수 : %d | 총 페이지 수 : %d | 총 길이 : %s"):format(len,this.totalPages(len),formatTime(duration - (elapsed or 0)))
 		.. (self.isLooping and "\n플레이리스트 루프중" or "")
 		.. (self.mode24 and "\n24 시간 모드 켜짐" or "")
 		.. (self.isPaused and "\n재생 멈춤" or "");
 	};
 end
 
-local itemPerPage = 10;
 -- display list of songs
 function this:embedfiyList(page)
 	local handler = self.handler;
@@ -418,12 +431,12 @@ function this:embedfiyList(page)
 		};
 	end
 
-	if #self > atEnd then
-		insert(fields,{
-			name = "더 많은 곡이 있습니다!";
-			value = ("다음 페이지를 보려면\n> 미나 곡리스트 %d\n를 입력해주세요"):format(page + 1);
-		});
-	end
+	-- if #self > atEnd then
+	-- 	insert(fields,{
+	-- 		name = "더 많은 곡이 있습니다!";
+	-- 		value = ("다음 페이지를 보려면\n> 미나 곡리스트 %d\n를 입력해주세요"):format(page + 1);
+	-- 	});
+	-- end
 
 	return {
 		description = "팁 : **미나 곡정보 [번째]** 를 이용하면 해당 곡에 대한 더 자세한 정보를 얻을 수 있습니다";
@@ -518,6 +531,88 @@ function this:seek(timestamp)
 	self.handler:stopStream();
 end
 
+-- make next page button, previous page button, remove button components
+local components = discordia_enchent.components;
+local discordia_enchent_enums = discordia_enchent.enums;
+local noPage = {components.actionRow.new{
+	components.button.new{
+		custom_id = "music_page_1";
+		style = discordia_enchent_enums.buttonStyle.success;
+		label = "새로고침";
+		emoji = components.emoji.new "🔄";
+	};
+	buttons.action_remove;
+}};
+function this.pageIndicator(self,page)
+	if (not page) or (not self) then
+		return noPage;
+	end
+	local buttonList = {};
+	insert(buttonList,components.button.new{
+		custom_id = ("music_page_%d"):format(page);
+		style = discordia_enchent_enums.buttonStyle.success;
+		label = "새로고침";
+		emoji = components.emoji.new "🔄";
+	});
+	if page > 1 then
+		insert(buttonList,components.button.new{
+			custom_id = ("music_page_%d"):format(page-1);
+			style = discordia_enchent_enums.buttonStyle.primary;
+			label = "이전 페이지";
+			emoji = components.emoji.new "⬅";
+		});
+	end
+	if page < self:totalPages() then
+		insert(buttonList,components.button.new{
+			custom_id = ("music_page_%d"):format(page+1);
+			style = discordia_enchent_enums.buttonStyle.primary;
+			label = "다음 페이지";
+			emoji = components.emoji.new "➡";
+		});
+	end
+	insert(buttonList,buttons.action_remove);
+	return {components.actionRow.new(buttonList)};
+end
+---@param id string
+---@param object interaction
+local function pageIndicatorButtonPressed(id,object)
+	local page = tonumber(id:match"music_page_(%d+)");
+	if not page then return; end
+	logger.infof("page move button pressed '%d'",tostring(page));
+	object:update(this.showList(object.guild,page));
+end
+client:on("buttonPressed",pageIndicatorButtonPressed);
+
+---show list page, you can give arguments with guild or playerClass
+---@param guildOrPlayer Guild|playerClass the guild or player to display
+---@param page number number of page to show
+---@return table contents message contents object, you can use this with message:update()
+local isDiscordiaObject = discordia.class.isObject;
+function this.showList(guildOrPlayer,page)
+	local player = guildOrPlayer;
+	if isDiscordiaObject(guildOrPlayer) then
+		local guildConnection = guildOrPlayer.connection;
+		if not guildConnection then
+			return {
+				content = "현재 이 서버에서는 음악 기능을 사용하고 있지 않습니다\n> 음악 실행중이 아님";
+				components = this.pageIndicator();
+			};
+		end
+		player = this.playerForChannels[guildConnection.channel:__hash()];
+		if not player then
+			return {
+				content = "오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음";
+				components = this.pageIndicator();
+			};
+		end
+	end
+	return {
+		embeds = {player:embedfiyList(page)};
+		content = "현재 이 서버의 플레이리스트입니다!";
+		components = player:pageIndicator(page);
+	};
+end
+
 -- restore saved status
 function this.restore(data)
 	local client = _G.client;
@@ -525,22 +620,29 @@ function this.restore(data)
 		local voiceChannelId = playerData.channel;
 		local voiceChannel = client:getChannel(voiceChannelId); ---@type GuildVoiceChannel
 		local songs = playerData.songs;
+		local guild = voiceChannel.guild;
 
 		if voiceChannel and songs and (#songs ~= 0) then
+			local connection = voiceChannel:join();
 			local player = this.new {
 				voiceChannelID = voiceChannelId;
-				handler = voiceChannel:join();
+				handler = connection;
 				timestamp = playerData.timestamp;
 				isLooping = playerData.isLooping;
 				mode24 = playerData.mode24;
 			};
-			for _,song in ipairs(songs) do
-				song.channel = client:getChannel(song.channel);
-				pcall(player.add,player,song);
-			end
-			if playerData.isPaused then
-				player:setPaused(true);
-			end
+			coroutine.wrap(function ()
+				for _,song in ipairs(songs) do
+					song.channel = client:getChannel(song.channel);
+					pcall(player.add,player,song);
+					if guild.connection ~= connection then
+						return;
+					end
+				end
+				if playerData.isPaused then
+					player:setPaused(true);
+				end
+			end)();
 		end
 	end
 end
