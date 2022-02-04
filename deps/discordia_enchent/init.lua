@@ -31,6 +31,8 @@ local export = {
         actionRow = require("containers/components/actionRow");
         ---@type component_button
         button = require("containers/components/button");
+        ---@type component_emoji
+        emoji = require("containers/components/emoji");
     };
     inject = function(client)
         eventHandler.mount(client._events);

@@ -51,6 +51,8 @@
 
 local youtubePlaylist = require "class.music.youtubePlaylist";
 local playerClass = require "class.music.playerClass";
+local components = discordia_enchent.components;
+local discordia_enchent_enums = discordia_enchent.enums;
 local playerForChannels = playerClass.playerForChannels;
 local formatTime = playerClass.formatTime;
 local time = os.time;
@@ -285,6 +287,7 @@ local export = {
 		disableDm = true;
 		command = {"add","p","play","추가","재생","곡추가"};
 		alias = {
+			"추가",
 			"곡 신청","노래 신청","음악 신청","곡신청","노래신청","음악신청",
 			"노래틀어","노래틀어줘","노래추가해","노래추가해줘","노래추가하기","노래추가해봐","노래추가해라","노래추가","노래재생","노래실행",
 			"노래 틀어","노래 틀어줘","노래 추가해","노래 추가해줘","노래 추가하기","노래 추가해봐","노래 추가해라","노래 추가","노래 재생","노래 실행",
@@ -479,8 +482,9 @@ local export = {
 	["join music"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
-		command = {"j","join","참여","참가"};
+		command = {"참가","조인","j","join","참여","참가"};
 		alias = {
+			"참여","참가","조인",
 			"보이스채팅참여","보이스채팅참여해","보이스채팅참가","보이스채팅참가해","보이스채팅참가하기","보이스채팅참가해라","보이스채팅참가해봐","보이스채팅참가하자",
 			"보이스채팅 참여","보이스채팅 참여해","보이스채팅 참가","보이스채팅 참가해","보이스채팅 참가하기","보이스채팅 참가해라","보이스채팅 참가해봐","보이스채팅 참가하자",
 			"보이스 채팅참여","보이스 채팅참여해","보이스 채팅참가","보이스 채팅참가해","보이스 채팅참가하기","보이스 채팅참가해라","보이스 채팅참가해봐","보이스 채팅참가하자",
@@ -508,11 +512,11 @@ local export = {
 			"음악 join","music join","music 참가","join vc","vc join","join voice","voice join"
 		};
 		reply = "처리중입니다";
-		func = function(replyMsg,message,args,Content)
+		func = function(replyMsg,message,args,Content,self)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
 			if not voiceChannel then
-				replyMsg:setContent("음성 채팅방에 있지 않습니다! 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다.");
+				replyMsg:setContent(self.joinFailNoChannel);
 				return;
 			end
 
@@ -520,7 +524,7 @@ local export = {
 			local guild = message.guild;
 			local guildConnection = guild.connection;
 			if guildConnection and (guildConnection.channel ~= voiceChannel) then
-				replyMsg:setContent("다른 음성채팅방에서 봇을 사용중입니다, 각 서버당 한 채널만 이용할 수 있습니다!");
+				replyMsg:setContent(self.joinFailOtherChannel);
 				return;
 			end
 
@@ -529,7 +533,7 @@ local export = {
 			if not guildConnection then -- if connections is not exist, create new one
 				local handler = voiceChannel:join();
 				if not handler then
-					replyMsg:setContent("채널에 참가할 수 없습니다, 봇이 유효한 권한을 가지고 있는지 확인해주세요!");
+					replyMsg:setContent(self.joinFail);
 					return;
 				end
 				guild.me:deafen(); -- deafen it selfs
@@ -538,21 +542,27 @@ local export = {
 					voiceChannelID = voiceChannelID;
 					handler = handler;
 				};
-				replyMsg:setContent("성공적으로 음성채팅에 참가했습니다!");
+				replyMsg:setContent(self.joinSuccess);
 				return;
 			end
-			replyMsg:setContent("이미 음성채팅에 참가했습니다!");
+			replyMsg:setContent(self.joinedAlready);
 		end;
 		onSlash = commonSlashCommand {
 			description = "음성 채팅방에 참가합니다 (/곡추가 명령어를 사용하면 이 명령어가 자동으로 사용됩니다)";
 			name = "곡참가";
 			noOption = true;
 		};
+		joinFailNoChannel = buttons.action_remove "음성 채팅방에 있지 않습니다! 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다!";
+		joinFailOtherChannel = buttons.action_remove "다른 음성채팅방에서 봇을 사용중입니다, 각 서버당 한 채널만 이용할 수 있습니다!";
+		joinedAlready = buttons.action_remove "이미 음성채팅에 참가했습니다!";
+		joinSuccess = buttons.action_remove "성공적으로 음성채팅에 참가했습니다!";
+		joinFail = buttons.action_remove "채널에 참가할 수 없습니다, 봇이 유효한 권한을 가지고 있는지 확인해주세요!"
 	};
 	["list music"] = {
 		disableDm = true;
 		command = {"l","ls","list","q","queue","플리","리스트","큐","목록"};
 		alias = {
+			"리스트",
 			"노래목록","노래페이지","노래대기열","노래리스트","노래순번","노래페이지",
 			"노래 목록","노래 페이지","노래 대기열","노래 리스트","노래 순번","노래 페이지",
 			"곡목록","곡페이지","곡대기열","곡리스트","곡순번","곡페이지",
@@ -577,17 +587,27 @@ local export = {
 				return replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
 			end
 			local rawArgs = Content.rawArgs;
+			local page = tonumber(rawArgs) or tonumber(rawArgs:match("%d+")) or 1;
 			replyMsg:update {
-				embed = player:embedfiyList(tonumber(rawArgs) or tonumber(rawArgs:match("%d+")));
+				embed = player:embedfiyList(page);
 				content = "현재 이 서버의 플레이리스트입니다!";
-				-- components = {
-				-- 	{
-				-- 		type = 1;
-				-- 		label = "Test";
-				-- 		sytle = 1;
-				-- 		custom_id = "test";
-				-- 	};
-				-- };
+				components = {
+					components.actionRow.new{
+						components.button.new{
+							custom_id = ("music_page_%d"):format(page-1);
+							style = discordia_enchent_enums.buttonStyle.primary;
+							label = "이전 페이지";
+							emoji = components.emoji.new "⬅";
+						};
+						components.button.new{
+							custom_id = ("music_page_%d"):format(page+1);
+							style = discordia_enchent_enums.buttonStyle.primary;
+							label = "다음 페이지";
+							emoji = components.emoji.new "➡";
+						};
+						buttons.action_remove;
+					};
+				};
 			};
 		end;
 		onSlash = commonSlashCommand {
@@ -981,6 +1001,7 @@ local export = {
 		disableDm = true;
 		command = {"그만","종료","나가","끄기","off","stop","leave","kill"};
 		alias = {
+			"나가",
 			"곡 끄기","곡 꺼","곡끄기","곡꺼",
 			"음악 끄기","음악 꺼","음악끄기","음악꺼",
 			"노래 끄기","노래 꺼","노래끄기","노래꺼",
