@@ -48,11 +48,11 @@ end
 this.formatTime = formatTime;
 
 local function sendMessage(thing,msg)
+	local message = thing.message;
 	if thing and message then
 		logger.errorf("playerClass.sendMessage, arg thing or msg was invalid (thing: %s, msg: %s)",tostring(thing),tostring(msg));
 		return;
 	end
-	local message = thing.message;
 	if type(message) == "table" then
 		return message:reply {
 			content = msg;
@@ -568,6 +568,7 @@ function this.pageIndicator(self,page)
 			emoji = components.emoji.new "➡";
 			disabled = page >= self:totalPages();
 		};
+		buttons.action_remove;
 	}};
 end
 ---@param id string
