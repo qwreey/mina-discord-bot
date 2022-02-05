@@ -1,6 +1,7 @@
 local insert = table.insert;
 local sort = table.sort;
 local remove = table.remove;
+local loveLeaderstatusMaxUsers = _G.loveLeaderstatusMaxUsers;
 
 local loveLeaderstatus = _G.loveLeaderstatus;
 local loveLeaderstatusPath = _G.loveLeaderstatusPath;
@@ -33,7 +34,9 @@ local function registeLeaderstatus(userId,this)
 		end
 	end
 
-	if loveLeaderstatus[#loveLeaderstatus].love > this.love then
+	local lenLoveLeaderstatus = #loveLeaderstatus
+	if (loveLeaderstatus[lenLoveLeaderstatus].love > this.love)
+	and loveLeaderstatusMaxUsers <= lenLoveLeaderstatus then
 		return;
 	end
 
@@ -42,7 +45,7 @@ local function registeLeaderstatus(userId,this)
 	insert(loveLeaderstatus,setStatus({},userId,this));
 	sort(loveLeaderstatus,sortingLeaderstatus);
 	local lastRemoved,removed;
-	while #loveLeaderstatus > 10 do -- remove other . . .
+	while #loveLeaderstatus > loveLeaderstatusMaxUsers do -- remove other . . .
 		removed = remove(loveLeaderstatus);
 		if not lastRemoved then
 			lastRemoved = removed;

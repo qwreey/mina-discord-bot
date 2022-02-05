@@ -54,6 +54,7 @@ _G.EULA = data.loadRaw("data/EULA.txt");
 local loveLeaderstatusPath = "data/loveLeaderstatus.json";
 _G.loveLeaderstatus = data.load(loveLeaderstatusPath);
 _G.loveLeaderstatusPath = loveLeaderstatusPath;
+_G.loveLeaderstatusMaxUsers = 10;
 
 -- the words that means rank, this is useed on '미나 호감도 순위'
 _G.leaderstatusWords = {
