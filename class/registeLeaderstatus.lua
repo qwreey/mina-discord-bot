@@ -23,6 +23,7 @@ local function registeLeaderstatus(userId,this)
 	userId = tostring(userId);
 
 	-- check he/she is already on leaderstatus and then if exist, just update that
+	-- 이미 순위에 있으면, 호감도와 시간만 업데이트함
 	for _,status in ipairs(loveLeaderstatus) do
 		if status.userId == userId then
 			setStatus(status,userId,this);
@@ -32,13 +33,17 @@ local function registeLeaderstatus(userId,this)
 		end
 	end
 
+	if loveLeaderstatus[#loveLeaderstatus].love > this.love then
+		return;
+	end
+
 	-- couldn't find user on leaderstatus, just push user on leaderstatus
 	-- and resort and pop the last thing and then return what is poped
 	insert(loveLeaderstatus,setStatus({},userId,this));
 	sort(loveLeaderstatus,sortingLeaderstatus);
-	local lastRemoved;
+	local lastRemoved,removed;
 	while #loveLeaderstatus > 10 do -- remove other . . .
-		local removed remove(loveLeaderstatus);
+		removed = remove(loveLeaderstatus);
 		if not lastRemoved then
 			lastRemoved = removed;
 		end
