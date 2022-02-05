@@ -36,12 +36,15 @@ local function registeLeaderstatus(userId,this)
 	-- and resort and pop the last thing and then return what is poped
 	insert(loveLeaderstatus,setStatus({},userId,this));
 	sort(loveLeaderstatus,sortingLeaderstatus);
-	local removed = remove(loveLeaderstatus);
+	local lastRemoved;
 	while #loveLeaderstatus > 10 do -- remove other . . .
-		remove(loveLeaderstatus);
+		local removed remove(loveLeaderstatus);
+		if not lastRemoved then
+			lastRemoved = removed;
+		end
 	end
 	data.save(loveLeaderstatusPath,loveLeaderstatus);
-	return removed;
+	return lastRemoved;
 end
 _G.registeLeaderstatus = registeLeaderstatus;
 return registeLeaderstatus;
