@@ -14,14 +14,14 @@ local ytdl = "yt-dlp";
 for _,str in ipairs(app.args) do
     if str == "voice.ytdl" then
         ytdl = "youtube-dl";
-	elseif str == "voice.stderr-notty" then
+	elseif str == "voice.stderr-tty" then
 		stderr_new = function ()
-			return true;
+			return uv.new_tty(2,false);
 		end
     end
 end
 stderr_new = stderr_new or function ()
-	return uv.new_tty(2,false);
+	return true;
 end;
 
 local insert = table.insert;
