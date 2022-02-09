@@ -9,12 +9,20 @@ module.redownload = false;
 local timeoutMessage = "Timeout! Audio Download takes too much time!";
 module.timeoutMessage = timeoutMessage;
 
+local stderr_new;
 local ytdl = "yt-dlp";
 for _,str in ipairs(app.args) do
     if str == "voice.ytdl" then
         ytdl = "youtube-dl";
+	elseif str == "voice.stderr-notty" then
+		stderr_new = function ()
+			return true;
+		end
     end
 end
+stderr_new = stderr_new or function ()
+	return uv.new_tty(2,false);
+end;
 
 local insert = table.insert;
 local musicFile = "./data/youtubeFiles/%s";
@@ -42,7 +50,7 @@ local function download(url,vid)
 	local newProcess = spawn(ytdl,{
 		args = args;
 		cwd = "./";
-		stdio = {nil,true,true};
+		stdio = {nil,true,stderr_new()};
 	});
 	mutexs[vid] = nil;
 
