@@ -19,7 +19,7 @@ end
 local insert = table.insert;
 local musicFile = "./data/youtubeFiles/%s";
 local timeoutMs = 45 * 1000;
-local mutexs = setmetatable({},{__mode = "kv"});
+local mutexs = setmetatable({},{__mode = "v"});
 local function download(url,vid)
     local file = musicFile:format(vid:gsub("%-","."));
     local args = {
@@ -91,8 +91,8 @@ function module.download(vid)
 	end
 
 	-- video was not found from youtube? or something want wrongly
-	local errormsg = ("something want wrong! video was not found from youtube or youtube-dl process was terminated with exit!\nstderr : %s"):format(
-		tostring(stderr)
+	local errormsg = ("something want wrong! video was not found from youtube or youtube-dl process was terminated with exit!\nstderr : %s\nstdout : %s"):format(
+		tostring(stderr),tostring(stdout)
 	);
 	logger.error(errormsg);
 	qDebug {
