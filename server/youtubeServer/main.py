@@ -1,6 +1,10 @@
 
 # {"o":"asdfasdf","d":{"url":"https://www.youtube.com/watch?v=esaeuzXIr-4","file":"asdf"}} 
 
+# 계속 yt-dlp 프로세스를 새로 만드는건 비효율적인것 같아서
+# 아에 파이썬으로 불러온 다음 그걸 IPC 로 돌리는게 더 효율적인거 같아서 (CPU 면에서)
+# 파이썬으로 서버를 만들었습니다 
+
 import json
 import sys
 import threading
@@ -17,8 +21,10 @@ async def download(url,noDownload,file):
         'cachedir': 'data/youtubeCache',
         'outtmpl': file
     }
-    with YoutubeDL(ydl_opts) as ydl:
-        return ydl.download([url])
+    try:
+        with YoutubeDL(ydl_opts) as ydl:
+            return ydl.extract_info(url)
+    except Exception as e: return "ERR:"+e
 
 def processLine(line):
     try:
@@ -38,7 +44,7 @@ def processLine(line):
         print(json.dumps({
             'o': nonce,
             'd': downloaded
-        }))
+        }),flush=True,end='')
 
 for line in sys.stdin:
     thread = threading.Thread(target=processLine, args=(line,))
