@@ -23,7 +23,7 @@ async def download(url,noDownload,file):
     }
     try:
         with YoutubeDL(ydl_opts) as ydl:
-            return ydl.extract_info(url)
+            return ydl.extract_info(url,download=(not noDownload))
     except Exception as e: return "ERR:"+e
 
 def processLine(line):

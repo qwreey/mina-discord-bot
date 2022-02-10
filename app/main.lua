@@ -99,6 +99,7 @@ local interactionData = require "class.interactionData"; _G.interactionData = in
 local posixTime = require "libs.posixTime"; _G.posixTime = posixTime; -- get posixTime library
 local mutex = require "libs.mutex"; _G.mutex = mutex;
 local commonSlashCommand = require "class.commonSlashCommand"; _G.commonSlashCommand = commonSlashCommand;
+local IPC = require "IPC"; _G.IPC = IPC;
 --#endregion : Load modules
 --#region : Discordia Module
 logger.info("------------------------ [CLEAN  UP] ------------------------");
