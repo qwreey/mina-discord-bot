@@ -100,7 +100,7 @@ function module.download(vid)
 
 	-- video was not found from youtube? or something want wrongly
 	local errormsg = ("something want wrong! video was not found from youtube or youtube-dl process was terminated with exit!\nstderr : %s\nstdout : %s"):format(
-		tostring(stderr),tostring(stdout)
+		tostring(stderr),tostring(info)
 	);
 	logger.error(errormsg);
 	qDebug {
