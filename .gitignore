@@ -27,3 +27,7 @@ log/*
 # disbucket
 disbucket/**
 disbucket.json
+
+# node files
+package-lock.json
+node_modules/**
