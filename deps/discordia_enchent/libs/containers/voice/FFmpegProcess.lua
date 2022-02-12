@@ -74,4 +74,5 @@ return function (FFmpegProcess)
 		yield()
 
 	end
+	_G.FFmpegProcess = FFmpegProcess;
 end

@@ -80,7 +80,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 			'!!!sync : 클라우드와 코드를 동기화 시킵니다 (차이 비교후 병합)\n'
 		);
 		return true;
-	elseif (cmd == "!!!exe" or cmd == "!!!exec" or cmd == "!!!execute" or cmd == "!!!loadstring") then
+	elseif (cmd == "!!!exe" or cmd == "!!!exec" or cmd == "!!!execute" or cmd == "!!!loadstring" or cmd =="!!!e") then
 		local new = message:reply("Executing!");
 		if not new then
 			logger.error "adminCommands : cannot make new message. skipping...";
