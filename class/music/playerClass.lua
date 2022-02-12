@@ -177,7 +177,7 @@ function this:__play(thing,position) -- PRIVATE
 			return pcall(self.kill,self);
 		elseif reason and (reason ~= "stream stopped") and (reason ~= "stream exhausted or errored") then -- idk
 			logger.errorf("Play failed : %s",reason);
-			sendMessage(thing,("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
+			sendMessage(thing,("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```\n%s\n```"):format(
 				tostring((thing.info or {title = "unknown"}).title),
 				tostring(reason)
 			));
@@ -207,7 +207,7 @@ function this:__play(thing,position) -- PRIVATE
 				promise.spawn(self.__play,self,thing,result / 1000); -- adding coroutine on worker
 				return;
 			else
-				sendMessage(thing,("오류가 너무 많아 이 곡을 건너뜁니다! 가장 최근 오류 :```log\n%s```"):format(ffmpegError));
+				sendMessage(thing,("오류가 너무 많아 이 곡을 건너뜁니다! 가장 최근 오류 :```\n%s```"):format(ffmpegError));
 			end
 		end
 		self.lastErrorTime = nil;

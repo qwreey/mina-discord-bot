@@ -363,20 +363,14 @@ local export = {
 					whenAdded = time();
 					username = username;
 				};
-				local passed,back = pcall(player.add,player,this,nth);
+				local passed,err = pcall(player.add,player,this,nth);
 
 				-- when failed to adding song into playlist
 				if (not passed) or (not this.info) then
-					if back:match(": (.+)") == timeoutMessage then
-						replyMsg:setContent("시간 초과! 영상을 불러오는데 시간이 너무 많이 걸려 취소되었어요!");
-					else
-						replyMsg:setContent(("오류가 발생하였습니다! 영상이 존재하지 않거나 다운로드에 실패하였을 수 있습니다, 다시 시도해주세요\n```FALLBACK :\n%s```")
-							:format(tostring(back))
-						);
-					end
+					replyMsg:setContent(err:match(": (.+)"));
 					-- debug
 					logger.errorf("Failed to add music '%s' on player:%s",rawArgs,voiceChannelID);
-					logger.errorf("traceback : %s",back)
+					logger.errorf("traceback : %s",err)
 					qDebug {
 						title = "music adding failed";
 						arg = rawArgs;
@@ -434,7 +428,7 @@ local export = {
 							replyMsg:setContent(youtubePlaylist.display(listLen,index,info.title));
 						end)
 						:catch(function (err)
-							message:reply(("곡 '%s' 를 추가하는데 실패하였습니다\n> %s"):format(tostring(item),tostring(err:match(":(.-)"))));
+							message:reply(("곡 '%s' 를 추가하는데 실패하였습니다\n> %s"):format(tostring(item),err:match(": (.+)")));
 						end)
 						:wait();
 				end

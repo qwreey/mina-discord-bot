@@ -36,6 +36,10 @@ function module.errorFormater(str)
 	if str:match("This video is unavailable.") then
 		return ("이 영상은 이용이 불가능합니다 (%s)"):format(str);
 	end
+
+	if str:match(timeoutMessage) then
+		return "시간초과! 영상을 불러오는데 너무 많은 시간이 걸려 취소되었어요";
+	end
 end
 
 function module.download(vid)
@@ -53,7 +57,7 @@ function module.download(vid)
 
 	-- video was not found from youtube? or something want wrongly
 	local errormsg =
-		("오류가 발생했습니다, 영상을 다운로드 받는데 실패했습니다.\n%s")
+		("오류가 발생했습니다, 영상을 다운로드 받는데 실패했습니다.\n> %s")
 		:format(module.errorFormater(err));
 	logger.error(errormsg);
 	error(errormsg);
