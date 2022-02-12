@@ -22,7 +22,7 @@ function module.errorFormater(str)
 	-- blocked on country
 	local ch = str:match"Video unavailable. This video contains content from (.-), who has blocked it in your country on copyright grounds";
 	if ch then
-		return ("이 영상에는 %s 의 컨탠츠가 포함됩니다, 저작권적 이유로 이 국가에서 영상을 사용할 수 없습니다"):format(ch);
+		return ("이 영상에는 %s 의 컨탠츠가 포함됩니다, 저작권법 상 이 국가에서 영상을 사용할 수 없습니다"):format(ch);
 	end
 
 	if str:match("This video is no longer available because the YouTube account associated with this video has been terminated.") then
@@ -33,13 +33,15 @@ function module.errorFormater(str)
 		return "비공개 동영상입니다";
 	end
 
-	if str:match("This video is unavailable.") then
-		return ("이 영상은 이용이 불가능합니다 (%s)"):format(str);
+	if str:match("Video unavailable. This video has been removed by the uploader") then
+		return "업로더에 의해 삭제된 동영상입니다"
 	end
 
 	if str:match(timeoutMessage) then
 		return "시간초과! 영상을 불러오는데 너무 많은 시간이 걸려 취소되었어요";
 	end
+
+	return ("이 영상은 이용이 불가능합니다 (%s)"):format(str);
 end
 
 function module.download(vid)
