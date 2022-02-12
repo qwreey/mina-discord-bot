@@ -13,7 +13,7 @@ from yt_dlp import YoutubeDL
 
 async def download(url,noDownload,file):
     ydl_opts = {
-        'format': 'bestaudio',
+        'format': 'ba',
         'noprogress': True,
         'quiet': True,
         'no_warnings': True,
