@@ -5,7 +5,7 @@ local function isExistString(str)
 end
 
 module.redownload = false;
-local timeoutMessage = "Timeout! Audio Download takes too much time!";
+local timeoutMessage = "ERR:TIMEOUT";
 module.timeoutMessage = timeoutMessage;
 
 local download;
@@ -18,10 +18,30 @@ download = download or require(... .. ".server");
 download.timeoutMessage = timeoutMessage;
 download = download.download;
 
+function module.errorFormater(str)
+	-- blocked on country
+	local ch = str:match"Video unavailable. This video contains content from (.-), who has blocked it in your country on copyright grounds";
+	if ch then
+		return ("이 영상에는 %s 의 컨탠츠가 포함됩니다, 저작권적 이유로 이 국가에서 영상을 사용할 수 없습니다"):format(ch);
+	end
+
+	if str:match("This video is no longer available because the YouTube account associated with this video has been terminated.") then
+		return "이 영상과 연결된 유튜브 계정이 해지되어 더이상 볼 수 없는 동영상입니다";
+	end
+
+	if str:match("Private video. Sign in if you've been granted access to this video") then
+		return "비공개 동영상입니다";
+	end
+
+	if str:match("This video is unavailable.") then
+		return ("이 영상은 이용이 불가능합니다 (%s)"):format(str);
+	end
+end
+
 function module.download(vid)
 	vid = module.getVID(vid);
 	if not vid then
-		error("got invalid video id!");
+		error("잘못된 영상 URL 또는 ID 를 입력했습니다");
 	end
 	local url = ('https://www.youtube.com/watch?v=%s'):format(vid);
 
@@ -33,16 +53,9 @@ function module.download(vid)
 
 	-- video was not found from youtube? or something want wrongly
 	local errormsg =
-		("오류가 발생했습니다, YoutubeDL 이 잘못된 값을 출력했습니다.\nstderr : %s")
-		:format(tostring(err));
+		("오류가 발생했습니다, 영상을 다운로드 받는데 실패했습니다.\n%s")
+		:format(module.errorFormater(err));
 	logger.error(errormsg);
-	qDebug {
-		title = "failed to download video from youtube";
-		traceback = err;
-		vid = vid;
-		status = "error";
-		msg = errormsg;
-	};
 	error(errormsg);
 end
 
