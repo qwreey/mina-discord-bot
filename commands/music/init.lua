@@ -434,7 +434,7 @@ local export = {
 							replyMsg:setContent(youtubePlaylist.display(listLen,index,info.title));
 						end)
 						:catch(function (err)
-							message:reply(("곡 '%s' 를 추가하는데 실패하였습니다\n```%s```"):format(tostring(item),tostring(err)));
+							message:reply(("곡 '%s' 를 추가하는데 실패하였습니다\n> %s"):format(tostring(item),tostring(err:match(":(.-)"))));
 						end)
 						:wait();
 				end
