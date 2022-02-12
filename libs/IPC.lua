@@ -25,9 +25,9 @@ function module.new(target,args)
     return this;
 end
 
-function module:request(body)
+function module:request(body,key)
     local nonce = makeId();
-    self.process.stdin.write(encode({o=nonce,d=body}).."\n");
+    self.process.stdin.write(encode({o=nonce,d=body,f=key}).."\n");
     self.waitter[nonce] = running();
     return yield();
 end
