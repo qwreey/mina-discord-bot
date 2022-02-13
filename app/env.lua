@@ -157,6 +157,7 @@ _G.prefixs = {
 	"미냐가";
 	"미냐갸";
 	"미나갸";
+	"ㅁㄴ";
 };
 
 -- this is used on display when user messaged only perfixs

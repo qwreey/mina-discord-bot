@@ -176,7 +176,7 @@ reacts,commands,noPrefix,commandsLen = commandHandler.encodeCommands({
 				lastCommand = {};
 				love = 20;
 			});
-			return "안녕하세요 {#:UserName:#} 님!\n사용 약관에 동의해주셔서 감사합니다!\n사용 약관을 동의하였기 때문에 다음 기능을 사용 할 수 있게 되었습니다!\n\n> 미나야 배워 (미출시 기능)\n";
+			return "안녕하세요 {#:UserName:#} 님!\n사용 약관에 동의해주셔서 감사합니다!\n사용 약관을 동의하였기 때문에 다음 기능을 사용 할 수 있게 되었습니다!\n\n> 미나 배워\n> 미나 호감도\n> ...\n";
 		end;
 	};
 	["미나"] = {

@@ -109,22 +109,20 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		promise.new(setfenv(func,loadstringEnv))
 			:andThen(function (value)
 				local loggerStringRaw = customLogger.__last;
-				local loggerString = "\n---logger---\n" .. loggerStringRaw
+				local loggerString = (loggerStringRaw ~= "" and "\n---logger---\n" or "") .. loggerStringRaw;
+				local valueType = type(value);
 				if value == loggerStringRaw then
-					value = loggerString;
-					loggerString = "";
-				elseif loggerStringRaw == "" then
+					value = loggerStringRaw;
 					loggerString = "";
 				end
-				local valueType = type(value);
 				new:setContent("```ansi\n" .. (
 					(valueType == "nil" and loggerString ~= "" and "")
 					or (valueType == "string" and value)
-					or tostring(prettyPrint.dump(value,nil,true))
+					or ("\27[32m"..tostring(prettyPrint.dump(value,nil,true)).."\27[0m")
 				) .. loggerString .. "\n```");
 			end)
 			:catch(function (err)
-				new:setContent(("[ERROR] Error occured running function! traceback : ```ansi\n%s\n```"):format(tostring(err)));
+				new:setContent(("Error!```ansi\n%s\n```"):format(tostring(err)));
 			end):wait();
 
 		-- unload env
