@@ -1,5 +1,30 @@
 {
   "dependencies": {
     "pidusage": "^3.0.0"
-  }
+  },
+  "name": "mina",
+  "description": "this project are no longer maintained; there are many bugs are exist; we should fix that!!",
+  "version": "1.0.0",
+  "main": "nodeServer/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/qwreey75/MINA_DiscordBot.git"
+  },
+  "keywords": [
+    "discord",
+    "bot"
+  ],
+  "author": "qwreey75",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/qwreey75/MINA_DiscordBot/issues"
+  },
+  "homepage": "https://github.com/qwreey75/MINA_DiscordBot#readme"
 }

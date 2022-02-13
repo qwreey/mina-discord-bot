@@ -29,7 +29,11 @@ function module:request(body,key)
     local nonce = makeId();
     self.process.stdin.write(encode({o=nonce,d=body,f=key}).."\n");
     self.waitter[nonce] = running();
-    return yield();
+    local data,err = yield();
+    if err then
+        error(err);
+    end
+    return data;
 end
 
 function module.resume(waitter,...)
@@ -44,7 +48,7 @@ function module:stdoutReader()
         end
         local waitter = self.waitter[data.o];
         if waitter then
-            wrap(module.resume)(waitter,data.d);
+            wrap(module.resume)(waitter,data.d,data.e);
         else
             logger.warnf("failed to get waitter, nonce id was %s",tostring(data.o));
         end
