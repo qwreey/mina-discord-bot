@@ -179,7 +179,7 @@ local ansii = {
 	[char(127)] = "DEL";
 }
 -- local esc = "(" .. char(27).."(%[?))"
-local tabChar = " →  │"
+local tabChar = " → │"
 local tabCharColor = "\27[90m" .. tabChar .. "\27[0m"
 local spcColor = "\27[30;45m" -- 4 (underline)
 local function processMessage(str,useColor)
@@ -209,23 +209,29 @@ local function base(levelName,levelNumber,color,debugInfo,object)
 	local outfile = log.outfile
 
 	-- Get file name and line number
-	local src = debugInfo.short_src
-	if sub(src,1,rootLen) == root then -- remove root prefix
-		src = sub(src,rootLen+2,-1)
+	local lineinfo
+	local replaceinfo = logger.noLineInfo
+	if replaceinfo then
+		lineinfo = type(replaceinfo) == "string" and replaceinfo or ""
+	else
+		local src = debugInfo.short_src
+		if sub(src,1,rootLen) == root then -- remove root prefix
+			src = sub(src,rootLen+2,-1)
+		end
+		src = gsub(gsub(gsub(gsub(src,
+			"%.lua$",""),  -- remove .lua
+			"^%./",""),    -- remove ./
+			"[\\//]","."), -- change / and \ into .
+			"%.init$",""   -- remove .init
+		)
+		-- src = (src
+		-- 	:gsub("%.lua$","") -- remove .lua
+		-- 	:gsub("^%.[/\\]","") -- remove ./
+		-- 	:gsub("[\\//]",".") -- change \ and / into .
+		-- 	:gsub("%.init$","") -- remove .init
+		-- )
+		lineinfo = format("%s:%s",src,tostring(debugInfo.currentline)) -- source:line
 	end
-	src = gsub(gsub(gsub(gsub(src,
-		"%.lua$",""),  -- remove .lua
-		"%.lua$",""),  -- remove ./
-		"[\\//]","."), -- change / and \ into .
-		"%.init$",""   -- remove .init
-	)
-	-- src = (src
-	-- 	:gsub("%.lua$","") -- remove .lua
-	-- 	:gsub("^%.[/\\]","") -- remove ./
-	-- 	:gsub("[\\//]",".") -- change \ and / into .
-	-- 	:gsub("%.init$","") -- remove .init
-	-- )
-	local lineinfo = format("%s:%s",src,tostring(debugInfo.currentline)) -- source:line
 
 	-- Make header
 	local header = format("%s[%-6s%s]%s %s%s",
@@ -233,7 +239,7 @@ local function base(levelName,levelNumber,color,debugInfo,object)
 		levelName, -- Level
 		date("%H:%M"), -- add date
 		usecolor and "\27[0m" or "", -- reset color
-		prefix and format("%s(%s)%s ",
+		prefix and format(replaceinfo and "%s(%s)%s" or "%s(%s)%s ",
 			usecolor and "\27[93m" or "",
 			tostring(prefix),
 			usecolor and "\27[0m" or ""
@@ -241,11 +247,13 @@ local function base(levelName,levelNumber,color,debugInfo,object)
 		lineinfo -- line info
 	)
 	local headerLen = len(gsub(header,"\27%[%d+m","")) -- Make 6*x len char
-	local liner = headerLen%6
-	if liner ~= 0 then
-		local adding = 6 - liner
-		headerLen = headerLen + adding
-		header = header .. rep(" ",adding)
+	if not logger.noLiner then
+		local liner = headerLen%6
+		if liner ~= 0 then
+			local adding = 6 - liner
+			headerLen = headerLen + adding
+			header = header .. rep(" ",adding)
+		end
 	end
 	headerLen = headerLen + 3
 	header = header .. " │ "

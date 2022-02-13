@@ -100,9 +100,16 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		-- get env
 		loadstringEnv.__enable();
 		rawset(loadstringEnv,"logger",customLogger);
+		rawset(loadstringEnv,"log",customLogger);
 		rawset(loadstringEnv,"send",function (str)
 			new:reply(str);
 		end);
+		rawset(loadstringEnv,"message",message);
+		rawset(loadstringEnv,"guild",new.guild);
+		rawset(loadstringEnv,"member",new.member);
+		rawset(loadstringEnv,"user",new.author);
+		rawset(loadstringEnv,"channel",new.channel);
+
 		customLogger.__last = "";
 
 		-- execute
@@ -127,7 +134,13 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 
 		-- unload env
 		rawset(loadstringEnv,"logger",nil);
+		rawset(loadstringEnv,"log",nil);
 		rawset(loadstringEnv,"send",nil);
+		rawset(loadstringEnv,"message",nil);
+		rawset(loadstringEnv,"guild",nil);
+		rawset(loadstringEnv,"member",nil);
+		rawset(loadstringEnv,"user",nil);
+		rawset(loadstringEnv,"channel",nil);
 		loadstringEnv.__disable();
 		return true;
 	end

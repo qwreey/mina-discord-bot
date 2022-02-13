@@ -13,6 +13,7 @@
 
 --#region : sys setup
 -- Setup require system
+require"libs/upgradeString";
 local jit = _G.jit or require "jit";
 process.env.PATH = process.env.PATH .. ((jit.os == "Windows" and ";.\\bin\\Windows_" or ":./bin/Linux_") .. jit.arch); -- add bin libs path
 package.path = require("app.path")(package.path); -- set require path

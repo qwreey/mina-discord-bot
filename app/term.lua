@@ -124,12 +124,16 @@ function runEnv.__enable()
 	runEnv.__last.logger_prefix = logger.prefix;
 	logger.__lineinfo = "";
 	logger.prefix = "cmd";
+	logger.noLineInfo = true;
+	logger.noLiner = true;
 end
 function runEnv.__disable()
 	local logger = _G.logger;
 	local last = runEnv.__last;
 	logger.__lineinfo = nil;
 	logger.prefix = last.logger_prefix;
+	logger.noLineInfo = nil;
+	logger.noLiner = nil;
 	last.logger_prefix = nil;
 end
 _G.print = runEnv.print;
@@ -150,6 +154,24 @@ function runEnv.loadUserData(id)
 end
 function runEnv.saveUserData(id)
 	return userData.saveData(id);
+end
+function runEnv.getUser(id)
+	return client.users:get(id);
+end
+function runEnv.getGuild(id)
+	return client.guilds:get(id);
+end
+function runEnv.getChannel(id)
+	return client:getChannel(id);
+end
+function runEnv.getEmoji(id)
+	return client:getEmoji(id);
+end
+function runEnv.getRole(id)
+	return client:getRole(id);
+end
+function runEnv.getMember(gid,uid)
+	return client.guilds:get(gid):getMember(uid);
 end
 setmetatable(runEnv,{ -- lua can use metable env... cuz lua's global is a table!!
 	__index = _G;
@@ -176,6 +198,7 @@ return function ()
 		if line then
 
 			-- merge last line (for read multi lines)
+			local oline = line;
 			if lastLine then
 				line = lastLine .. "\n" .. line;
 			end
@@ -201,7 +224,7 @@ return function ()
 			end
 
 			-- lua wants more line, bypass running
-			if err and (err:match "'<eof>'$" or
+			if err and oline ~= "" and (err:match "'<eof>'$" or
 						err:match "unexpected symbol near '%['" or
 						err:match "unexpected symbol near '%]'" or
 						err:match "unexpected symbol near '{'" or
@@ -214,12 +237,12 @@ return function ()
 				lastLine = line;
 			elseif err or (not func) then
 				logger.errorf("Cannot make function from console, error was\n%s",tostring(err));
-			else
 				lastLine = nil;
+			else lastLine = nil;
 			end
 
 			-- continue read lines
-			if lastLine or err then
+			if lastLine or err or (not func) then
 				bindOnLine(protectedOnLine);
 				editor:refreshLine();
 				return;

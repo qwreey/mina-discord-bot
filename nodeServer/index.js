@@ -8,14 +8,13 @@ const stdinInterface = readline.createInterface({
 })
 const stdout = process.stdout
 const processing = {
-    'getProcInfo':async (data)=>{
-        await pidusage(data.pid)
+    'getProcInfo':async data=>{
+        return await pidusage(data.pid)
     }
 }
+const sleep = ms => new Promise(r => setTimeout(r, ms))
 
-stdinInterface.on('line',async (line)=>{
-    console.log(line)
-    console.log(type(line))
+stdinInterface.on('line',async line=>{
     let request
     try {
         request = JSON.parse(line)
@@ -27,13 +26,13 @@ stdinInterface.on('line',async (line)=>{
         key   = request.f
     let func = processing[key]
     if (func == undefined) {
-        return stdout.write({'o':nonce,'e':'ERR:KEYUNDEFINED'})
+        return stdout.write(JSON.stringify({'o':nonce,'e':'ERR:KEYUNDEFINED'}))
     }
     let result
     try {
-        result = await func(o,data)
+        result = await func(data)
     } catch (err) {
-        return stdout.write({'o':nonce,'e':'ERR:FUNC:'+err})
+        return stdout.write(JSON.stringify({'o':nonce,'e':'ERR:FUNC:'+err}))
     }
     stdout.write(JSON.stringify({'o':nonce,'d':result}))
 })
