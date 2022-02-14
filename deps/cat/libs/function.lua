@@ -4,23 +4,27 @@ local module = {};
 local gsub = string.gsub;
 local format = string.format;
 
-local function normalFormatter(str,method)
-    if method and method ~= "" then return format(" = function(%s)",str); end
+local function normalFormatter(str,set)
+    print(str)
+    print()
+    if set == "-" then return format(" = function(%s)",str); end
     return format("function(%s)",str);
 end
 
-local function selfFormatter(str,method)
+local function selfFormatter(str,set)
+    print(str)
+    print()
     local comma = str == "" and "" or ",";
-    if method and method ~= "" then return format(" = function(self%s%s)",comma,str); end
+    if set == "=" then return format(" = function(self%s%s)",comma,str); end
     return format("function(self%s%s)",comma,str);
 end
 
 function module.arrow(str)
     return gsub(gsub(gsub(gsub(gsub(gsub(gsub(gsub(str,
-        " ?%((.-)%) -%-(%-?)>",normalFormatter),
-        " ?([%w_]-) -%-(%-?)>",normalFormatter),
-        " ?%((.-)%) -=(=?)>",selfFormatter),
-        " ?([%w_]-) -=(=?)>",selfFormatter),
+        " ?%(([^%(%)%-%%%+=%?:'\\\"\n]-)%) ?%-(%-?)>",normalFormatter),
+        " ?([%w_]-) ?%-(%-?)>",normalFormatter),
+        " ?%(([^%(%)%-%%%+=%?:'\\\"\n]-)%) ?=(=?)>",selfFormatter),
+        " ?([%w_]-) ?=(=?)>",selfFormatter),
         " ?%-%->"," = function()"),
         " ?==>"," = function(self)"),
         " ?%->"," function()"),

@@ -2,6 +2,27 @@
 Admin command
 ]]
 
+logger.info(require"cat".compile[[
+$myclass = {}
+myclass.__index = myclass -- 이게 클래스 정의
+
+-- 이게 콘스터럭쳐 (new)
+myclass.new (name)-->
+  return setmetatable({
+    name = name
+  },myclass)
+end
+
+-- 이게 공유함수
+myclass.say (msg)==>
+  log.info("Hello! my name is "+@name+".\n"+msg)
+end
+
+-- 새로만듬
+$qwreey = myclass.new"qwreey"
+qwreey:say"와센즈"
+]])
+
 local cat = require"cat";
 local prettyPrint = prettyPrint or require("pretty-print");
 local remove = table.remove;
