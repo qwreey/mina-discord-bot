@@ -15,6 +15,7 @@ local extensions = {
 	require("logical").compare;
 	require("logical").null;
 	require("logical").operator;
+	require("end").eof;
 };
 
 local module = {};
