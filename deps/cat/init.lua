@@ -1,11 +1,5 @@
 local strParser = require("str").run;
 
--- p(strParser [[
---	 if asdf then
---		 print ("asdf",'asdf');
---	 end
--- ]]);
-
 local extensions = {
 	require("operator").operator;
 	require("function").arrow;
