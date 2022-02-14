@@ -2,6 +2,7 @@
 Admin command
 ]]
 
+local cat = require"cat";
 local prettyPrint = prettyPrint or require("pretty-print");
 local remove = table.remove;
 local concat = table.concat;
@@ -25,6 +26,75 @@ local customLogger = setmetatable({__last = ""},{
 		return object;
 	end;
 });
+
+local function executeMessage(message,args,mode)
+	local new = message:reply("Executing!");
+	if not new then
+		logger.error "adminCommands : cannot make new message. skipping...";
+		return;
+	end
+
+	if mode == "lua" then
+	else args = cat.compile(args);
+	end
+
+	-- load string to function
+	local func,err = loadstring("return " .. args);
+	if not func then
+		func,err = loadstring(args);
+	end
+	if err or (not func) then
+		new:setContent("[ERROR] Error occured on loadstring! traceback : " .. tostring(err));
+		return;
+	end
+
+	-- get env
+	loadstringEnv.__enable();
+	rawset(loadstringEnv,"logger",customLogger);
+	rawset(loadstringEnv,"log",customLogger);
+	rawset(loadstringEnv,"send",function (str)
+		new:reply(str);
+	end);
+	rawset(loadstringEnv,"message",message);
+	rawset(loadstringEnv,"guild",new.guild);
+	rawset(loadstringEnv,"member",new.member);
+	rawset(loadstringEnv,"user",new.author);
+	rawset(loadstringEnv,"channel",new.channel);
+
+	customLogger.__last = "";
+
+	-- execute
+	promise.new(setfenv(func,loadstringEnv))
+		:andThen(function (value)
+			local loggerStringRaw = customLogger.__last;
+			local loggerString = (loggerStringRaw ~= "" and "\n---logger---\n" or "") .. loggerStringRaw;
+			local valueType = type(value);
+			if value == loggerStringRaw then
+				value = loggerStringRaw;
+				loggerString = "";
+			end
+			new:setContent("```ansi\n" .. (
+				(valueType == "nil" and loggerString ~= "" and "")
+				or (valueType == "string" and value)
+				or ("\27[32m"..tostring(prettyPrint.dump(value,nil,true)).."\27[0m")
+			) .. loggerString .. "\n```");
+		end)
+		:catch(function (err)
+			new:setContent(("Error!```ansi\n%s\n```"):format(tostring(err)));
+		end):wait();
+
+	-- unload env
+	rawset(loadstringEnv,"logger",nil);
+	rawset(loadstringEnv,"log",nil);
+	rawset(loadstringEnv,"send",nil);
+	rawset(loadstringEnv,"message",nil);
+	rawset(loadstringEnv,"guild",nil);
+	rawset(loadstringEnv,"member",nil);
+	rawset(loadstringEnv,"user",nil);
+	rawset(loadstringEnv,"channel",nil);
+	loadstringEnv.__disable();
+	return true;
+end
 
 ---@param Text string
 ---@param message Message
@@ -81,68 +151,9 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		);
 		return true;
 	elseif (cmd == "!!!exe" or cmd == "!!!exec" or cmd == "!!!execute" or cmd == "!!!loadstring" or cmd =="!!!e") then
-		local new = message:reply("Executing!");
-		if not new then
-			logger.error "adminCommands : cannot make new message. skipping...";
-			return;
-		end
-
-		-- load string to function
-		local func,err = loadstring("return " .. args);
-		if not func then
-			func,err = loadstring(args);
-		end
-		if err or (not func) then
-			new:setContent("[ERROR] Error occured on loadstring! traceback : " .. tostring(err));
-			return;
-		end
-
-		-- get env
-		loadstringEnv.__enable();
-		rawset(loadstringEnv,"logger",customLogger);
-		rawset(loadstringEnv,"log",customLogger);
-		rawset(loadstringEnv,"send",function (str)
-			new:reply(str);
-		end);
-		rawset(loadstringEnv,"message",message);
-		rawset(loadstringEnv,"guild",new.guild);
-		rawset(loadstringEnv,"member",new.member);
-		rawset(loadstringEnv,"user",new.author);
-		rawset(loadstringEnv,"channel",new.channel);
-
-		customLogger.__last = "";
-
-		-- execute
-		promise.new(setfenv(func,loadstringEnv))
-			:andThen(function (value)
-				local loggerStringRaw = customLogger.__last;
-				local loggerString = (loggerStringRaw ~= "" and "\n---logger---\n" or "") .. loggerStringRaw;
-				local valueType = type(value);
-				if value == loggerStringRaw then
-					value = loggerStringRaw;
-					loggerString = "";
-				end
-				new:setContent("```ansi\n" .. (
-					(valueType == "nil" and loggerString ~= "" and "")
-					or (valueType == "string" and value)
-					or ("\27[32m"..tostring(prettyPrint.dump(value,nil,true)).."\27[0m")
-				) .. loggerString .. "\n```");
-			end)
-			:catch(function (err)
-				new:setContent(("Error!```ansi\n%s\n```"):format(tostring(err)));
-			end):wait();
-
-		-- unload env
-		rawset(loadstringEnv,"logger",nil);
-		rawset(loadstringEnv,"log",nil);
-		rawset(loadstringEnv,"send",nil);
-		rawset(loadstringEnv,"message",nil);
-		rawset(loadstringEnv,"guild",nil);
-		rawset(loadstringEnv,"member",nil);
-		rawset(loadstringEnv,"user",nil);
-		rawset(loadstringEnv,"channel",nil);
-		loadstringEnv.__disable();
-		return true;
+		executeMessage(message,args:gsub("^lua ?",""),
+			args:match("^lua") and "lua"
+		)
 	end
 end
 
