@@ -35,6 +35,13 @@ end
 
 -- sub to gsub(s,"")
 stringMeta.__sub = function(self,s)
+    if type(s) == "number" then
+        if s > 0 then
+            return sub(self,1,-s-1)
+        else
+            return sub(self,s+1,-1)
+        end
+    end
     return gsub(self,s,none)
 end
 

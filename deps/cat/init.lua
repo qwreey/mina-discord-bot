@@ -16,6 +16,7 @@ local extensions = {
 	require("logical").null;
 	require("logical").operator;
 	require("end").eof;
+	require("comment").comment;
 };
 
 local module = {};
