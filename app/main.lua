@@ -601,6 +601,6 @@ do
 	end
 	_G.livereloadEnabled = livereload; -- enable live reload
 end
-require("app.livereload"); -- loads livereload system; it will make uv event and take file changed signal
+require("app.livereload")(testingMode); -- loads livereload system; it will make uv event and take file changed signal
 _G.startBot(ACCOUNTData.botToken,testingMode); -- init bot (init discordia)
 --#endregion : Main logic
