@@ -7,7 +7,6 @@ return function(testingMode)
 	local uv = uv or require("uv");
 	for _,path in pairs({
 		"./app";
-		"./bin";
 		"./commands";
 		"./deps";
 		"./libs";
