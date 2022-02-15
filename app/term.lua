@@ -173,6 +173,11 @@ end
 function runEnv.getMember(gid,uid)
 	return client.guilds:get(gid):getMember(uid);
 end
+function runEnv.each(t,fn,mode)
+	for i,v in (mode and ipairs or pairs)(t) do
+		fn(v,i);
+	end
+end
 setmetatable(runEnv,{ -- lua can use metable env... cuz lua's global is a table!!
 	__index = _G;
 	__newindex = _G;

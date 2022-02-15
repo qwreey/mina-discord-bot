@@ -10,9 +10,11 @@
 
 local module = {};
 
+local posixTime = _G.posixTime;
 local dayInSec = 86400;
+local hour9 = 9*60*60;
 function module.get(clientData)
-	local time = os.time();
+	local time = posixTime.now()+hour9;
 	local today = os.date("*t",time);
 	local yesterday = os.date("*t",time - dayInSec);
 

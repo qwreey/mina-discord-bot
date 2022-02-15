@@ -11,6 +11,17 @@ local resume = coroutine.resume;
 local unpack = table.unpack;
 local pack = table.pack;
 
+function promise.log(err)
+	err = "[Promise] " .. err;
+	if log and log.error then
+		log.error(err);
+	elseif logger and logger.error then
+		logger.error(err);
+	elseif print then
+		print(err);
+	end
+end
+
 function promise:andThen(func)
 	local __type_func = type(func);
 	if __type_func ~= "function" then
@@ -150,7 +161,12 @@ function promise:execute()
 			local _then = self.__then;
 			if _then then
 				for _,f in ipairs(_then) do
-					results = pack(f(unpack(results)));
+					results = pack(pcall(f,unpack(results)));
+					passed = remove(1,results);
+					if not passed then
+						self.log("Expectation occurred on running callback function.\n" .. results[1]);
+						break;
+					end
 				end
 				self.__results = results;
 				self.__then = nil;
@@ -168,7 +184,12 @@ function promise:execute()
 			local catch = self.__catch;
 			if catch then
 				for _,f in ipairs(catch) do
-					results = pack(f(unpack(results))); -- err, ...
+					results = pack(pcall(f,unpack(results)));
+					passed = remove(1,results);
+					if not passed then
+						self.log("Expectation occurred on running callback function.\n" .. results[1]);
+						break;
+					end
 				end
 				self.__results = results;
 			end
