@@ -162,7 +162,7 @@ function promise:execute()
 			if _then then
 				for _,f in ipairs(_then) do
 					results = pack(pcall(f,unpack(results)));
-					passed = remove(1,results);
+					passed = remove(results,1);
 					if not passed then
 						self.log("Expectation occurred on running callback function.\n" .. results[1]);
 						break;
@@ -185,7 +185,7 @@ function promise:execute()
 			if catch then
 				for _,f in ipairs(catch) do
 					results = pack(pcall(f,unpack(results)));
-					passed = remove(1,results);
+					passed = remove(results,1);
 					if not passed then
 						self.log("Expectation occurred on running callback function.\n" .. results[1]);
 						break;
