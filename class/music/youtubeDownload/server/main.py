@@ -11,6 +11,8 @@ import threading
 import asyncio
 from yt_dlp import YoutubeDL
 
+stdout = sys.stdout
+
 async def download(url,noDownload,file):
     ydl_opts = {
         'format': 'bestaudio',
@@ -41,11 +43,14 @@ def processLine(line):
             ), timeout=35.0))
         except asyncio.TimeoutError:
             downloaded = 'ERR:TIMEOUT'
-        print(json.dumps({
+        stdout.write(json.dumps({
             'o': nonce,
             'd': downloaded
-        }),flush=True,end='')
+        }))
+        stdout.write("\n")
+        stdout.flush()
 
 for line in sys.stdin:
     thread = threading.Thread(target=processLine, args=(line,))
     thread.start()
+
