@@ -13,14 +13,15 @@ local encode,decode = json.encode,json.decode;
 ---Make new IPC wrapper with coro spawn
 ---@param target string target process
 ---@param args table|nil arg for child process
-function module.new(target,args)
+---@param newlinebuffer boolean|nil if this value is true, using \n as buffer splitter on stdout 
+function module.new(target,args,newlinebuffer)
     local child = spawn(target,{args = args,stdio = {true,true,2}});
     if not child then
         error"Failed to create child process";
     end
     local this = {process = child,waitter = {}};
     setmetatable(this,module);
-    wrap(module.stdoutReader)(this);
+    wrap(module.stdoutReader)(this,newlinebuffer);
     return this;
 end
 
@@ -39,17 +40,32 @@ function module.resume(waitter,...)
     resume(waitter,...);
 end
 
-function module:stdoutReader()
+function module:onbuffer(str)
+    local data = decode(str);
+    if not data then
+        return logger.warnf("failed to decode stdout, stdout was\n%s",str);
+    end
+    local waitter = self.waitter[data.o];
+    if waitter then
+        wrap(module.resume)(waitter,data.d,data.e);
+    else
+        logger.warnf("failed to get waitter, nonce id was %s",tostring(data.o));
+    end
+end
+
+function module:stdoutReader(newlinebuffer)
+    local buffer = "";
     for str in self.process.stdout.read do
-        local data = decode(str);
-        if not data then
-            logger.warnf("failed to decode stdout, stdout was\n%s",str);
-        end
-        local waitter = self.waitter[data.o];
-        if waitter then
-            wrap(module.resume)(waitter,data.d,data.e);
-        else
-            logger.warnf("failed to get waitter, nonce id was %s",tostring(data.o));
+        if newlinebuffer then
+            if buffer then
+                str = buffer .. str;
+	    end
+            if str:match"\n" then
+                buffer = nil;
+		self:onbuffer(str);
+            else buffer = str;
+            end
+        else module.onbuffer(str);
         end
     end
 end

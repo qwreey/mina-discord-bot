@@ -70,7 +70,7 @@ local function makeVote(messageId,rawString,title)
 	local items = {};
 	for str in rawString:gmatch("[^,]+") do
 		local this = str:gsub("\n",""):gsub("*",""):gsub("_",""):gsub(">",""):gsub("`","")
-			:gsub("<[@&](%d)+>",function (str)
+			:gsub("<[@&](%d+)>",function (str)
 				return ("@%s"):format(tostring(str));
 			end):gsub("@everyone","everyone"):gsub("@here","here");
 		insert(items,this);

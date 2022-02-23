@@ -34,11 +34,14 @@ function interactMessageWarpper:__edit(d,private)
 				tostring(user and user.mentionString or "@NULL"),
 				(str and str:match("\n")) and "\n> " or " ",
 				tostring(str or "'NULL'"):gsub("\n","\n> ")
+					:gsub("<[@&](%d+)>",function (str)
+						return ("@%s"):format(tostring(str));
+					end):gsub("@everyone","everyone"):gsub("@here","here")
 			) .. content;
 		end
 	end
 
-	-- merge with previous
+	-- merge with previons
 	local last = self.last;
 	if last then
 		for i,v in pairs(d) do
