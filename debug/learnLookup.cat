@@ -71,6 +71,12 @@ rmlearn (file,data)-->
   table.remove(userDataLearn,index)
   fs.unlinkSync(root + file)
   fs.appendFileSync(root + (file/"^[^/]+") + "/removed",index+",")
+  return {
+    rawmessage = true,
+    embed = {
+      title = "성공적으로 삭제했습니다"
+    },
+  }
 |
 
 return {
