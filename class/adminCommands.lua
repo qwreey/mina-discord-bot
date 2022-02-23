@@ -28,12 +28,6 @@ local customLogger = setmetatable({__last = ""},{
 });
 
 local function executeMessage(message,args,mode)
-	local new = message:reply("Executing!");
-	if not new then
-		logger.error "adminCommands : cannot make new message. skipping...";
-		return;
-	end
-
 	if mode == "lua" then
 	else args = cat.compile(args);
 	end
@@ -44,7 +38,7 @@ local function executeMessage(message,args,mode)
 		func,err = loadstring(args);
 	end
 	if err or (not func) then
-		new:setContent("[ERROR] Error occured on loadstring! traceback : " .. tostring(err));
+		message:reply("[ERROR] Error occured on loadstring! traceback : " .. tostring(err));
 		return;
 	end
 
@@ -53,7 +47,7 @@ local function executeMessage(message,args,mode)
 	rawset(loadstringEnv,"logger",customLogger);
 	rawset(loadstringEnv,"log",customLogger);
 	rawset(loadstringEnv,"send",function (str)
-		new:reply(str);
+		message:reply(str);
 	end);
 	rawset(loadstringEnv,"message",message);
 	rawset(loadstringEnv,"guild",message.guild);
@@ -76,16 +70,16 @@ local function executeMessage(message,args,mode)
 				or (valueType == "string" and value)
 				or ("\27[32m"..tostring(prettyPrint.dump(value,nil,true)).."\27[0m") .. loggerString;
 			if #output > 2000 then
-				new:update{
+				message:reply{
 					content = "​";
 					file = {"output.log",output};
 				};
 			else
-				new:setContent("```ansi\n" .. output .. "\n```");
+				message:reply("```ansi\n" .. output .. "\n```");
 			end
 		end)
 		:catch(function (err)
-			new:setContent(("Error!```ansi\n%s\n```"):format(tostring(err)));
+			message:reply(("Error!```ansi\n%s\n```"):format(tostring(err)));
 		end):wait();
 
 	-- unload env
