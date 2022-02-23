@@ -44,7 +44,7 @@ local function executeMessage(message,args,mode)
 
 	-- get env
 	loadstringEnv.__enable();
-	logger.noStdout = true;
+	-- logger.noStdout = true;
 	rawset(loadstringEnv,"logger",customLogger);
 	rawset(loadstringEnv,"log",customLogger);
 	rawset(loadstringEnv,"send",function (str)
@@ -62,20 +62,28 @@ local function executeMessage(message,args,mode)
 		:andThen(function (value)
 			local loggerStringRaw = customLogger.__last;
 			local valueType = type(value);
-			local loggerString = ((loggerStringRaw ~= "" and valueType ~= "nil") and "\n---logger---\n" or "") .. loggerStringRaw;
+
+			local loggerString = ((valueType == "nil" or loggerStringRaw == "" or loggerStringRaw == value)
+				and "" or "\n---logger---") .. loggerStringRaw;
 			if value == loggerStringRaw then
-				value = loggerStringRaw;
-				loggerString = "";
+				value = "";
 			end
-			local output = (valueType == "nil" and loggerString ~= "" and "")
+			local output = (
+				-- display value
+				((valueType == "nil" and loggerString ~= "" and "")
 				or (valueType == "string" and value)
-				or ("\27[32m"..tostring(prettyPrint.dump(value,nil,true)).."\27[0m") .. loggerString;
+				or prettyPrint.dump(value,nil))
+
+				-- display logger
+				.. loggerString
+			);
 			if #output > 2000 then
 				message:reply{
 					content = "​";
-					file = {"output.log",output:gsub("\27[.-m","")};
+					file = {"output.log",output:gsub("\27%[.-m","")};
 				};
 			else
+				if output == "" then output = "​"; end
 				message:reply("```ansi\n" .. output .. "\n```");
 			end
 		end)
