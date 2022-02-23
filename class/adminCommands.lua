@@ -56,28 +56,33 @@ local function executeMessage(message,args,mode)
 		new:reply(str);
 	end);
 	rawset(loadstringEnv,"message",message);
-	rawset(loadstringEnv,"guild",new.guild);
-	rawset(loadstringEnv,"member",new.member);
-	rawset(loadstringEnv,"user",new.author);
-	rawset(loadstringEnv,"channel",new.channel);
-
+	rawset(loadstringEnv,"guild",message.guild);
+	rawset(loadstringEnv,"member",message.member);
+	rawset(loadstringEnv,"user",message.author);
+	rawset(loadstringEnv,"channel",message.channel);
 	customLogger.__last = "";
 
 	-- execute
 	promise.new(setfenv(func,loadstringEnv))
 		:andThen(function (value)
 			local loggerStringRaw = customLogger.__last;
-			local loggerString = (loggerStringRaw ~= "" and "\n---logger---\n" or "") .. loggerStringRaw;
 			local valueType = type(value);
+			local loggerString = ((loggerStringRaw ~= "" and valueType ~= "nil") and "\n---logger---\n" or "") .. loggerStringRaw;
 			if value == loggerStringRaw then
 				value = loggerStringRaw;
 				loggerString = "";
 			end
-			new:setContent("```ansi\n" .. (
-				(valueType == "nil" and loggerString ~= "" and "")
+			local output = (valueType == "nil" and loggerString ~= "" and "")
 				or (valueType == "string" and value)
-				or ("\27[32m"..tostring(prettyPrint.dump(value,nil,true)).."\27[0m")
-			) .. loggerString .. "\n```");
+				or ("\27[32m"..tostring(prettyPrint.dump(value,nil,true)).."\27[0m") .. loggerString;
+			if #output > 2000 then
+				new:update{
+					content = "​";
+					file = {"output.log",output};
+				};
+			else
+				new:setContent("```ansi\n" .. output .. "\n```");
+			end
 		end)
 		:catch(function (err)
 			new:setContent(("Error!```ansi\n%s\n```"):format(tostring(err)));
