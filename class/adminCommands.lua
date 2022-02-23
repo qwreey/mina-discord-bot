@@ -73,7 +73,7 @@ local function executeMessage(message,args,mode)
 			if #output > 2000 then
 				message:reply{
 					content = "​";
-					file = {"output.log",output};
+					file = {"output.ansi",output};
 				};
 			else
 				message:reply("```ansi\n" .. output .. "\n```");
