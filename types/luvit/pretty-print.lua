@@ -152,15 +152,15 @@ function loadColors(index)
   controls[92] = colorize('escape', '\\\\', 'string')
   controls[34] = colorize('escape', '\\"', 'string')
   controls[39] = colorize('escape', "\\'", 'string')
-  for i = 128, 255 do
-    local c
-    if i < 100 then
-      c = "0" .. tostring(i)
-    else
-      c = tostring(i)
-    end
-    controls[i] = colorize('escape', '\\' .. c, 'string')
-  end
+  -- for i = 128, 255 do
+  --   local c
+  --   if i < 100 then
+  --     c = "0" .. tostring(i)
+  --   else
+  --     c = tostring(i)
+  --   end
+  --   controls[i] = colorize('escape', '\\' .. c, 'string')
+  -- end
 
 end
 
@@ -237,11 +237,11 @@ function dump(value, recurse, nocolor)
     if typ == 'string' then
       if string.find(localValue, "'") and not string.find(localValue, '"') then
         write(dquote)
-        write(string.gsub(localValue, '[%c\\\128-\255]', stringEscape))
+        write(string.gsub(localValue, '[%c\\]', stringEscape))
         write(dquote2)
       else
         write(quote)
-        write(string.gsub(localValue, "[%c\\'\128-\255]", stringEscape))
+        write(string.gsub(localValue, "[%c\\']", stringEscape))
         write(quote2)
       end
     elseif typ == 'table' and not seen[localValue] then
