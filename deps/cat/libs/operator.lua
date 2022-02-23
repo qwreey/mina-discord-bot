@@ -41,7 +41,7 @@ local function getIndent(line)
 	return match(line,"^ *");
 end
 
-local function formatWhen(opt,pass,doing
+local function formatWhen(opt,pass,doing)
 	if pass == "=" then return; end
 	local indent = getIndent(opt);
 	opt,doing = removeSpace(opt),removeSpace(doing);
