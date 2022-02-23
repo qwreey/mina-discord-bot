@@ -1,4 +1,5 @@
 $root="data/userLearn/"
+$loadUserData=loadUserData
 findlearn (name,value)-->
   $index = learnIndexedCache[sha1(name)]
   !index ~ error"LearnDBIndex not found"|
