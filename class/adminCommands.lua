@@ -73,7 +73,7 @@ local function executeMessage(message,args,mode)
 			if #output > 2000 then
 				message:reply{
 					content = "​";
-					file = {"output.ansi",output};
+					file = {"output.ansi",output:gsub("\27[.-%a","")};
 				};
 			else
 				message:reply("```ansi\n" .. output .. "\n```");
