@@ -2,6 +2,7 @@ local strParser = require("str").run;
 
 local extensions = {
 	require("operator").operator;
+	require("operator").whenopt;
 	require("function").arrow;
 	require("self").self;
 	require("variable").let;
@@ -14,6 +15,8 @@ local extensions = {
 };
 
 local module = {};
+local insert = table.insert;
+local concat = table.concat;
 
 function module.compile(str,env)
 	env = env or {};
@@ -22,34 +25,47 @@ function module.compile(str,env)
 	local strParsed = strParser(str);
 
 	-- run extensions and make output
-	local out = "";
+	local full,strs,stri = {},{},1;
 	for _,this in ipairs(strParsed) do
-		local m = this.m;
-		local tstr = this.s;
+		local m,tstr = this.m,this.s;
 		if not m then
-			for _,func in ipairs(extensions) do
-				tstr = func(tstr,env);
-			end
-			out = out .. tstr;
+			insert(full,tstr);
 		elseif m == 1 then
-			out = out .. ('"%s"'):format(tstr:gsub("\n","\\n"));
+			insert(strs,('"%s"'):format(tstr:gsub("\n","\\n")));
+			insert(full,("\27%d\27"):format(stri));
+			stri = stri + 1;
 		elseif m == 2 then
-			out = out .. ("'%s'"):format(tstr:gsub("\n","\\n"));
+			insert(strs,("'%s'"):format(tstr:gsub("\n","\\n")));
+			insert(full,("\27%d\27"):format(stri));
+			stri = stri + 1;
 		elseif m == 3 then
 			local estr = ("\"%s\""):format(tstr:gsub("\n","\\n"):gsub("'","\\'"):gsub('"','\\"'));
 			local spec = estr:match("(\n +).-$");
 			estr = estr:gsub("^([ 	%s]-\n[ 	%s]-)",""); -- bug? we need fix this
 			if spec then
-				out = out .. estr:gsub(spec,"\n");
+				insert(strs,estr:gsub(spec,"\n"));
 			else
-				out = out .. estr;
+				insert(strs,estr);
 			end
+			insert(full,("\27%d\27"):format(stri));
+			stri = stri + 1;
 		elseif m == 4 then
-			out = out .. ("[[%s]]"):format(tstr);
+			insert(strs,("[[%s]]"):format(tstr));
+			insert(full,("\27%d\27"):format(stri));
+			stri = stri + 1;
 		end
 	end
 
-	return out,env;
+	local stro = concat(full);
+	for _,func in ipairs(extensions) do
+		stro = func(stro,env);
+	end
+
+	return stro:gsub(
+		"\27(%d+)\27",function (index)
+			return strs[tonumber(index)];
+		end
+	),env;
 end
 
 function module.upgradeString()
