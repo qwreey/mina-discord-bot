@@ -1,5 +1,6 @@
 $root="data/userLearn/"
 $loadUserData=userData.loadData
+$saveUserData=userData.saveData
 findlearn (name,value)-->
   $index = learnIndexedCache[sha1(name)]
   !index ~ error"LearnDBIndex not found"|
@@ -69,6 +70,7 @@ rmlearn (file,data)-->
   |
   !index ~ error"index not found from learned data"|
   table.remove(userDataLearn,index)
+  saveUserData(userId)
   fs.unlinkSync(root + file)
   fs.appendFileSync(root + (file/"^[^/]+") + "/removed",file:match("/(%d+)")+",")
   return {
@@ -77,6 +79,25 @@ rmlearn (file,data)-->
       title = "성공적으로 삭제했습니다"
     },
   }
+|
+
+fixlearn (userId)-->
+  $indexs = {}
+  $learn = require "commands.learning.learn"
+  $userData = loadUserData(userId).learned
+  ~userData
+    logger.infof("user %s's data was found, checking validity...", userId)
+    for index,idx in ipairs(userData) do
+      ~! learn.rawGet(idx)
+        table.insert(indexs,index)
+        logger.infof("Found unloadable learn index %d '%s'",index,idx)
+      |
+    |
+    for indexNumber,index in ipairs(indexs) do
+      table.remove(userData,index - indexNumber + 1)
+    |
+    saveUserData(userId)
+  |
 |
 
 return {
