@@ -55,7 +55,7 @@ looklearn (file,data)-->
 |
 
 rmlearn (file,data)-->
-  (!file)&&(!data) ~ error"file or data must be got"|
+  (!file)||(!data) ~ error"file and data must be got"|
   !data ~ data = json.decode(fs.readFileSync(root+file))|
   !data ~ error"cannot get data from file"|
   $userId = data.author
@@ -70,7 +70,7 @@ rmlearn (file,data)-->
   !index ~ error"index not found from learned data"|
   table.remove(userDataLearn,index)
   fs.unlinkSync(root + file)
-  fs.appendFileSync(root + (file/"^[^/]+") + "/removed",index+",")
+  fs.appendFileSync(root + (file/"^[^/]+") + "/removed",file:match("/(%d+)")+",")
   return {
     rawmessage = true,
     embed = {
