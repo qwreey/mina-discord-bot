@@ -268,12 +268,14 @@ local function base(levelName,levelNumber,color,debugInfo,object)
 	local str = buildPrompt and {"\27[2K\r\27[0m",header,fmsg,"\n",buildPrompt()} or {"\27[2K\r\27[0m",header,fmsg,"\n"}
 
 	-- write into stdout
-	if stdoutWrite then
-		-- use luvit's prettyPrint library
-		stdoutWrite(stdout,str)
-	else
-		-- use lua standard library
-		iwrite(concat(str))
+	if not log.noStdout then
+		if stdoutWrite then
+			-- use luvit's prettyPrint library
+			stdoutWrite(stdout,str)
+		else
+			-- use lua standard library
+			iwrite(concat(str))
+		end
 	end
 
 	-- refresh readline

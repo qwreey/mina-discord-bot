@@ -44,6 +44,7 @@ local function executeMessage(message,args,mode)
 
 	-- get env
 	loadstringEnv.__enable();
+	logger.noStdout = true;
 	rawset(loadstringEnv,"logger",customLogger);
 	rawset(loadstringEnv,"log",customLogger);
 	rawset(loadstringEnv,"send",function (str)
@@ -92,6 +93,7 @@ local function executeMessage(message,args,mode)
 	rawset(loadstringEnv,"user",nil);
 	rawset(loadstringEnv,"channel",nil);
 	loadstringEnv.__disable();
+	logger.noStdout = false;
 	return true;
 end
 
