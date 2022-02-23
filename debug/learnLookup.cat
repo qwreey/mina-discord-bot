@@ -105,4 +105,5 @@ return {
   looklearn = looklearn,
   listlearn = listlearn,
   findlearn = findlearn,
+  fixlearn = fixlearn,
 }
