@@ -8,6 +8,7 @@ local wrap = coroutine.wrap;
 local insert = table.insert;
 local unpack = unpack or table.unpack;
 local pack = table.pack;
+local cat = require"cat";
 
 local utf8Len = utf8.len;
 local utf8Offset = utf8.offset;
@@ -149,6 +150,14 @@ function runEnv.help() -- 도움말
 		saveUserData = "save user data table";
 	};
 end
+function runEnv.imporcat(file)
+	local compiled = cat.compile(fs.readFileSync(file));
+	local func,err = loadstring(compiled)
+	if func and not err then
+		return func();
+	end
+	error(err);
+end
 function runEnv.loadUserData(id)
 	return userData.loadData(id);
 end
@@ -156,10 +165,10 @@ function runEnv.saveUserData(id)
 	return userData.saveData(id);
 end
 function runEnv.getUser(id)
-	return client.users:get(id);
+	return client:getUser(id);
 end
 function runEnv.getGuild(id)
-	return client.guilds:get(id);
+	return client:getGuild(id);
 end
 function runEnv.getChannel(id)
 	return client:getChannel(id);
@@ -171,7 +180,7 @@ function runEnv.getRole(id)
 	return client:getRole(id);
 end
 function runEnv.getMember(gid,uid)
-	return client.guilds:get(gid):getMember(uid);
+	return client:getGuild(gid):getMember(uid);
 end
 function runEnv.each(t,fn,mode)
 	for i,v in (mode and ipairs or pairs)(t) do

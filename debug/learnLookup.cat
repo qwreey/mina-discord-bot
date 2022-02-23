@@ -1,0 +1,80 @@
+$root="data/userLearn/"
+findlearn (name,value)-->
+  $index = learnIndexedCache[sha1(name)]
+  !index ~ error"LearnDBIndex not found"|
+  $base = root + index + "/"
+  $len = tonumber(fs.readFileSync(base+"index"))
+  !len ~ error"LearnDB length not found"|
+  for i=1,len do
+    $data = json.decode(fs.readFileSync(base+i))
+    data&&data.content&&data.content:match(value) ~ return index+"/"+i,data|
+  |
+|
+
+listlearn (name)-->
+  $index = learnIndexedCache[sha1(name)]
+  !index ~ error"LearnDBIndex not found"|
+  $base = root+index+"/"
+  $len = tonumber(fs.readFileSync(base+"index"))
+  !len ~ error"LearnDB length not found"|
+  for i=1,len do
+    $data = json.decode(fs.readFileSync(base+i))
+    ~data
+      data.id = index+"/"+i
+      log.info(data)
+    |
+  |
+|
+
+looklearn (file,data)-->
+  !file ~ error"file must be got"|
+  $str = fs.readFileSync(root+file)
+  !data ~ data=json.decode(str)|
+  !data ~ error"cannot get data from file"|
+  $userId = data.author
+  $userData = loadUserData(userId)
+  !userData ~ error"cannot load user data"|
+  return{
+    rawmessage = true,
+    embed = {
+      author = {
+        name = userData.latestName,
+        url = ("https://discord.com/users/%s")(userId),
+        icon_url = client:getUser(userId):getAvatarURL(128,"png"),
+      },
+      title = "> "+data.content:gsub("\n","\n> "),
+      description = ("⏱ 시간: %s\n🏷 티켓: %s\n🙍‍♀️ 유저: %s(%s)\n💿 크기: %s byte? (추정)")(
+        timeAgo(data.when,posixTime.now()),
+        tostring(file),
+        userData.latestName,userId,
+        tostring(#str)
+      ),
+    },
+  }
+|
+
+rmlearn (file,data)-->
+  (!file)&&(!data) ~ error"file or data must be got"|
+  !data ~ data = json.decode(fs.readFileSync(root+file))|
+  !data ~ error"cannot get data from file"|
+  $userId = data.author
+  $userData = loadUserData(userId)
+  !userData ~ error"cannot load user data"|
+  $userDataLearn = userData.learned
+  !userDataLearn ~ error"learned data was not found from user"|
+  $index
+  for i,v in ipairs(userDataLearn) do
+    v == file ~ index = i break|
+  |
+  !index ~ error"index not found from learned data"|
+  table.remove(userDataLearn,index)
+  fs.unlinkSync(root + file)
+  fs.appendFileSync(root + (file/"^[^/]+") + "/removed",index+",")
+|
+
+return {
+  rmlearn = rmlearn,
+  looklearn = looklearn,
+  listlearn = listlearn,
+  findlearn = findlearn,
+}

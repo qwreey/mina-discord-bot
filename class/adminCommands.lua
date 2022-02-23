@@ -44,7 +44,7 @@ local function executeMessage(message,args,mode)
 
 	-- get env
 	loadstringEnv.__enable();
-	logger.noStdout = true;
+	-- logger.noStdout = true;
 	rawset(loadstringEnv,"logger",customLogger);
 	rawset(loadstringEnv,"log",customLogger);
 	rawset(loadstringEnv,"send",function (str)
@@ -62,6 +62,13 @@ local function executeMessage(message,args,mode)
 		:andThen(function (value)
 			local loggerStringRaw = customLogger.__last;
 			local valueType = type(value);
+
+			if valueType == "table" and value.rawmessage then
+				value.rawmessage = nil;
+				value.content = value.content or "​"
+				message:reply(value);
+				return;
+			end
 
 			local loggerString = ((valueType == "nil" or loggerStringRaw == "" or loggerStringRaw == value)
 				and "" or "\n---logger---") .. loggerStringRaw;
