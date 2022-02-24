@@ -293,6 +293,8 @@ local function processCommand(message)
 	end
 	prefix = prefix or "";
 
+	channel:broadcastTyping();
+
 	-- 커맨드 찾기
 	-- 단어 분해 후 COMMAND DICT 에 색인시도
 	-- 못찾으면 다시 넘겨서 뒷단어로 넘김

@@ -214,14 +214,14 @@ local function base(levelName,levelNumber,color,debugInfo,object)
 	if replaceinfo then
 		lineinfo = type(replaceinfo) == "string" and replaceinfo or ""
 	else
-		local src = debugInfo.short_src
+		local src = gsub(debugInfo.source,"^@","")
 		if sub(src,1,rootLen) == root then -- remove root prefix
 			src = sub(src,rootLen+2,-1)
 		end
 		src = gsub(gsub(gsub(gsub(src,
 			"%.lua$",""),  -- remove .lua
-			"^%./",""),    -- remove ./
-			"[\\//]","."), -- change / and \ into .
+			"^%.[\\/]",""),    -- remove ./
+			"[\\/]","."), -- change / and \ into .
 			"%.init$",""   -- remove .init
 		)
 		-- src = (src

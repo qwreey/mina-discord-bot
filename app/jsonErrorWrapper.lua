@@ -35,4 +35,4 @@ end
 json.rawEncode = encode;
 json.rawDecode = decode;
 
-logger.info("json module was warpped with pcall protection!");
+-- logger.info("json module was warpped with pcall protection!");

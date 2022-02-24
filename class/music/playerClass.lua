@@ -1,12 +1,13 @@
 -- music channel player instance class for playing user's queued music
+-- ---@type number
+-- local theHourOfAllOfSpentForEditingThis = 122;
+
 ---@class playerClass
 local this = {};
 this.__index = this;
 this.playerForChannels = {};
--- ---@type number
--- local theHourOfAllOfSpentForEditingThis = 122;
 
---#region --* setup const objects *--
+--#region --* Setup const objects *--
 
 local components = discordia_enchent.components;
 local discordia_enchent_enums = discordia_enchent.enums;
@@ -17,9 +18,10 @@ local time = os.time;
 local floor = math.floor;
 local timeAgo = _G.timeAgo;
 local promise = _G.promise;
+local killTimer = 60 * 5 * 1000;
 
 --#endregion --* setup const objects *--
---#region --* setup ytdl *--
+--#region --* Setup ytdl *--
 
 local isStreamMode;
 local ytHandler; ---@module "class.music.youtubeStream";
@@ -43,7 +45,7 @@ if args then
 end
 
 --#endregion --* setup ytdl *--
---#region --* util functions *--
+--#region --* Util functions *--
 
 local function formatTime(t)
 	if not t then
@@ -62,11 +64,13 @@ end
 this.formatTime = formatTime;
 
 local function sendMessage(thing,msg)
-	local message = thing.message;
-	if thing and message then
-		logger.errorf("playerClass.sendMessage, arg thing or msg was invalid (thing: %s, msg: %s)",tostring(thing),tostring(msg));
+	local message = thing and thing.message;
+
+	if not msg then
+		logger.errorf("playerClass.sendMessage : arg 'msg' was invalid (msg: %s)",tostring(msg));
 		return;
 	end
+
 	if type(message) == "table" then
 		return message:reply {
 			content = msg;
@@ -76,6 +80,8 @@ local function sendMessage(thing,msg)
 		local channel = thing.channel;
 		if type(channel) == "table" then
 			return channel:send(msg);
+		else
+			logger.errorf("playerClass.sendMessage : cannot found message and channel from arg 'thing', ignored");
 		end
 	end
 end
@@ -119,7 +125,7 @@ end
 this.download = download;
 
 --#endregion --* util functions *--
---#region --* class initialization *--
+--#region --* Class initialization *--
 
 --[[
 voiceChannelID : 그냥 식별용으로 쓰기 위해 만든 별거 없는 아이디스페이스
@@ -308,7 +314,7 @@ function this:__stop() -- PRIVATE
 end
 
 --#endregion --* (PRIVATE) Stream handling methods *--
---#region --* class methods *--
+--#region --* Class methods *--
 
 -- apply play queue
 function this:apply()
@@ -730,7 +736,7 @@ function this.restore(data)
 				isLooping = playerData.isLooping;
 				mode24 = playerData.mode24;
 			};
-			coroutine.wrap(function ()
+			promise.spawn(function ()
 				for _,song in ipairs(songs) do
 					song.channel = client:getChannel(song.channel);
 					pcall(player.add,player,song);
@@ -741,7 +747,7 @@ function this.restore(data)
 				if playerData.isPaused then
 					player:setPaused(true);
 				end
-			end)();
+			end);
 		end
 	end
 end
@@ -771,5 +777,134 @@ function this.save()
 end
 
 --#endregion --* Restore *--
+--#region --* Client setups *--
+
+--- make auto leave for none-using channels
+---@param member Member
+---@param channel GuildVoiceChannel
+local function voiceChannelJoin(member,channel)
+	if member and member.bot then ---@diagnostic disable-line
+		return;
+	end
+	local channelId = channel:__hash();
+	local player = this.playerForChannels[channelId];
+	if player then
+		if player.isPausedByNoUser then
+			player.isPausedByNoUser = nil;
+			player:setPaused(false);
+		end
+		local timeout = player.timeout;
+		if timeout then
+			logger.infof("Someone joined voice channel, stop killing player [channel:%s]",channelId);
+			player.timeout = nil;
+			pcall(timer.clearTimer,timeout);
+		end
+	end
+end
+client:on("voiceChannelJoin",function (...)
+	local channel = select(2,...);
+	promise.new(voiceChannelJoin,...)
+		:catch(function (result)
+			logger.errorf("An error occurred while trying adding killing music player queue [channel:%s]",
+				(channel or {__hash = function () return "unknown"; end}):__hash()
+			);
+			logger.errorf("Error message was : %s",result);
+		end);
+end);
+
+---@param member Member
+---@param channel GuildVoiceChannel
+---@param player playerClass
+local function voiceChannelLeave(member,channel,player)
+	if (not member) or member.bot then ---@diagnostic disable-line
+		return;
+	end
+	local channelId = channel:__hash();
+	player = player or this.playerForChannels[channelId];
+	local guild = channel.guild;
+	local connection = guild.connection;
+	if player and connection then
+		local playerTimeout = player.timeout;
+		if playerTimeout then
+			player.timeout = nil;
+			pcall(timer.clearTimer,playerTimeout);
+		end
+		local tryKill = true;
+		for _,user in pairs(channel.connectedMembers or {}) do
+			if not user.bot then
+				tryKill = false;
+			end
+		end
+		local nowPlaying = player.nowPlaying;
+		if tryKill then -- pause
+			if nowPlaying and (not player.isPaused) then
+				player.isPausedByNoUser = true;
+				player.sendMessage(player[1] or player.nowPlaying,"음성채팅방에 아무도 없어 음악을 일시 중지했어요! (다시 입장시 자동으로 재개해요)");
+				player:setPaused(true);
+			elseif nowPlaying == nil and (not player[1]) then
+				pcall(player.kill,player);
+				pcall(connection.close,connection);
+				this.playerForChannels[channelId] = nil;
+			end
+		end
+		if player.mode24 then -- check mode that prevent killed
+			return;
+		end
+		if tryKill then -- kill
+			logger.infof("All users left voice channel, queued player to kill list [channel:%s]",channelId);
+			player.timeout = timeout(killTimer,function ()
+				local connection = guild.connection;
+				if connection then
+					logger.infof("voice channel timeouted! killing player now [channel:%s]",channelId);
+					player.sendMessage(player[1] or player.nowPlaying,"5분동안 사람이 없어 음성채팅방에서 나갔어요!");
+					pcall(player.kill,player);
+					pcall(connection.close,connection);
+					this.playerForChannels[channelId] = nil;
+				end
+			end);
+		end
+	elseif player then
+		this.playerForChannels[channelId] = nil;
+	end
+end
+client:on("voiceChannelLeave",function (...)
+	local channel = select(2,...);
+	promise.new(voiceChannelLeave,...)
+		:catch(function (result)
+			logger.errorf("An error occurred while trying adding killing music player queue [channel:%s]",
+				(channel or {__hash = function () return "unknown"; end}):__hash()
+			);
+			logger.errorf("Error message was : %s",result);
+		end);
+end);
+
+-- restore data
+client:once("ready", function ()
+	local lastData = fs.readFileSync("./data/lastMusicStatus.json")
+	if lastData and lastData ~= "" then
+		logger.info("found music backup data! restoring ...");
+		local data = json.decode(lastData);
+		if data then
+			promise.new(this.restore,data):wait();
+			---@type playerClass
+			for _,player in pairs(this.playerForChannels) do
+				local handler = player and player.handler;
+				local channel = handler and handler.channel;
+				if channel then
+					voiceChannelLeave(nil,channel,player);
+				end
+			end
+			logger.info("Restored all song playing data!");
+		end
+	end
+	fs.writeFileSync("./data/lastMusicStatus.json","");
+end);
+
+client:on('stoping',function ()
+	fs.writeFileSync("./data/lastMusicStatus.json",json.encode(this.save()));
+	logger.info("Saved all song playing data!");
+end);
+
+--#endregion --* Client setups *--
 
 return this;
