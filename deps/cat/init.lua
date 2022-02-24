@@ -1,6 +1,7 @@
 local strParser = require("str").run;
 
 local extensions = {
+	require("newline").newline;
 	require("operator").operator;
 	require("operator").whenopt;
 	require("function").arrow;

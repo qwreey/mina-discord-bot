@@ -11,6 +11,7 @@ local resume = coroutine.resume;
 local unpack = table.unpack;
 local pack = table.pack;
 
+---@diagnostic disable
 function promise.log(err)
 	err = "[Promise] " .. err;
 	if log and log.error then
@@ -21,6 +22,7 @@ function promise.log(err)
 		print(err);
 	end
 end
+---@diagnostic enable
 
 function promise:andThen(func)
 	local __type_func = type(func);

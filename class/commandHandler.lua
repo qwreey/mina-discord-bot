@@ -205,7 +205,7 @@ local units = {
 	s = unitSec;
 	m = unitMin;
 	h = unitHour;
-	d = unutDay;
+	d = unitDay;
 };
 local signs = {
 	["+"] = 1;

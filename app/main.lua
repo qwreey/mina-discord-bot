@@ -140,7 +140,7 @@ logger.info("---------------------- [LOAD SETTINGS] ----------------------");
 
 -- Load environments
 logger.info("load environments ...");
-require("app.env"); -- inject environment
+require("app.global"); -- inject environment
 local adminCmd = require("class.adminCommands"); -- load admin commands
 local hook = require("class.hook");
 local registeLeaderstatus = require("class.registeLeaderstatus");

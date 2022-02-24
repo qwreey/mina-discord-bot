@@ -13,6 +13,18 @@ local null = json.null
 
 local Message = classes.Message
 
+local function parseMentions(content, pattern)
+	if not content:find('%b<>') then return {} end
+	local mentions, seen = {}, {}
+	for id in content:gmatch(pattern) do
+		if not seen[id] then
+			insert(mentions, id)
+			seen[id] = true
+		end
+	end
+	return mentions
+end
+
 function Message:_loadMore(data)
 
 	local mentions = {}

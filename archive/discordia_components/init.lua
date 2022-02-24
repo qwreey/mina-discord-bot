@@ -1,3 +1,4 @@
+---@diagnostic disable
 ---@type discordia_components
 local this = {
     enums = require("./enums");

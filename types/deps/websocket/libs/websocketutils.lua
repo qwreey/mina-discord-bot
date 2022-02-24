@@ -31,7 +31,7 @@ exports.disassemblePacket = function(buffer)
     local bitmap = bitmap.fromNumber(bytemap[1])
 
     local fin = bitmap:isSet(1);
-    local rsv1 = bitmap:isSet(2); rsv2 = bitmap:isSet(3); rsv3 = bitmap:isSet(4)
+    local rsv1 = bitmap:isSet(2); local rsv2 = bitmap:isSet(3); local rsv3 = bitmap:isSet(4)
     local opcode = tonumber(bitmap[5] .. bitmap[6] .. bitmap[7] .. bitmap[8], 2)
 
     -- message fragmentation check

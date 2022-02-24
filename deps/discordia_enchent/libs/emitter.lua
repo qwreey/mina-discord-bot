@@ -2,6 +2,9 @@ local discordia = require("discordia")
 local classes = discordia.class.classes
 local Emitter = classes.Emitter
 
+local wrap = coroutine.wrap
+local remove = table.remove
+
 function Emitter:emit(name, ...)
 	local listeners = self._listeners[name]
 	if not listeners then return end

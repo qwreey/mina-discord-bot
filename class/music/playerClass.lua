@@ -67,6 +67,25 @@ local function sendMessage(thing,msg)
 end
 this.sendMessage = sendMessage;
 
+-- seekbar object
+local seekbarLine = "─";
+local seekbarString = "%s %s%s%s⬤%s %s\n";
+local seekbarLen = 14;
+local function seekbar(now,atEnd)
+	local per = now / atEnd;
+	local forward = math.floor(seekbarLen * per + 0.5);
+	local backward = math.floor(seekbarLen - forward);
+	return seekbarString:format(
+		formatTime(now),
+		forward > 0 and "**" or "",
+		seekbarLine:rep(forward),
+		forward > 0 and "**" or "",
+		seekbarLine:rep(backward),
+		formatTime(atEnd)
+	);
+end
+this.seekbar = seekbar;
+
 local components = discordia_enchent.components;
 local discordia_enchent_enums = discordia_enchent.enums;
 
@@ -434,13 +453,6 @@ function this:embedfiyList(page)
 		};
 	end
 
-	-- if #self > atEnd then
-	-- 	insert(fields,{
-	-- 		name = "더 많은 곡이 있습니다!";
-	-- 		value = ("다음 페이지를 보려면\n> 미나 곡리스트 %d\n를 입력해주세요"):format(page + 1);
-	-- 	});
-	-- end
-
 	return {
 		description = "팁 : **미나 곡정보 [번째]** 를 이용하면 해당 곡에 대한 더 자세한 정보를 얻을 수 있습니다";
 		fields = fields;
@@ -449,25 +461,6 @@ function this:embedfiyList(page)
 		color = 16040191;
 	}
 end
-
--- seekbar object
-local seekbarLine = "─";
-local seekbarString = "%s %s%s%s⬤%s %s\n";
-local seekbarLen = 14;
-local function seekbar(now,atEnd)
-	local per = now / atEnd;
-	local forward = math.floor(seekbarLen * per + 0.5);
-	local backward = math.floor(seekbarLen - forward);
-	return seekbarString:format(
-		formatTime(now),
-		forward > 0 and "**" or "",
-		seekbarLine:rep(forward),
-		forward > 0 and "**" or "",
-		seekbarLine:rep(backward),
-		formatTime(atEnd)
-	);
-end
-this.seekbar = seekbar;
 
 -- display now playing
 function this:embedfiyNowplaying(index)
@@ -514,23 +507,23 @@ function this:embedfiyNowplaying(index)
 	};
 end
 
-function playerClass:nowplayIndicator(index)
+function this:nowplayIndicator(index)
 	return {components.actionrow.new{
 		components.button.new{
 			custom_id = ("music_info_%d"):format(index);
-			style = discordia_enchent_enums.buttonstyle.success;
+			style = discordia_enchent_enums.buttonStyle.success;
 			emoji = components.emoji.new "🔄";
 		};
 		components.button.new{
 			custom_id = ("music_info_%d"):format(index-1);
-			style = discordia_enchent_enums.buttonstyle.primary;
+			style = discordia_enchent_enums.buttonStyle.primary;
 			label = "이전 곡 정보";
 			emoji = components.emoji.new "⬅";
 			disabled = index <= 1;
 		};
 		components.button.new{
 			custom_id = ("music_info_%d"):format(index+1);
-			style = discordia_enchent_enums.buttonstyle.primary;
+			style = discordia_enchent_enums.buttonStyle.primary;
 			label = "다음 곡 정보";
 			emoji = components.emoji.new "➡";
 			disabled = index >= #self;
@@ -541,17 +534,18 @@ end
 
 ---@param id string
 ---@param object interaction
-local function nowplayindicatorbuttonpressed(id,object)
+local function nowplayIndicatorButtonPressed(id,object)
 	local index = tonumber(id:match("music_info_(%d+)"));
 	if not index then return; end
-	logger.infof("index move button pressed '%d'",tostring(page));
-	local embed = 
-	object:update(
-		embed = 
-		embeds = {}
-	);
+	-- logger.infof("index move button pressed '%d'",tostring(index));
+	local embed = this:embedfiyNowplaying(index)
+	object:update{
+		embed = embed;
+		embeds = {embed};
+
+	};
 end
-client:on("buttonPressed",pageIndicatorButtonPressed);
+client:on("buttonPressed",nowplayIndicatorButtonPressed);
 
 -- seek playing position
 function this:seek(timestamp)
@@ -590,23 +584,23 @@ function this.pageIndicator(self,page)
 	return {components.actionrow.new{
 		components.button.new{
 			custom_id = ("music_page_%d"):format(page);
-			style = discordia_enchent_enums.buttonstyle.success;
+			style = discordia_enchent_enums.buttonStyle.success;
 			label = "새로고침";
 			emoji = components.emoji.new "🔄";
 		};
 		components.button.new{
 			custom_id = ("music_page_%d"):format(page-1);
-			style = discordia_enchent_enums.buttonstyle.primary;
+			style = discordia_enchent_enums.buttonStyle.primary;
 			label = "이전 페이지";
 			emoji = components.emoji.new "⬅";
 			disabled = page <= 1;
 		};
 		components.button.new{
 			custom_id = ("music_page_%d"):format(page+1);
-			style = discordia_enchent_enums.buttonstyle.primary;
+			style = discordia_enchent_enums.buttonStyle.primary;
 			label = "다음 페이지";
 			emoji = components.emoji.new "➡";
-			disabled = page >= self:totalpages();
+			disabled = page >= self:totalPages();
 		};
 		buttons.action_remove;
 	}};
@@ -616,7 +610,7 @@ end
 local function pageIndicatorButtonPressed(id,object)
 	local page = tonumber(id:match"music_page_(%d+)");
 	if not page then return; end
-	logger.infof("page move button pressed '%d'",tostring(page));
+	-- logger.infof("page move button pressed '%d'",tostring(page));
 	object:update(this.showList(object.guild,page));
 end
 client:on("buttonPressed",pageIndicatorButtonPressed);
