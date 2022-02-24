@@ -1,7 +1,9 @@
+
+local figlet = jit.os == "Windows" and "figlet.cmd" or "figlet";
 local function drawAscii(font,text)
 	text = text:gsub("\"","\\\"");
 
-	local newProcess = spawn("figlet.cmd",{
+	local newProcess = spawn(figlet,{
 		args = {
 			'-f',font,text
 		};
