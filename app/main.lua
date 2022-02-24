@@ -266,6 +266,7 @@ local function processCommand(message)
 	local TextLower = lower(text); -- make sure text is lower case
 	for _,nprefix in pairs(prefixs) do
 		if nprefix == TextLower then -- 만약 접두사와 글자가 일치하는경우 반응 달기
+			channel:broadcastTyping();
 			message:reply {
 				content = prefixReply[cRandom(1,#prefixReply)];
 				reference = {message = message, mention = false};
