@@ -167,7 +167,7 @@ end
 function runEnv.setPremium(id,days)
 	local data = userData.loadData(id);
 	if data then
-		data.premiumStatus = 86400*days;
+		data.premiumStatus = posixTime.now() + (86400*days);
 		return userData.saveData(id);
 	else error"Connot found user data!";
 	end
