@@ -21,12 +21,12 @@ end
 local view = {
 	{"decideCnt","확진자수"};
 	{"deathCnt","사망자수"};
-	{"examCnt","검사 진행수"};
-	{"careCnt","치료중수"};
-	{"clearCnt","격리 해재수"};
+	-- {"examCnt","검사 진행수"};
+	-- {"careCnt","치료중수"};
+	-- {"clearCnt","격리 해재수"};
 	-- {"accExamCnt","누적 검사수"};
-	{"resutlNegCnt","결과 음성 수"};
-	{"accExamCompCnt","누적 검사 완료수"};
+	-- {"resutlNegCnt","결과 음성 수"};
+	-- {"accExamCompCnt","누적 검사 완료수"};
 	-- {"accDefRate","누적 확진률"};
 };
 
@@ -41,8 +41,7 @@ function module:embed(today,yesterday)
 		local index = v[1];
 		local name = v[2];
 
-		logger.info(today)
-		logger.info(yesterday)
+		logger.info(index)
 		local todayV = today:getFirstChildByTag(index)[1];
 		local yesterdayV = yesterday:getFirstChildByTag(index)[1];
 
