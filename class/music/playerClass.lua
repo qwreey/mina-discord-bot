@@ -67,6 +67,9 @@ local function sendMessage(thing,msg)
 end
 this.sendMessage = sendMessage;
 
+local components = discordia_enchent.components;
+local discordia_enchent_enums = discordia_enchent.enums;
+
 -- 이 코드는 신과 나만 읽을 수 있게 만들었습니다
 -- 만약 편집을 기꺼히 원한다면... 그렇게 하도록 하세요
 -- 다만 여기의 이 규칙을 따라주세요
@@ -511,6 +514,45 @@ function this:embedfiyNowplaying(index)
 	};
 end
 
+function playerClass:nowplayIndicator(index)
+	return {components.actionrow.new{
+		components.button.new{
+			custom_id = ("music_info_%d"):format(index);
+			style = discordia_enchent_enums.buttonstyle.success;
+			emoji = components.emoji.new "🔄";
+		};
+		components.button.new{
+			custom_id = ("music_info_%d"):format(index-1);
+			style = discordia_enchent_enums.buttonstyle.primary;
+			label = "이전 곡 정보";
+			emoji = components.emoji.new "⬅";
+			disabled = index <= 1;
+		};
+		components.button.new{
+			custom_id = ("music_info_%d"):format(index+1);
+			style = discordia_enchent_enums.buttonstyle.primary;
+			label = "다음 곡 정보";
+			emoji = components.emoji.new "➡";
+			disabled = index >= #self;
+		};
+		buttons.action_remove;
+	}};
+end
+
+---@param id string
+---@param object interaction
+local function nowplayindicatorbuttonpressed(id,object)
+	local index = tonumber(id:match("music_info_(%d+)"));
+	if not index then return; end
+	logger.infof("index move button pressed '%d'",tostring(page));
+	local embed = 
+	object:update(
+		embed = 
+		embeds = {}
+	);
+end
+client:on("buttonPressed",pageIndicatorButtonPressed);
+
 -- seek playing position
 function this:seek(timestamp)
 	if not self.nowPlaying then
@@ -532,8 +574,6 @@ function this:seek(timestamp)
 end
 
 -- make next page button, previous page button, remove button components
-local components = discordia_enchent.components;
-local discordia_enchent_enums = discordia_enchent.enums;
 local noPage = {components.actionRow.new{
 	components.button.new{
 		custom_id = "music_page_1";
@@ -547,26 +587,26 @@ function this.pageIndicator(self,page)
 	if (not page) or (not self) then
 		return noPage;
 	end
-	return {components.actionRow.new{
+	return {components.actionrow.new{
 		components.button.new{
 			custom_id = ("music_page_%d"):format(page);
-			style = discordia_enchent_enums.buttonStyle.success;
+			style = discordia_enchent_enums.buttonstyle.success;
 			label = "새로고침";
 			emoji = components.emoji.new "🔄";
 		};
 		components.button.new{
 			custom_id = ("music_page_%d"):format(page-1);
-			style = discordia_enchent_enums.buttonStyle.primary;
+			style = discordia_enchent_enums.buttonstyle.primary;
 			label = "이전 페이지";
 			emoji = components.emoji.new "⬅";
 			disabled = page <= 1;
 		};
 		components.button.new{
 			custom_id = ("music_page_%d"):format(page+1);
-			style = discordia_enchent_enums.buttonStyle.primary;
+			style = discordia_enchent_enums.buttonstyle.primary;
 			label = "다음 페이지";
 			emoji = components.emoji.new "➡";
-			disabled = page >= self:totalPages();
+			disabled = page >= self:totalpages();
 		};
 		buttons.action_remove;
 	}};
