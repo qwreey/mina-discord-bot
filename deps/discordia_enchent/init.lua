@@ -1,4 +1,5 @@
 -- enable voice fixer
+require("containers/voice/VoiceSocket")
 require("containers/voice/FFmpegProcess");
 require("containers/voice/VoiceConnection");
 require("client");
