@@ -179,7 +179,6 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		git{message=msg,"pull"}; -- git 에서 변동사항 가져와 적용하기
 		_G.livereloadEnabled = true;
 		msg:setContent(msg.content .. '\n> 완료!');
-		os.exit(exitCodes.reload); -- 다운로드 (리로드)\
 		return true;
 	elseif (cmd == "!!!release" or cmd == "!!!re") then
 		logger.info("Download codes ...");
