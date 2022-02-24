@@ -2,6 +2,20 @@
 This code will injects environments into _G
 ]]
 
+-- get indexs of table
+local insert = table.insert;
+local function indexs(t)
+	local result = {};
+	local index = nil
+	while true do
+		index = next(t,index);
+		if not index then break; end
+		insert(result,index);
+	end
+	return result;
+end
+_G.indexs = indexs;
+
 -- displays --- ago
 local time = os.time;
 local function timeAgo(old,now)
