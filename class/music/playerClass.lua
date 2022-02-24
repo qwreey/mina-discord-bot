@@ -790,9 +790,6 @@ local function voiceChannelJoin(member,channel)
 	local player = this.playerForChannels[channelId];
 	if player then
 		local leaveMessage = player.leaveMessage;
-		if leaveMessage then
-			leaveMessage:delete();
-		end
 		if player.isPausedByNoUser then
 			player.isPausedByNoUser = nil;
 			player:setPaused(false);
@@ -802,6 +799,9 @@ local function voiceChannelJoin(member,channel)
 			logger.infof("Someone joined voice channel, stop killing player [channel:%s]",channelId);
 			player.timeout = nil;
 			pcall(timer.clearTimer,timeout);
+		end
+		if leaveMessage then
+			leaveMessage:delete();
 		end
 	end
 end
@@ -857,13 +857,17 @@ local function voiceChannelLeave(member,channel,player)
 		if tryKill then -- kill
 			logger.infof("All users left voice channel, queued player to kill list [channel:%s]",channelId);
 			player.timeout = timeout(killTimer,function ()
-				local connection = guild.connection;
+				connection = guild.connection;
+				local leaveMessage = player.leaveMessage;
 				if connection then
 					logger.infof("voice channel timeouted! killing player now [channel:%s]",channelId);
 					sendMessage(player[1] or player.nowPlaying,"5분동안 사람이 없어 음성채팅방에서 나갔어요!");
 					pcall(player.kill,player);
 					pcall(connection.close,connection);
 					this.playerForChannels[channelId] = nil;
+				end
+				if leaveMessage then
+					leaveMessage:delete();
 				end
 			end);
 		end
