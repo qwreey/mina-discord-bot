@@ -41,6 +41,8 @@ function module:embed(today,yesterday)
 		local index = v[1];
 		local name = v[2];
 
+		logger.info(today)
+		logger.info(yesterday)
 		local todayV = today:getFirstChildByTag(index)[1];
 		local yesterdayV = yesterday:getFirstChildByTag(index)[1];
 
