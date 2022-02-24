@@ -119,11 +119,17 @@ local function insertMessage(message,str)
 	message:setContent(("%s\n%s```"):format(content,str));
 end
 
-local function gitReadPipe(pipe,message)
+---Read git stdout and stderr
+---@param pipe table stdout or stderr containing read function that can be called with for in
+---@param message Message Message to update
+---@param mutex mutex
+local function gitReadPipe(pipe,message,mutex)
 	for str in pipe.read do
 		str = str:gsub("\n+$","");
+		mutex:lock();
 		logger.warn("[GIT] " .. str);
 		insertMessage(message,str);
+		mutex:unlock();
 	end
 end
 
@@ -132,11 +138,12 @@ local function git(args)
 	args.message = nil;
 	local process = spawn("git",{args = args,stdio={0,true,true}});
 	local waitter = promise.waitter();
+	local messageMutex = mutex.new();
 	waitter:add(
-		promise.new(gitReadPipe,process.stdout,message)
+		promise.new(gitReadPipe,process.stdout,message,messageMutex)
 	);
 	waitter:add(
-		promise.new(gitReadPipe,process.stderr,message)
+		promise.new(gitReadPipe,process.stderr,message,messageMutex)
 	);
 	waitter:wait();
 	process.waitExit();
