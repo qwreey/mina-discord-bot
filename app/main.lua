@@ -128,7 +128,14 @@ function discordia_Logger:log(level, msg, ...)
 		(level == 2 and logger.info) or
 		(level == 1 and logger.warn) or
 		(level == 0 and logger.error) or logger.info;
-	logFn(msg);
+	local dlv = 1;
+	while true do
+		if debug.getinfo(dlv,"") then
+			dlv = dlv + 1;
+		else break;
+		end
+	end
+	logFn(msg,dlv-1);
 	return msg;
 end
 

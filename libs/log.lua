@@ -324,8 +324,10 @@ for level,v in pairs(modes) do
 	v.level = level
 	v.upName = upName
 
-	log[name] = function (object)
-		return base(upName,level,color,getinfo(2, "Sl"),object)
+	log[name] = function (object,debugInfo)
+		local typeDebugInfo = type(debugInfo);
+		debugInfo = (typeDebugInfo == "table" and debugInfo) or (typeDebugInfo == "number" and getinfo(1 + debugInfo,"Sl")) or getinfo(2, "Sl");
+		return base(upName,level,color,debugInfo,object)
 	end
 	log[name .. "f"] = function (...)
 		return base(upName,level,color,getinfo(2, "Sl"),format(...))
