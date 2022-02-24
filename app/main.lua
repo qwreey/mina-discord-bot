@@ -62,6 +62,8 @@ if jit.os == "Windows" then
 end
 --#endregion sys setup
 --#region : Load modules
+local format = string.format;
+local traceback = debug.traceback;
 local insert = table.insert;
 local promise = require "promise"; _G.promise = promise;
 local utf8 = utf8 or require "utf8"; _G.utf8 = utf8; -- unicode 8 library
@@ -122,20 +124,17 @@ local Date = discordia.Date; _G.Date = Date; ---@type Date
 -- inject logger
 function discordia_Logger:log(level, msg, ...)
 	if self._level < level then return end ---@diagnostic disable-line
-	msg = string.format(msg, ...);
+	msg = format(msg, ...);
 	local logFn =
 		(level == 3 and logger.debug) or
 		(level == 2 and logger.info) or
 		(level == 1 and logger.warn) or
 		(level == 0 and logger.error) or logger.info;
-	local dlv = 1;
-	while true do
-		if debug.getinfo(dlv,"") then
-			dlv = dlv + 1;
-		else break;
-		end
+	if level <= 1 then
+		logFn(("%s\n%s"):format(msg,traceback()));
+	else
+		logFn(msg);
 	end
-	logFn(msg,dlv-1);
 	return msg;
 end
 
