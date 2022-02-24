@@ -159,7 +159,7 @@ logger.info(" |- load commands from commands folder");
 local otherCommands = {} -- read commands from commands folder
 for dir in fs.scandirSync("commands") do
 	dir = string.gsub(dir,"%.lua$","");
-	logger.info(" |  |- load command dict from : commands." .. dir);
+	logger.info(" |  |- load from : commands." .. dir);
 	otherCommands[#otherCommands+1] = require("commands." .. dir);
 end
 
