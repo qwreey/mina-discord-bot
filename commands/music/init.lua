@@ -1024,11 +1024,13 @@ local export = {
 				return replyMsg:setContent("현재 이 서버에서는 음악 기능을 사용하고 있지 않습니다\n> 음악 실행중이 아님");
 			end
 			local player = playerForChannels[guildConnection.channel:__hash()];
+	
 			if not player then
 				return replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
 			end
 			local rawArgs = Content.rawArgs;
 			replyMsg:update {
+
 				embed = player:embedfiyNowplaying();
 				content = "지금 재생중인 곡입니다!";
 			};
