@@ -164,6 +164,22 @@ end
 function runEnv.saveUserData(id)
 	return userData.saveData(id);
 end
+function runEnv.setPremium(id,days)
+	local data = userData.loadData(id);
+	if data then
+		data.premiumStatus = 86400*days;
+		return userData.saveData(id);
+	else error"Connot found user data!";
+	end
+end
+function runEnv.setLove(id,love)
+	local data = userData.loadData(id);
+	if data then
+		data.love = love;
+		return userData.saveData(id);
+	else error"Connot found user data!";
+	end
+end
 function runEnv.getUser(id)
 	return client:getUser(id);
 end
