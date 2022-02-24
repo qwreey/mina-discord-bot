@@ -9,7 +9,6 @@ local deferredUpdateMessage = enums.interactionResponseType.deferredUpdateMessag
 local componentButton = enums.componentType.button
 local updateMessage = enums.interactionResponseType.updateMessage
 
-
 ---@class interaction
 ---@field public message Message If this is message's interaction (such as button), this is parent message of interaction else ApplicationCommand, this is nil
 ---@field public parentInteraction interaction If this is slash command's interaction (such as button), this is parent interaction of interaction

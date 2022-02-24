@@ -1,4 +1,4 @@
-local enum = require('discordia').enums.enum
+local enum = require('discordia').enums.enum ---@diagnostic disable-line
 
 ---@class enchent_enums
 ---@field public type enchent_enums_componentType
