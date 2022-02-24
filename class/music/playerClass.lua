@@ -789,6 +789,10 @@ local function voiceChannelJoin(member,channel)
 	local channelId = channel:__hash();
 	local player = this.playerForChannels[channelId];
 	if player then
+		local leaveMessage = player.leaveMessage;
+		if leaveMessage then
+			leaveMessage:delete();
+		end
 		if player.isPausedByNoUser then
 			player.isPausedByNoUser = nil;
 			player:setPaused(false);
@@ -839,7 +843,7 @@ local function voiceChannelLeave(member,channel,player)
 		if tryKill then -- pause
 			if nowPlaying and (not player.isPaused) then
 				player.isPausedByNoUser = true;
-				player.sendMessage(player[1] or player.nowPlaying,"음성채팅방에 아무도 없어 음악을 일시 중지했어요! (다시 입장시 자동으로 재개해요)");
+				player.leaveMessage = sendMessage(player[1] or player.nowPlaying,"음성채팅방에 아무도 없어 음악을 일시 중지했어요! (다시 입장시 자동으로 재개해요)");
 				player:setPaused(true);
 			elseif nowPlaying == nil and (not player[1]) then
 				pcall(player.kill,player);
@@ -856,7 +860,7 @@ local function voiceChannelLeave(member,channel,player)
 				local connection = guild.connection;
 				if connection then
 					logger.infof("voice channel timeouted! killing player now [channel:%s]",channelId);
-					player.sendMessage(player[1] or player.nowPlaying,"5분동안 사람이 없어 음성채팅방에서 나갔어요!");
+					sendMessage(player[1] or player.nowPlaying,"5분동안 사람이 없어 음성채팅방에서 나갔어요!");
 					pcall(player.kill,player);
 					pcall(connection.close,connection);
 					this.playerForChannels[channelId] = nil;
