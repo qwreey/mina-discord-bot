@@ -66,14 +66,12 @@ function module.run(str)
         con(st,0,1);
       end
     elseif fstr == "[" then
-      print(true)
       if (not m) and (sub(str,st+1,st+1) == "[") then -- on str mode [[
         push(4,st,-1,2);
       else
         con(st,0,1);
       end
     elseif fstr == "]" then
-      print(false)
       if (m == 4) and (sub(str,st+1,st+1) == "]") then -- off str mode [[
         push(nil,st,-1,2);
       else

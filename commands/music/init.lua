@@ -47,7 +47,6 @@ local eulaComment_music = _G.eulaComment_music or makeEulaComment("음악");
 local hourInSecond = 60*60;
 local minuteInSecond = 60;
 local client = _G.client;
-local timeoutMessage = playerClass.timeoutMessage;
 local help = [[
 **음악 기능에 대한 도움말입니다**
 > 주의! 이 기능은 아직 불완전합니다. 오류로 인해 몇몇 곡이 스킵 될 수도 있습니다!
@@ -295,7 +294,7 @@ local export = {
 			"song add","song 추가","song play","song 재생",
 			"add 음악","add 곡","add 노래"
 		};
-		reply = "처리중입니다";
+		reply = "로딩중";
 		func = function(replyMsg,message,args,Content)
 			local nth,rawArgs; do
 				local contentRaw = Content.rawArgs;
@@ -313,7 +312,7 @@ local export = {
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
 			if not voiceChannel then
-				replyMsg:setContent("음성 채팅방에 있지 않습니다! 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다.");
+				replyMsg:setContent("음성 채팅방에 있지 않아요!\n> 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다.");
 				return;
 			end
 
@@ -321,7 +320,7 @@ local export = {
 			local guild = message.guild;
 			local guildConnection = guild.connection;
 			if guildConnection and (guildConnection.channel ~= voiceChannel) then
-				replyMsg:setContent("다른 음성채팅방에서 봇을 사용중입니다, 각 서버당 한 채널만 이용할 수 있습니다!");
+				replyMsg:setContent("다른 음성채팅방에서 봇을 사용중이에요!\n> 각 서버당 한 채널만 이용할 수 있습니다!");
 				return;
 			end
 
@@ -382,11 +381,11 @@ local export = {
 				-- when successfully adding song into playlist
 				local info = this.info;
 				if info then
-					replyMsg:setContent(("성공적으로 곡 '%s' 을(를)%s 추가하였습니다! `(%s)`")
+					replyMsg:setContent(("곡 '%s' 을(를)%s 추가했어요! `(%s)`")
 						:format(info.title,nth and ((" %d 번째에"):format(nth)) or "",formatTime(info.duration))
 					);
 				else
-					replyMsg:setContent("성공적으로 곡 'NULL' 을(를) 추가하였습니다! `(0:0)`");
+					replyMsg:setContent("곡 'NULL' 을(를) 추가했어요! `(0:0)`");
 				end
 			else -- batch add
 				local list;
@@ -395,7 +394,7 @@ local export = {
 					list = youtubePlaylist.getPlaylist(playlist);
 					listLen = list and #list;
 					if (not list) or listLen == 0 then
-						return replyMsg:setContent("유튜브 플레이 리스트를 가져오는데 실패하였습니다!");
+						return replyMsg:setContent("유튜브 플레이 리스트를 가져오는데 실패했어요!");
 					end
 				else
 					list = {};
@@ -409,7 +408,7 @@ local export = {
 				local duration = 0;
 				for index,item in ipairs(list) do
 					if not guild.connection then -- if it killed user
-						return replyMsg:setConetnt("추가 도중 취소되었습니다");
+						return replyMsg:setConetnt("추가 도중 취소되었어요!");
 					end
 					--TODO: 도중 취소 기능 (버튼으로) 구현하기
 					local this = {
@@ -1019,21 +1018,7 @@ local export = {
 		};
 		reply = "처리중입니다 . . .";
 		func = function(replyMsg,message,args,Content)
-			local guildConnection = message.guild.connection;
-			if not guildConnection then
-				return replyMsg:setContent("현재 이 서버에서는 음악 기능을 사용하고 있지 않습니다\n> 음악 실행중이 아님");
-			end
-			local player = playerForChannels[guildConnection.channel:__hash()];
-	
-			if not player then
-				return replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
-			end
-			local rawArgs = Content.rawArgs;
-			replyMsg:update {
-
-				embed = player:embedfiyNowplaying();
-				content = "지금 재생중인 곡입니다!";
-			};
+			replyMsg:update(playerClass.showSong(Content.guild));
 		end;
 		onSlash = commonSlashCommand {
 			description = "현재 재생중인 곡의 정보를 봅니다!";
@@ -1050,20 +1035,9 @@ local export = {
 		};
 		reply = "처리중입니다 . . .";
 		func = function(replyMsg,message,args,Content)
-			local guildConnection = message.guild.connection;
-			if not guildConnection then
-				return replyMsg:setContent("현재 이 서버에서는 음악 기능을 사용하고 있지 않습니다\n> 음악 실행중이 아님");
-			end
-			local player = playerForChannels[guildConnection.channel:__hash()];
-			if not player then
-				return replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
-			end
 			local this = Content.rawArgs;
 			this = tonumber(this) or tonumber(this:match("%d+")) or 1;
-			replyMsg:update {
-				embed = player:embedfiyNowplaying(this);
-				content = (this == 1) and "지금 재생중인 곡입니다!" or (("%d 번째 곡입니다!"):format(this));
-			};
+			replyMsg:update(playerClass.showSong(Content.guild,this));
 		end;
 		onSlash = commonSlashCommand {
 			description = "해당 번째의 곡 정보를 봅니다!";

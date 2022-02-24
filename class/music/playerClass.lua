@@ -3,6 +3,23 @@
 local this = {};
 this.__index = this;
 this.playerForChannels = {};
+-- ---@type number
+-- local theHourOfAllOfSpentForEditingThis = 122;
+
+--#region --* setup const objects *--
+
+local components = discordia_enchent.components;
+local discordia_enchent_enums = discordia_enchent.enums;
+local isDiscordiaObject = discordia.class.isObject;
+local remove = table.remove;
+local insert = table.insert;
+local time = os.time;
+local floor = math.floor;
+local timeAgo = _G.timeAgo;
+local promise = _G.promise;
+
+--#endregion --* setup const objects *--
+--#region --* setup ytdl *--
 
 local isStreamMode;
 local ytHandler; ---@module "class.music.youtubeStream";
@@ -16,13 +33,7 @@ ytHandler = ytHandler or require("class.music.youtubeDownload");
 this.ytHandler = ytHandler;
 this.timeoutMessage = ytHandler.timeoutMessage;
 
-local remove = table.remove;
-local insert = table.insert;
-local time = os.time;
-local floor = math.floor;
-local timeAgo = _G.timeAgo;
-local promise = _G.promise;
-
+-- Insert args on ffmpeg process
 local args = discordia_class.classes.FFmpegProcess.args;
 if args then
 	insert(args,"-b:a");
@@ -30,6 +41,9 @@ if args then
 	insert(args,"-af");
 	insert(args,"loudnorm");
 end
+
+--#endregion --* setup ytdl *--
+--#region --* util functions *--
 
 local function formatTime(t)
 	if not t then
@@ -86,15 +100,26 @@ local function seekbar(now,atEnd)
 end
 this.seekbar = seekbar;
 
-local components = discordia_enchent.components;
-local discordia_enchent_enums = discordia_enchent.enums;
+-- download music for prepare playing song
+local function download(thing)
+	local audio,info,url,vid = ytHandler.download(thing.url);
+	if not audio then
+		return;
+	end
+	thing.whenDownloaded = time();
+	thing.url = url or thing.url;
+	thing.audio = audio;
+	thing.info = info;
+	thing.vid = vid;
+	if isStreamMode then
+		thing.exprie = tonumber(audio:match("expire=(%d+)&"));
+	end
+	return true;
+end
+this.download = download;
 
--- 이 코드는 신과 나만 읽을 수 있게 만들었습니다
--- 만약 편집을 기꺼히 원한다면... 그렇게 하도록 하세요
--- 다만 여기의 이 규칙을 따라주세요
--- local theHourOfAllOfSpentForEditingThis = 82; -- TYPE: number;hour
--- 이 코드를 편집하기 위해 사용한 시간만큼 여기의
--- 변수에 값을 추가해주세요.
+--#endregion --* util functions *--
+--#region --* class initialization *--
 
 --[[
 voiceChannelID : 그냥 식별용으로 쓰기 위해 만든 별거 없는 아이디스페이스
@@ -102,8 +127,7 @@ nowPlaying : 지금 플레이중인 곡
 new.playIndex
 ]]
 
--- make new playerClass instnace
-
+--- make new playerClass instnace
 ---@return playerClass
 function this.new(props)
 	local new = {};
@@ -125,24 +149,8 @@ function this:__init(props)
 	self.playerForChannels[voiceChannelID] = self;
 end
 
--- download music for prepare playing song
-function this.download(thing)
-	local audio,info,url,vid = ytHandler.download(thing.url);
-	if not audio then
-		return;
-	end
-	thing.whenDownloaded = time();
-	thing.url = url or thing.url;
-	thing.audio = audio;
-	thing.info = info;
-	thing.vid = vid;
-	if isStreamMode then
-		thing.exprie = tonumber(audio:match("expire=(%d+)&"));
-	end
-	return true;
-end
-
---#region : Stream handling methods
+--#endregion --* class initialization *--
+--#region --* (PRIVATE) Stream handling methods *--
 
 -- play thing
 local getPosixNow = posixTime.now;
@@ -184,7 +192,7 @@ function this:__play(thing,position) -- PRIVATE
 	local exprie = thing.exprie;
 	local info = thing.info;
 	if exprie and exprie <= (getPosixNow()+(info and info.duration or 0)+expireAtLast-(position or 0)) then
-		this.download(thing);
+		download(thing);
 	end
 
 	-- run asynchronously task for playing song
@@ -213,7 +221,7 @@ function this:__play(thing,position) -- PRIVATE
 			local ffmpegErrorLow = ffmpegError:lower();
 			if ffmpegErrorLow:match("access denied") or ffmpegErrorLow:match("Forbidden") then -- if expried
 				logger.warnf("stream url expried, re-downloading ... (%s)",thing.url);
-				self.download(thing);
+				download(thing);
 			end
 			local lastErrorTime = self.lastErrorTime;
 			local now = posixTime.now();
@@ -299,7 +307,8 @@ function this:__stop() -- PRIVATE
 	return true;
 end
 
---#endregion : Stream handling methods
+--#endregion --* (PRIVATE) Stream handling methods *--
+--#region --* class methods *--
 
 -- apply play queue
 function this:apply()
@@ -320,7 +329,7 @@ end
 function this:add(thing,onIndex)
 	local message = thing.message;
 	thing.channel = thing.channel or (message and message.channel);
-	self.download(thing);
+	download(thing);
 	if not thing.audio then
 		error("fail to download");
 	end
@@ -409,8 +418,163 @@ function this:getStatusText()
 	};
 end
 
+-- seek playing position
+function this:seek(timestamp)
+	if not self.nowPlaying then
+		error(
+			("player:seek must be called on playing song (self.nowPlaying == nil)\nplayerId: %s")
+				:format(self.voiceChannelID or "NULL")
+		);
+	else
+		local timestampType = type(timestamp);
+		if timestampType ~= "number" then
+			error(
+				("timestamp must be number value. but got %s (%s)")
+					:format(timestampType,tostring(timestamp))
+			);
+		end
+	end
+	self.seeking = timestamp;
+	self.handler:stopStream();
+end
+
+--#endregion --* class methods *--
+--#region --* ShowSong *--
+
+-- display song info
+function this:songEmbedfiy(index)
+	index = tonumber(index) or 1;
+	local song = self[index];
+
+	if not song then
+		return {
+			title = (index == 1) and "재생 목록이 비어있습니다" or "존재하지 않습니다!";
+			color = 16040191;
+		};
+	end
+
+	local info = song.info;
+	if not info then
+		return {
+			title = "알 수 없는 곡";
+			color = 16040191;
+		};
+	end
+	local thumbnails = info.thumbnails;
+	local handler = self.handler;
+	local getElapsed = handler.getElapsed;
+	local elapsed = getElapsed and (getElapsed() / 1000) or 0;
+	local duration = info.duration;
+	return {
+		footer = self:getStatusText();
+		title = info.title;
+		description = ("%s신청자 : %s | 신청시간 : %s\n%s조회수 : %s | 좋아요 : %s\n업로더 : %s\n[영상으로 이동](%s) | [채널로 이동](%s)"):format(
+			getElapsed and (index == 1) and seekbar(elapsed,duration) or "",
+			song.username or "NULL",
+			timeAgo(song.whenAdded),
+			(not getElapsed) and ("곡 길이 : %s | "):format(formatTime(duration)) or "",
+			tostring(info.view_count),
+			tostring(info.like_count),
+			tostring(info.uploader),
+			tostring(song.url or info.webpage_url),
+			tostring(info.uploader_url or info.channel_url)
+		);
+		thumbnail = thumbnails and {
+			url = thumbnails[#thumbnails].url;
+		} or nil;
+		color = 16040191;
+	};
+end
+
+local noSong = {components.actionRow.new{
+	components.button.new{
+		custom_id = "music_song_1";
+		style = discordia_enchent_enums.buttonStyle.success;
+		label = "새로고침";
+		emoji = components.emoji.new"🔄";
+	};
+	buttons.action_remove;
+}};
+function this:songIndicator(index)
+	if (not index) or (not self) then
+		return noSong;
+	end
+	return {components.actionRow.new{
+		components.button.new{
+			custom_id = ("music_song_%d"):format(index);
+			style = discordia_enchent_enums.buttonStyle.success;
+			emoji = components.emoji.new "🔄";
+			label = "새로고침";
+		};
+		components.button.new{
+			custom_id = ("music_song_%d"):format(index-1);
+			style = discordia_enchent_enums.buttonStyle.primary;
+			label = "이전 곡정보";
+			emoji = components.emoji.new "⬅";
+			disabled = index <= 1;
+		};
+		components.button.new{
+			custom_id = ("music_song_%d"):format(index+1);
+			style = discordia_enchent_enums.buttonStyle.primary;
+			label = "다음 곡정보";
+			emoji = components.emoji.new "➡";
+			disabled = index >= #self;
+		};
+		buttons.action_remove;
+	}};
+end
+
+---show song information, you can give arguments with guild or playerClass
+---@param self Guild|playerClass the guild or player to display
+---@param index number index number of song to show
+---@return table contents message contents object, you can use this with message:update()
+function this:showSong(index)
+	index = index or 1;
+	if isDiscordiaObject(self) then
+		local guildConnection = self.connection;
+		if not guildConnection then
+			return {
+				content = "틀려있는 음악이 없어요!";
+				components = this.songIndicator();
+				embed = {};
+				embeds = {};
+			};
+		end
+		self = this.playerForChannels[guildConnection.channel:__hash()];
+		if not self then
+			return {
+				content = "오류가 발생했어요!\n> 플레이어를 찾을 수 없습니다 (봇을 음성채팅에서 킥한 후 다시 시도해보세요)";
+				components = this.songIndicator();
+				embed = {};
+				embeds = {};
+			};
+		end
+	end
+
+	local embed = self:songEmbedfiy(index);
+	return {
+		embeds = {embed};
+		embed = embed;
+		content = index == 1 and "지금 재생중인 곡입니다!" or (("%d 번째 곡입니다!"):format(index));
+		components = self:songIndicator(index);
+	};
+end
+
+---@param id string
+---@param object interaction
+local function songIndicatorButtonPressed(id,object)
+	local index = tonumber(id:match("music_song_(%d+)"));
+	if not index then return; end
+	-- logger.infof("index move button pressed '%d'",tostring(index));
+	object:update(this.showSong(object.guild,index));
+end
+client:on("buttonPressed",songIndicatorButtonPressed);
+
+--#endregion --* ShowSong *--
+--#region --* ShowList *--
+
 -- display list of songs
-function this:embedfiyList(page)
+function this:listEmbedfiy(page)
 	local handler = self.handler;
 	local getElapsed = handler and rawget(handler,"getElapsed");
 	local elapsed = getElapsed and (getElapsed() / 1000) or 0;
@@ -462,111 +626,6 @@ function this:embedfiyList(page)
 	}
 end
 
--- display now playing
-function this:embedfiyNowplaying(index)
-	index = tonumber(index) or 1;
-	local song = self[index];
-
-	if not song then
-		return {
-			title = (index == 1) and "재생 목록이 비어있습니다" or "존재하지 않습니다!";
-			color = 16040191;
-		};
-	end
-
-	local info = song.info;
-	if not info then
-		return {
-			title = "알 수 없는 곡";
-			color = 16040191;
-		};
-	end
-	local thumbnails = info.thumbnails;
-	local handler = self.handler;
-	local getElapsed = handler.getElapsed;
-	local elapsed = getElapsed and (getElapsed() / 1000) or 0;
-	local duration = info.duration;
-	return {
-		footer = self:getStatusText();
-		title = info.title;
-		description = ("%s신청자 : %s | 신청시간 : %s\n%s조회수 : %s | 좋아요 : %s\n업로더 : %s\n[영상으로 이동](%s) | [채널로 이동](%s)"):format(
-			getElapsed and (index == 1) and seekbar(elapsed,duration) or "",
-			song.username or "NULL",
-			timeAgo(song.whenAdded),
-			(not getElapsed) and ("곡 길이 : %s | "):format(formatTime(duration)) or "",
-			tostring(info.view_count),
-			tostring(info.like_count),
-			tostring(info.uploader),
-			tostring(song.url or info.webpage_url),
-			tostring(info.uploader_url or info.channel_url)
-		);
-		thumbnail = thumbnails and {
-			url = thumbnails[#thumbnails].url;
-		} or nil;
-		color = 16040191;
-	};
-end
-
-function this:nowplayIndicator(index)
-	return {components.actionrow.new{
-		components.button.new{
-			custom_id = ("music_info_%d"):format(index);
-			style = discordia_enchent_enums.buttonStyle.success;
-			emoji = components.emoji.new "🔄";
-		};
-		components.button.new{
-			custom_id = ("music_info_%d"):format(index-1);
-			style = discordia_enchent_enums.buttonStyle.primary;
-			label = "이전 곡 정보";
-			emoji = components.emoji.new "⬅";
-			disabled = index <= 1;
-		};
-		components.button.new{
-			custom_id = ("music_info_%d"):format(index+1);
-			style = discordia_enchent_enums.buttonStyle.primary;
-			label = "다음 곡 정보";
-			emoji = components.emoji.new "➡";
-			disabled = index >= #self;
-		};
-		buttons.action_remove;
-	}};
-end
-
----@param id string
----@param object interaction
-local function nowplayIndicatorButtonPressed(id,object)
-	local index = tonumber(id:match("music_info_(%d+)"));
-	if not index then return; end
-	-- logger.infof("index move button pressed '%d'",tostring(index));
-	local embed = this:embedfiyNowplaying(index)
-	object:update{
-		embed = embed;
-		embeds = {embed};
-
-	};
-end
-client:on("buttonPressed",nowplayIndicatorButtonPressed);
-
--- seek playing position
-function this:seek(timestamp)
-	if not self.nowPlaying then
-		error(
-			("player:seek must be called on playing song (self.nowPlaying == nil)\nplayerId: %s")
-				:format(self.voiceChannelID or "NULL")
-		);
-	else
-		local timestampType = type(timestamp);
-		if timestampType ~= "number" then
-			error(
-				("timestamp must be number value. but got %s (%s)")
-					:format(timestampType,tostring(timestamp))
-			);
-		end
-	end
-	self.seeking = timestamp;
-	self.handler:stopStream();
-end
-
 -- make next page button, previous page button, remove button components
 local noPage = {components.actionRow.new{
 	components.button.new{
@@ -577,11 +636,11 @@ local noPage = {components.actionRow.new{
 	};
 	buttons.action_remove;
 }};
-function this.pageIndicator(self,page)
+function this:pageIndicator(page)
 	if (not page) or (not self) then
 		return noPage;
 	end
-	return {components.actionrow.new{
+	return {components.actionRow.new{
 		components.button.new{
 			custom_id = ("music_page_%d"):format(page);
 			style = discordia_enchent_enums.buttonStyle.success;
@@ -605,6 +664,41 @@ function this.pageIndicator(self,page)
 		buttons.action_remove;
 	}};
 end
+
+---show list page, you can give arguments with guild or playerClass
+---@param self Guild|playerClass the guild or player to display
+---@param page number number of page to show
+---@return table contents message contents object, you can use this with message:update()
+function this:showList(page)
+	if isDiscordiaObject(self) then
+		local guildConnection = self.connection;
+		if not guildConnection then
+			return {
+				content = "틀려있는 음악이 없어요!";
+				components = this.pageIndicator();
+				embed = {};
+				embeds = {};
+			};
+		end
+		self = this.playerForChannels[guildConnection.channel:__hash()];
+		if not self then
+			return {
+				content = "오류가 발생했어요!\n> 플레이어를 찾을 수 없습니다 (봇을 음성채팅에서 킥한 후 다시 시도해보세요)";
+				components = this.pageIndicator();
+				embed = {};
+				embeds = {};
+			};
+		end
+	end
+	local embed = self:listEmbedfiy(page);
+	return {
+		embed = embed;
+		embeds = {embed};
+		content = "현재 이 서버의 플레이리스트입니다!";
+		components = self:pageIndicator(page);
+	};
+end
+
 ---@param id string
 ---@param object interaction
 local function pageIndicatorButtonPressed(id,object)
@@ -615,41 +709,8 @@ local function pageIndicatorButtonPressed(id,object)
 end
 client:on("buttonPressed",pageIndicatorButtonPressed);
 
----show list page, you can give arguments with guild or playerClass
----@param guildOrPlayer Guild|playerClass the guild or player to display
----@param page number number of page to show
----@return table contents message contents object, you can use this with message:update()
-local isDiscordiaObject = discordia.class.isObject;
-function this.showList(guildOrPlayer,page)
-	local player = guildOrPlayer;
-	if isDiscordiaObject(guildOrPlayer) then
-		local guildConnection = guildOrPlayer.connection;
-		if not guildConnection then
-			return {
-				content = "현재 이 서버에서는 음악 기능을 사용하고 있지 않습니다\n> 음악 실행중이 아님";
-				components = this.pageIndicator();
-				embed = {};
-				embeds = {};
-			};
-		end
-		player = this.playerForChannels[guildConnection.channel:__hash()];
-		if not player then
-			return {
-				content = "오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음";
-				components = this.pageIndicator();
-				embed = {};
-				embeds = {};
-			};
-		end
-	end
-	local embed = player:embedfiyList(page);
-	return {
-		embed = embed;
-		embeds = {embed};
-		content = "현재 이 서버의 플레이리스트입니다!";
-		components = player:pageIndicator(page);
-	};
-end
+--#endregion ShowList
+--#region --* Restore *--
 
 -- restore saved status
 function this.restore(data)
@@ -708,5 +769,7 @@ function this.save()
 	end
 	return data;
 end
+
+--#endregion --* Restore *--
 
 return this;

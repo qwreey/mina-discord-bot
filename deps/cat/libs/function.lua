@@ -5,15 +5,11 @@ local gsub = string.gsub;
 local format = string.format;
 
 local function normalFormatter(str,set)
-    print(str)
-    print()
     if set == "-" then return format(" = function(%s)",str); end
     return format("function(%s)",str);
 end
 
 local function selfFormatter(str,set)
-    print(str)
-    print()
     local comma = str == "" and "" or ",";
     if set == "=" then return format(" = function(self%s%s)",comma,str); end
     return format("function(self%s%s)",comma,str);

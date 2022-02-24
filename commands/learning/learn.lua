@@ -46,7 +46,7 @@ function module.format(userReact)
 	if (not author) or (not when) or (not content) then
 		local id = tostring(userReact.id or userReact);
 		logger.errorf("Error occurred on formatting learn data '%s' (id)\nObject was : %s",id,table.dump(userReact or {}));
-		return ("오류가 발생했어요!\n> 유저 반응이 잘못되었습니다\n```app.main : formatUserLearnReact(userReact) -> userReact has missing properties\nuser reaction id is '%s'```"):format(id);
+		return ("오류가 발생했어요!\n> 유저 반응이 잘못되었습니다\n```app.main : formatUserLearnReact(userReact) -> userReact has missing properties\nuser reaction id was '%s'```"):format(id);
 	end
 
 	return ("%s\n> '%s' 님이 가르쳐 주셨어요!"):format(content,author.latestName);

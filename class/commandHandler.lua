@@ -22,7 +22,6 @@ local module = {};
 function module.onSlash(onSlash,client,reactInfo,commandName)
 	_G.client:on("slashCommandsReady",function ()
 		onSlash(reactInfo,client);
-		logger.infof("[Slash] Loaded slash command from command '%s'",commandName or reactInfo.name);
 	end);
 end
 

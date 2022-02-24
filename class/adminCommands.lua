@@ -112,6 +112,28 @@ local function executeMessage(message,args,mode)
 	return true;
 end
 
+local function git(args)
+	local process = spawn("git",{args = args,stdio={0,true,true}});
+	local waitter = promise.waitter();
+	waitter:add(
+		promise.new(function ()
+			for str in process.stdout.read do
+				logger.info("[GIT] " .. str);
+			end
+		end)
+	);
+	waitter:add(
+		promise.new(function ()
+			for str in process.stderr.read do
+				logger.warn("[GIT] " .. str);
+			end
+		end)
+	);
+	waitter:wait();
+	process.waitExit();
+	return git;
+end
+
 ---@param Text string
 ---@param message Message
 local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
@@ -132,7 +154,7 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		logger.info("Download codes ...");
 		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . .');
 		_G.livereloadEnabled = false;
-		os.execute("git pull"); -- git 에서 변동사항 가져와 적용하기
+		git{"pull"}; -- git 에서 변동사항 가져와 적용하기
 		_G.livereloadEnabled = true;
 		msg:setContent('> 적용중 . . . (3초 내로 완료됩니다)');
 		reloadBot();
@@ -142,7 +164,9 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		logger.info("Upload codes ...");
 		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 코드를 업로드중 . . .');
 		_G.livereloadEnabled = false;
-		os.execute("git add .&&git commit -m 'MINA : Upload in main code (bot.lua)'&&git push");
+		git{"add","."}
+			{"commit","-m","MINA : Upload in main code (bot.lua)"}
+			{"push"};
 		_G.livereloadEnabled = true;
 		msg:setContent('> 완료!');
 		return true; -- 업로드
@@ -150,7 +174,10 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		logger.info("Sync codes ...");
 		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 동기화중 . . . (8초 내로 완료됩니다)');
 		_G.livereloadEnabled = false;
-		os.execute('git add .&&git commit -m "MINA : Sync in main code (Bot.lua)"&&git pull&&git push');
+		git{"add","."}
+			{"commit","-m","MINA : Upload in main code (bot.lua)"}
+			{"pull"}
+			{"push"};
 		_G.livereloadEnabled = true;
 		msg:setContent('> 적용중 . . . (3초 내로 완료됩니다)');
 		reloadBot();
