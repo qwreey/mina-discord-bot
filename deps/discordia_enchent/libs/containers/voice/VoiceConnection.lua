@@ -56,6 +56,8 @@ local function asyncResume(thread)
 	end)
 end
 
+local pack = pack
+
 function VoiceConnection:_play(stream, duration, position)
 	position = tonumber(position);
 
@@ -79,17 +81,24 @@ function VoiceConnection:_play(stream, duration, position)
 	rawset(self,"getElapsed",function ()
 		return elapsed;
 	end)
+	local sread = stream.read
+	local encode = encoder.encode
+	local encrypt = sodium.encrypt
 	---CUSTOM PATCH
 
 	while elapsed < duration do
 
-		local pcm = stream:read(pcm_len)
+		---CUSTOM PATCH
+		local pcm = sread(stream,pcm_len)
+		---CUSTOM PATCH
 		if not pcm then
 			reason = 'stream exhausted or errored'
 			break
 		end
 
-		local data, len = encoder:encode(pcm, pcm_len, frame_size, pcm_len * 2)
+		---CUSTOM PATCH
+		local data, len = encode(encoder, pcm, pcm_len, frame_size, pcm_len * 2)
+		---CUSTOM PATCH
 		if not data then
 			reason = 'could not encode audio data'
 			break
@@ -104,7 +113,9 @@ function VoiceConnection:_play(stream, duration, position)
 		self._s = s > MAX_SEQUENCE and 0 or s
 		self._t = t > MAX_TIMESTAMP and 0 or t
 
-		local encrypted, encrypted_len = sodium.encrypt(data, len, header .. PADDING, key)
+		---CUSTOM PATCH
+		local encrypted, encrypted_len = encrypt(data, len, header .. PADDING, key)
+		---CUSTOM PATCH
 		if not encrypted then
 			reason = 'could not encrypt audio data'
 			break
