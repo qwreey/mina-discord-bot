@@ -112,25 +112,40 @@ local function executeMessage(message,args,mode)
 	return true;
 end
 
+local function insertMessage(message,str)
+	if not message then return; end
+	local content = message.content;
+	content = content:gsub("​```$",""):gsub("```$","");
+	message:setContent(("%s\n%s```"):format(content,str));
+end
+
+local function gitReadPipe(pipe,message)
+	for str in pipe.read do
+		str = str:gsub("\n+$","");
+		logger.warn("[GIT] " .. str);
+		insertMessage(message,str);
+	end
+end
+
 local function git(args)
+	local message = args.message;
+	args.message = nil;
 	local process = spawn("git",{args = args,stdio={0,true,true}});
 	local waitter = promise.waitter();
 	waitter:add(
-		promise.new(function ()
-			for str in process.stdout.read do
-				logger.info("[GIT] " .. str);
-			end
-		end)
+		promise.new(gitReadPipe,process.stdout,message)
 	);
 	waitter:add(
-		promise.new(function ()
-			for str in process.stderr.read do
-				logger.warn("[GIT] " .. str);
-			end
-		end)
+		promise.new(gitReadPipe,process.stderr,message)
 	);
 	waitter:wait();
 	process.waitExit();
+	if message then
+		return function(args)
+			args.message = message;
+			return git(args);
+		end
+	end
 	return git;
 end
 
@@ -152,34 +167,34 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		return true;
 	elseif (cmd == "!!!pull" or cmd == "!!!download") then
 		logger.info("Download codes ...");
-		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . .');
+		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . .\n```ansi\n​```');
 		_G.livereloadEnabled = false;
-		git{"pull"}; -- git 에서 변동사항 가져와 적용하기
+		git{message=msg,"pull"}; -- git 에서 변동사항 가져와 적용하기
 		_G.livereloadEnabled = true;
-		msg:setContent('> 적용중 . . . (3초 내로 완료됩니다)');
+		msg:setContent(msg.content .. '\n> 적용중 . . . (3초 내로 완료됩니다)');
 		reloadBot();
 		os.exit(exitCodes.reload); -- 다운로드 (리로드)\
 		return true;
 	elseif (cmd == "!!!push" or cmd == "!!!upload") then
 		logger.info("Upload codes ...");
-		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 코드를 업로드중 . . .');
+		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 코드를 업로드중 . . .\n```ansi\n​```');
 		_G.livereloadEnabled = false;
-		git{"add","."}
+		git{message=msg,"add","."}
 			{"commit","-m","MINA : Upload in main code (bot.lua)"}
 			{"push"};
 		_G.livereloadEnabled = true;
-		msg:setContent('> 완료!');
+		msg:setContent(msg.content .. '\n> 완료!');
 		return true; -- 업로드
 	elseif (cmd == "!!!sync") then
 		logger.info("Sync codes ...");
-		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 동기화중 . . . (8초 내로 완료됩니다)');
+		local msg = message:reply('\n> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 동기화중 . . . (8초 내로 완료됩니다)\n```ansi\n​```');
 		_G.livereloadEnabled = false;
-		git{"add","."}
+		git{message=msg,"add","."}
 			{"commit","-m","MINA : Upload in main code (bot.lua)"}
 			{"pull"}
 			{"push"};
 		_G.livereloadEnabled = true;
-		msg:setContent('> 적용중 . . . (3초 내로 완료됩니다)');
+		msg:setContent(msg.content .. '\n> 적용중 . . . (3초 내로 완료됩니다)');
 		reloadBot();
 		os.exit(exitCodes.reload); -- 동기화 (리로드)
 		return true;
