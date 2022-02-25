@@ -46,7 +46,7 @@ local function executeMessage(message,args,mode)
 	loadstringEnv.__enable();
 	-- logger.noStdout = true;
 	local function send(msg)
-		return message:reply(msg); 
+		return message:reply(msg);
 	end
 	_G.send = send;
 	rawset(loadstringEnv,"logger",customLogger);
@@ -65,11 +65,14 @@ local function executeMessage(message,args,mode)
 			local loggerStringRaw = customLogger.__last;
 			local valueType = type(value);
 
-			if valueType == "table" and value.rawmessage then
-				value.rawmessage = nil;
-				value.content = value.content or "​"
-				message:reply(value);
-				return;
+			if valueType == "table" then
+				if value.ignore then return;
+				elseif value.rawmessage then
+					value.rawmessage = nil;
+					value.content = value.content or "​";
+					message:reply(value);
+					return;
+				end
 			end
 
 			local loggerString = ((valueType == "nil" or loggerStringRaw == "" or loggerStringRaw == value)

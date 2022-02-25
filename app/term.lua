@@ -110,20 +110,26 @@ local remove = table.remove;
 function runEnv.exec(command,sendf) -- process open
 	local send = send or sendf;
 	local split = argsParser.split(command);
-	local proc = remove(split);
+	local proc = remove(split,1);
 	local cproc,err = spawn(proc,{args = split,stdio = {true,true,true}});
 
+	logger.info(proc);
+
 	if not cproc then
-		return err;
+		return "ERR : "..err;
 	end
 
 	local msg = send and send(("```ansi\n $ %s\n```"):format(proc));
 	local msgMutex = msg and mutex.new();
 	local waitter = promise.waitter();
-	waitter:add(promise.new(readPipe,cproc.stdout,msgMutex));
-	waitter:add(promise.new(readPipe,cproc.stderr,msgMutex));
+	waitter:add(promise.new(readPipe,cproc.stdout,msg,msgMutex));
+	waitter:add(promise.new(readPipe,cproc.stderr,msg,msgMutex));
 	waitter:wait();
-	return cproc.waitExit();
+	local ecode,esignal = cproc.waitExit();
+	msgMutex:lock();
+	msg:setContent(("%s\n%s```"):format(msg.content:gsub("```$",""),("Exit with code %s (%s)"):format(tostring(ecode),tostring(esignal))));
+	msgMutex:unlock();
+	return {ignore = true};
 end
 function runEnv.clear() -- 화면 지우기 명령어
 	os.execute(jit.os == "Windows" and "cls" or "clear");
