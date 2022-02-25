@@ -185,9 +185,16 @@ function this:__play(thing,position) -- PRIVATE
 	end
 
 	-- set state to playing
-	position = position or self.timestamp;
+	position = position or self.timestamp or thing.timestamp;
 	logger.infof("playing %s with %s",tostring(thing),tostring(position)); -- logging
-	if self.nowPlaying then -- if already playing something, kill it
+	local nowPlaying = self.nowPlaying;
+	if nowPlaying then -- if already playing something, kill it
+		local getElapsed = handler.getElapsed;
+		if getElapsed then
+			local elapsed = getElapsed() / 1000;
+			nowPlaying.timestamp = elapsed;
+			logger.infof("saved last playing timestamp %d",elapsed)
+		end
 		self:__stop();
 	end
 	self.timestamp = nil;
@@ -260,7 +267,7 @@ function this:__play(thing,position) -- PRIVATE
 			self.seeking = nil;
 			self.nowPlaying = nil;
 			logger.infof("seeking into %s",tostring(seeking));
-			promise.spawn(self.__play,self,thing,seeking);
+			promise.spawn(this.__play,self,thing,seeking);
 			return;
 		end
 
@@ -275,8 +282,10 @@ function this:__play(thing,position) -- PRIVATE
 					pcall(delete,lastMsg);
 				end
 			end
-			self.lastUpnextMessage = sendMessage(thing,("지금 '%s' 를(을) 재생합니다!"):format(
-				tostring((upnext.info or {title = "unknown"}).title)
+			local timestamp = upnext.timestamp;
+			self.lastUpnextMessage = sendMessage(thing,("'%s' 를(을) 재생합니다!%s"):format(
+				tostring((upnext.info or {title = "unknown"}).title),
+				timestamp and ((" (%s)"):format(formatTime(timestamp))) or ""
 			));
 		end
 
@@ -410,7 +419,10 @@ end
 function this:getStatusText()
 	local duration = 0;
 	for _,song in ipairs(self) do
-		duration = duration + song.info.duration;
+		local timestamp = song.timestamp or 0;
+		local info = song.info;
+		local songduration = info and info.duration or 0;
+		duration = duration + songduration - timestamp;
 	end
 	local len = #self;
 	local handler = self.handler;
@@ -468,19 +480,20 @@ function this:songEmbedfiy(index)
 	end
 	local thumbnails = info.thumbnails;
 	local handler = self.handler;
-	local getElapsed = handler.getElapsed;
-	local elapsed = getElapsed and (getElapsed() / 1000) or 0;
+	local getElapsed = index == 1 and handler.getElapsed;
+	local elapsed = getElapsed and (getElapsed() / 1000) or song.timestamp;
 	local duration = info.duration;
+	local like = info.like_count;
 	return {
 		footer = self:getStatusText();
 		title = info.title;
-		description = ("%s신청자 : %s | 신청시간 : %s\n%s조회수 : %s | 좋아요 : %s\n업로더 : %s\n[영상으로 이동](%s) | [채널로 이동](%s)"):format(
-			getElapsed and (index == 1) and seekbar(elapsed,duration) or "",
+		description = ("%s신청자 : %s | 신청시간 : %s\n%s조회수 : %s%s\n업로더 : %s\n[영상으로 이동](%s) | [채널로 이동](%s)"):format(
+			elapsed and seekbar(elapsed,duration) or "",
 			song.username or "NULL",
 			timeAgo(song.whenAdded),
-			(not getElapsed) and ("곡 길이 : %s | "):format(formatTime(duration)) or "",
+			(not elapsed) and ("곡 길이 : %s | "):format(formatTime(duration)) or "",
 			tostring(info.view_count),
-			tostring(info.like_count),
+			like and (" | 좋아요 : %s"):format(tostring(info.like_count)) or "",
 			tostring(info.uploader),
 			tostring(song.url or info.webpage_url),
 			tostring(info.uploader_url or info.channel_url)
@@ -592,8 +605,9 @@ function this:listEmbedfiy(page)
 	for index = atStart,atEnd do
 		local song = self[index];
 		if song then
+			local timestamp = song.timestamp;
 			insert(fields,{
-				name = (index == 1) and ("현재 재생중 (%s/%s)"):format(formatTime((song.info or {}).duration),formatTime(elapsed)) or (("%d 번째 곡 (%s)"):format(index,formatTime((song.info or {}).duration)));
+				name = (index == 1) and ("현재 재생중 (%s/%s)"):format(formatTime((song.info or {}).duration),formatTime(elapsed)) or (("%d 번째 곡 (%s%s)"):format(index,timestamp and ("%s/"):format(formatTime(timestamp)) or "",formatTime((song.info or {}).duration)));
 				value = ("[%s](%s)\n`신청자 : %s (%s)`"):format(
 					(song.info or {title = "NULL"}).title:gsub("\"","\\\""),
 					song.url,
@@ -736,16 +750,17 @@ function this.restore(data)
 				isLooping = playerData.isLooping;
 				mode24 = playerData.mode24;
 			};
+			local isPaused = playerData.isPaused;
 			promise.spawn(function ()
-				for _,song in ipairs(songs) do
+				for index,song in ipairs(songs) do
 					song.channel = client:getChannel(song.channel);
 					pcall(player.add,player,song);
 					if guild.connection ~= connection then
 						return;
 					end
-				end
-				if playerData.isPaused then
-					player:setPaused(true);
+					if index == 1 and isPaused then
+						player:setPaused(true);
+					end
 				end
 			end);
 		end
@@ -769,6 +784,7 @@ function this.save()
 				whenAdded = song.whenAdded;
 				username = song.username;
 				url = song.url;
+				timestamp = song.timestamp;
 			});
 		end
 		insert(data,playerData);

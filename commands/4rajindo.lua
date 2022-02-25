@@ -10,11 +10,11 @@ local export = {
 		reply = "크시랑 하세요";
 		love = defaultLove;
 	};
-	["멈춰"] = {
-		alias = {"학교폭력","학교폭력"};
-		reply = {"학교폭력멈춰!","멈춰어어!!",string.rep("멈춰! ",20)};
-		love = defaultLove;
-	};
+	--["멈춰"] = {
+	--	alias = {"학교폭력","학교폭력"};
+	--	reply = {"학교폭력멈춰!","멈춰어어!!",string.rep("멈춰! ",20)};
+	--	love = defaultLove;
+	--};
 	["장비를 정지합니다"] = {
 		alias = {"장비를정지합니다","정지합니다"};
 		reply = "어, 정..정지가 앙 돼. 정지시킬 수가 없어";
@@ -142,7 +142,7 @@ local export = {
 		love = defaultLove;
 	};
 	["자살"] = {
-		reply = "힘들면 연락해 기다릴게";
+		reply = "괴롭고 힘들더라도 자신을 해치진 말아요 당신은 가장 소중해요";
 		love = defaultLove;
 	};
 	["숙제"] = {

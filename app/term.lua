@@ -96,8 +96,37 @@ _G.buildPrompt = buildPrompt;
 local runEnv = { -- 명령어 실행 환경 만들기
 	runSchedule = timeout;
 };
+local function readPipe(pipe,message,msgMutex)
+	for str in pipe.read do
+		logger.info(str:gsub("\n$",""));
+		if message and msgMutex then
+			msgMutex:lock();
+			message:setContent(("%s%s```"):format(message.content:gsub("```$",""),str:gsub("```","\\`\\`\\`")));
+			msgMutex:unlock();
+		end
+	end
+end
+local remove = table.remove;
+function runEnv.exec(command,sendf) -- process open
+	local send = send or sendf;
+	local split = argsParser.split(command);
+	local proc = remove(split);
+	local cproc,err = spawn(proc,{args = split,stdio = {true,true,true}});
+
+	if not cproc then
+		return err;
+	end
+
+	local msg = send and send(("```ansi\n $ %s\n```"):format(proc));
+	local msgMutex = msg and mutex.new();
+	local waitter = promise.waitter();
+	waitter:add(promise.new(readPipe,cproc.stdout,msgMutex));
+	waitter:add(promise.new(readPipe,cproc.stderr,msgMutex));
+	waitter:wait();
+	return cproc.waitExit();
+end
 function runEnv.clear() -- 화면 지우기 명령어
-	os.execute("cls");
+	os.execute(jit.os == "Windows" and "cls" or "clear");
 	return "screen clear!";
 end
 function runEnv.exit() -- 봇 끄기
