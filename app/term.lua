@@ -102,6 +102,7 @@ local function readPipe(pipe,message,msgMutex)
 		if message and msgMutex then
 			msgMutex:lock();
 			message:setContent(("%s%s```"):format(message.content:gsub("```$",""),str:gsub("```","\\`\\`\\`")));
+			timer.sleep(20);
 			msgMutex:unlock();
 		end
 	end
@@ -112,8 +113,6 @@ function runEnv.exec(command,sendf) -- process open
 	local split = argsParser.split(command);
 	local proc = remove(split,1);
 	local cproc,err = spawn(proc,{args = split,stdio = {true,true,true}});
-
-	logger.info(proc);
 
 	if not cproc then
 		return "ERR : "..err;
