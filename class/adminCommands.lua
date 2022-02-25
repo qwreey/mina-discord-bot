@@ -45,11 +45,13 @@ local function executeMessage(message,args,mode)
 	-- get env
 	loadstringEnv.__enable();
 	-- logger.noStdout = true;
+	local function send(msg)
+		return message:reply(msg); 
+	end
+	_G.send = send;
 	rawset(loadstringEnv,"logger",customLogger);
 	rawset(loadstringEnv,"log",customLogger);
-	rawset(loadstringEnv,"send",function (str)
-		message:reply(str);
-	end);
+	rawset(loadstringEnv,"send",send);
 	rawset(loadstringEnv,"message",message);
 	rawset(loadstringEnv,"guild",message.guild);
 	rawset(loadstringEnv,"member",message.member);
@@ -99,6 +101,7 @@ local function executeMessage(message,args,mode)
 		end):wait();
 
 	-- unload env
+	_G.send = nil;
 	rawset(loadstringEnv,"logger",nil);
 	rawset(loadstringEnv,"log",nil);
 	rawset(loadstringEnv,"send",nil);
