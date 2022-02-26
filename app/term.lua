@@ -96,15 +96,34 @@ _G.buildPrompt = buildPrompt;
 local runEnv = { -- 명령어 실행 환경 만들기
 	runSchedule = timeout;
 };
-local function readPipe(pipe,message,msgMutex)
+local function appendMessage(msgEnv,str)
+	if not msgEnv then return; end
+	local mutex = msgEnv.mutex;
+	local message = msgEnv.message;
+	local content = msgEnv.content;
+	if not content then
+		content = message.content;
+	end
+	mutex:lock();
+	str = str:gsub("```","\\`\\`\\`");
+	content = ("%s%s```"):format(content:gsub("```$",""),str);
+	if #content >= 2000 then
+		content = ("```ansi\n%s```"):format(str);
+		message = message:reply(content);
+		msgEnv.content = content;
+		msgEnv.message = message;
+	else
+		message:setContent(content);
+		msgEnv.content = content;
+	end
+	timer.sleep(20);
+	mutex:unlock();
+	return message;
+end
+local function readPipe(pipe,msgEnv)
 	for str in pipe.read do
 		logger.info(str:gsub("\n$",""));
-		if message and msgMutex then
-			msgMutex:lock();
-			message:setContent(("%s%s```"):format(message.content:gsub("```$",""),str:gsub("```","\\`\\`\\`")));
-			timer.sleep(20);
-			msgMutex:unlock();
-		end
+		appendMessage(msgEnv,str);
 	end
 end
 local remove = table.remove;
@@ -119,16 +138,17 @@ function runEnv.exec(command,sendf) -- process open
 	end
 
 	local msg = send and send(("```ansi\n $ %s\n```"):format(command));
-	local msgMutex = msg and mutex.new();
+	local msgEnv = msg and {message = msg,mutex = mutex.new()};
 	local waitter = promise.waitter();
-	waitter:add(promise.new(readPipe,cproc.stdout,msg,msgMutex));
-	waitter:add(promise.new(readPipe,cproc.stderr,msg,msgMutex));
+	waitter:add(promise.new(readPipe,cproc.stdout,msgEnv));
+	waitter:add(promise.new(readPipe,cproc.stderr,msgEnv));
 	waitter:wait();
 	local ecode,esignal = cproc.waitExit();
 	if msg then
-		msgMutex:lock();
-		msg:setContent(("%s\n%s```"):format(msg.content:gsub("```$",""),("Exit with code %s (%s)"):format(tostring(ecode),tostring(esignal))));
-		msgMutex:unlock();
+		appendMessage(msgEnv,("Exit with code %s (%s)"):format(tostring(ecode),tostring(esignal)));
+		-- msgMutex:lock();
+		-- msg:setContent(("%s\n%s```"):format(msg.content:gsub("```$",""),("Exit with code %s (%s)"):format(tostring(ecode),tostring(esignal))));
+		-- msgMutex:unlock();
 	end
 	return {ignore = true};
 end
