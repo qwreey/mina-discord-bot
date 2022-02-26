@@ -149,6 +149,21 @@ end
 
 ---@type table<string, Command>
 local export = {
+	["search music"] = {
+		command = {"search","검색","찾기","find"};
+		alias = {
+			"music search","search music",
+			"song search","search song",
+			"music find","find music",
+			"song find","find song",
+			"곡검색","곡 검색","곡찾기","곡 찾기",
+			"음악검색","음악 검색","음악찾기","음악 찾기",
+			"노래검색","노래 검색","노래찾기","노래 찾기"
+		};
+		disableDm = true;
+		registeredOnly = eulaComment_music;
+		reply = "로딩중 ⏳";
+	};
 	["add music"] = {
 		registeredOnly = eulaComment_music;
 		disableDm = true;
@@ -168,7 +183,7 @@ local export = {
 			"song add","song 추가","song play","song 재생",
 			"add 음악","add 곡","add 노래"
 		};
-		reply = "로딩중";
+		reply = "로딩중 ⏳";
 		func = function(replyMsg,message,args,Content)
 			local nth,rawArgs; do
 				local contentRaw = Content.rawArgs;
@@ -372,7 +387,7 @@ local export = {
 			"곡 참여","곡 참여해","곡 참가","곡 참가해","곡 참가하기","곡 참가해라","곡 참가해봐","곡 참가하자",			
 			"음악 join","music join","music 참가","join vc","vc join","join voice","voice join"
 		};
-		reply = "처리중입니다";
+		reply = "로딩중 ⏳";
 		func = function(replyMsg,message,args,Content,self)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
@@ -434,7 +449,7 @@ local export = {
 			"song 리스트","music 리스트","song 대기열","song 리스트",
 			"list 곡","list 음악","list 노래"
 		};
-		reply = "처리중입니다 . . .";
+		reply = "로딩중 ⏳";
 		func = function(replyMsg,message,args,Content)
 			local rawArgs = Content.rawArgs;
 			local page = tonumber(rawArgs) or tonumber(rawArgs:match("%d+")) or 1;
@@ -458,7 +473,7 @@ local export = {
 			"음악24","음악 24","음악 24시","음악24시","음악24시간","음악 24시간",
 			"곡24","곡 24","곡 24시","곡24시","곡24시간","곡 24시간"
 		};
-		reply = "처리중입니다 . . .";
+		reply = "로딩중 ⏳";
 		func = function(replyMsg,message,args,Content)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
@@ -540,7 +555,7 @@ local export = {
 			"음악반복","음악루프","음악반복하기","음악 반복","음악 루프","음악 반복하기",
 			"곡반복","곡루프","곡반복하기","곡 반복","곡 루프","곡 반복하기",
 		};
-		reply = "처리중입니다 . . .";
+		reply = "로딩중 ⏳";
 		func = function(replyMsg,message,args,Content)
 			-- get already exist connection
 			local guildConnection = message.guild.connection;
@@ -620,7 +635,7 @@ local export = {
 			"song remove","remove song","remove music","music remove",
 			"remove 음악","remove 곡","remove 노래"
 		};
-		reply = "처리중입니다 . . .";
+		reply = "로딩중 ⏳";
 		func = function(replyMsg,message,args,Content)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
@@ -693,7 +708,7 @@ local export = {
 			"skip 음악","skip 곡","skip 노래",
 			"곡 넘어 가기","음악 넘어 가기","노래 넘어 가기"
 		};
-		reply = "처리중입니다 . . .";
+		reply = "로딩중 ⏳";
 		func = function(replyMsg,message,args,Content)
 			local rawArgs = Content.rawArgs;
 			rawArgs = tonumber(rawArgs:match("%d+")) or 1;
@@ -787,7 +802,7 @@ local export = {
 			"song pause","pause song","pause music","music pause",
 			"pause 곡","pause 음악","pause 노래"
 		};
-		reply = "처리중입니다 . . .";
+		reply = "로딩중 ⏳";
 		func = function(replyMsg,message,args,Content)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
@@ -849,7 +864,7 @@ local export = {
 			"song stop","stop song","stop music","music stop",
 			"stop 음악","stop 곡","stop 노래"
 		};
-		reply = "처리중입니다 . . .";
+		reply = "로딩중 ⏳";
 		func = function(replyMsg,message,args,Content)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
@@ -894,7 +909,7 @@ local export = {
 			"현재곡","현재음악","현재노래","지금곡","지금음악","지금노래","지금재생중",
 			"지금 재생중","now playing","music now","song now","playing now","now play","nowplaying"
 		};
-		reply = "처리중입니다 . . .";
+		reply = "로딩중 ⏳";
 		func = function(replyMsg,message,args,Content)
 			replyMsg:update(playerClass.showSong(Content.guild));
 		end;
@@ -911,7 +926,7 @@ local export = {
 			"곡정보","곡 정보","info song","song info","music info","info music","곡 자세히보기",
 			"곡자세히보기","곡설명","곡 설명","song description","description song"
 		};
-		reply = "처리중입니다 . . .";
+		reply = "로딩중 ⏳";
 		func = function(replyMsg,message,args,Content)
 			local this = Content.rawArgs;
 			this = tonumber(this) or tonumber(this:match("%d+")) or 1;
@@ -941,7 +956,7 @@ local export = {
 			"song resume","resume song","resume music","music resume",
 			"resume 곡","resume 노래","resume 음악"
 		};
-		reply = "처리중입니다 . . .";
+		reply = "로딩중 ⏳";
 		func = function(replyMsg,message,args,Content)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
@@ -998,7 +1013,7 @@ local export = {
 			"노래위치","노래 위치","노래 시간","노래시간","노래 시간 이동","노래 시간이동","노래시간 이동","노래시간이동","노래 시간 조정","노래 시간조정","노래시간 조정","노래시간조정",
 			"노래타임스템프","노래 타임스템프","노래 타임스템프 조정","노래 타임스템프조정","노래타임스템프 조정","노래타임스템프조정","노래 타임스템프 이동","노래 타임스템프이동","노래타임스템프 이동","노래타임스템프이동"
 		};
-		reply = "처리중입니다 . . .";
+		reply = "로딩중 ⏳";
 		func = function(replyMsg,message,args,Content)
 			local rawArgs = Content.rawArgs or "";
 
@@ -1215,7 +1230,7 @@ local export = {
 			"음악 대기열 킵","음악 대기열 킵","곡 대기열 킵","export music","music export","song export","export song",
 			"music 내보내기","song 내보내기","내보내기 song","내보내기 music","export 음악","음악 export","곡 export","export 곡","노래 export","export 노래"
 		};
-		reply = "처리중입니다 . . .";
+		reply = "로딩중 ⏳";
 		func = function(replyMsg,message,args,Content)
 			local guildConnection = message.guild.connection;
 			if not guildConnection then
