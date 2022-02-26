@@ -15,7 +15,7 @@ local encode,decode = json.encode,json.decode;
 ---@param args table|nil arg for child process
 ---@param newlinebuffer boolean|nil if this value is true, using \n as buffer splitter on stdout 
 function module.new(target,args,newlinebuffer)
-    local child = spawn(target,{args = args,stdio = {true,true,2}});
+    local child = spawn(target,{args = args,stdio = {true,true,1}});
     if not child then
         error"Failed to create child process";
     end
