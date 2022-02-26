@@ -118,7 +118,7 @@ function runEnv.exec(command,sendf) -- process open
 		return "ERR : "..err;
 	end
 
-	local msg = send and send(("```ansi\n $ %s\n```"):format(proc));
+	local msg = send and send(("```ansi\n $ %s\n```"):format(command));
 	local msgMutex = msg and mutex.new();
 	local waitter = promise.waitter();
 	waitter:add(promise.new(readPipe,cproc.stdout,msg,msgMutex));
