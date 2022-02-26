@@ -43,6 +43,7 @@ local function executeMessage(message,args,mode)
 	end
 
 	-- get env
+	local loadstringEnv = _G.loadstringEnv;
 	loadstringEnv.__enable();
 	-- logger.noStdout = true;
 	local function send(msg)
@@ -233,6 +234,10 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		executeMessage(message,args:gsub("^lua ?",""),
 			args:match("^lua") and "lua"
 		)
+	elseif (cmd == "!!!sh" or cmd == "proc") then
+		loadstringEnv.exec(args,function (str)
+			return message:reply(str);
+		end);
 	end
 end
 
