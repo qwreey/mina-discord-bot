@@ -43,32 +43,13 @@ function module.errorFormater(str)
 
 	return ("이 영상은 이용이 불가능합니다 (%s)"):format(str);
 end
-
-function module.download(vid)
-	vid = module.getVID(vid);
-	if not vid then
-		error("잘못된 영상 URL 또는 ID 를 입력했습니다");
-	end
-	local url = ('https://www.youtube.com/watch?v=%s'):format(vid);
-
-	-- if not exist already, create new it
-	local audio,info,err = download(url,vid);
-	if isExistString(info) and isExistString(audio) then
-		return audio,info,url,vid;
-	end
-
-	-- video was not found from youtube? or something want wrongly
-	local errormsg =
-		("오류가 발생했습니다, 영상을 다운로드 받는데 실패했습니다.\n> %s")
-		:format(module.errorFormater(err));
-	logger.error(errormsg);
-	error(errormsg);
-end
+local errorFormater = module.errorFormater;
 
 local vidFormat = ("[%w%-_]"):rep(11);
 local vidWatch = ("watch%%?v=(%s)"):format(vidFormat);
 local vidShort = ("https://youtu%%.be/(%s)"):format(vidFormat);
 local searchURLTemp = ("https://www.googleapis.com/youtube/v3/search?key=%s&part=snippet&maxResults=8&q=%%s"):format(ACCOUNTData.GoogleAPIKey);
+
 function module.search(url)
 	local _,Body = corohttp.request("GET",
 		searchURLTemp:format(urlCode.urlEncode(url))
@@ -84,9 +65,33 @@ function module.search(url)
 	if not id then return end
 	return id.videoId;
 end
+local search = module.search;
+
 ---returns the video id of link
 function module.getVID(url)
-	return url:match(vidWatch) or url:match(vidShort) or (url:gsub("^ +",""):gsub(" +$",""):match(vidFormat)) or module.search(url);
+	return url:match(vidWatch) or url:match(vidShort) or (url:gsub("^ +",""):gsub(" +$",""):match(vidFormat)) or search(url);
+end
+local getVID = module.getVID;
+
+function module.download(vid)
+	vid = getVID(vid);
+	if not vid then
+		error("잘못된 영상 URL 또는 ID 를 입력했습니다");
+	end
+	local url = ('https://www.youtube.com/watch?v=%s'):format(vid);
+
+	-- if not exist already, create new it
+	local audio,info,err = download(url,vid);
+	if isExistString(info) and isExistString(audio) then
+		return audio,info,url,vid;
+	end
+
+	-- video was not found from youtube? or something want wrongly
+	local errormsg =
+		("오류가 발생했습니다, 영상을 다운로드 받는데 실패했습니다.\n> %s")
+		:format(errorFormater(err));
+	logger.error(errormsg);
+	error(errormsg);
 end
 
 return module;

@@ -26,7 +26,7 @@ function module.download(url,vid)
 				fs.unlinkSync(file);
 				fs.unlinkSync(file .. ".part");
 				downloadMutex:unlock();
-				return module.timeoutMessage;
+				return file,nil,module.timeoutMessage;
 			end
 			downloadMutex:unlock();
 			return file,nil,err;

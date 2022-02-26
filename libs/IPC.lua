@@ -41,6 +41,7 @@ function module.resume(waitter,...)
 end
 
 function module:onbuffer(str)
+    logger.info(str);
     local data = decode(str);
     if not data then
         return logger.warnf("failed to decode stdout, stdout was\n%s",str);
@@ -59,10 +60,10 @@ function module:stdoutReader(newlinebuffer)
         if newlinebuffer then
             if buffer then
                 str = buffer .. str;
-	    end
+	        end
             if str:match"\n" then
                 buffer = nil;
-		self:onbuffer(str);
+		        self:onbuffer(str);
             else buffer = str;
             end
         else module.onbuffer(str);

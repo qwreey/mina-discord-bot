@@ -13,7 +13,12 @@ from yt_dlp import YoutubeDL
 
 stdout = sys.stdout
 
+class Timeout(Exception): pass
+
 async def download(url,noDownload,file):
+    def downloadHook(data):
+        if data['status'] == "downloading" and data['elapsed'] >= 35:
+            raise Timeout
     ydl_opts = {
         'format': 'bestaudio',
         'noprogress': True,
@@ -21,11 +26,15 @@ async def download(url,noDownload,file):
         'no_warnings': True,
         'simulate': noDownload,
         'cachedir': 'data/youtubeCache',
-        'outtmpl': file
+        'outtmpl': file,
+        'continuedl': True,
+        'ratelimit': 2900000,
+        'progress_hooks': [downloadHook]
     }
     try:
         with YoutubeDL(ydl_opts) as ydl:
             return ydl.extract_info(url,download=(not noDownload))
+    except Timeout: return "ERR:TIMEOUT"
     except Exception as e: return "ERR:"+str(e)
 
 def processLine(line):
@@ -53,4 +62,3 @@ def processLine(line):
 for line in sys.stdin:
     thread = threading.Thread(target=processLine, args=(line,))
     thread.start()
-
