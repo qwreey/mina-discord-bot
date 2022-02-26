@@ -15,10 +15,12 @@ stdout = sys.stdout
 
 class Timeout(Exception): pass
 
+def downloadHook(data):
+    if data['status'] == "downloading" and data['elapsed'] >= 35:
+        raise Timeout
+downloadHooks = [downloadHook]
+
 async def download(url,noDownload,file):
-    def downloadHook(data):
-        if data['status'] == "downloading" and data['elapsed'] >= 35:
-            raise Timeout
     ydl_opts = {
         'format': 'bestaudio',
         'noprogress': True,
@@ -29,7 +31,7 @@ async def download(url,noDownload,file):
         'outtmpl': file,
         'continuedl': True,
         'ratelimit': 2900000,
-        'progress_hooks': [downloadHook]
+        'progress_hooks': downloadHooks
     }
     try:
         with YoutubeDL(ydl_opts) as ydl:
