@@ -145,15 +145,15 @@ function runEnv.reload() -- 다시 로드
 	os.exit(exitCodes.reload);
 end
 function runEnv.print(...)
-	io.write("\27[2K\r");
+	prettyPrint.stdout:write"\27[2K\r";
 	for _,v in pairs({...}) do
 		if type(v) == "string" then
-			io.write(v);
+			prettyPrint.stdout:write{v};
 		else
-			io.write(prettyPrint.dump(v));
+			prettyPrint.stdout:write{prettyPrint.dump(v)};
 		end
 	end
-	io.write("\n",buildPrompt());
+	prettyPrint.stdout:write{"\n",buildPrompt()};
 end
 runEnv.__last = {};
 function runEnv.__enable()
