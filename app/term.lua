@@ -107,7 +107,7 @@ local function appendMessage(msgEnv,str)
 	mutex:lock();
 	str = str:gsub("```","\\`\\`\\`");
 	content = ("%s%s```"):format(content:gsub("```$",""),str);
-	if #content >= 2000 then
+	if #content > 2000 then
 		content = ("```ansi\n%s```"):format(str);
 		message = message:reply(content);
 		msgEnv.content = content;
