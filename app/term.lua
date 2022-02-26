@@ -125,9 +125,11 @@ function runEnv.exec(command,sendf) -- process open
 	waitter:add(promise.new(readPipe,cproc.stderr,msg,msgMutex));
 	waitter:wait();
 	local ecode,esignal = cproc.waitExit();
-	msgMutex:lock();
-	msg:setContent(("%s\n%s```"):format(msg.content:gsub("```$",""),("Exit with code %s (%s)"):format(tostring(ecode),tostring(esignal))));
-	msgMutex:unlock();
+	if msg then
+		msgMutex:lock();
+		msg:setContent(("%s\n%s```"):format(msg.content:gsub("```$",""),("Exit with code %s (%s)"):format(tostring(ecode),tostring(esignal))));
+		msgMutex:unlock();
+	end
 	return {ignore = true};
 end
 function runEnv.clear() -- 화면 지우기 명령어
