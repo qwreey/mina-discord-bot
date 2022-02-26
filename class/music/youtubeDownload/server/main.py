@@ -30,7 +30,7 @@ async def download(url,noDownload,file):
         'cachedir': 'data/youtubeCache',
         'outtmpl': file,
         'continuedl': True,
-        'ratelimit': 3100000,
+        'ratelimit': 2900000,
         'progress_hooks': downloadHooks
     }
     try:
