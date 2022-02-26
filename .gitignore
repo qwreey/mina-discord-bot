@@ -31,3 +31,6 @@ disbucket.json
 # node files
 package-lock.json
 node_modules/**
+
+# pyc file
+*.pyc
