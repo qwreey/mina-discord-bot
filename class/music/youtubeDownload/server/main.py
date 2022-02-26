@@ -16,7 +16,7 @@ stdout = sys.stdout
 class Timeout(Exception): pass
 
 def downloadHook(data):
-    if data['status'] == "downloading" and data['elapsed'] >= 35:
+    if data['status'] == "downloading" and data['elapsed'] >= 45:
         raise Timeout
 downloadHooks = [downloadHook]
 
@@ -30,7 +30,7 @@ async def download(url,noDownload,file):
         'cachedir': 'data/youtubeCache',
         'outtmpl': file,
         'continuedl': True,
-        'ratelimit': 2900000,
+        'ratelimit': 3000000,
         'progress_hooks': downloadHooks
     }
     try:
@@ -51,7 +51,7 @@ def processLine(line):
                 data.get('url'),
                 data.get('noDownload') or False,
                 data.get('file')
-            ), timeout=35.0))
+            ), timeout=45.0))
         except asyncio.TimeoutError:
             downloaded = 'ERR:TIMEOUT'
         stdout.write(json.dumps({
