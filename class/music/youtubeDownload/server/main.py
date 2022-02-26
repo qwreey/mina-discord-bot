@@ -16,7 +16,7 @@ stdout = sys.stdout
 class Timeout(Exception): pass
 
 def downloadHook(data):
-    if data['status'] == "downloading" and data['elapsed'] >= 45:
+    if data['status'] == "downloading" and data['elapsed'] >= 60:
         raise Timeout
 downloadHooks = [downloadHook]
 
@@ -51,7 +51,7 @@ def processLine(line):
                 data.get('url'),
                 data.get('noDownload') or False,
                 data.get('file')
-            ), timeout=45.0))
+            ), timeout=60))
         except asyncio.TimeoutError:
             downloaded = 'ERR:TIMEOUT'
         stdout.write(json.dumps({
