@@ -41,7 +41,6 @@ function module.resume(waitter,...)
 end
 
 function module:onbuffer(str)
-    logger.info(str);
     local data = decode(str);
     if not data then
         return logger.warnf("failed to decode stdout, stdout was\n%s",str);
