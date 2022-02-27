@@ -112,11 +112,6 @@ local export = {
 	};
 	["호감도"] = {
 		reply = function (message,args,content)
-			if message.author.id == "480318544693821450" then
-				return "미나는 **{#:UserName:#}** 님을 **10/25** 만금 좋아해요!";
-			elseif message.author.id == "647101613047152640" then
-				return "니 약관동의 안할 거잔아";
-			end
 			local rawArgs = content.rawArgs;
 			rawArgs = rawArgs:gsub("^ +",""):gsub(" +$","");
 			if rawArgs == "" then -- 내 호감도 불러오기
@@ -261,7 +256,7 @@ local export = {
 				end
 
 				new:setContent(
-					("🏓 봇 지연시간\n> 데이터 서버 응답시간 (불러오기) : %s\n> 데이터 서버 응답시간 (저장하기) : %s\n> API 응답시간 : %s\n> 메시지 응답시간 : %s`ms`\n> 루프 속도 : %s`us`\n> 가동시간 : %s\n> 사용 RAM : %dMB\n> 로드된 유저수 : %s")
+					("🏓 봇 지연시간\n> 데이터 서버 응답시간 (불러오기) : %s\n> 데이터 서버 응답시간 (저장하기) : %s\n> API 응답시간 : %s\n> 메시지 응답시간 : %s`ms`\n> 루프 속도 : %s`us`\n> 가동시간 : %s\n> 사용 RAM : %d`MB`\n> 사용 CPU : %d`sec`\n> 로드된 유저수 : %s")
 					:format(
 						userData and (dataReadTime .. "`us`") or "확인 불가능",
 						dataWriteTime and (tostring(dataWriteTime) .. "`us`") or "확인 불가능",
@@ -270,6 +265,7 @@ local export = {
 						clock,
 						timeAgo(0,ctime()),
 						(collectgarbage("count")*1024 + uv.resident_set_memory())/1000000,
+						process.cpuUsage().user/1000000,
 						tostring(client.users:count() or "확인 불가능")
 					)
 				);

@@ -1,3 +1,6 @@
 [submodule "deps/deps/discordia"]
 	path = deps/discordia
 	url = https://github.com/SinisterRectus/Discordia
+[submodule "deps/profiler"]
+	path = deps/profiler
+	url = https://github.com/qwreey75/profiler.lua

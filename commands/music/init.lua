@@ -163,6 +163,9 @@ local export = {
 		disableDm = true;
 		registeredOnly = eulaComment_music;
 		reply = "로딩중 ⏳";
+		func = function(replyMsg,message,args,Content)
+			
+		end;
 	};
 	["add music"] = {
 		registeredOnly = eulaComment_music;
