@@ -68,7 +68,6 @@ local function send(self,content)
 			mentions, err = parseMention(tbl.mention)
 			if err then
 				self.client:error(("Error occurred while send message (parseMention Error %s)"):format(err))
-				error(err)
 				return nil, err
 			end
 		end
@@ -77,7 +76,6 @@ local function send(self,content)
 				mentions, err = parseMention(mention, mentions)
 				if err then
 					self.client:error(("Error occurred while send message (parseMention Error %s)"):format(err))
-					error(err)
 					return nil, err
 				end
 			end
@@ -93,7 +91,6 @@ local function send(self,content)
 			files, err = parseFile(tbl.file)
 			if err then
 				self.client:error(("Error occurred while send message (parseFile Error %s)"):format(err))
-				error(err)
 				return nil, err
 			end
 		end
@@ -102,7 +99,6 @@ local function send(self,content)
 				files, err = parseFile(file, files)
 				if err then
 					self.client:error(("Error occurred while send message (parseFile Error %s)"):format(err))
-					error(err)
 					return nil, err
 				end
 			end
@@ -137,8 +133,7 @@ local function send(self,content)
 		return self._messages:_insert(data)
 	else
 		self.client:error(("Error occurred while send message (API Error %s)"):format(err))
-		error(err)
-		-- return nil, err
+		return nil, err
 	end
 
 end
