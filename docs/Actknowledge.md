@@ -68,25 +68,25 @@ libswscale      6.  4.100 /  6.  4.100
 libswresample   4.  3.100 /  4.  3.100
 libpostproc    56.  3.100 / 56.  3.100
 
-> (catscript)[https://github.com/qwreey75/catscript]  
+> [catscript](https://github.com/qwreey75/catscript)  
 Lua 언어로 컴파일 되는 언어로 디버깅 콘솔에서 사용합니다  
 
-> (logger)[https://github.com/qwreey75/logger.lua]  
+> [logger](https://github.com/qwreey75/logger.lua)  
 로깅에 사용하는 라이브러리입니다  
 
-> (discordia_enchant)[https://github.com/qwreey75/discordia_enchant]  
+> [discordia_enchant](https://github.com/qwreey75/discordia_enchant)  
 discordia 에 없는 기능을 추가하고 개선하는 라이브러리입니다  
 
-> (mutex)[https://github.com/qwreey75/mutex.lua]  
+> [mutex](https://github.com/qwreey75/mutex.lua)  
 mutex 의 luvit 구현채입니다  
 
-> (profiler)[https://github.com/qwreey75/profiler.lua]  
+> [profiler](https://github.com/qwreey75/profiler.lua)  
 코드의 속도, 효율성을 검사하기 위한 라이브러리입니다  
 
-> (myXml)[https://github.com/qwreey75/myXml.lua]  
+> [myXml](https://github.com/qwreey75/myXml.lua)  
 XML 형식 데이터를 파싱하고 루아가 읽을 수 있도록 만드는 라이브러리입니다  
 
-> (promise)[https://github.com/qwreey75/promise.lua]  
+> [promise](https://github.com/qwreey75/promise.lua)  
 promise 의 luvit 구현채입니다  
 
 > Figlet  
