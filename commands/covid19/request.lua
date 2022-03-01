@@ -51,7 +51,7 @@ function module.get(clientData)
 	local url = ("http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?serviceKey=%s&pageNo=1&numOfRows=1&startCreateDt=%s&endCreateDt=%s")
 		:format(clientData.covid19Client,yesterdayStr,todayStr);
 	local _,body = corohttp.request("GET",url);
-	return myXML.xmlToItem(body);
+	return myXml.xmlToItem(body);
 end
 
 return module;

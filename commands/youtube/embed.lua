@@ -25,9 +25,9 @@ function module:embed(searchKeyword,body,queryStr)
 		url = kind == "youtube#channel" and (("https://www.youtube.com/channel/%s"):format(id.channelId));
 		url = url or (kind == "youtube#video" and (("https://www.youtube.com/watch?v=%s"):format(id.videoId)));
 
-		this.name = ("%s / %s"):format(nameHeader,myXML.toLuaStr(snippet.title));
+		this.name = ("%s / %s"):format(nameHeader,myXml.toLuaStr(snippet.title));
 		this.inline = true;
-		this.value = ("[해당 %s으로 이동하기](%s)\n"):format(nameHeader,url) .. myXML.toLuaStr(tostring(snippet.description));
+		this.value = ("[해당 %s으로 이동하기](%s)\n"):format(nameHeader,url) .. myXml.toLuaStr(tostring(snippet.description));
 
 		table.insert(fields,this);
 

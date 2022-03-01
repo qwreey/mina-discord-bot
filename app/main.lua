@@ -93,7 +93,7 @@ local strSplit = require "stringSplit"; _G.strSplit = strSplit; -- string split 
 local urlCode = require "urlCode"; _G.urlCode = urlCode; -- url encoder/decoder library
 local makeId = require "makeId"; _G.makeId = makeId; -- making id with cRandom library
 local makeSeed = require "libs.makeSeed"; _G.makeSeed = makeSeed; -- making seed library, this is used on cRandom llibrary
-local myXML = require "myXML"; _G.myXML = myXML; -- myXML library
+local myXml = require "myXml"; _G.myXml = myXml; -- myXml library
 local userLearn = require "commands.learning.learn"; -- user learning library
 local data = require "data"; data:setJson(json); _G.data = data; -- Data system
 local userData = require "class.userData"; _G.userData = userData; -- Userdata system
