@@ -19,3 +19,6 @@
 [submodule "libs/cat"]
 	path = libs/cat
 	url = https://github.com/qwreey75/catscript
+[submodule "libs/discordia_enchant"]
+	path = libs/discordia_enchant
+	url = https://github.com/qwreey75/discordia_enchant
