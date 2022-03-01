@@ -16,3 +16,6 @@
 [submodule "libs/myXml"]
 	path = libs/myXml
 	url = https://github.com/qwreey75/myXml.lua
+[submodule "libs/cat"]
+	path = libs/cat
+	url = https://github.com/qwreey75/catscript
