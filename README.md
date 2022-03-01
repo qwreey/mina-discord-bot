@@ -4,8 +4,7 @@
 
 # MINA_DiscordBot
 
-실험 / 재미 / 교육 (공부) 목적으로 만들어진 프로젝트 미나 디스코드 봇 (
-[초대링크](https://discord.com/oauth2/authorize?client_id=828894481289969665&permissions=412429446208&scope=bot%20applications.commands))  
+실험 / 재미 / 교육 (공부) 목적으로 만들어진 프로젝트 미나 디스코드 봇 ([초대링크](https://discord.com/oauth2/authorize?client_id=828894481289969665&permissions=412429446208&scope=bot%20applications.commands))  
 
 지원  
 - 상아리 : 프로필 제작, 아이디어 제공  
