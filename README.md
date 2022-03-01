@@ -15,7 +15,7 @@
 # 설정
 아래의 커맨드를 입력합니다 (리눅스 전용)  
 ```sh
-mkdir data;mkdir data/interactionData;mkdir data/serverData;mkdir data/userData;mkdir data/userLearn;mkdir data/youtubeCache;mkdir data/youtubeFiles;touch data/userLearn/index;touch data/ACCOUNT_test.json;touch data/ACCOUNT.json;printf "[]" > data/lastMusicStatus.json;printf "[]" > loveLeaderstatus.json
+mkdir data;mkdir data/interactionData;mkdir data/serverData;mkdir data/userData;mkdir data/userLearn;mkdir data/youtubeCache;mkdir data/youtubeFiles;touch data/userLearn/index;touch data/ACCOUNT_test.json;touch data/ACCOUNT.json;printf "[]" > data/lastMusicStatus.json;printf "[]" > data/loveLeaderstatus.json
 ```
 그런 다음 ACCOUNT.json 을 편집합니다, 형식은 다음과 같습니다  
 ```jsonc
