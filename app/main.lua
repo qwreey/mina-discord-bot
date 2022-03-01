@@ -82,7 +82,7 @@ local spawn = require "coro-spawn"; _G.spawn = spawn; -- spawn process (child pr
 local split = require "coro-split"; _G.split = split; -- run splitted coroutines
 local sha1 = require "sha1"; _G.sha1 = sha1; -- sha1
 local osTime = os.time; _G.osTime = osTime; -- time
-local logger = require "log"; _G.logger = logger; -- log library
+local logger = require "logger"; _G.logger = logger; -- log library
 local dumpTable = require "libs.dumpTable"; _G.dumpTable = dumpTable; -- table dump library, this is auto injecting dump function on global 'table'
 local exitCodes = require("app.exitCodes"); _G.exitCodes = exitCodes; -- get exit codes
 local qDebug = require "app.debug"; _G.qDebug = qDebug; -- my debug system

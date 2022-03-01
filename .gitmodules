@@ -2,5 +2,17 @@
 	path = deps/discordia
 	url = https://github.com/SinisterRectus/Discordia
 [submodule "deps/profiler"]
-	path = deps/profiler
+	path = libs/profiler
 	url = https://github.com/qwreey75/profiler.lua
+[submodule "libs/promise"]
+	path = libs/promise
+	url = https://github.com/qwreey75/promise.lua
+[submodule "libs/logger"]
+	path = libs/logger
+	url = https://github.com/qwreey75/logger.lua
+[submodule "libs/mutex"]
+	path = libs/mutex
+	url = https://github.com/qwreey75/mutex.lua
+[submodule "libs/myXml"]
+	path = libs/myXml
+	url = https://github.com/qwreey75/myXml.lua
