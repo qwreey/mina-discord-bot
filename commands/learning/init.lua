@@ -3,10 +3,10 @@ local module = {};
 
 local learn = require "commands.learning.learn";
 local errorType = learn.errorType;
-local discordia_enchent = _G.discordia_enchent;
+local discordia_enchant = _G.discordia_enchant;
 local commonSlashCommand = _G.commonSlashCommand;
-local components = discordia_enchent.components;
-local discordia_enchent_enums = discordia_enchent.enums;
+local components = discordia_enchant.components;
+local discordia_enchant_enums = discordia_enchant.enums;
 
 local help = [[
 **가르치기 기능에 대한 도움말입니다**
@@ -115,13 +115,13 @@ local export = {
 					{
 						name = "문장";
 						description = "가르칠 문장이나 단어입니다!";
-						type = discordia_enchent.enums.optionType.string;
+						type = discordia_enchant.enums.optionType.string;
 						required = true;
 					};
 					{
 						name = "반응";
 						description = "돌아올 반응입니다!";
-						type = discordia_enchent.enums.optionType.string;
+						type = discordia_enchant.enums.optionType.string;
 						required = true;
 					};
 				};
@@ -200,7 +200,7 @@ local export = {
 			description = "기억을 잊습니다!";
 			optionName = "지울것";
 			optionDescription = "기억의 번째를 입력하세요!";
-			optionsType = discordia_enchent.enums.optionType.integer;
+			optionsType = discordia_enchant.enums.optionType.integer;
 			optionRequired = true;
 		};
 	};
@@ -295,7 +295,7 @@ local export = {
 			description = "내가 가르친 기억들을 봅니다!";
 			optionName = "페이지";
 			optionDescription = "확인할 페이지를 입력하세요!";
-			optionsType = discordia_enchent.enums.optionType.integer;
+			optionsType = discordia_enchant.enums.optionType.integer;
 			optionRequired = false;
 		};
 	};

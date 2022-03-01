@@ -28,7 +28,7 @@ local function commonSlashCommand(options)
                 {
                     name = optionName;
                     description = options.optionDescription or defaultOptionDescription;
-                    type = options.optionsType or discordia_enchent.enums.optionType.string;
+                    type = options.optionsType or discordia_enchant.enums.optionType.string;
                     required = type(optionRequired) == "nil" or optionRequired;
                     choices = options.optionChoices;
                 };

@@ -13,7 +13,7 @@ local timeAgo = _G.timeAgo;
 -- local floor = math.floor;
 local posixTime = _G.posixTime;
 local commonSlashCommand = _G.commonSlashCommand;
-local discordia_enchent = _G.discordia_enchent;
+local discordia_enchant = _G.discordia_enchant;
 
 local function formatIDTime(this)
 	local thisDate = Date.fromSnowflake(this);
@@ -171,7 +171,7 @@ local export = {
 					{
 						name = "목표";
 						description = "어느 대상의 호감도를 볼것인지 정합니다";
-						type = discordia_enchent.enums.optionType.string;
+						type = discordia_enchant.enums.optionType.string;
 						required = true;
 						choices = {
 							{
@@ -191,7 +191,7 @@ local export = {
 					{
 						name = "유저";
 						description = "대상을 유저로 선택했다면 입력해야 합니다";
-						type = discordia_enchent.enums.optionType.user;
+						type = discordia_enchant.enums.optionType.user;
 						required = false;
 					};
 				};
@@ -330,7 +330,7 @@ local export = {
 		end;
 		onSlash = commonSlashCommand {
 			description = "이 채널에서 메시지를 지웁니다! (봇이 해당 채널에 접근할 권한이 있어야 합니다)";
-			optionsType = discordia_enchent.enums.optionType.integer;
+			optionsType = discordia_enchant.enums.optionType.integer;
 			optionName = "지울수";
 			optionDescription = "지울 메시지의 수 입니다! (최소 2 ~ 최대 100)";
 			optionRequired = false;
@@ -377,7 +377,7 @@ local export = {
 		-- 			{
 		-- 				name = "내용";
 		-- 				description = "뽑을 내용입니다! ',' 을 이용해 개별로 구분하세요!";
-		-- 				type = discordia_enchent.enums.optionType.string;
+		-- 				type = discordia_enchant.enums.optionType.string;
 		-- 				required = true;
 		-- 			};
 		-- 		};

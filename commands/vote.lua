@@ -1,8 +1,8 @@
 local interactMessageWarpper = require("class.interactMessageWarpper");
 local interactionData = _G.interactionData;
-local discordia_enchent = _G.discordia_enchent;
-local components = discordia_enchent.components;
-local enums = discordia_enchent.enums;
+local discordia_enchant = _G.discordia_enchant;
+local components = discordia_enchant.components;
+local enums = discordia_enchant.enums;
 local client = _G.client;
 
 local insert = table.insert;
@@ -179,13 +179,13 @@ local export = {
 					{
 						name = "내용";
 						description = "투표 내용입니다! ',' 을 이용해 개별로 구분하세요!";
-						type = discordia_enchent.enums.optionType.string;
+						type = discordia_enchant.enums.optionType.string;
 						required = true;
 					};
 					{
 						name = "제목";
 						description = "투표의 제목을 설정합니다! (이 옵션은 비워둘 수 있습니다)";
-						type = discordia_enchent.enums.optionType.string;
+						type = discordia_enchant.enums.optionType.string;
 						required = false;
 					};
 				};

@@ -9,8 +9,8 @@ this.playerForChannels = {};
 
 --#region --* Setup const objects *--
 
-local components = discordia_enchent.components;
-local discordia_enchent_enums = discordia_enchent.enums;
+local components = discordia_enchant.components;
+local discordia_enchant_enums = discordia_enchant.enums;
 local isDiscordiaObject = discordia.class.isObject;
 local remove = table.remove;
 local insert = table.insert;
@@ -508,7 +508,7 @@ end
 local noSong = {components.actionRow.new{
 	components.button.new{
 		custom_id = "music_song_1";
-		style = discordia_enchent_enums.buttonStyle.success;
+		style = discordia_enchant_enums.buttonStyle.success;
 		label = "새로고침";
 		emoji = components.emoji.new"🔄";
 	};
@@ -521,20 +521,20 @@ function this:songIndicator(index)
 	return {components.actionRow.new{
 		components.button.new{
 			custom_id = ("music_song_%d"):format(index);
-			style = discordia_enchent_enums.buttonStyle.success;
+			style = discordia_enchant_enums.buttonStyle.success;
 			emoji = components.emoji.new "🔄";
 			label = "새로고침";
 		};
 		components.button.new{
 			custom_id = ("music_song_%d"):format(index-1);
-			style = discordia_enchent_enums.buttonStyle.primary;
+			style = discordia_enchant_enums.buttonStyle.primary;
 			label = "이전 곡정보";
 			emoji = components.emoji.new "⬅";
 			disabled = index <= 1;
 		};
 		components.button.new{
 			custom_id = ("music_song_%d"):format(index+1);
-			style = discordia_enchent_enums.buttonStyle.primary;
+			style = discordia_enchant_enums.buttonStyle.primary;
 			label = "다음 곡정보";
 			emoji = components.emoji.new "➡";
 			disabled = index >= #self;
@@ -650,7 +650,7 @@ end
 local noPage = {components.actionRow.new{
 	components.button.new{
 		custom_id = "music_page_1";
-		style = discordia_enchent_enums.buttonStyle.success;
+		style = discordia_enchant_enums.buttonStyle.success;
 		label = "새로고침";
 		emoji = components.emoji.new"🔄";
 	};
@@ -663,20 +663,20 @@ function this:pageIndicator(page)
 	return {components.actionRow.new{
 		components.button.new{
 			custom_id = ("music_page_%d"):format(page);
-			style = discordia_enchent_enums.buttonStyle.success;
+			style = discordia_enchant_enums.buttonStyle.success;
 			label = "새로고침";
 			emoji = components.emoji.new "🔄";
 		};
 		components.button.new{
 			custom_id = ("music_page_%d"):format(page-1);
-			style = discordia_enchent_enums.buttonStyle.primary;
+			style = discordia_enchant_enums.buttonStyle.primary;
 			label = "이전 페이지";
 			emoji = components.emoji.new "⬅";
 			disabled = page <= 1;
 		};
 		components.button.new{
 			custom_id = ("music_page_%d"):format(page+1);
-			style = discordia_enchent_enums.buttonStyle.primary;
+			style = discordia_enchant_enums.buttonStyle.primary;
 			label = "다음 페이지";
 			emoji = components.emoji.new "➡";
 			disabled = page >= self:totalPages();

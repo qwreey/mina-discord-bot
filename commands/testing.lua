@@ -1,6 +1,6 @@
-local discordia_enchent = discordia_enchent;
-local compEnums = discordia_enchent.enums;
-local components = discordia_enchent.components;
+local discordia_enchant = discordia_enchant;
+local compEnums = discordia_enchant.enums;
+local components = discordia_enchant.components;
 local export = {
 	["버튼"] = {
 		reply = "디스코드 버튼 컴포넌트 라이브러리 v1 (by Qwreey75)";

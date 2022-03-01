@@ -337,13 +337,13 @@ local export = {
 					{
 						name = "곡";
 						description = "유튜브에 검색될 키워드 또는 URL 을 입력하세요! (',' 을 이용해 곡을 여러개 추가할 수 있습니다)";
-						type = discordia_enchent.enums.optionType.string;
+						type = discordia_enchant.enums.optionType.string;
 						required = true;
 					};
 					{
 						name = "위치";
 						description = "곡이 추가될 위치입니다! (비워두면 자동으로 리스트의 맨뒤에 추가됩니다)";
-						type = discordia_enchent.enums.optionType.integer;
+						type = discordia_enchant.enums.optionType.integer;
 						required = false;
 					};
 				};
@@ -462,7 +462,7 @@ local export = {
 			description = "곡 리스트를 봅니다!";
 			name = "곡리스트";
 			optionDescription = "리스트의 페이지를 입력하세요! (비워두면 1 페이지를 보여줍니다)";
-			optionsType = discordia_enchent.enums.optionType.integer;
+			optionsType = discordia_enchant.enums.optionType.integer;
 			optionRequired = false;
 		};
 	};
@@ -773,7 +773,7 @@ local export = {
 			description = "원하는 갯수만큼의 곡을 스킵합니다! (루프모드의 경우 스킵된 곡은 다시 뒤에 추가됩니다, 없에야 하는 경우 /곡제거 를 이용하세요)";
 			name = "곡스킵";
 			optionDescription = "건너뛸 곡의 갯수를 입력하세요! (비워두면 한개의 곡만 스킵합니다)";
-			optionsType = discordia_enchent.enums.optionType.integer;
+			optionsType = discordia_enchant.enums.optionType.integer;
 			optionRequired = false;
 		};
 	};
@@ -939,7 +939,7 @@ local export = {
 			description = "해당 번째의 곡 정보를 봅니다!";
 			name = "곡정보";
 			optionDescription = "곡 번째를 입력하세요";
-			optionsType = discordia_enchent.enums.optionType.integer;
+			optionsType = discordia_enchant.enums.optionType.integer;
 		};
 	};
 	["resume music"] = {

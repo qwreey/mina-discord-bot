@@ -112,7 +112,7 @@ logger.info("wait for discordia ...");
 require("app.jsonErrorWrapper"); -- enable pcall wrapped json en-decoder
 
 local discordia = require "discordia"; _G.discordia = discordia; ---@type discordia -- 디스코드 lua 봇 모듈 불러오기
-local discordia_enchent = require "discordia_enchent"; _G.discordia_enchent = discordia_enchent;
+local discordia_enchant = require "discordia_enchant"; _G.discordia_enchant = discordia_enchant;
 local userInteractWarpper = require("class.userInteractWarpper"); _G.userInteractWarpper = userInteractWarpper;
 local commonButtons = require "class.commonButtons"; _G.buttons = commonButtons;
 
@@ -140,7 +140,7 @@ function discordia_Logger:log(level, msg, ...)
 end
 
 ---@diagnostic disable-next-line
-discordia_enchent.inject(client);
+discordia_enchant.inject(client);
 --#endregion : Discordia Module
 --#region : Load bot environments
 logger.info("---------------------- [LOAD SETTINGS] ----------------------");
@@ -560,7 +560,7 @@ commandHandler.onSlash(function ()
 			{
 				name = "내용";
 				description = "미나와 나눌 대화를 입력해보세요!";
-				type = discordia_enchent.enums.optionType.string;
+				type = discordia_enchant.enums.optionType.string;
 				required = true;
 			};
 		};
