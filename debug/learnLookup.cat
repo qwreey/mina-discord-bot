@@ -36,6 +36,7 @@ looklearn (file,data)-->
   $userId = data.author
   $userData = loadUserData(userId)
   !userData ~ error"cannot load user data"|
+  $name = tostring(fs.readFileSync(root+file:match(".+/")+"name"))
   return{
     rawmessage = true,
     embed = {
@@ -45,7 +46,8 @@ looklearn (file,data)-->
         icon_url = client:getUser(userId):getAvatarURL(128,"png"),
       },
       title = "> "+data.content:gsub("\n","\n> "),
-      description = ("⏱ 시간: %s\n🏷 티켓: %s\n🙍‍♀️ 유저: %s(%s)\n💿 크기: %s byte? (추정)")(
+      description = ("🔠 이름: %s\n⏱ 시간: %s\n🏷 티켓: %s\n🙍‍♀️ 유저: %s(%s)\n💿 크기: %s byte? (추정)")(
+        name,
         timeAgo(data.when,posixTime.now()),
         tostring(file),
         userData.latestName,userId,
