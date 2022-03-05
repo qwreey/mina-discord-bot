@@ -35,6 +35,10 @@ mkdir data;mkdir data/interactionData;mkdir data/serverData;mkdir data/userData;
 ```
 ACCOUNT_test.json 의 경우 테스트모드 (luvit app test) 로 실행했을 때 ACCOUNT.json 의 값을 덮어쓰는데 사용됩니다. 즉 테스트 모드에서 다른 토큰으로 로그인하도록 설정할 수 있습니다.  
 
+이제 [luvit](https://github.com/truemedian/luvit-bin) 을 받고 `/user/bin` 이나 `C:\Windows` 처럼 Path 로 인식할 수 있는 곳에 luvit 바이너리 파일을 넣고.  mina 폴더 안에서 `luvit app` 을 쳐주시면 돌아갑니다  
+
+Debug 모드를 켜려면 `luvit app test` 쓰면 됩니다 이러면 ACCOUNT_test.json 의 값을 ACCOUNT.json 의 값보다 우선순위를 둔채로 실행합니다  
+
 # 종속성/사용 라이브러리
 [Actknowledge](./docs/Actknowledge) 를 확인하세요  
 
