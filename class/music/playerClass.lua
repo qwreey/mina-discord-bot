@@ -162,7 +162,8 @@ local getPosixNow = posixTime.now;
 local expireAtLast = 2 * 60;
 local retryRate = 20;
 local maxRetrys = 7;
-local function playEnd(self,thing,position,result,reason)
+local function playEnd(fargs,result,reason)
+	local self,thing,position = fargs[1],fargs[2],fargs[3]; 
 	if self.destroyed then -- is destroyed
 		return;
 	elseif reason == "Connection is not ready" then -- discord connection error
@@ -254,7 +255,8 @@ local function playEnd(self,thing,position,result,reason)
 	end
 end
 
-local function playErr(self,thing,err) -- lua error on running
+local function playErr(fargs,err) -- lua error on running
+	local self,thing = fargs[1],fargs[2];
 	self.error = err;
 	logger.errorf("Play failed : %s",err);
 	sendMessage(thing,("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
