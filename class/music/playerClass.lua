@@ -163,7 +163,7 @@ local expireAtLast = 2 * 60;
 local retryRate = 20;
 local maxRetrys = 7;
 local function playEnd(fargs,result,reason)
-	local self,thing,position = fargs[1],fargs[2],fargs[3]; 
+	local self,thing,position = fargs[1],fargs[2],fargs[3];
 	if self.destroyed then -- is destroyed
 		return;
 	elseif reason == "Connection is not ready" then -- discord connection error
@@ -216,8 +216,7 @@ local function playEnd(fargs,result,reason)
 	-- when seeking
 	local seeking = self.seeking;
 	if seeking then
-		self.seeking = nil;
-		self.nowPlaying = nil;
+		thing.timestamp,self.timestamp,self.nowPlaying,self.seeking = nil,nil,nil,nil;
 		logger.infof("seeking into %s",tostring(seeking));
 		promise.spawn(this.__play,self,thing,seeking);
 		return;
@@ -832,7 +831,7 @@ local function voiceChannelJoin(member,channel)
 end
 local function voiceChannelJoinErr(channel,result)
 	logger.errorf("An error occurred while trying adding killing music player queue [channel:%s]",
-		(channel or {__hash = function () return "unknown"; end}):__hash()
+		(channel[1] or {__hash = function () return "unknown"; end}):__hash()
 	);
 	logger.errorf("Error message was : %s",result);
 end
@@ -903,7 +902,7 @@ local function voiceChannelLeave(member,channel,player)
 end
 local function voiceChannelLeaveErr(channel,result)
 	logger.errorf("An error occurred while trying adding killing music player queue [channel:%s]",
-		(channel or {__hash = function () return "unknown"; end}):__hash()
+		(channel[1] or {__hash = function () return "unknown"; end}):__hash()
 	);
 	logger.errorf("Error message was : %s",result);
 end
