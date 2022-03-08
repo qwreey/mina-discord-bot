@@ -251,7 +251,7 @@ local function decoder()
     if not len then return end
     if term ~= "\r\n" then
       -- Wait for full chunk-size\r\n header
-      if #chunk < 18 then return end
+      if #chunk < 2048 then return end
       -- But protect against evil clients by refusing chunk-sizes longer than 16 hex digits.
       error(("chunk-size field too large (got %d length)"):format(#chunk))
     end
