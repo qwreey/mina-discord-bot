@@ -253,7 +253,7 @@ local function decoder()
       -- Wait for full chunk-size\r\n header
       if #chunk < 18 then return end
       -- But protect against evil clients by refusing chunk-sizes longer than 16 hex digits.
-      error("chunk-size field too large")
+      error(("chunk-size field too large (got %d length)"):format(#chunk))
     end
     index = index + #len + 2
     local offset = index - 1
