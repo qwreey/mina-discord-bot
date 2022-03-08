@@ -22,6 +22,9 @@ return function(testingMode)
 				if fname:match("%.git") then
 					return;
 				end
+				if not fname:match("%.lua$") then
+					return;
+				end
 				logger.infof("Some file was changed : %s", fname);
 				if _G.livereloadEnabled then
 					logger.infof("Try to do live reloading . . .");
