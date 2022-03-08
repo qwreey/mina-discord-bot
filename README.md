@@ -40,10 +40,10 @@ ACCOUNT_test.json 의 경우 테스트모드 (luvit app test) 로 실행했을 �
 Debug 모드를 켜려면 `luvit app test` 쓰면 됩니다 이러면 ACCOUNT_test.json 의 값을 ACCOUNT.json 의 값보다 우선순위를 둔채로 실행합니다  
 
 # 종속성/사용 라이브러리
-[Actknowledge](./docs/Actknowledge) 를 확인하세요  
+[Actknowledge](./docs/Actknowledge.md) 를 확인하세요  
 
 # 기여 도움말
-[Contributor](./docs/Contributor) 를 확인하세요  
+[Contributor](./docs/Contributor.md) 를 확인하세요  
 
 # 실행 인자
-[RunArgs](./docs/RunArgs) 를 확인하세요  
+[RunArgs](./docs/RunArgs.md) 를 확인하세요  
