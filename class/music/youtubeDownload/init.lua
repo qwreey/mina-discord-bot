@@ -73,7 +73,7 @@ function module.getVID(url)
 end
 local getVID = module.getVID;
 
-function module.download(vid)
+function module.download(vid,lastInfo)
 	vid = getVID(vid);
 	if not vid then
 		error("잘못된 영상 URL 또는 ID 를 입력했습니다");
@@ -81,7 +81,7 @@ function module.download(vid)
 	local url = ('https://www.youtube.com/watch?v=%s'):format(vid);
 
 	-- if not exist already, create new it
-	local audio,info,err = download(url,vid);
+	local audio,info,err = download(url,vid,lastInfo);
 	if isExistString(info) and isExistString(audio) then
 		return audio,info,url,vid;
 	end

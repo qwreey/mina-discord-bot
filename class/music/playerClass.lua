@@ -107,8 +107,8 @@ end
 this.seekbar = seekbar;
 
 -- download music for prepare playing song
-local function download(thing)
-	local audio,info,url,vid = ytHandler.download(thing.url);
+local function download(thing,lastInfo)
+	local audio,info,url,vid = ytHandler.download(thing.url,lastInfo);
 	if not audio then
 		return;
 	end
@@ -265,7 +265,6 @@ client:on('stoping',function ()
 end);
 
 client:on("voiceConnectionMove",function (old,new)
-
 	if not (old and new) then
 		return;
 	end
@@ -286,6 +285,23 @@ client:on("voiceConnectionMove",function (old,new)
 	this.playerForChannels[oldId] = nil;
 	player.voiceChannelID = newId;
 
+	local newConnection = player.handler.channel.guild.connection;
+	player.handler = newConnection;
+
+	local handler = player.handler;
+	local nowPlaying = player[1];
+	if nowPlaying then
+		player.reconnect = true;
+		player:__stop();
+		timer.sleep(20);
+		player.reconnect = false;
+		promise.spawn(this.__play,player,nowPlaying);
+	end
+	timer.sleep(50); -- wait for all tasks to complete
+	-- player.handler
+	-- logger.info(player[1] ~= nil);
+	voiceChannelJoin(nil,handler.channel);
+	voiceChannelLeave(nil,handler.channel,player);
 end);
 
 --#endregion --* Client setups *--
@@ -328,20 +344,12 @@ local retryRate = 20;
 local maxRetrys = 7;
 local function playEnd(fargs,result,reason)
 	local self,thing,position = fargs[1],fargs[2],fargs[3];
-	local handler = self and self.handler;
+	local handler = self.handler;
 	if self.destroyed then -- is destroyed
 		return;
-	elseif tonumber(result) and reason == "reconnecting" then -- reconnect and play this again
-		local passed,err = handler:_await();
-		if err and err:match("failed to initialize") then -- too fast moving!
-			self.handler = handler.channel:join();
-			passed = true;
-		end
-		if not passed then return; end
-		voiceChannelJoin(nil,handler.channel);
-		promise.spawn(self.__play,self,thing,result / 1000);
-		timer.sleep(200); -- wait for all tasks to complete
-		voiceChannelLeave(nil,handler.channel,self);
+	elseif reason == "reconnecting" or handler.socket.reconnect or self.reconnect then -- reconnect and play this again
+		self.reconnect = nil;
+		if tonumber(result) then thing.timestamp = result / 1000; end
 		return;
 	elseif reason == "Connection is not ready" then -- discord connection error
 		return pcall(self.kill,self);
@@ -427,6 +435,8 @@ local function playEnd(fargs,result,reason)
 	if now == thing then
 		-- IMPORTANT! without this, it will take this coroutine until ending of list
 		-- so, it will make coroutine stacks that will take space!
+		if not handler.channel.guild.connection then return end
+		logger.infof("try to remove songs (%s)",tostring(reason))
 		promise.spawn(self.remove,self,1);
 	end
 end
@@ -529,7 +539,7 @@ end
 function this:add(thing,onIndex)
 	local message = thing.message;
 	thing.channel = thing.channel or (message and message.channel);
-	download(thing);
+	download(thing,thing.info);
 	if not thing.audio then
 		error("fail to download");
 	end
@@ -577,12 +587,18 @@ end
 
 -- set resume, pause
 function this:setPaused(paused)
+	local handler = self.handler;
 	if paused then
 		self.isPaused = true;
-		self.handler:pauseStream();
+		handler:pauseStream();
+		local nowPlaying = self.nowPlaying;
+		local getElapsed = rawget(handler,"getElapsed");
+		if nowPlaying and getElapsed then
+			nowPlaying.timestamp = getElapsed() / 1000;
+		end
 	else
 		self.isPaused = false;
-		self.handler:resumeStream();
+		handler:resumeStream();
 	end
 end
 
@@ -970,6 +986,7 @@ function this.save()
 				username = song.username;
 				url = song.url;
 				timestamp = song.timestamp;
+				info = song.info;
 			});
 		end
 		insert(data,playerData);

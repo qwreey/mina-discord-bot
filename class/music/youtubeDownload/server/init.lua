@@ -8,12 +8,15 @@ local musicFile = "./data/youtubeFiles/%s";
 local errMessage = "^ERR:(.+)";
 local errTimeout = "^TIMEOUT\n?";
 local mutexs = setmetatable({},{__mode = "v"});
-function module.download(url,vid)
+function module.download(url,vid,lastInfo)
 	local file = musicFile:format(vid:gsub("%-","."));
     local exist = fs.existsSync(file);
 
-	local lastCache = infoCache[file];
+	local lastCache = infoCache[vid] or lastInfo;
 	if exist and lastCache then
+		if lastInfo then
+			infoCache[vid] = lastInfo;
+		end
 		return file,lastCache,nil;
 	end
 
@@ -40,7 +43,7 @@ function module.download(url,vid)
 		end
 	end
 	data = module.processData(data);
-	infoCache[file] = data;
+	infoCache[vid] = data;
 	downloadMutex:unlock();
 	return file,data,nil;
 end
