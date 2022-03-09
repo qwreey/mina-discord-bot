@@ -164,7 +164,17 @@ local retryRate = 20;
 local maxRetrys = 7;
 local function playEnd(fargs,result,reason)
 	local self,thing,position = fargs[1],fargs[2],fargs[3];
+	local handler = self and self.handler;
 	if self.destroyed then -- is destroyed
+		return;
+	elseif tonumber(result) and reason == "reconnecting" then -- reconnect and play this again
+		local passed,err = handler:_await();
+		if err and err:match("failed to initialize") then -- too fast moving!
+			self.handler = handler.channel:join();
+			passed = true;
+		end
+		if not passed then return; end
+		promise.spawn(self.__play,self,thing,result / 1000);
 		return;
 	elseif reason == "Connection is not ready" then -- discord connection error
 		return pcall(self.kill,self);
@@ -747,7 +757,7 @@ function this.restore(data)
 		local voiceChannelId = playerData.channel;
 		local voiceChannel = client:getChannel(voiceChannelId); ---@type GuildVoiceChannel
 		local songs = playerData.songs;
-		local guild = voiceChannel.guild;
+		local guild = voiceChannel and voiceChannel.guild;
 
 		if voiceChannel and songs and (#songs ~= 0) then
 			local connection = voiceChannel:join();
@@ -825,6 +835,7 @@ local function voiceChannelJoin(member,channel)
 			pcall(timer.clearTimer,timeout);
 		end
 		if leaveMessage then
+			player.leaveMessage = nil;
 			leaveMessage:delete();
 		end
 	end
@@ -937,6 +948,33 @@ end);
 client:on('stoping',function ()
 	fs.writeFileSync("./data/lastMusicStatus.json",json.encode(this.save()));
 	logger.info("Saved all song playing data!");
+end);
+
+client:on("voiceConnectionMove",function (old,new)
+
+	if not (old and new) then
+		return;
+	end
+
+	local oldId,newId = old.id,new.id;
+	if not (oldId and newId) then
+		return;
+	end
+
+	logger.infof("voiceConnection move request, channel status changed to %s -> %s",oldId,newId);
+
+	local player = this.playerForChannels[oldId];
+	if not player then
+		logger.errorf("voiceConnection move was requested but no player found from last connection, channel was %s -> %s",oldId,newId);
+		return
+	end
+	this.playerForChannels[newId] = player;
+	this.playerForChannels[oldId] = nil;
+	player.voiceChannelID = newId;
+
+	voiceChannelJoin(nil,new);
+	voiceChannelLeave(nil,new,player);
+
 end);
 
 --#endregion --* Client setups *--
