@@ -2,6 +2,8 @@ local server = IPC.new("python",{"class/music/youtubeDownload/server/main.py"},t
 
 local module = {};
 
+_G.youtubeVideoInfoCache = {};
+local infoCache = {};
 local musicFile = "./data/youtubeFiles/%s";
 local errMessage = "^ERR:(.+)";
 local errTimeout = "^TIMEOUT\n?";
@@ -9,6 +11,11 @@ local mutexs = setmetatable({},{__mode = "v"});
 function module.download(url,vid)
 	local file = musicFile:format(vid:gsub("%-","."));
     local exist = fs.existsSync(file);
+
+	local lastCache = infoCache[file];
+	if exist and lastCache then
+		return file,lastCache,nil;
+	end
 
 	local downloadMutex = mutexs[vid] or mutex.new(); ---@type mutex
 	mutexs[vid] = downloadMutex;
@@ -32,6 +39,7 @@ function module.download(url,vid)
 			return file,nil,err;
 		end
 	end
+	infoCache[file] = data;
 	downloadMutex:unlock();
 	return file,data,nil;
 end
