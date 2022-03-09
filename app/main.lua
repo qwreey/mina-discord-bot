@@ -23,20 +23,6 @@ local initProfiler = profiler.new"INIT";
 initProfiler:start"MAIN";
 _G.initProfiler = initProfiler;
 
--- Get version from git
-initProfiler:start"Get git version";
-local version do
-	local file = io.popen("git log -1 --format=%cd");
-	version = file:read("*a");
-	file:close();
-	local commitCountFile = io.popen("git rev-list --count HEAD");
-	local commitCount = commitCountFile:read("*a"):gsub("\n","");
-	commitCountFile:close();
-	local month,day,times,year,gmt = version:match("[^ ]+ +([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+)");
-	version = ("%s %s %s Build %s"):format(month,day,tostring(times:match("%d+:%d+")),tostring(commitCount));
-end
-initProfiler:stop();
-
 -- Make app object
 initProfiler:start"Setup terminal / Application";
 local args,options = (require "argsParser").decode(args,{
@@ -45,7 +31,7 @@ local args,options = (require "argsParser").decode(args,{
 _G.app = {
 	name = "DiscordBot";
 	fullname = "discord_mina_bot";
-	version = version;
+	version = "Unknown";
 	args = args;
 	options = options;
 	changelog = require "app.changelog";
@@ -115,6 +101,67 @@ local argsParser = require "libs.argsParser"; _G.argsParser = argsParser;
 local IPC = require "IPC"; _G.IPC = IPC;
 initProfiler:stop();
 --#endregion : Load modules
+--#region : Get version
+-- Get version from git
+initProfiler:start"Get git version";
+local commitTime,commitCount = "","" do
+	local errPrefix = "[GitVersion] %s";
+	local errNewline = "\n"..(" "):rep(#errPrefix - 2);
+	promise.new(function()
+		-- git last commit time
+		local gitTime = spawn("git",{
+			args = {"log","-1","--format=%cd"};
+			stdio = {nil,true,true};
+		});
+		local waitter = promise.waitter();
+		waitter:add(promise.new(function()
+			for str in gitTime.stdout.read do
+				commitTime = commitTime .. str;
+			end
+		end));
+		waitter:add(promise.new(function()
+			for str in gitTime.stderr.read do
+				logger.errorf(errPrefix,str:gsub("\n",errNewline));
+			end
+		end));
+		waitter:wait();
+		commitTime = commitTime:gsub("\n","");
+
+		-- git commit counts
+		local gitCount = spawn("git",{
+			args = {"rev-list","--count","HEAD"};
+			stdio = {nil,true,true};
+		});
+		waitter = promise.waitter();
+		waitter:add(promise.new(function()
+			for str in gitCount.stdout.read do
+				commitCount = commitCount .. str;
+			end
+		end));
+		waitter:add(promise.new(function()
+			for str in gitCount.stderr.read do
+				logger.errorf(errPrefix,str:gsub("\n",errNewline));
+			end
+		end));
+		waitter:wait();
+		commitCount = commitCount:gsub("\n","");
+
+		-- update version
+		local month,day,times,year,gmt = commitTime:match("[^ ]+ +([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+)");
+		local version = ("%s %s %s Build %s"):format(month,day,tostring(times:match("%d+:%d+")),tostring(commitCount));
+		app.version = version;
+
+		-- refreshLine
+		editor.prompt = buildPrompt();
+		editor:refreshLine();
+
+		-- wait process exit
+		gitTime.waitExit();
+		gitCount.waitExit();
+	end);
+end
+initProfiler:stop();
+--#endregion : Get version
 --#region : Discordia Module
 initProfiler:start"Load discordia";
 logger.info("------------------------ [CLEAN  UP] ------------------------");
@@ -637,7 +684,7 @@ end
 require("app.livereload")(testingMode); -- loads livereload system; it will make uv event and take file changed signal
 initProfiler:stop();
 initProfiler:start"Startup bot client";
-_G.startBot(ACCOUNTData.botToken,testingMode); -- init bot (init discordia)
+startBot(ACCOUNTData.botToken,testingMode); -- init bot (init discordia)
 initProfiler:stop();
 initProfiler:stop(); -- stop bot setup
 --#endregion : Main logic

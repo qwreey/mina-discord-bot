@@ -1,7 +1,6 @@
 local history = readline.History.new(); -- 히스토리 홀더 만들기
 local editor = readline.Editor.new({stdin = process.stdin.handle, stdout = process.stdout.handle, history = history}); _G.editor = editor;
 local app = app;
-local version = app and app.version;
 local prettyPrint = prettyPrint or require("pretty-print");
 local promise = _G.promise;
 local wrap = coroutine.wrap;
@@ -83,7 +82,7 @@ local function buildPrompt()
 		str = "";
 	else
 		str = str .. buildLine(colors.blue,"APP");
-		str = str .. buildLine(colors.yellow," " .. version);
+		str = str .. buildLine(colors.yellow," " .. (app and app.version or "Unknown"));
 
 		-- set end point
 		str = str .. ("\27[0m\27[%dm\27[0m "):format(lastColor[1]);
