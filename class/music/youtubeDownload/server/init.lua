@@ -10,7 +10,7 @@ local errTimeout = "^TIMEOUT\n?";
 local mutexs = setmetatable({},{__mode = "v"});
 function module.download(url,vid,lastInfo)
 	local file = musicFile:format(vid:gsub("%-","."));
-    local exist = fs.existsSync(file);
+	local exist = fs.existsSync(file);
 
 	local lastCache = infoCache[vid] or lastInfo;
 	if exist and lastCache then

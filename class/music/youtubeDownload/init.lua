@@ -10,9 +10,9 @@ module.timeoutMessage = timeoutMessage;
 
 local download;
 for _,str in ipairs(app.args) do
-    if str == "voice.no-download-server" then
-        download = require(... .. ".childprocess");
-    end
+	if str == "voice.no-download-server" then
+		download = require(... .. ".childprocess");
+	end
 end
 download = download or require(... .. ".server");
 download.timeoutMessage = timeoutMessage;

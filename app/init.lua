@@ -13,8 +13,8 @@ local jit = require("jit");
 args[0] = nil;
 args[1] = "app/main";
 local bin = {
-    Windows = "./bin/Windows_%s/luvit.exe";
-    Linux = "./bin/Linux_%s/luvit";
+	Windows = "./bin/Windows_%s/luvit.exe";
+	Linux = "./bin/Linux_%s/luvit";
 };
 local listOfBinFiles = {
 	"lit","luvi","luvit","yt-dlp"
