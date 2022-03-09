@@ -125,6 +125,170 @@ end
 this.download = download;
 
 --#endregion --* util functions *--
+--#region --* Client setups *--
+
+--- make auto leave for none-using channels
+---@param member Member
+---@param channel GuildVoiceChannel
+local function voiceChannelJoin(member,channel)
+	if member and member.bot then ---@diagnostic disable-line
+		return;
+	end
+	local channelId = channel:__hash();
+	local player = this.playerForChannels[channelId];
+	if player then
+		local leaveMessage = player.leaveMessage;
+		if player.isPausedByNoUser then
+			player.isPausedByNoUser = nil;
+			player:setPaused(false);
+		end
+		local timeout = player.timeout;
+		if timeout then
+			logger.infof("Someone joined voice channel, stop killing player [channel:%s]",channelId);
+			player.timeout = nil;
+			pcall(timer.clearTimer,timeout);
+		end
+		if leaveMessage then
+			player.leaveMessage = nil;
+			leaveMessage:delete();
+		end
+	end
+end
+local function voiceChannelJoinErr(channel,result)
+	logger.errorf("An error occurred while trying adding killing music player queue [channel:%s]",
+		(channel[1] or {__hash = function () return "unknown"; end}):__hash()
+	);
+	logger.errorf("Error message was : %s",result);
+end
+client:on("voiceChannelJoin",function (...)
+	local channel = select(2,...);
+	promise.new(voiceChannelJoin,...)
+		:catch(voiceChannelJoinErr,channel);
+end);
+
+---@param member Member
+---@param channel GuildVoiceChannel
+---@param player playerClass
+local function voiceChannelLeave(member,channel,player)
+	if member and member.bot then ---@diagnostic disable-line
+		return;
+	end
+	local channelId = channel:__hash();
+	player = player or this.playerForChannels[channelId];
+	local guild = channel.guild;
+	local connection = guild.connection;
+	if player and connection then
+		local playerTimeout = player.timeout;
+		if playerTimeout then
+			player.timeout = nil;
+			pcall(timer.clearTimer,playerTimeout);
+		end
+		local tryKill = true;
+		for _,user in pairs(channel.connectedMembers or {}) do
+			if not user.bot then
+				tryKill = false;
+			end
+		end
+		local nowPlaying = player.nowPlaying;
+		if tryKill then -- pause
+			if nowPlaying and (not player.isPaused) then
+				player.isPausedByNoUser = true;
+				player.leaveMessage = sendMessage(player[1] or player.nowPlaying,"음성채팅방에 아무도 없어 음악을 일시 중지했어요! (다시 입장시 자동으로 재개해요)");
+				player:setPaused(true);
+			elseif nowPlaying == nil and (not player[1]) then
+				pcall(player.kill,player);
+				pcall(connection.close,connection);
+				this.playerForChannels[channelId] = nil;
+			end
+		end
+		if player.mode24 then -- check mode that prevent killed
+			return;
+		end
+		if tryKill and (not player.timeout) then -- kill
+			logger.infof("All users left voice channel, queued player to kill list [channel:%s]",channelId);
+			player.timeout = timeout(killTimer,function ()
+				connection = guild.connection;
+				local leaveMessage = player.leaveMessage;
+				if connection then
+					logger.infof("voice channel timeouted! killing player now [channel:%s]",channelId);
+					sendMessage(player[1] or player.nowPlaying,"5분동안 사람이 없어 음성채팅방에서 나갔어요!");
+					pcall(player.kill,player);
+					pcall(connection.close,connection);
+					this.playerForChannels[channelId] = nil;
+				end
+				if leaveMessage then
+					leaveMessage:delete();
+				end
+			end);
+		end
+	elseif player then
+		this.playerForChannels[channelId] = nil;
+	end
+end
+local function voiceChannelLeaveErr(channel,result)
+	logger.errorf("An error occurred while trying adding killing music player queue [channel:%s]",
+		(channel[1] or {__hash = function () return "unknown"; end}):__hash()
+	);
+	logger.errorf("Error message was : %s",result);
+end
+client:on("voiceChannelLeave",function (...)
+	local channel = select(2,...);
+	promise.new(voiceChannelLeave,...)
+		:catch(voiceChannelLeaveErr,channel);
+end);
+
+-- restore data
+client:once("ready", function ()
+	local lastData = fs.readFileSync("./data/lastMusicStatus.json")
+	if lastData and lastData ~= "" then
+		logger.info("found music backup data! restoring ...");
+		local data = json.decode(lastData);
+		if data then
+			promise.new(this.restore,data):wait();
+			---@type playerClass
+			for _,player in pairs(this.playerForChannels) do
+				local handler = player and player.handler;
+				local channel = handler and handler.channel;
+				if channel then
+					voiceChannelLeave(nil,channel,player);
+				end
+			end
+			logger.info("Restored all song playing data!");
+		end
+	end
+	fs.writeFileSync("./data/lastMusicStatus.json","");
+end);
+
+client:on('stoping',function ()
+	fs.writeFileSync("./data/lastMusicStatus.json",json.encode(this.save()));
+	logger.info("Saved all song playing data!");
+end);
+
+client:on("voiceConnectionMove",function (old,new)
+
+	if not (old and new) then
+		return;
+	end
+
+	local oldId,newId = old.id,new.id;
+	if not (oldId and newId) then
+		return;
+	end
+
+	logger.infof("voiceConnection move request, channel status changed to %s -> %s",oldId,newId);
+
+	local player = this.playerForChannels[oldId];
+	if not player then
+		logger.errorf("voiceConnection move was requested but no player found from last connection, channel was %s -> %s",oldId,newId);
+		return
+	end
+	this.playerForChannels[newId] = player;
+	this.playerForChannels[oldId] = nil;
+	player.voiceChannelID = newId;
+
+end);
+
+--#endregion --* Client setups *--
 --#region --* Class initialization *--
 
 --[[
@@ -174,7 +338,10 @@ local function playEnd(fargs,result,reason)
 			passed = true;
 		end
 		if not passed then return; end
+		voiceChannelJoin(nil,handler.channel);
 		promise.spawn(self.__play,self,thing,result / 1000);
+		timer.sleep(200); -- wait for all tasks to complete
+		voiceChannelLeave(nil,handler.channel,self);
 		return;
 	elseif reason == "Connection is not ready" then -- discord connection error
 		return pcall(self.kill,self);
@@ -511,7 +678,7 @@ function this:songEmbedfiy(index)
 			timeAgo(song.whenAdded),
 			(not elapsed) and ("곡 길이 : %s | "):format(formatTime(duration)) or "",
 			tostring(info.view_count),
-			like and (" | 좋아요 : %s"):format(tostring(info.like_count)) or "",
+			like and (" | 좋아요 : %s"):format(tostring(like)) or "",
 			tostring(info.uploader),
 			tostring(song.url or info.webpage_url),
 			tostring(info.uploader_url or info.channel_url)
@@ -811,172 +978,5 @@ function this.save()
 end
 
 --#endregion --* Restore *--
---#region --* Client setups *--
-
---- make auto leave for none-using channels
----@param member Member
----@param channel GuildVoiceChannel
-local function voiceChannelJoin(member,channel)
-	if member and member.bot then ---@diagnostic disable-line
-		return;
-	end
-	local channelId = channel:__hash();
-	local player = this.playerForChannels[channelId];
-	if player then
-		local leaveMessage = player.leaveMessage;
-		if player.isPausedByNoUser then
-			player.isPausedByNoUser = nil;
-			player:setPaused(false);
-		end
-		local timeout = player.timeout;
-		if timeout then
-			logger.infof("Someone joined voice channel, stop killing player [channel:%s]",channelId);
-			player.timeout = nil;
-			pcall(timer.clearTimer,timeout);
-		end
-		if leaveMessage then
-			player.leaveMessage = nil;
-			leaveMessage:delete();
-		end
-	end
-end
-local function voiceChannelJoinErr(channel,result)
-	logger.errorf("An error occurred while trying adding killing music player queue [channel:%s]",
-		(channel[1] or {__hash = function () return "unknown"; end}):__hash()
-	);
-	logger.errorf("Error message was : %s",result);
-end
-client:on("voiceChannelJoin",function (...)
-	local channel = select(2,...);
-	promise.new(voiceChannelJoin,...)
-		:catch(voiceChannelJoinErr,channel);
-end);
-
----@param member Member
----@param channel GuildVoiceChannel
----@param player playerClass
-local function voiceChannelLeave(member,channel,player)
-	if (not member) or member.bot then ---@diagnostic disable-line
-		return;
-	end
-	local channelId = channel:__hash();
-	player = player or this.playerForChannels[channelId];
-	local guild = channel.guild;
-	local connection = guild.connection;
-	if player and connection then
-		local playerTimeout = player.timeout;
-		if playerTimeout then
-			player.timeout = nil;
-			pcall(timer.clearTimer,playerTimeout);
-		end
-		local tryKill = true;
-		for _,user in pairs(channel.connectedMembers or {}) do
-			if not user.bot then
-				tryKill = false;
-			end
-		end
-		local nowPlaying = player.nowPlaying;
-		if tryKill then -- pause
-			if nowPlaying and (not player.isPaused) then
-				player.isPausedByNoUser = true;
-				player.leaveMessage = sendMessage(player[1] or player.nowPlaying,"음성채팅방에 아무도 없어 음악을 일시 중지했어요! (다시 입장시 자동으로 재개해요)");
-				player:setPaused(true);
-			elseif nowPlaying == nil and (not player[1]) then
-				pcall(player.kill,player);
-				pcall(connection.close,connection);
-				this.playerForChannels[channelId] = nil;
-			end
-		end
-		if player.mode24 then -- check mode that prevent killed
-			return;
-		end
-		if tryKill then -- kill
-			logger.infof("All users left voice channel, queued player to kill list [channel:%s]",channelId);
-			player.timeout = timeout(killTimer,function ()
-				connection = guild.connection;
-				local leaveMessage = player.leaveMessage;
-				if connection then
-					logger.infof("voice channel timeouted! killing player now [channel:%s]",channelId);
-					sendMessage(player[1] or player.nowPlaying,"5분동안 사람이 없어 음성채팅방에서 나갔어요!");
-					pcall(player.kill,player);
-					pcall(connection.close,connection);
-					this.playerForChannels[channelId] = nil;
-				end
-				if leaveMessage then
-					leaveMessage:delete();
-				end
-			end);
-		end
-	elseif player then
-		this.playerForChannels[channelId] = nil;
-	end
-end
-local function voiceChannelLeaveErr(channel,result)
-	logger.errorf("An error occurred while trying adding killing music player queue [channel:%s]",
-		(channel[1] or {__hash = function () return "unknown"; end}):__hash()
-	);
-	logger.errorf("Error message was : %s",result);
-end
-client:on("voiceChannelLeave",function (...)
-	local channel = select(2,...);
-	promise.new(voiceChannelLeave,...)
-		:catch(voiceChannelLeaveErr,channel);
-end);
-
--- restore data
-client:once("ready", function ()
-	local lastData = fs.readFileSync("./data/lastMusicStatus.json")
-	if lastData and lastData ~= "" then
-		logger.info("found music backup data! restoring ...");
-		local data = json.decode(lastData);
-		if data then
-			promise.new(this.restore,data):wait();
-			---@type playerClass
-			for _,player in pairs(this.playerForChannels) do
-				local handler = player and player.handler;
-				local channel = handler and handler.channel;
-				if channel then
-					voiceChannelLeave(nil,channel,player);
-				end
-			end
-			logger.info("Restored all song playing data!");
-		end
-	end
-	fs.writeFileSync("./data/lastMusicStatus.json","");
-end);
-
-client:on('stoping',function ()
-	fs.writeFileSync("./data/lastMusicStatus.json",json.encode(this.save()));
-	logger.info("Saved all song playing data!");
-end);
-
-client:on("voiceConnectionMove",function (old,new)
-
-	if not (old and new) then
-		return;
-	end
-
-	local oldId,newId = old.id,new.id;
-	if not (oldId and newId) then
-		return;
-	end
-
-	logger.infof("voiceConnection move request, channel status changed to %s -> %s",oldId,newId);
-
-	local player = this.playerForChannels[oldId];
-	if not player then
-		logger.errorf("voiceConnection move was requested but no player found from last connection, channel was %s -> %s",oldId,newId);
-		return
-	end
-	this.playerForChannels[newId] = player;
-	this.playerForChannels[oldId] = nil;
-	player.voiceChannelID = newId;
-
-	voiceChannelJoin(nil,new);
-	voiceChannelLeave(nil,new,player);
-
-end);
-
---#endregion --* Client setups *--
 
 return this;

@@ -2,8 +2,8 @@ local server = IPC.new("python",{"class/music/youtubeDownload/server/main.py"},t
 
 local module = {};
 
-_G.youtubeVideoInfoCache = {};
 local infoCache = {};
+_G.youtubeVideoInfoCache = infoCache;
 local musicFile = "./data/youtubeFiles/%s";
 local errMessage = "^ERR:(.+)";
 local errTimeout = "^TIMEOUT\n?";
@@ -39,9 +39,27 @@ function module.download(url,vid)
 			return file,nil,err;
 		end
 	end
+	data = module.processData(data);
 	infoCache[file] = data;
 	downloadMutex:unlock();
 	return file,data,nil;
+end
+
+local remove = table.remove;
+function module.processData(data)
+	local subtitles = data.subtitles;
+	local thumbnails = data.thumbnails;
+	return {
+		title = subtitles and subtitles.kr or data.title;
+		duration = data.duration;
+		thumbnails = thumbnails and {remove(thumbnails)};
+		like_count = data.like_count;
+		view_count = data.view_count;
+		uploader = data.uploader;
+		webpage_url = data.webpage_url;
+		channel_url = data.channel_url;
+		uploader_url = data.uploader_url;
+	};
 end
 
 return module;
