@@ -18,8 +18,13 @@ local jit = _G.jit or require "jit";
 process.env.PATH = process.env.PATH .. ((jit.os == "Windows" and ";.\\bin\\Windows_" or ":./bin/Linux_") .. jit.arch); -- add bin libs path
 package.path = require("app.path")(package.path); -- set require path
 _G.require = require; -- set global require function
+local profiler = require"profiler"; _G.profiler = profiler;
+local initProfiler = profiler.new"INIT";
+initProfiler:start"MAIN";
+_G.initProfiler = initProfiler;
 
 -- Get version from git
+initProfiler:start"Get git version";
 local version do
 	local file = io.popen("git log -1 --format=%cd");
 	version = file:read("*a");
@@ -30,8 +35,10 @@ local version do
 	local month,day,times,year,gmt = version:match("[^ ]+ +([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+)");
 	version = ("%s %s %s Build %s"):format(month,day,tostring(times:match("%d+:%d+")),tostring(commitCount));
 end
+initProfiler:stop();
 
 -- Make app object
+initProfiler:start"Setup terminal / Application";
 local args,options = (require "argsParser").decode(args,{
 	["--logger_prefix"] = true;
 });
@@ -60,8 +67,10 @@ if jit.os == "Windows" then
 		-- os.execute("chcp 65001>/dev/null")
 	end
 end
+initProfiler:stop();
 --#endregion sys setup
 --#region : Load modules
+initProfiler:start"Load global modules";
 local format = string.format;
 local traceback = debug.traceback;
 local insert = table.insert;
@@ -104,8 +113,10 @@ local mutex = require "libs.mutex"; _G.mutex = mutex;
 local commonSlashCommand = require "class.commonSlashCommand"; _G.commonSlashCommand = commonSlashCommand;
 local argsParser = require "libs.argsParser"; _G.argsParser = argsParser;
 local IPC = require "IPC"; _G.IPC = IPC;
+initProfiler:stop();
 --#endregion : Load modules
 --#region : Discordia Module
+initProfiler:start"Load discordia";
 logger.info("------------------------ [CLEAN  UP] ------------------------");
 logger.info("wait for discordia ...");
 
@@ -141,11 +152,14 @@ end
 
 ---@diagnostic disable-next-line
 discordia_enchant.inject(client);
+initProfiler:stop();
 --#endregion : Discordia Module
 --#region : Load bot environments
+initProfiler:start"Load bot environments";
 logger.info("---------------------- [LOAD SETTINGS] ----------------------");
 
 -- Load environments
+initProfiler:start"Load environments / datas";
 logger.info("load environments ...");
 require("app.global"); -- inject environment
 local adminCmd = require("class.adminCommands"); -- load admin commands
@@ -154,8 +168,11 @@ local registeLeaderstatus = require("class.registeLeaderstatus");
 local formatTraceback = _G.formatTraceback;
 local admins = _G.admins;
 local testingMode = ACCOUNTData.testing;
+initProfiler:stop();
 
 -- Load commands
+initProfiler:start"Load commands";
+initProfiler:start"Require files";
 logger.info(" |- load commands from commands folder");
 local otherCommands = {} -- read commands from commands folder
 for dir in fs.scandirSync("commands") do
@@ -163,8 +180,10 @@ for dir in fs.scandirSync("commands") do
 	logger.info(" |  |- load from : commands." .. dir);
 	otherCommands[#otherCommands+1] = require("commands." .. dir);
 end
+initProfiler:stop();
 
 -- Load command indexer
+initProfiler:start"Indexing commands";
 local reacts,commands,noPrefix,commandsLen;
 reacts,commands,noPrefix,commandsLen = commandHandler.encodeCommands({
 	-- 특수기능
@@ -203,8 +222,11 @@ _G.reacts = reacts;
 _G.commands = commands;
 _G.noPrefix = noPrefix;
 logger.info(" |- command indexing end!");
+initProfiler:stop();
+initProfiler:stop();
 --#endregion : Load bot environments
 --#region : Main logic
+initProfiler:start"Setup bot client events";
 logger.info("----------------------- [SET UP BOT ] -----------------------");
 local findCommandFrom = commandHandler.findCommandFrom;
 local afterHook = hook.afterHook;
@@ -591,8 +613,9 @@ end,nil,nil,"MAIN");
 client:on("slashCommandsCommited",function ()
 	logger.info("[Slash] All slash command loaded");
 end);
-
 -- enable terminal features and live reload system
+initProfiler:stop();
+initProfiler:start"Init Terminal / Dev features";
 do
 	local terminalInputDisabled;
 	local livereload = false;
@@ -612,5 +635,10 @@ do
 	_G.livereloadEnabled = livereload; -- enable live reload
 end
 require("app.livereload")(testingMode); -- loads livereload system; it will make uv event and take file changed signal
+initProfiler:stop();
+initProfiler:start"Startup bot client";
 _G.startBot(ACCOUNTData.botToken,testingMode); -- init bot (init discordia)
+initProfiler:stop();
+initProfiler:stop(); -- stop bot setup
 --#endregion : Main logic
+initProfiler:stop(); -- stop main
