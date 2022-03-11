@@ -3,3 +3,4 @@ deps/** linguist-vendored
 archive/** linguist-vendored
 log/** linguist-vendored
 test/** linguist-vendored
+libs/** linguist-vendored
