@@ -39,14 +39,15 @@
 
 local youtubePlaylist = require "class.music.youtubePlaylist";
 local playerClass = require "class.music.playerClass";
+local youtubeVideoList = require "class.music.youtubeVideoList";
 local playerForChannels = playerClass.playerForChannels;
 local formatTime = playerClass.formatTime;
 local time = os.time;
-local timer = _G.timer;
+-- local timer = _G.timer;
 local eulaComment_music = _G.eulaComment_music or makeEulaComment("음악");
 local hourInSecond = 60*60;
 local minuteInSecond = 60;
-local client = _G.client;
+-- local client = _G.client;
 local help = [[
 **음악 기능에 대한 도움말입니다**
 > 주의! 이 기능은 아직 불완전합니다. 오류로 인해 몇몇 곡이 스킵 될 수도 있습니다!
@@ -163,8 +164,9 @@ local export = {
 		disableDm = true;
 		registeredOnly = eulaComment_music;
 		reply = "로딩중 ⏳";
+		---@param replyMsg Message
 		func = function(replyMsg,message,args,Content)
-			
+			replyMsg:update(youtubeVideoList.display(Content.rawArgs));
 		end;
 	};
 	["add music"] = {
@@ -525,7 +527,7 @@ local export = {
 			else
 				player.mode24 = nil;
 				replyMsg:setContent("성공적으로 24 시간 모드를 비활성화했습니다!");
-				voiceChannelLeave(Content.user,voiceChannel); -- check there is no users
+				playerClass.voiceChannelLeave(Content.user,voiceChannel); -- check there is no users
 			end
 		end;
 		onSlash = commonSlashCommand {

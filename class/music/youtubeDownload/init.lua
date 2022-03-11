@@ -1,8 +1,8 @@
 local module = {};
-
-local function isExistString(str)
-	return str and str ~= "" and str ~= " " and str ~= "\n";
-end
+local utils = require"class.music.utils";
+local getVideoId = utils.getVideoId;
+local isExistString = utils.isExistString;
+local formatUrl = utils.formatUrl;
 
 module.redownload = false;
 local timeoutMessage = "ERR:TIMEOUT";
@@ -45,40 +45,12 @@ function module.errorFormater(str)
 end
 local errorFormater = module.errorFormater;
 
-local vidFormat = ("[%w%-_]"):rep(11);
-local vidWatch = ("watch%%?v=(%s)"):format(vidFormat);
-local vidShort = ("https://youtu%%.be/(%s)"):format(vidFormat);
-local searchURLTemp = ("https://www.googleapis.com/youtube/v3/search?key=%s&part=snippet&maxResults=8&q=%%s"):format(ACCOUNTData.GoogleAPIKey);
-
-function module.search(url)
-	local _,Body = corohttp.request("GET",
-		searchURLTemp:format(urlCode.urlEncode(url))
-	);
-	if not Body then return end
-	Body = json.decode(Body);
-	if not Body then return end
-	local items = Body.items;
-	if not items then return end
-	local thing = items[1];
-	if not thing then return end
-	local id = thing.id;
-	if not id then return end
-	return id.videoId;
-end
-local search = module.search;
-
----returns the video id of link
-function module.getVID(url)
-	return url:match(vidWatch) or url:match(vidShort) or (url:gsub("^ +",""):gsub(" +$",""):match(vidFormat)) or search(url);
-end
-local getVID = module.getVID;
-
 function module.download(vid,lastInfo)
-	vid = getVID(vid);
+	vid = getVideoId(vid);
 	if not vid then
 		error("잘못된 영상 URL 또는 ID 를 입력했습니다");
 	end
-	local url = ('https://www.youtube.com/watch?v=%s'):format(vid);
+	local url = formatUrl(vid);
 
 	-- if not exist already, create new it
 	local audio,info,err = download(url,vid,lastInfo);

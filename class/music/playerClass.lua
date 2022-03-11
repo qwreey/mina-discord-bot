@@ -165,6 +165,8 @@ client:on("voiceChannelJoin",function (...)
 	promise.new(voiceChannelJoin,...)
 		:catch(voiceChannelJoinErr,channel);
 end);
+this.voiceChannelJoin = voiceChannelJoin;
+this.voiceChannelJoinErr = voiceChannelJoinErr;
 
 ---@param member Member
 ---@param channel GuildVoiceChannel
@@ -236,6 +238,8 @@ client:on("voiceChannelLeave",function (...)
 	promise.new(voiceChannelLeave,...)
 		:catch(voiceChannelLeaveErr,channel);
 end);
+this.voiceChannelLeave = voiceChannelLeave;
+this.voiceChannelLeaveErr = voiceChannelLeaveErr;
 
 -- restore data
 client:once("ready", function ()
