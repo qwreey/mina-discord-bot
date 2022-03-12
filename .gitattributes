@@ -3,3 +3,5 @@ deps/** linguist-vendored
 archive/** linguist-vendored
 test/** linguist-vendored
 libs/** linguist-vendored
+
+*.cat linguist-language=LuaDebugLanguage
