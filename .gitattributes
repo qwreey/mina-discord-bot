@@ -1,6 +1,6 @@
-types/** -linguist-vendored
-deps/** -linguist-vendored
-archive/** -linguist-vendored
-log/** -linguist-vendored
-test/** -linguist-vendored
-libs/** -linguist-vendored
+types/** -linguist-detectable linguist-vendored
+deps/** -linguist-detectable linguist-vendored
+archive/** -linguist-detectable linguist-vendored
+log/** -linguist-detectable linguist-vendored
+test/** -linguist-detectable linguist-vendored
+libs/** -linguist-detectable linguist-vendored
