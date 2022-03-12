@@ -39,8 +39,8 @@ function module.searchVideos(url,maxResults,withData)
 				insert(list,{
 					videoId = videoId;
 					title = toLuaStr(tostring(snippet.title));
-					channelTitle = toLuaStr(snippet.channelTitle);
-					description = toLuaStr(snippet.description);
+					channelTitle = toLuaStr(tostring(snippet.channelTitle));
+					description = toLuaStr(tostring(snippet.description));
 				});
 			end
 		end
