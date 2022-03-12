@@ -38,9 +38,9 @@ function module.searchVideos(url,maxResults,withData)
 			if videoId and snippet then
 				insert(list,{
 					videoId = videoId;
-					title = toLuaStr(tostring(snippet.title));
-					channelTitle = toLuaStr(tostring(snippet.channelTitle));
-					description = toLuaStr(tostring(snippet.description));
+					title = toLuaStr(snippet.title or "NULL");
+					channelTitle = toLuaStr(snippet.channelTitle or "NULL");
+					description = toLuaStr(snippet.description or "NULL");
 				});
 			end
 		end

@@ -65,10 +65,11 @@ end
 ---@param id string
 ---@param object interaction
 local function buttonPressed(id,object)
-    local videoId = tonumber(id:match("music_search_(%d+)"));
+    local videoId = tonumber(id:match("music_search_(.-)"));
 	if not videoId then
 		return;
 	end
+    logger.info(videoId)
 
     local member = object.member;
     if not member then return; end
