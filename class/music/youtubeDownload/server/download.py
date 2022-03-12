@@ -8,9 +8,10 @@ def downloadHook(data):
 		raise Timeout
 downloadHooks = [downloadHook]
 
-rateLimit = 2900000
+rateLimit = None
 
 def handleYtdlp(url,noDownload,file):
+	global rateLimit
 	ydl_opts = {
 		'format': 'bestaudio',
 		'noprogress': True,
@@ -37,6 +38,7 @@ def download(data):
 	)
 
 def setRateLimit(newRateLimit):
+	global rateLimit
 	this = None
 	try:
 		this = int(newRateLimit)

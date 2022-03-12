@@ -1,4 +1,5 @@
 local server = IPC.new("python",{"class/music/youtubeDownload/server/main.py"},true);
+server:setName("YTDL");
 
 local module = {};
 

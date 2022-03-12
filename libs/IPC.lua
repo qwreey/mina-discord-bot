@@ -10,18 +10,36 @@ local yield,resume,running,wrap = coroutine.yield,coroutine.resume,coroutine.run
 module.__index = module;
 local encode,decode = json.encode,json.decode;
 
+local _,prettyPrint = pcall(require,"pretty-print");
+local stdout = prettyPrint and prettyPrint.stdout;
+function module:log(str)
+	local logger = logger;
+	local err = logger and logger.error;
+	if err then
+		err(str,nil,{
+			noLineInfo = true;
+			prefix = self.name or "IPC";
+		});
+	elseif stdout then
+		stdout:write(str);
+	elseif io then
+		io.write(str);
+	end
+end
+
 ---Make new IPC wrapper with coro spawn
 ---@param target string target process
 ---@param args table|nil arg for child process
 ---@param newlinebuffer boolean|nil if this value is true, using \n as buffer splitter on stdout 
 function module.new(target,args,newlinebuffer)
-	local child,err = spawn(target,{args = args,stdio = {true,true,1}});
+	local child,err = spawn(target,{args = args,stdio = {true,true,true}});
 	if not child then
 		error(("Failed to create child process\nError message was: %s"):format(err));
 	end
 	local this = {process = child,waitter = {}};
 	setmetatable(this,module);
 	wrap(module.stdoutReader)(this,newlinebuffer);
+	wrap(module.stderrReader)(this);
 	return this;
 end
 
@@ -43,13 +61,13 @@ end
 function module:onbuffer(str)
 	local data = decode(str);
 	if not data then
-		return logger.warnf("failed to decode stdout, stdout was\n%s",str);
+		return self:log("failed to decode stdout, stdout was\n%s",str);
 	end
-	local waitter = self.waitter[data.o];
+	local waitter = self.waitter[data.o]; ---@diagnostic disable-line
 	if waitter then
-		wrap(module.resume)(waitter,data.d,data.e);
+		wrap(module.resume)(waitter,data.d,data.e); ---@diagnostic disable-line
 	else
-		logger.warnf("failed to get waitter, nonce id was %s",tostring(data.o));
+		self:log(("failed to get waitter, nonce id was %s"):format(tostring(data.o))); ---@diagnostic disable-line
 	end
 end
 
@@ -68,6 +86,16 @@ function module:stdoutReader(newlinebuffer)
 		else module.onbuffer(str);
 		end
 	end
+end
+
+function module:stderrReader()
+	for str in self.process.stderr.read do
+		module:log(str);
+	end
+end
+
+function module:setName(str)
+	self.name = str;
 end
 
 return module;

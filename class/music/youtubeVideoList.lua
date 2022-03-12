@@ -10,6 +10,9 @@ local formatUrl = utils.formatUrl;
 local searchVideos = utils.searchVideos;
 local insert = table.insert;
 local buttonPrimary = discordia_enchant_enums.buttonStyle.primary;
+local playerClass = require"class.music.playerClass";
+local playerForChannels = playerClass.playerClass;
+local time = os.time;
 
 local function formatName(str)
     -- return tostring(str):gsub("%[","\\["):gsub("%]","\\]"):gsub("%(","\\("):gsub("%)","\\)");
@@ -57,5 +60,71 @@ function module.display(keyworld)
         };
     };
 end
+
+
+---@param id string
+---@param object interaction
+local function buttonPressed(id,object)
+    local videoId = tonumber(id:match("music_search_(%d+)"));
+	if not videoId then
+		return;
+	end
+
+    local member = object.member;
+    if not member then return; end
+    local nickname = member and member.nickname;
+    local authorName = member.name:gsub("`","\\`");
+    local username = nickname and (nickname:gsub("`","\\`") .. (" (%s)"):format(authorName)) or authorName;
+    local voiceChannel = member.voiceChannel;
+    if not voiceChannel then
+        return object:reply({
+            content = "음성 채팅방에 있지 않아요!\n> 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다.";
+        },true);
+    end
+
+    local guild = object.guild;
+    if not guild then return; end
+    local guildConnection = guild.connection;
+    if guildConnection and (guildConnection.channel ~= voiceChannel) then
+        return object:reply({
+            content = "다른 음성채팅방에서 봇을 사용중이에요!\n> 각 서버당 한 채널만 이용할 수 있습니다!";
+        },true);
+    end
+
+    local voiceChannelID = voiceChannel:__hash();
+    local player = playerForChannels[voiceChannelID]; ---@type playerClass
+    if not guildConnection then -- if connections is not exist, create new one
+        local handler,err = voiceChannel:join();
+        if not handler then
+            return object:reply({
+                content = ("채널에 참가할 수 없습니다, 봇이 유효한 권한을 가지고 있는지 확인해주세요!\n```\n%s\n```"):format(err);
+            },true);
+        end
+        guild.me:deafen(); -- deafen it selfs
+        player = playerClass.new {
+            voiceChannel = voiceChannel;
+            voiceChannelID = voiceChannelID;
+            handler = handler;
+        };
+    end
+
+    if not player then
+        return object:reply({content = "오류가 발생했습니다. (player not cached)"},true);
+    end
+
+    object:update{
+        content = "로딩중 ⏳";
+    };
+
+    pcall(player.add,player,{
+        message = object.message;
+        url = videoId;
+        whenAdded = time();
+        username = username;
+    });
+end
+module.buttonPressed = buttonPressed;
+client:on("buttonPressed",buttonPressed);
+
 
 return module;

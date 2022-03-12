@@ -749,7 +749,7 @@ function this:songIndicator(index)
 end
 
 ---show song information, you can give arguments with guild or playerClass
----@param self Guild|playerClass the guild or player to display
+---@param self playerClass the guild or player to display
 ---@param index number index number of song to show
 ---@return table contents message contents object, you can use this with message:update()
 function this:showSong(index)
@@ -891,7 +891,7 @@ function this:pageIndicator(page)
 end
 
 ---show list page, you can give arguments with guild or playerClass
----@param self Guild|playerClass the guild or player to display
+---@param self playerClass the guild or player to display
 ---@param page number number of page to show
 ---@return table contents message contents object, you can use this with message:update()
 function this:showList(page)
