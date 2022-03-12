@@ -1,6 +1,6 @@
-types/** linguist-detectable=false
-deps/** linguist-detectable=false
-archive/** linguist-detectable=false
-log/** linguist-detectable=false
-test/** linguist-detectable=false
-libs/** linguist-detectable=false
+types/* linguist-detectable=false
+deps/* linguist-detectable=false
+archive/* linguist-detectable=false
+log/* linguist-detectable=false
+test/* linguist-detectable=false
+libs/* linguist-detectable=false
