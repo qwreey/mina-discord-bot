@@ -1,4 +1,3 @@
-from typing_extensions import final
 from yt_dlp import YoutubeDL
 
 class Timeout(Exception): pass
