@@ -165,9 +165,17 @@ local export = {
 		registeredOnly = eulaComment_music;
 		reply = "로딩중 ⏳";
 		---@param replyMsg Message
+		---@param Content commandContent
 		func = function(replyMsg,message,args,Content)
-			replyMsg:update(youtubeVideoList.display(Content.rawArgs));
+			replyMsg:update(youtubeVideoList.display(Content.rawArgs,Content.user.id));
 		end;
+		onSlash = commonSlashCommand {
+			description = "곡을 검색하고 추가할 곡을 선택합니다!";
+			name = "곡검색";
+			optionDescription = "검색할 키워드를 입력합니다";
+			optionsType = discordia_enchant.enums.optionType.string;
+			optionRequired = true;
+		};
 	};
 	["add music"] = {
 		registeredOnly = eulaComment_music;
@@ -260,7 +268,7 @@ local export = {
 
 				-- when failed to adding song into playlist
 				if (not passed) or (not this.info) then
-					replyMsg:setContent(err:match(": (.+)"));
+					replyMsg:setContent(err:match(": (.+)") or err);
 					-- debug
 					logger.errorf("Failed to add music '%s' on player:%s",rawArgs,voiceChannelID);
 					logger.errorf("traceback : %s",err)

@@ -6,20 +6,21 @@ local components = discordia_enchant.components;
 local discordia_enchant_enums = discordia_enchant.enums;
 local songFormat = "%s%d: [%s](%s)(업로더: %s)\n";
 local utils = require"class.music.utils";
-local formatUrl = utils.formatUrl;
 local searchVideos = utils.searchVideos;
 local insert = table.insert;
 local buttonPrimary = discordia_enchant_enums.buttonStyle.primary;
 local playerClass = require"class.music.playerClass";
-local playerForChannels = playerClass.playerClass;
+local playerForChannels = playerClass.playerForChannels;
 local time = os.time;
+local formatUrl = utils.formatUrl;
 
 local function formatName(str)
     -- return tostring(str):gsub("%[","\\["):gsub("%]","\\]"):gsub("%(","\\("):gsub("%)","\\)");
     return tostring(str):gsub("%]","\\]");
 end
 
-function module.display(keyworld)
+function module.display(keyworld,userId)
+    userId = userId or "NULL";
     local len = utfLen(keyworld);
     if len < 3 then
         return {content = ("검색 키워드 '%s' 는 길이가 너무 짧습니다!"):format(keyworld);};
@@ -36,7 +37,7 @@ function module.display(keyworld)
             and buttonsPart1
             or buttonsPart2,
             components.button.new {
-                custom_id = ("music_search_%s"):format(videoId);
+                custom_id = ("music_search_%s;%s"):format(videoId,userId);
                 style = buttonPrimary;
                 label = tostring(index);
             }
@@ -61,18 +62,23 @@ function module.display(keyworld)
     };
 end
 
-
 ---@param id string
 ---@param object interaction
 local function buttonPressed(id,object)
-    local videoId = id:match("music_search_(.-)");
+    local videoId,userId = id:match("music_search_(.-);(.+)");
 	if not videoId then
 		return;
 	end
-    logger.info(videoId)
+    logger.infof("music add button pressed (video:%s, user: %s)",videoId,userId);
 
     local member = object.member;
     if not member then return; end
+    if (userId ~= "NULL") and (member:__hash() ~= userId) then
+        return object:reply({
+            content = "이 명령어를 사용한 사람만 상호작용을 이용할 수 있어요!";
+        },true);
+    end
+
     local nickname = member and member.nickname;
     local authorName = member.name:gsub("`","\\`");
     local username = nickname and (nickname:gsub("`","\\`") .. (" (%s)"):format(authorName)) or authorName;
@@ -115,17 +121,26 @@ local function buttonPressed(id,object)
 
     object:update{
         content = "로딩중 ⏳";
+        embeds = {};
+        components = {};
     };
 
-    pcall(player.add,player,{
+    local song = {
         message = object.message;
         url = videoId;
         whenAdded = time();
         username = username;
-    });
+    };
+    local passed,err = pcall(player.add,player,song);
+    local info = song.info;
+
+    promise.spawn(object.delete,object);
+    object.channel:send(
+        passed and ("곡 '%s' 를 추가했습니다!"):format(info and info.title or "NULL")
+        or err:match(": (.+)") or err
+    );
 end
 module.buttonPressed = buttonPressed;
 client:on("buttonPressed",buttonPressed);
-
 
 return module;

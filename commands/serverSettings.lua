@@ -44,6 +44,26 @@ local settings = {
 			return true,value;
 		end;
 	};
+	["츤데레"] = {
+		short = "딱...히 너를 위해 만든건 아냐!";
+		description = "일부 미나 기능의 말투를 츤데레적으로 바꿉니다! 실험적인 기능이에요";
+		id = "softyMode";
+		formatting = function (value)
+			if onKeywords[value] then
+				return true,true;
+			elseif offKeywords[value] then
+				return true,nil;
+			else
+				return false,"'켜기' 또는 '끄기' 를 입력해주세요";
+			end
+		end;
+		func = function (self,value,content)
+			local guild = content.guild;
+			if not guild then return end;
+			local member = guild:getMember(client.user.id);
+			member:setNickname(value and "츤데레 미나");
+		end;
+	};
 };
 local settingsHelpFormat = "> %s : `%s`\n"
 local settingsHelp = "이 서버에서의 미나 기능을 설정합니다\n`설정 [이름] [값]` 으로 값을 설정합니다\n`설정 초기화 [이름]` 으로 설정 값을 초기화합니다\n모든 설정 리스트입니다\n";
@@ -125,7 +145,7 @@ local export = {
 				return reply(message,settingsNotFound:format(name));
 			elseif value == "" then
 				local description = setting.description;
-				local now = data[setting.id];
+				local now = data[setting.id] or "(미설정)";
 				return reply(message,settingHelpFormat:format(
 					name,now and nowFormat:format(tostring(now):gsub("`","\\`")) or "",
 					type(description) == "function" and description(setting,data) or description
@@ -147,8 +167,14 @@ local export = {
 				);
 			end
 			data[setting.id] = value;
-
 			content.saveServerData(overwrite and data);
+
+			-- execute hook
+			local func = setting.func;
+			if func then
+				func(setting,value,content);
+			end
+
 			return reply(message,saved:format(name));
 		end;
 	};
