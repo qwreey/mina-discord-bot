@@ -1,6 +1,6 @@
 const readline = require('readline')
 const pidusage = require('pidusage')
-const { finished } = require('stream/promises')
+// const { finished } = require('stream/promises')
 const stdinInterface = readline.createInterface({
 	input: process.stdin,
 	output: process.stdout,
@@ -12,7 +12,7 @@ const processing = {
 		return await pidusage(data.pid)
 	}
 }
-const sleep = ms => new Promise(r => setTimeout(r, ms))
+// const sleep = ms => new Promise(r => setTimeout(r, ms))
 
 stdinInterface.on('line',async line=>{
 	let request

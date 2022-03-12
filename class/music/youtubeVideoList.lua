@@ -12,7 +12,8 @@ local insert = table.insert;
 local buttonPrimary = discordia_enchant_enums.buttonStyle.primary;
 
 local function formatName(str)
-    return tostring(str):gsub("%[","\\["):gsub("%]","\\]"):gsub("%(","\\("):gsub("%)","\\)");
+    -- return tostring(str):gsub("%[","\\["):gsub("%]","\\]"):gsub("%(","\\("):gsub("%)","\\)");
+    return tostring(str):gsub("%]","\\]");
 end
 
 function module.display(keyworld)

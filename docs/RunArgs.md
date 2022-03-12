@@ -10,9 +10,11 @@ Don't make youtube-dlp server with python
 # voice.stderr-tty
 use tty instead pipe for python (youtube-dlp)
 
+# voice.download-rate-limit=INT
+set download rate limit
+
 # env.httpHeartbeat
 Enable http heartbeat mode  
 
 # env.testing || test || testing
 Enable testing mode
-

@@ -18,6 +18,7 @@ function module.searchVideo(url)
 end
 
 local insert = table.insert;
+local toLuaStr = myXml.toLuaStr;
 function module.searchVideos(url,maxResults,withData)
 	local _,Body = corohttp.request("GET",
 		searchURLTemp:format(maxResults or 10,urlCode.urlEncode(url))
@@ -37,9 +38,9 @@ function module.searchVideos(url,maxResults,withData)
 			if videoId and snippet then
 				insert(list,{
 					videoId = videoId;
-					title = tostring(snippet.title);
-					channelTitle = snippet.channelTitle;
-					description = snippet.description;
+					title = toLuaStr(tostring(snippet.title));
+					channelTitle = toLuaStr(snippet.channelTitle);
+					description = toLuaStr(snippet.description);
 				});
 			end
 		end

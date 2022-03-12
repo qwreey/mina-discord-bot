@@ -2,6 +2,18 @@ local server = IPC.new("python",{"class/music/youtubeDownload/server/main.py"},t
 
 local module = {};
 
+promise.new(function ()
+	local rateLimit;
+	for _,str in ipairs(app.args) do
+		rateLimit = str:match("voice%.download%-rate%-limit=(.-)");
+		if rateLimit then break; end
+	end
+	if rateLimit then
+		server:request(rateLimit,"setRateLimit");
+		logger.infof("[YTDL] rate limit was changed to %s",tostring(rateLimit));
+	end
+end)
+
 local infoCache = {};
 _G.youtubeVideoInfoCache = infoCache;
 local musicFile = "./data/youtubeFiles/%s";

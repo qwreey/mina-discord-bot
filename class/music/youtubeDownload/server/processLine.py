@@ -1,28 +1,29 @@
 import sys
-import asyncio
 import json
-from download import download
-
 stdout = sys.stdout
+
+from download import download,setRateLimit
 
 def processLine(line):
 	try:
 		decoded = json.loads(line)
 	except Exception as e: stdout.write(json.dumps({'err': str(e)}))
 	else:
+		func = decoded.get('f')
 		nonce = decoded.get('o')
 		data = decoded.get('d')
-		try:
-			downloaded = asyncio.run(asyncio.wait_for(download(
-				data.get('url'),
-				data.get('noDownload') or False,
-				data.get('file')
-			), timeout=60))
-		except asyncio.TimeoutError:
-			downloaded = 'ERR:TIMEOUT'
-		stdout.write(json.dumps({
-			'o': nonce,
-			'd': downloaded
-		}))
+
+		# execute function
+		if not func:                 result = download(data)
+		elif func == "setRateLimit": result = setRateLimit(data)
+		else: result = "ERR:KEYUNDEFINED"
+
+		# write return data
+		if not result: result = False
+		returnData = {'o': nonce}
+		if type(result) == str and result.startswith("ERR:"):
+			returnData['e'] = result
+		else: returnData['d'] = result
+		stdout.write(json.dumps(returnData))
 		stdout.write("\n")
 		stdout.flush()

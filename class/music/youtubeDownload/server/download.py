@@ -1,3 +1,4 @@
+from typing_extensions import final
 from yt_dlp import YoutubeDL
 
 class Timeout(Exception): pass
@@ -7,7 +8,9 @@ def downloadHook(data):
 		raise Timeout
 downloadHooks = [downloadHook]
 
-async def download(url,noDownload,file):
+rateLimit = 2900000
+
+def handleYtdlp(url,noDownload,file):
 	ydl_opts = {
 		'format': 'bestaudio',
 		'noprogress': True,
@@ -17,11 +20,26 @@ async def download(url,noDownload,file):
 		'cachedir': 'data/youtubeCache',
 		'outtmpl': file,
 		'continuedl': True,
-		'ratelimit': 2900000,
 		'progress_hooks': downloadHooks
 	}
+	if rateLimit: ydl_opts['ratelimit'] = rateLimit
 	try:
 		with YoutubeDL(ydl_opts) as ydl:
 			return ydl.extract_info(url,download=(not noDownload))
 	except Timeout: return "ERR:TIMEOUT"
 	except Exception as e: return "ERR:"+str(e)
+
+def download(data):
+	return handleYtdlp(
+		data.get('url'),
+		data.get('noDownload') or False,
+		data.get('file')
+	)
+
+def setRateLimit(newRateLimit):
+	this = None
+	try:
+		this = int(newRateLimit)
+	except: pass
+	finally:
+		rateLimit = this
