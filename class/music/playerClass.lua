@@ -19,7 +19,6 @@ local floor = math.floor;
 local timeAgo = _G.timeAgo;
 local promise = _G.promise;
 local killTimer = 60 * 5 * 1000;
-local unpack = unpackn;
 local empty = string.char(226,128,139);
 
 --#endregion --* setup const objects *--
@@ -360,7 +359,7 @@ local expireAtLast = 2 * 60;
 local retryRate = 20;
 local maxRetrys = 7;
 local function playEnd(args,result,reason)
-	local self,thing,position = unpack(args);
+	local self,thing,position = args[1],args[2],args[3];
 	logger.infof("stopped with %s, %s, %s, %s, %s",tostring(self),tostring(thing),tostring(position),tostring(result),tostring(reason));
 	local handler = self.handler;
 	if self.destroyed then -- is destroyed
@@ -459,7 +458,7 @@ local function playEnd(args,result,reason)
 end
 
 local function playErr(args,err) -- lua error on running
-	local self,thing = unpack(args);
+	local self,thing = args[1],args[2];
 	self.error = err;
 	logger.errorf("Play failed : %s",err);
 	sendMessage(thing,("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
