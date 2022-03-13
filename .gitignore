@@ -34,3 +34,7 @@ node_modules/**
 
 # pyc file
 *.pyc
+
+# run file
+run.bat
+run.sh
