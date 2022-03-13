@@ -19,7 +19,7 @@ local floor = math.floor;
 local timeAgo = _G.timeAgo;
 local promise = _G.promise;
 local killTimer = 60 * 5 * 1000;
-local unpack = table.unpack;
+local unpack = unpackn;
 local empty = string.char(226,128,139);
 
 --#endregion --* setup const objects *--
