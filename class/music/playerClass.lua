@@ -19,6 +19,7 @@ local floor = math.floor;
 local timeAgo = _G.timeAgo;
 local promise = _G.promise;
 local killTimer = 60 * 5 * 1000;
+local unpack = table.unpack;
 local empty = string.char(226,128,139);
 
 --#endregion --* setup const objects *--
@@ -167,7 +168,7 @@ local function voiceChannelJoin(member,channel)
 end
 local function voiceChannelJoinErr(channel,result)
 	logger.errorf("An error occurred while trying adding killing music player queue [channel:%s]",
-		(channel or {__hash = function () return "unknown"; end}):__hash()
+		(channel[1] or {__hash = function () return "unknown"; end}):__hash()
 	);
 	logger.errorf("Error message was : %s",result);
 end
@@ -240,7 +241,7 @@ local function voiceChannelLeave(member,channel,player)
 end
 local function voiceChannelLeaveErr(channel,result)
 	logger.errorf("An error occurred while trying adding killing music player queue [channel:%s]",
-		(channel or {__hash = function () return "unknown"; end}):__hash()
+		(channel[1] or {__hash = function () return "unknown"; end}):__hash()
 	);
 	logger.errorf("Error message was : %s",result);
 end
@@ -358,7 +359,8 @@ local getPosixNow = posixTime.now;
 local expireAtLast = 2 * 60;
 local retryRate = 20;
 local maxRetrys = 7;
-local function playEnd(self,thing,position,result,reason)
+local function playEnd(args,result,reason)
+	local self,thing,position = unpack(args);
 	logger.infof("stopped with %s, %s, %s, %s, %s",tostring(self),tostring(thing),tostring(position),tostring(result),tostring(reason));
 	local handler = self.handler;
 	if self.destroyed then -- is destroyed
@@ -456,7 +458,8 @@ local function playEnd(self,thing,position,result,reason)
 	end
 end
 
-local function playErr(self,thing,err) -- lua error on running
+local function playErr(args,err) -- lua error on running
+	local self,thing = unpack(args);
 	self.error = err;
 	logger.errorf("Play failed : %s",err);
 	sendMessage(thing,("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
