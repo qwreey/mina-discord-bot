@@ -3,7 +3,7 @@ server:setName("YTDL");
 
 local module = {};
 
-promise.new(function ()
+promise.spawn(function ()
 	local rateLimit;
 	for _,str in ipairs(app.args) do
 		rateLimit = str:match("voice%.download%-rate%-limit=(.-)");

@@ -179,7 +179,7 @@ local function voiceChannelJoin(member,channel)
 end
 local function voiceChannelJoinErr(channel,result)
 	logger.errorf("An error occurred while trying adding killing music player queue [channel:%s]",
-		(channel[1] or {__hash = function () return "unknown"; end}):__hash()
+		(channel or {__hash = function () return "unknown"; end}):__hash()
 	);
 	logger.errorf("Error message was : %s",result);
 end
@@ -252,7 +252,7 @@ local function voiceChannelLeave(member,channel,player)
 end
 local function voiceChannelLeaveErr(channel,result)
 	logger.errorf("An error occurred while trying adding killing music player queue [channel:%s]",
-		(channel[1] or {__hash = function () return "unknown"; end}):__hash()
+		(channel or {__hash = function () return "unknown"; end}):__hash()
 	);
 	logger.errorf("Error message was : %s",result);
 end
@@ -272,6 +272,7 @@ client:once("ready", function ()
 		local data = json.decode(lastData);
 		if data then
 			promise.new(this.restore,data):wait();
+			timer.sleep(100);
 			---@type playerClass
 			for _,player in pairs(this.playerForChannels) do
 				local handler = player and player.handler;
@@ -369,8 +370,7 @@ local getPosixNow = posixTime.now;
 local expireAtLast = 2 * 60;
 local retryRate = 20;
 local maxRetrys = 7;
-local function playEnd(fargs,result,reason)
-	local self,thing,position = fargs[1],fargs[2],fargs[3];
+local function playEnd(self,thing,position,result,reason)
 	local handler = self.handler;
 	if self.destroyed then -- is destroyed
 		return;
@@ -468,8 +468,7 @@ local function playEnd(fargs,result,reason)
 	end
 end
 
-local function playErr(fargs,err) -- lua error on running
-	local self,thing = fargs[1],fargs[2];
+local function playErr(self,thing,err) -- lua error on running
 	self.error = err;
 	logger.errorf("Play failed : %s",err);
 	sendMessage(thing,("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
@@ -967,6 +966,7 @@ client:on("buttonPressed",pageIndicatorButtonPressed);
 -- restore saved status
 function this.restore(data)
 	local client = _G.client;
+	local waitter = promise.waitter();
 	for _,playerData in ipairs(data) do
 		local voiceChannelId = playerData.channel;
 		local voiceChannel = client:getChannel(voiceChannelId); ---@type GuildVoiceChannel
@@ -974,16 +974,16 @@ function this.restore(data)
 		local guild = voiceChannel and voiceChannel.guild;
 
 		if voiceChannel and songs and (#songs ~= 0) then
-			local connection = voiceChannel:join();
-			local player = this.new {
-				voiceChannelID = voiceChannelId;
-				handler = connection;
-				timestamp = playerData.timestamp;
-				isLooping = playerData.isLooping;
-				mode24 = playerData.mode24;
-			};
-			local isPaused = playerData.isPaused;
-			promise.spawn(function ()
+			waitter:add(promise.new(function ()
+				local connection = voiceChannel:join();
+				local player = this.new {
+					voiceChannelID = voiceChannelId;
+					handler = connection;
+					timestamp = playerData.timestamp;
+					isLooping = playerData.isLooping;
+					mode24 = playerData.mode24;
+				};
+				local isPaused = playerData.isPaused;
 				for index,song in ipairs(songs) do
 					song.channel = client:getChannel(song.channel);
 					pcall(player.add,player,song);
@@ -994,9 +994,10 @@ function this.restore(data)
 						player:setPaused(true);
 					end
 				end
-			end);
+			end));
 		end
 	end
+	waitter:wait();
 end
 
 -- save status
