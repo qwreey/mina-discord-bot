@@ -80,7 +80,7 @@ local function buttonPressed(id,object)
     end
 
     local nickname = member and member.nickname;
-    local authorName = member.name:gsub("`","\\`");
+    local authorName = member.user.name:gsub("`","\\`");
     local username = nickname and (nickname:gsub("`","\\`") .. (" (%s)"):format(authorName)) or authorName;
     local voiceChannel = member.voiceChannel;
     if not voiceChannel then
