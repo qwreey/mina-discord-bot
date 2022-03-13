@@ -125,15 +125,12 @@ local commitTime,commitCount = "","" do
 				logger.errorf(errPrefix,str:gsub("\n",errNewline));
 			end
 		end));
-		waitter:wait();
-		commitTime = commitTime:gsub("\n","");
 
 		-- git commit counts
 		local gitCount = spawn("git",{
 			args = {"rev-list","--count","HEAD"};
 			stdio = {nil,true,true};
 		});
-		waitter = promise.waitter();
 		waitter:add(promise.new(function()
 			for str in gitCount.stdout.read do
 				commitCount = commitCount .. str;
@@ -145,6 +142,8 @@ local commitTime,commitCount = "","" do
 			end
 		end));
 		waitter:wait();
+
+		commitTime = commitTime:gsub("\n","");
 		commitCount = commitCount:gsub("\n","");
 
 		-- update version
