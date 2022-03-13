@@ -112,10 +112,7 @@ end
 this.importEmoji = importEmoji;
 
 -- seekbar object
--- local seekbarLine = "─";
--- local seekbarString = "%s %s%s%s⬤%s %s\n";
 local seekbarLen = 16;
-
 local leffHollow = importEmoji"952445243637248040";
 local leftFill = importEmoji"952445243331059793";
 local midFill = importEmoji"952445243700154388";
@@ -123,7 +120,6 @@ local midHalf = importEmoji"952445243666628628";
 local midHollow = importEmoji"952445243805007902";
 local rightHollow = importEmoji"952445243385610241";
 local rightFill = importEmoji"952445243754709072";
-
 local function seekbar(now,atEnd)
 	local per = now / atEnd;
 	local forward = math.floor(seekbarLen * per + 0.5);
@@ -136,14 +132,6 @@ local function seekbar(now,atEnd)
 		return ("%s%s%s%s%s\n"):format(formatTime(now),leffHollow,midHollow:rep(seekbarLen-2),rightHollow,formatTime(atEnd));
 	end
 	return ("%s%s%s%s%s%s%s\n"):format(formatTime(now),leftFill,midFill:rep(forward-1),midHalf,midHollow:rep(seekbarLen-2-forward),rightHollow,formatTime(atEnd));
-	-- return seekbarString:format(
-	-- 	formatTime(now),
-	-- 	forward > 0 and "**" or "",
-	-- 	seekbarLine:rep(forward),
-	-- 	forward > 0 and "**" or "",
-	-- 	seekbarLine:rep(backward),
-	-- 	formatTime(atEnd)
-	-- );
 end
 this.seekbar = seekbar;
 
@@ -462,7 +450,6 @@ local function playEnd(self,thing,position,result,reason)
 	if now == thing then
 		-- IMPORTANT! without this, it will take this coroutine until ending of list
 		-- so, it will make coroutine stacks that will take space!
-		if not handler.channel.guild.connection then return end
 		logger.infof("try to remove songs (%s)",tostring(reason))
 		promise.spawn(self.remove,self,1);
 	end
