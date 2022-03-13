@@ -44,19 +44,19 @@ String 같은 라이브러리 포함되니 문서 확인
 -- 주사위 굴리기  
 ```lua
 reply = function(message,args,Content)
-    return ("나온 수는 %d 이에요!"):format(cRandom(1,6));
+    return ("나온 수는 %d 이에요!"):format(random(1,6));
 end;
 ```
 당연히 여러 반응과 묶을수도 있음  
 ```lua
 reply = {  
     function(message,args,Content)
-        return ("나온 수는 %d 이에요!"):format(cRandom(1,6));
+        return ("나온 수는 %d 이에요!"):format(random(1,6));
     end,
     "주사위를 찾지 못했어요",
     "어이쿠! 주사위를 떨어트렸어요",
     function(message,args,Content)
-        return ("(대구르르르...) 나온 수는 %d 이에요!"):format(cRandom(1,6));
+        return ("(대구르르르...) 나온 수는 %d 이에요!"):format(random(1,6));
     end
 };
 ```
@@ -163,7 +163,7 @@ msg (메시지 개체) 받아서 편집도 가능함,
     -- 함수를 이용한 가변적인 결과
     reply = func(message,args,{위와(func 의 가장 뒤 인자) 동일한 테이블});
     love = function(userId) -- 렌덤적인 값을 반환 할 수 있음 (선택사항)
-        return cRandom(1,3);
+        return random(1,3);
     end; -- 보통 그냥 defaultLove; 또는 rmLove; 를 넘김
 };
 ```
@@ -171,7 +171,7 @@ msg (메시지 개체) 받아서 편집도 가능함,
 
 ## [다른 모듈 설명]  
 json : 루아 테이블을 json 으로 인코딩/디코딩 => https://luvit.io/api/json.html  
-cRandom : 여러 난수를 섞은 렌덤함수, cRandom(최소값,최대값)  
+random : 여러 난수를 섞은 렌덤함수, random(최소값,최대값)  
 client : discordia 모듈중 client 부분 => https://github.com/SinisterRectus/Discordia/wiki/Client  
 enums : discordia 모듈중 enums 부분 => https://github.com/SinisterRectus/Discordia/wiki/Enumerations  
 discordia : discordia 모듈 참조 => https://github.com/SinisterRectus/Discordia  

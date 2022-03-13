@@ -60,6 +60,10 @@ initProfiler:start"Load global modules";
 local format = string.format;
 local traceback = debug.traceback;
 local insert = table.insert;
+local randomModule = require "random";
+local random = randomModule.random; _G.random = random; -- LUA random handler
+local makeId = randomModule.makeId; _G.makeId = makeId; -- making id with random library
+local makeSeed = randomModule.makeSeed; _G.makeSeed = makeSeed; -- making seed library, this is used on random llibrary
 local promise = require "promise"; _G.promise = promise;
 local utf8 = utf8 or require "utf8"; _G.utf8 = utf8; -- unicode 8 library
 local uv = require "uv"; _G.uv = uv; -- load uv library
@@ -83,11 +87,8 @@ local exitCodes = require("app.exitCodes"); _G.exitCodes = exitCodes; -- get exi
 local qDebug = require "app.debug"; _G.qDebug = qDebug; -- my debug system
 local term = require "app.term"; -- setuping REPL terminal
 local commandHandler = require "class.commandHandler"; _G.commandHandler = commandHandler; -- command decoding-caching-indexing system
-local cRandom = require "cRandom"; _G.cRandom = cRandom; -- LUA random handler
 local strSplit = require "stringSplit"; _G.strSplit = strSplit; -- string split library
 local urlCode = require "urlCode"; _G.urlCode = urlCode; -- url encoder/decoder library
-local makeId = require "makeId"; _G.makeId = makeId; -- making id with cRandom library
-local makeSeed = require "libs.makeSeed"; _G.makeSeed = makeSeed; -- making seed library, this is used on cRandom llibrary
 local myXml = require "myXml"; _G.myXml = myXml; -- myXml library
 local userLearn = require "commands.learning.learn"; -- user learning library
 local data = require "data"; data:setJson(json); _G.data = data; -- Data system
@@ -338,7 +339,7 @@ local function processCommand(message)
 		if nprefix == TextLower then -- 만약 접두사와 글자가 일치하는경우 반응 달기
 			channel:broadcastTyping();
 			message:reply {
-				content = prefixReply[cRandom(1,#prefixReply)];
+				content = prefixReply[random(1,#prefixReply)];
 				reference = {message = message, mention = false};
 			};
 			return;
@@ -406,7 +407,7 @@ local function processCommand(message)
 
 			-- not found
 			message:reply({
-				content = unknownReply[cRandom(1,#unknownReply)];
+				content = unknownReply[random(1,#unknownReply)];
 				reference = {message = message, mention = false};
 			});
 			fs.appendFile("log/unknownTexts/raw.txt","\n" .. text); -- save
@@ -436,7 +437,7 @@ local function processCommand(message)
 	local rawArgs,args; -- 인수 (str,띄어쓰기 단위로 나눔 array)
 	replyText = ( -- reply 하나 가져오기
 		(type(replyText) == "table") -- 커맨드 답변이 여러개면 하나 뽑기
-		and (replyText[cRandom(1,#replyText)])
+		and (replyText[random(1,#replyText)])
 		or replyText
 	);
 

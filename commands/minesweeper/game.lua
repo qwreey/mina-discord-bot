@@ -1,7 +1,7 @@
 local game = {};
 local insert = table.insert;
 
-local cRandom = _G.cRandom or require("cRandom"); ---@diagnostic disable-line
+local random = _G.random or require("random"); ---@diagnostic disable-line
 
 ---@type table<string, boolean> stop commands
 local stopCommand = {
@@ -101,7 +101,7 @@ local function initGame(size,minesweepers)
 	local fullY = {};
 	local pickedCount = 0;
 	while true do
-		local y = cRandom(1,size,fullY);
+		local y = random(1,size,fullY);
 
 		local thisY = pickedY[y]; -- this y picked status
 		if not thisY then
@@ -109,7 +109,7 @@ local function initGame(size,minesweepers)
 			pickedY[y] = thisY;
 		end
 
-		local x = cRandom(1,size,thisY);
+		local x = random(1,size,thisY);
 		insert(thisY,x);
 
 		if #thisY == size then -- it fully filled

@@ -1,13 +1,13 @@
 local module = {};
 local dat,len;
 
-local cRandom,json;
+local random,json;
 function module:setJson(newJson)
 	json = newJson;
 	return self;
 end
-function module:setCRandom(newCRandom)
-	cRandom = newCRandom;
+function module:setrandom(newrandom)
+	random = newrandom;
 	return self;
 end
 
@@ -16,7 +16,7 @@ function module.fetch()
 		dat = json.decode(fs.readFileSync("commands/korquote/base.json"));
 		len = #dat;
 	end
-	return dat[cRandom(1,len)];
+	return dat[random(1,len)];
 end
 
 return module;

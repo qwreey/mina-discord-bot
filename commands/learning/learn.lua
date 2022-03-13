@@ -79,7 +79,7 @@ function module.get(name)
 		return;
 	end
 
-	local index = cRandom(1,maxIndex,removed);
+	local index = random(1,maxIndex,removed);
 	local id = ("%s/%d"):format(path,index);
 	local thisRaw = fs.readFileSync(id);
 	local this;

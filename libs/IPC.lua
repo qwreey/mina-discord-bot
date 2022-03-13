@@ -5,7 +5,7 @@ new:request{url="https://www.youtube.com/watch?v=esaeuzXIr-4",file="asdf"}
 ]]
 
 local module = {};
-local makeId = require "makeId";
+local makeId = require "random".makeId;
 local yield,resume,running,wrap = coroutine.yield,coroutine.resume,coroutine.running,coroutine.wrap;
 module.__index = module;
 local encode,decode = json.encode,json.decode;

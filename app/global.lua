@@ -312,7 +312,7 @@ do
 		local incache = cache[key];
 		if incache then return incache; end
 		local new = function ()
-			return cRandom(min,max);
+			return random(min,max);
 		end;
 		cache[key] = new;
 		return new;

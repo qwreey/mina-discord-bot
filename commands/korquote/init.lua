@@ -1,7 +1,7 @@
 local typingGame = require "class.typingGame";
 local korquoteRequest = require "commands.korquote.request";
 local korquoteEmbed = require "commands.korquote.embed";
-korquoteRequest:setCRandom(cRandom):setJson(json);
+korquoteRequest:setrandom(random):setJson(json);
 korquoteEmbed:setUrlCode(urlCode);
 
 ---@type table<string, Command>

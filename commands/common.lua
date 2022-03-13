@@ -46,7 +46,7 @@ local export = {
 	["동전뒤집기"] = {
 		alias = {"동전 뒤집기","동전놀이","동전 놀이","동전던지기","동전 던지기","동전뒤집기","동전게임","동전 게임"};
 		reply = function ()
-			local pF = cRandom(1,11);
+			local pF = random(1,11);
 			return pF == 11 and "옆면????" or (pF <= 5 and "앞면!" or "뒷면!");
 		end;
 		love = defaultLove;
@@ -360,7 +360,7 @@ local export = {
 			end
 			timeout(2000,function ()
 				replyMsg:setContent(("%s (이)가 뽑혔어요!"):format(
-					tostring(items[cRandom(1,#items)])):gsub("@",""):gsub("#","")
+					tostring(items[random(1,#items)])):gsub("@",""):gsub("#","")
 				);
 			end);
 		end;
@@ -392,7 +392,7 @@ local export = {
 		-- 			interaction:reply("결과는?! **(두구두구두구두구)**");
 		-- 			timeout(2000,function ()
 		-- 				interaction:update(("%s (이)가 뽑혔어요!"):format(
-		-- 					tostring(items[cRandom(1,#items)])):gsub("@",""):gsub("#","")
+		-- 					tostring(items[random(1,#items)])):gsub("@",""):gsub("#","")
 		-- 				);
 		-- 			end);
 		-- 		end;
@@ -449,7 +449,7 @@ local export = {
 			end
 
 			local ReportWebhooks = ACCOUNTData.ReportWebhooks;
-			local response = corohttp.request("POST",ReportWebhooks[cRandom(1,#ReportWebhooks)],{{"Content-Type","application/json"}},
+			local response = corohttp.request("POST",ReportWebhooks[random(1,#ReportWebhooks)],{{"Content-Type","application/json"}},
 				('{"content":"Report from user %s","embeds":[{"title":"Report","description":"%s"}]}')
 					:format(tostring(Content.user.id),tostring(Content.rawArgs))
 			);

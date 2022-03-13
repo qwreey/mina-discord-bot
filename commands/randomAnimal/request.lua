@@ -89,7 +89,7 @@ function module.fetch(name)
 		return ("오류! %s 는 유효한 식별가능한 동물이 아닙니다\n%s"):format(name,loadableMsg);
 	end
 	if type(func) == "table" then
-		func = func[cRandom(1,#func)];
+		func = func[random(1,#func)];
 	end
 	return func();
 end
