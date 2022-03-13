@@ -359,7 +359,7 @@ local expireAtLast = 2 * 60;
 local retryRate = 20;
 local maxRetrys = 7;
 local function playEnd(self,thing,position,result,reason)
-	logger.infof("stopped with %s, %s",tostring(result),tostring(reason));
+	logger.infof("stopped with %s, %s, %s, %s, %s",tostring(self),tostring(thing),tostring(position),tostring(result),tostring(reason));
 	local handler = self.handler;
 	if self.destroyed then -- is destroyed
 		return;
