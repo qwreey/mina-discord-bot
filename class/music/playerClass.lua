@@ -19,6 +19,7 @@ local floor = math.floor;
 local timeAgo = _G.timeAgo;
 local promise = _G.promise;
 local killTimer = 60 * 5 * 1000;
+local empty = string.char(226,128,139);
 
 --#endregion --* setup const objects *--
 --#region --* Setup ytdl *--
@@ -87,25 +88,6 @@ local function sendMessage(thing,msg)
 end
 this.sendMessage = sendMessage;
 
--- seekbar object
-local seekbarLine = "─";
-local seekbarString = "%s %s%s%s⬤%s %s\n";
-local seekbarLen = 14;
-local function seekbar(now,atEnd)
-	local per = now / atEnd;
-	local forward = math.floor(seekbarLen * per + 0.5);
-	local backward = math.floor(seekbarLen - forward);
-	return seekbarString:format(
-		formatTime(now),
-		forward > 0 and "**" or "",
-		seekbarLine:rep(forward),
-		forward > 0 and "**" or "",
-		seekbarLine:rep(backward),
-		formatTime(atEnd)
-	);
-end
-this.seekbar = seekbar;
-
 -- download music for prepare playing song
 local function download(thing,lastInfo)
 	local audio,info,url,vid = ytHandler.download(thing.url,lastInfo);
@@ -123,6 +105,47 @@ local function download(thing,lastInfo)
 	return true;
 end
 this.download = download;
+
+local function importEmoji(id)
+	return ("<:_:%s>"):format(tostring(id));
+end
+this.importEmoji = importEmoji;
+
+-- seekbar object
+-- local seekbarLine = "─";
+-- local seekbarString = "%s %s%s%s⬤%s %s\n";
+local seekbarLen = 16;
+
+local leffHollow = importEmoji"952445243637248040";
+local leftFill = importEmoji"952445243331059793";
+local midFill = importEmoji"952445243700154388";
+local midHalf = importEmoji"952445243666628628";
+local midHollow = importEmoji"952445243805007902";
+local rightHollow = importEmoji"952445243385610241";
+local rightFill = importEmoji"952445243754709072";
+
+local function seekbar(now,atEnd)
+	local per = now / atEnd;
+	local forward = math.floor(seekbarLen * per + 0.5);
+
+	if forward >= seekbarLen then
+		return ("%s%s%s%s%s\n"):format(formatTime(now),leftFill,midFill:rep(seekbarLen-2),rightFill,formatTime(atEnd));
+	elseif forward == 1 then
+		return ("%s%s%s%s%s%s\n"):format(formatTime(now),leffHollow,midHalf,midHollow:rep(seekbarLen-3),rightHollow,formatTime(atEnd));
+	elseif forward == 0 then
+		return ("%s%s%s%s%s\n"):format(formatTime(now),leffHollow,midHollow:rep(seekbarLen-2),rightHollow,formatTime(atEnd));
+	end
+	return ("%s%s%s%s%s%s%s\n"):format(formatTime(now),leftFill,midFill:rep(forward-1),midHalf,midHollow:rep(seekbarLen-2-forward),rightHollow,formatTime(atEnd));
+	-- return seekbarString:format(
+	-- 	formatTime(now),
+	-- 	forward > 0 and "**" or "",
+	-- 	seekbarLine:rep(forward),
+	-- 	forward > 0 and "**" or "",
+	-- 	seekbarLine:rep(backward),
+	-- 	formatTime(atEnd)
+	-- );
+end
+this.seekbar = seekbar;
 
 --#endregion --* util functions *--
 --#region --* Client setups *--
@@ -621,7 +644,7 @@ function this:totalPages()
 	return ceil(self / itemPerPage);
 end
 
-function this:getStatusText()
+function this:getStatusText(front,back)
 	local duration = 0;
 	for _,song in ipairs(self) do
 		local timestamp = song.timestamp or 0;
@@ -633,11 +656,14 @@ function this:getStatusText()
 	local handler = self.handler;
 	local getElapsed = handler and rawget(handler,"getElapsed");
 	local elapsed = getElapsed and (getElapsed() / 1000) or 0;
-	return {
-		text = ("총 곡 수 : %d | 총 페이지 수 : %d | 총 길이 : %s"):format(len,this.totalPages(len),formatTime(duration - (elapsed or 0)))
+	local text = ("총 곡 수 : %d | 총 페이지 수 : %d | 총 길이 : %s"):format(len,this.totalPages(len),formatTime(duration - (elapsed or 0)))
 		.. (self.isLooping and "\n플레이리스트 루프중" or "")
 		.. (self.mode24 and "\n24 시간 모드 켜짐" or "")
 		.. (self.isPaused and "\n재생 멈춤" or "");
+	if front then text = front .. text; end
+	if back then text = text .. back; end
+	return {
+		text = text;
 	};
 end
 
@@ -690,17 +716,18 @@ function this:songEmbedfiy(index)
 	local duration = info.duration;
 	local like = info.like_count;
 	return {
-		footer = self:getStatusText();
-		title = info.title;
-		description = ("%s신청자 : %s | 신청시간 : %s\n%s조회수 : %s%s\n업로더 : %s\n[영상으로 이동](%s) | [채널로 이동](%s)"):format(
+		footer = self:getStatusText(("%s • %s | "):format(song.username or "NULL",timeAgo(song.whenAdded)));
+		-- title = info.title;
+		author = {
+			name = info.title;
+			url = tostring(song.url or info.webpage_url);
+		};
+		description = ("%s%s조회수 : %s%s | 업로더 : [%s](%s)"):format(
 			elapsed and seekbar(elapsed,duration) or "",
-			song.username or "NULL",
-			timeAgo(song.whenAdded),
 			(not elapsed) and ("곡 길이 : %s | "):format(formatTime(duration)) or "",
 			tostring(info.view_count),
 			like and (" | 좋아요 : %s"):format(tostring(like)) or "",
 			tostring(info.uploader),
-			tostring(song.url or info.webpage_url),
 			tostring(info.uploader_url or info.channel_url)
 		);
 		thumbnail = thumbnails and {
@@ -805,7 +832,7 @@ function this:listEmbedfiy(page)
 
 	local now = time();
 	page = tonumber(page) or 1;
-	local atStart,atEnd = itemPerPage * (page-1) + 1,page * itemPerPage
+	local atStart,atEnd = itemPerPage * (page-1) + 1,page * itemPerPage;
 	local fields = {};
 	for index = atStart,atEnd do
 		local song = self[index];
