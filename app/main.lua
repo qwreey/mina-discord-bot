@@ -99,6 +99,7 @@ local mutex = require "libs.mutex"; _G.mutex = mutex;
 local commonSlashCommand = require "class.commonSlashCommand"; _G.commonSlashCommand = commonSlashCommand;
 local argsParser = require "libs.argsParser"; _G.argsParser = argsParser;
 local IPC = require "IPC"; _G.IPC = IPC;
+local unpack = require "unpack"; _G.unpack = unpack;
 initProfiler:stop();
 --#endregion : Load modules
 --#region : Get version
