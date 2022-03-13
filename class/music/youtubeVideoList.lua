@@ -22,7 +22,7 @@ end
 function module.display(keyworld,userId)
     userId = userId or "NULL";
     local len = utfLen(keyworld);
-    if len < 3 then
+    if len < 2 then
         return {content = ("검색 키워드 '%s' 는 길이가 너무 짧습니다!"):format(keyworld);};
     elseif len > 50 then
         return {content = ("검색 키워드 '%s' 는 길이가 너무 깁니다!"):format(keyworld);};
