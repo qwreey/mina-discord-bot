@@ -107,7 +107,7 @@ end
 this.download = download;
 
 local function importEmoji(id)
-	return ("<:_:%s>"):format(tostring(id));
+	return ("<:.:%s>"):format(tostring(id));
 end
 this.importEmoji = importEmoji;
 
