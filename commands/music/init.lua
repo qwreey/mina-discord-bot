@@ -150,6 +150,50 @@ end
 
 ---@type table<string, Command>
 local export = {
+	-- ["load music"] = {
+	-- 	commands = {"load","로드","불러오기","가져오기"};
+	-- 	alias = {
+	-- 		"곡 가져오기","곡 불러오기","곡가져오기","곡불러오기",
+	-- 		"노래 가져오기","노래 불러오기","노래가져오기","노래불러오기",
+	-- 		"음악 가져오기","음악 불러오기","음악가져오기","음악불러오기",
+	-- 		"music load","song load","music laod"
+	-- 	};
+	-- 	reply = "로딩중 ⏳";
+	-- 	disableDm = true;
+	-- 	registeredOnly = true;
+	-- 	func = function (replyMsg,message,args,Content)
+
+	-- 	end;
+	-- 	onSlash = commonSlashCommand {
+	-- 		description = "저장해둔 곡들을 불러옵니다";
+	-- 		name = "곡불러오기";
+	-- 		optionDescription = "불러올 플레이리스트 이름을 입력하세요";
+	-- 		optionRequired = true;
+	-- 		optionType = discordia_enchant.enums.optionType.string;
+	-- 	};
+	-- };
+	-- ["save music"] = {
+	-- 	commands = {"save","저장","저장하기"};
+	-- 	alias = {
+	-- 		"곡 가져오기","곡 불러오기","곡가져오기","곡불러오기",
+	-- 		"노래 가져오기","노래 불러오기","노래가져오기","노래불러오기",
+	-- 		"음악 가져오기","음악 불러오기","음악가져오기","음악불러오기",
+	-- 		"music load","song load","music laod"
+	-- 	};
+	-- 	reply = "로딩중 ⏳";
+	-- 	disableDm = true;
+	-- 	registeredOnly = true;
+	-- 	func = function (replyMsg,message,args,Content)
+
+	-- 	end;
+	-- 	onSlash = commonSlashCommand {
+	-- 		description = "저장해둔 곡들을 불러옵니다";
+	-- 		name = "곡불러오기";
+	-- 		optionDescription = "불러올 플레이리스트 이름을 입력하세요";
+	-- 		optionRequired = true;
+	-- 		optionType = discordia_enchant.enums.optionType.string;
+	-- 	};
+	-- };
 	["search music"] = {
 		command = {"search","검색","찾기","find"};
 		alias = {
