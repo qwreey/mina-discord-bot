@@ -160,7 +160,7 @@ function runEnv.exit() -- 봇 끄기
 	os.exit(exitCodes.exit);
 end
 function runEnv.reload() -- 다시 로드
-	os.execute("cls");
+	-- os.execute("cls");
 	os.exit(exitCodes.reload);
 end
 function runEnv.print(...)
