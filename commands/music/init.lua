@@ -150,50 +150,50 @@ end
 
 ---@type table<string, Command>
 local export = {
-	-- ["load music"] = {
-	-- 	commands = {"load","로드","불러오기","가져오기"};
-	-- 	alias = {
-	-- 		"곡 가져오기","곡 불러오기","곡가져오기","곡불러오기",
-	-- 		"노래 가져오기","노래 불러오기","노래가져오기","노래불러오기",
-	-- 		"음악 가져오기","음악 불러오기","음악가져오기","음악불러오기",
-	-- 		"music load","song load","music laod"
-	-- 	};
-	-- 	reply = "로딩중 ⏳";
-	-- 	disableDm = true;
-	-- 	registeredOnly = true;
-	-- 	func = function (replyMsg,message,args,Content)
+	["load music"] = {
+		commands = {"load","로드","불러오기","가져오기"};
+		alias = {
+			"곡 가져오기","곡 불러오기","곡가져오기","곡불러오기","곡로드하기","곡 로드하기","곡로드","곡 로드",
+			"노래 가져오기","노래 불러오기","노래가져오기","노래불러오기","노래로드하기","노래 로드하기","노래로드","노래 로드",
+			"음악 가져오기","음악 불러오기","음악가져오기","음악불러오기","음악로드하기","음악 로드하기","음악로드","음악 로드",
+			"music load","song load","music laod","불러오기","로드하기","플리로드","로드"
+		};
+		reply = "로딩중 ⏳";
+		disableDm = true;
+		registeredOnly = true;
+		func = function (replyMsg,message,args,Content)
 
-	-- 	end;
-	-- 	onSlash = commonSlashCommand {
-	-- 		description = "저장해둔 곡들을 불러옵니다";
-	-- 		name = "곡불러오기";
-	-- 		optionDescription = "불러올 플레이리스트 이름을 입력하세요";
-	-- 		optionRequired = true;
-	-- 		optionType = discordia_enchant.enums.optionType.string;
-	-- 	};
-	-- };
-	-- ["save music"] = {
-	-- 	commands = {"save","저장","저장하기"};
-	-- 	alias = {
-	-- 		"곡 가져오기","곡 불러오기","곡가져오기","곡불러오기",
-	-- 		"노래 가져오기","노래 불러오기","노래가져오기","노래불러오기",
-	-- 		"음악 가져오기","음악 불러오기","음악가져오기","음악불러오기",
-	-- 		"music load","song load","music laod"
-	-- 	};
-	-- 	reply = "로딩중 ⏳";
-	-- 	disableDm = true;
-	-- 	registeredOnly = true;
-	-- 	func = function (replyMsg,message,args,Content)
+		end;
+		onSlash = commonSlashCommand {
+			description = "저장해둔 곡들을 불러옵니다";
+			name = "곡불러오기";
+			optionDescription = "불러올 플레이리스트 이름을 입력하세요";
+			optionRequired = true;
+			optionType = discordia_enchant.enums.optionType.string;
+		};
+	};
+	["save music"] = {
+		commands = {"save","저장","저장하기"};
+		alias = {
+			"곡 저장하기","곡 기록하기","곡저장하기","곡기록하기","곡저장","곡 저장",
+			"노래 저장하기","노래 기록하기","노래저장하기","노래기록하기","노래저장","노래 저장",
+			"음악 저장하기","음악 기록하기","음악저장하기","음악기록하기","음악저장","음악 저장",
+			"music save","song save","music save","저장하기","기록하기","플리저장","저장"
+		};
+		reply = "로딩중 ⏳";
+		disableDm = true;
+		registeredOnly = true;
+		func = function (replyMsg,message,args,Content)
 
-	-- 	end;
-	-- 	onSlash = commonSlashCommand {
-	-- 		description = "저장해둔 곡들을 불러옵니다";
-	-- 		name = "곡불러오기";
-	-- 		optionDescription = "불러올 플레이리스트 이름을 입력하세요";
-	-- 		optionRequired = true;
-	-- 		optionType = discordia_enchant.enums.optionType.string;
-	-- 	};
-	-- };
+		end;
+		onSlash = commonSlashCommand {
+			description = "현재 재생중인 곡을 자신의 플레이 리스트에 저장합니다";
+			name = "곡저장하기";
+			optionDescription = "불러올 플레이리스트 이름을 입력하세요";
+			optionRequired = true;
+			optionType = discordia_enchant.enums.optionType.string;
+		};
+	};
 	["search music"] = {
 		command = {"search","검색","찾기","find"};
 		alias = {
@@ -226,7 +226,7 @@ local export = {
 		disableDm = true;
 		command = {"add","p","play","추가","재생","곡추가"};
 		alias = {
-			"추가",
+			"추가","추가해라",
 			"곡 신청","노래 신청","음악 신청","곡신청","노래신청","음악신청",
 			"노래틀어","노래틀어줘","노래추가해","노래추가해줘","노래추가하기","노래추가해봐","노래추가해라","노래추가","노래재생","노래실행",
 			"노래 틀어","노래 틀어줘","노래 추가해","노래 추가해줘","노래 추가하기","노래 추가해봐","노래 추가해라","노래 추가","노래 재생","노래 실행",
