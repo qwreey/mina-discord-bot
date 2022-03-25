@@ -736,7 +736,7 @@ local noSong = {components.actionRow.new{
 	buttons.action_remove;
 }};
 function this:songIndicator(index)
-	if (not index) or (not self) then
+	if (not index) or (not self) or (#self == 0) then
 		return noSong;
 	end
 	return {components.actionRow.new{
@@ -881,6 +881,10 @@ function this:pageIndicator(page)
 	if (not page) or (not self) then
 		return noPage;
 	end
+	local totalSongs = #self;
+	if totalSongs == 0 then
+		return noPage;
+	end
 	return {components.actionRow.new{
 		components.button.new{
 			custom_id = ("music_page_%d"):format(page);
@@ -900,7 +904,7 @@ function this:pageIndicator(page)
 			style = discordia_enchant_enums.buttonStyle.primary;
 			label = "다음 페이지";
 			emoji = components.emoji.new "➡";
-			disabled = page >= self:totalPages();
+			disabled = page >= this.totalPages(totalSongs);
 		};
 		buttons.action_remove;
 	}};
