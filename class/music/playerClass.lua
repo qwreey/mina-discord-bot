@@ -106,20 +106,21 @@ local function download(thing,lastInfo)
 end
 this.download = download;
 
-local function importEmoji(id)
+local function importEmoji(id,name)
+	if name then return ("<%s:%s>"):format(tostring(name),tostring(id)); end
 	return ("<:a:%s>"):format(tostring(id));
 end
 this.importEmoji = importEmoji;
 
 -- seekbar object
 local seekbarLen = 16;
-local leffHollow = importEmoji"952445243637248040";
-local leftFill = importEmoji"952445243331059793";
-local midFill = importEmoji"952445243700154388";
-local midHalf = importEmoji"952445243666628628";
-local midHollow = importEmoji"952445243805007902";
-local rightHollow = importEmoji"952445243385610241";
-local rightFill = importEmoji"952445243754709072";
+local leffHollow = importEmoji("progressLeftHollow","952445243637248040");
+local leftFill = importEmoji("progressLeftFill","952445243331059793");
+local midFill = importEmoji("progressMidFill","952445243700154388");
+local midHalf = importEmoji("progressMidHalf","952445243666628628");
+local midHollow = importEmoji("progressMidHollow","952445243805007902");
+local rightHollow = importEmoji("progressRightHollow","952445243385610241");
+local rightFill = importEmoji("progressRightFill","952445243754709072");
 local function seekbar(now,atEnd)
 	local per = now / atEnd;
 	local forward = math.floor(seekbarLen * per + 0.5);
