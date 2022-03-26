@@ -184,7 +184,6 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . .\n```ansi\n​```');
 		_G.livereloadEnabled = false;
 		git{message=msg,"pull"} -- git 에서 변동사항 가져와 적용하기
-			{"submodule","sync"}
 			{"submodule","update"};
 		_G.livereloadEnabled = true;
 		msg:setContent(msg.content .. '\n> 완료!');
@@ -194,7 +193,6 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		local msg = message:reply('> GITHUB qwreey75/MINA_DiscordBot 로 부터 코드를 받는중 . . .\n```ansi\n​```');
 		_G.livereloadEnabled = false;
 		git{message=msg,"pull"} -- git 에서 변동사항 가져와 적용하기
-			{"submodule","sync"}
 			{"submodule","update"};
 		_G.livereloadEnabled = true;
 		msg:setContent(msg.content .. '\n> 적용중 . . . (3초 내로 완료됩니다)');
@@ -219,7 +217,6 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 			{"commit","-m","MINA : Upload in main code (bot.lua)"}
 			{"pull"}
 			{"push"}
-			{"submodule","sync"}
 			{"submodule","update"};
 		_G.livereloadEnabled = true;
 		msg:setContent(msg.content .. '\n> 적용중 . . . (3초 내로 완료됩니다)');

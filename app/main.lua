@@ -17,27 +17,14 @@ local jit = _G.jit or require "jit";
 process.env.PATH = process.env.PATH .. ((jit.os == "Windows" and ";.\\bin\\Windows_" or ":./bin/Linux_") .. jit.arch); -- add bin libs path
 package.path = require"app.path"(package.path); -- set require path
 local profiler = require"profiler"; _G.profiler = profiler;
-local initProfiler = profiler.new"INIT";
+local promise = require "promise"; _G.promise,_G.async,_G.await,_G.waitter = promise,promise.async,promise.await,promise.waitter; -- promise library
+local requireProfiler = profiler.new"Require Items"; _G.requireProfiler = requireProfiler;
+local initProfiler = profiler.new"INIT"; _G.initProfiler = initProfiler;
 initProfiler:start"MAIN";
-_G.initProfiler = initProfiler;
 
 initProfiler:start"Setup require";
 local require = require"app.require"(require); -- set global require function
 initProfiler:stop();
-
-local requireProfiler = profiler.new("Require Items");
-local originalRequire = require;
-local ploaded = package.loaded;
-local require = function (namespace)
-	local module = ploaded[namespace];
-	if module then return module; end
-	requireProfiler:start(namespace);
-	module = originalRequire(namespace);
-	requireProfiler:stop();
-	return module;
-end
-_G.requireProfiler = requireProfiler;
-_G.require = require;
 
 -- Make app object
 initProfiler:start"Setup terminal / Application";
@@ -78,10 +65,7 @@ local traceback = debug.traceback;
 local insert = table.insert;
 local gsub = string.gsub;
 local osTime = os.time; _G.osTime = osTime; -- time
-
-local promise = require "promise"; _G.promise,_G.async,_G.await,_G.waitter = promise,promise.async,promise.await,promise.waitter; -- promise library
 local asyncRequire = promise.async(require);
-
 local utils = require "utils"; _G.utils = utils; -- luvit's utils library
 
 -- must be preloaded
@@ -90,25 +74,37 @@ local utils = require "utils"; _G.utils = utils; -- luvit's utils library
 		--[[
 			{
 				name = "preloadLibrary",
-				"myXml","cat","timer","readline","thread","fs","json",
+				"myXml","cat","timer","readline","thread",
+        "fs","json","sha1","dumpTable","posixTime",
+        "strSplit","argsParser","urlCode",
 				{name = "prettyPrint",path = "pretty-print"},
-				{name = "randomModule",path = "random"}
+				{name = "randomModule",path = "random"},
+        {name = "unpackn",path = "unpack"},
+        {name = "exitCodes",path = "app.exitCodes"}
 			}
 		]]
 	--!!/HEAD!!
 	--!!BLOCK!!
 		--THIS CODE WAS AUTO-GENERATED!
+		local myXml; ---@module "myXml"
+		local cat; ---@module "cat"
+		local timer; ---@module "timer"
+		local readline; ---@module "readline"
+		local thread; ---@module "thread"
+		local fs; ---@module "fs"
+		local json; ---@module "json"
+		local sha1; ---@module "sha1"
+		local dumpTable; ---@module "dumpTable"
+		local posixTime; ---@module "posixTime"
+		local strSplit; ---@module "strSplit"
+		local argsParser; ---@module "argsParser"
+		local urlCode; ---@module "urlCode"
+		local prettyPrint; ---@module "pretty-print"
+		local randomModule; ---@module "random"
+		local unpackn; ---@module "unpack"
+		local exitCodes; ---@module "app.exitCodes"
 		do
-			local myXml; ---@module "myXml"
-			local cat; ---@module "cat"
-			local timer; ---@module "timer"
-			local readline; ---@module "readline"
-			local thread; ---@module "thread"
-			local fs; ---@module "fs"
-			local json; ---@module "json"
-			local prettyPrint; ---@module "pretty-print"
-			local randomModule; ---@module "random"
-			local preloadLibraryWaitter = promise.waitter()
+			local preloadLibraryWaitter = promise.waitter();
 			preloadLibraryWaitter:add(asyncRequire("myXml"));
 			preloadLibraryWaitter:add(asyncRequire("cat"));
 			preloadLibraryWaitter:add(asyncRequire("timer"));
@@ -116,47 +112,111 @@ local utils = require "utils"; _G.utils = utils; -- luvit's utils library
 			preloadLibraryWaitter:add(asyncRequire("thread"));
 			preloadLibraryWaitter:add(asyncRequire("fs"));
 			preloadLibraryWaitter:add(asyncRequire("json"));
+			preloadLibraryWaitter:add(asyncRequire("sha1"));
+			preloadLibraryWaitter:add(asyncRequire("dumpTable"));
+			preloadLibraryWaitter:add(asyncRequire("posixTime"));
+			preloadLibraryWaitter:add(asyncRequire("strSplit"));
+			preloadLibraryWaitter:add(asyncRequire("argsParser"));
+			preloadLibraryWaitter:add(asyncRequire("urlCode"));
 			preloadLibraryWaitter:add(asyncRequire("pretty-print"));
 			preloadLibraryWaitter:add(asyncRequire("random"));
-			myXml,cat,timer,readline,thread,fs,json,prettyPrint,randomModule = unpack(preloadLibraryWaitter:await())
-			_G.myXml,_G.cat,_G.timer,_G.readline,_G.thread,_G.fs,_G.json,_G.prettyPrint,_G.randomModule = myXml,cat,timer,readline,thread,fs,json,prettyPrint,randomModule;
+			preloadLibraryWaitter:add(asyncRequire("unpack"));
+			preloadLibraryWaitter:add(asyncRequire("app.exitCodes"));
+			myXml,cat,timer,readline,thread,fs,json,sha1,dumpTable,posixTime,strSplit,argsParser,urlCode,prettyPrint,randomModule,unpackn,exitCodes = unpack(preloadLibraryWaitter:await());
 		end
+		_G.myXml,_G.cat,_G.timer,_G.readline,_G.thread,_G.fs,_G.json,_G.sha1,_G.dumpTable,_G.posixTime,_G.strSplit,_G.argsParser,_G.urlCode,_G.prettyPrint,_G.randomModule,_G.unpackn,_G.exitCodes = myXml,cat,timer,readline,thread,fs,json,sha1,dumpTable,posixTime,strSplit,argsParser,urlCode,prettyPrint,randomModule,unpackn,exitCodes;
 	--!!/BLOCK!!
 --!!/AUTOBUILD!!
 cat.upgradeString();
 
 -- load library
-local corohttp = require "coro-http"; _G.corohttp = corohttp; -- luvit's http library
-local spawn = require "coro-spawn"; _G.spawn = spawn; -- spawn process (child process wrapper)
-local split = require "coro-split"; _G.split = split; -- run splitted coroutines
-local data = require "data"; data:setJson(json); _G.data = data; -- Data system
-local IPC = require "IPC"; _G.IPC = IPC;
-local argsParser = require "libs.argsParser"; _G.argsParser = argsParser;
-local strSplit = require "stringSplit"; _G.strSplit = strSplit; -- string split library
-local sha1 = require "sha1"; _G.sha1 = sha1; -- sha1
-local urlCode = require "urlCode"; _G.urlCode = urlCode; -- url encoder/decoder library
-local commandHandler = require "class.commandHandler"; _G.commandHandler = commandHandler; -- command decoding-caching-indexing system
-local mutex = require "libs.mutex"; _G.mutex = mutex;
-local posixTime = require "libs.posixTime"; _G.posixTime = posixTime; -- get posixTime library
-local unpackn = require "unpack"; _G.unpackn = unpackn;
+--!!AUTOBUILD!!
+	--!!HEAD!!
+		--[[
+			{
+				name = "library",
+				{name = "randomModule",path = "random"},
+        {name = "corohttp",path = "coro-http"},
+        {name = "spawn",path = "coro-spawn"},
+        {name = "split",path = "coro-split"},
+        "data","IPC","mutex",
+        {name = "commandHandler",path = "class.commandHandler"}
+			}
+		]]
+	--!!/HEAD!!
+	--!!BLOCK!!
+		--THIS CODE WAS AUTO-GENERATED!
+		local randomModule; ---@module "random"
+		local corohttp; ---@module "coro-http"
+		local spawn; ---@module "coro-spawn"
+		local split; ---@module "coro-split"
+		local data; ---@module "data"
+		local IPC; ---@module "IPC"
+		local mutex; ---@module "mutex"
+		local commandHandler; ---@module "class.commandHandler"
+		do
+			local libraryWaitter = promise.waitter();
+			libraryWaitter:add(asyncRequire("random"));
+			libraryWaitter:add(asyncRequire("coro-http"));
+			libraryWaitter:add(asyncRequire("coro-spawn"));
+			libraryWaitter:add(asyncRequire("coro-split"));
+			libraryWaitter:add(asyncRequire("data"));
+			libraryWaitter:add(asyncRequire("IPC"));
+			libraryWaitter:add(asyncRequire("mutex"));
+			libraryWaitter:add(asyncRequire("class.commandHandler"));
+			randomModule,corohttp,spawn,split,data,IPC,mutex,commandHandler = unpack(libraryWaitter:await());
+		end
+		_G.randomModule,_G.corohttp,_G.spawn,_G.split,_G.data,_G.IPC,_G.mutex,_G.commandHandler = randomModule,corohttp,spawn,split,data,IPC,mutex,commandHandler;
+	--!!/BLOCK!!
+--!!/AUTOBUILD!!
 local logger = require "logger"; _G.logger = logger; -- log library
-local dumpTable = require "libs.dumpTable"; _G.dumpTable = dumpTable; -- table dump library, this is auto injecting dump function on global 'table'
-local exitCodes = require("app.exitCodes"); _G.exitCodes = exitCodes; -- get exit codes
-
--- load class/etc
 local random = randomModule.random; _G.random = random; -- LUA random handler
 local makeId = randomModule.makeId; _G.makeId = makeId; -- making id with random library
 local adapt = utils.adapt; _G.adapt = adapt; -- adapt function alias
 local makeSeed = randomModule.makeSeed; _G.makeSeed = makeSeed; -- making seed library, this is used on random llibrary
-local utf8 = utf8 or require "utf8"; _G.utf8 = utf8; -- unicode 8 library
-local uv = require "uv"; _G.uv = uv; -- load uv library
-local ffi = require "ffi"; _G.ffi = ffi; -- luajit's ffi library
-local term = require "app.term"; -- setuping REPL terminal
-local userLearn = require "commands.learning.learn"; -- user learning library
-local userData = require "class.userData"; _G.userData = userData; -- Userdata system
-local serverData = require "class.serverData"; _G.serverData = serverData; -- Serverdata system
-local interactionData = require "class.interactionData"; _G.interactionData = interactionData; -- interactiondata system
-local commonSlashCommand = require "class.commonSlashCommand"; _G.commonSlashCommand = commonSlashCommand;
+
+-- load class/etc
+--!!AUTOBUILD!!
+	--!!HEAD!!
+		--[[
+			{
+				name = "modules",
+        "utf8","ffi","term","uv",
+        {name = "userData",path = "class.userData"},
+        {name = "serverData",path = "class.serverData"},
+        {name = "interactionData",path = "class.interactionData"},
+				{name = "userLearn",path = "commands.learning.learn"},
+        "discordia"
+			}
+		]]
+	--!!/HEAD!!
+	--!!BLOCK!!
+		--THIS CODE WAS AUTO-GENERATED!
+		local utf8; ---@module "utf8"
+		local ffi; ---@module "ffi"
+		local term; ---@module "term"
+		local uv; ---@module "uv"
+		local userData; ---@module "class.userData"
+		local serverData; ---@module "class.serverData"
+		local interactionData; ---@module "class.interactionData"
+		local userLearn; ---@module "commands.learning.learn"
+		local discordia; ---@module "discordia"
+		do
+			local modulesWaitter = promise.waitter();
+			modulesWaitter:add(asyncRequire("utf8"));
+			modulesWaitter:add(asyncRequire("ffi"));
+			modulesWaitter:add(asyncRequire("term"));
+			modulesWaitter:add(asyncRequire("uv"));
+			modulesWaitter:add(asyncRequire("class.userData"));
+			modulesWaitter:add(asyncRequire("class.serverData"));
+			modulesWaitter:add(asyncRequire("class.interactionData"));
+			modulesWaitter:add(asyncRequire("commands.learning.learn"));
+			modulesWaitter:add(asyncRequire("discordia"));
+			utf8,ffi,term,uv,userData,serverData,interactionData,userLearn,discordia = unpack(modulesWaitter:await());
+		end
+		_G.utf8,_G.ffi,_G.term,_G.uv,_G.userData,_G.serverData,_G.interactionData,_G.userLearn,_G.discordia = utf8,ffi,term,uv,userData,serverData,interactionData,userLearn,discordia;
+	--!!/BLOCK!!
+--!!/AUTOBUILD!!
 initProfiler:stop();
 --#endregion : Load modules
 --#region : Get version
@@ -225,16 +285,20 @@ logger.info("------------------------ [CLEAN  UP] ------------------------");
 logger.info("wait for discordia ...");
 
 require("app.jsonErrorWrapper"); -- enable pcall wrapped json en-decoder
-
-local discordia = require "discordia"; _G.discordia = discordia; ---@type discordia -- 디스코드 lua 봇 모듈 불러오기
 local discordia_enchant = require "discordia_enchant"; _G.discordia_enchant = discordia_enchant;
-local userInteractWarpper = require("class.userInteractWarpper"); _G.userInteractWarpper = userInteractWarpper;
-local commonButtons = require "class.commonButtons"; _G.buttons = commonButtons;
-
-local discordia_class = require "discordia/libs/class"; _G.discordia_class = discordia_class; ---@type class -- 디스코드 클레스 가져오기
+local userInteractWarpper,commonButtons,commonSlashCommand,clientSettings = require(
+  "class.userInteractWarpper",
+  "class.commonButtons",
+  "class.commonSlashCommand",
+  "class.clientSettings"
+);
+_G.userInteractWarpper = userInteractWarpper;
+_G.buttons = commonButtons;
+_G.commonSlashCommand = commonSlashCommand;
+local discordia_class = discordia.class; _G.discordia_class = discordia_class; ---@type class -- 디스코드 클레스 가져오기
 local discordia_Logger = discordia_class.classes.Logger; ---@type Logger -- 로거부분 가져오기 (통합을 위해 수정)
 local enums = discordia.enums; _G.enums = enums; ---@type enums -- 디스코드 enums 가져오기
-local client = discordia.Client(require("class.clientSettings")); _G.client = client; ---@type Client -- 디스코드 클라이언트 만들기
+local client = discordia.Client(clientSettings); _G.client = client; ---@type Client -- 디스코드 클라이언트 만들기
 local Date = discordia.Date; _G.Date = Date; ---@type Date
 
 -- inject logger
@@ -266,9 +330,11 @@ logger.info("---------------------- [LOAD SETTINGS] ----------------------");
 initProfiler:start"Load environments / datas";
 logger.info("load environments ...");
 require("app.global"); -- inject environment
-local adminCmd = require("class.adminCommands"); -- load admin commands
-local hook = require("class.hook");
-local registeLeaderstatus = require("class.registeLeaderstatus");
+local adminCmd,hook,registeLeaderstatus = require(
+  "class.adminCommands", -- load admin commands
+  "class.hook",
+  "class.registeLeaderstatus"
+);
 local formatTraceback = _G.formatTraceback;
 local admins = _G.admins;
 local testingMode = ACCOUNTData.testing;
@@ -279,11 +345,16 @@ initProfiler:start"Load commands";
 initProfiler:start"Require files";
 logger.info(" |- load commands from commands folder");
 local otherCommands = {} -- read commands from commands folder
-for dir in fs.scandirSync("commands") do
+local loadCommand = promise.async(function (dir)
+ 	logger.info(" |  |- load from : commands." .. dir);
+	otherCommands[indexs] = require("commands." .. dir);
+end);
+local commandWaitter = promise.waitter();
+for index,dir in ipairs(fs.readdirSync("commands")) do
 	dir = gsub(dir,"%.lua$","");
-	logger.info(" |  |- load from : commands." .. dir);
-	otherCommands[#otherCommands+1] = require("commands." .. dir);
+  commandWaitter:add(loadCommand(dir));
 end
+commandWaitter:wait();
 initProfiler:stop();
 
 -- Load command indexer
