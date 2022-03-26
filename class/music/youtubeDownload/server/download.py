@@ -11,7 +11,7 @@ downloadHooks = [downloadHook]
 # post process
 postprocessorArgs = {
 	# default field will used for ffmpeg process
-	'default':['-filter:a','loudnorm'] # ffmpeg loadnorm filter
+	'default':['-b:a','64k','-filter:a','loudnorm'] # ffmpeg loadnorm filter
 }
 postprocessEnabled = True
 
