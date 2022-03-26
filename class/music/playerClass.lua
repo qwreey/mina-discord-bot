@@ -118,13 +118,13 @@ this.importEmoji = importEmoji;
 
 -- seekbar object
 local seekbarLen = 16;
-local leffHollow = importEmoji("progressLeftHollow","952445243637248040");
-local leftFill = importEmoji("progressLeftFill","952445243331059793");
-local midFill = importEmoji("progressMidFill","952445243700154388");
-local midHalf = importEmoji("progressMidHalf","952445243666628628");
-local midHollow = importEmoji("progressMidHollow","952445243805007902");
-local rightHollow = importEmoji("progressRightHollow","952445243385610241");
-local rightFill = importEmoji("progressRightFill","952445243754709072");
+local leffHollow = importEmoji("952445243637248040","progressLeftHollow");
+local leftFill = importEmoji("952445243331059793","progressLeftFill");
+local midFill = importEmoji("952445243700154388","progressMidFill");
+local midHalf = importEmoji("952445243666628628","progressMidHalf");
+local midHollow = importEmoji("952445243805007902","progressMidHollow");
+local rightHollow = importEmoji("952445243385610241","progressRightHollow");
+local rightFill = importEmoji("952445243754709072","progressRightFill");
 local function seekbar(now,atEnd)
 	local per = now / atEnd;
 	local forward = math.floor(seekbarLen * per + 0.5);
