@@ -98,7 +98,8 @@ local utils = require "utils"; _G.utils = utils; -- luvit's utils library
 	--!!/HEAD!!
 	--!!BLOCK!!
 		--THIS CODE WAS AUTO-GENERATED!
-		do			local myXml; ---@module "myXml"
+		do
+			local myXml; ---@module "myXml"
 			local cat; ---@module "cat"
 			local timer; ---@module "timer"
 			local readline; ---@module "readline"
