@@ -76,48 +76,93 @@ initProfiler:start"Load global modules";
 local format = string.format;
 local traceback = debug.traceback;
 local insert = table.insert;
-local cat = require "cat"; _G.cat = cat; cat.upgradeString();
-local randomModule = require "random";
-local random = randomModule.random; _G.random = random; -- LUA random handler
-local makeId = randomModule.makeId; _G.makeId = makeId; -- making id with random library
-local makeSeed = randomModule.makeSeed; _G.makeSeed = makeSeed; -- making seed library, this is used on random llibrary
+local gsub = string.gsub;
+local osTime = os.time; _G.osTime = osTime; -- time
+
 local promise = require "promise"; _G.promise,_G.async,_G.await,_G.waitter = promise,promise.async,promise.await,promise.waitter; -- promise library
-local utf8 = utf8 or require "utf8"; _G.utf8 = utf8; -- unicode 8 library
-local uv = require "uv"; _G.uv = uv; -- load uv library
-local prettyPrint = require "pretty-print"; _G.prettyPrint = prettyPrint; -- print many typed object on terminal
-local readline = require "readline"; _G.readline = readline; -- reading terminal lines
-local json = require "json"; _G.json = json; -- json library
-local corohttp = require "coro-http"; _G.corohttp = corohttp; -- luvit's http library
+local asyncRequire = promise.async(require);
+
+local utils = require "utils"; _G.utils = utils; -- luvit's utils library
+
+-- must be preloaded
+--[[
+{
+	name = "preloadLibrary",
+	"myXml","cat","timer","readline","thread","fs","json",
+	{name = "prettyPrint",path = "pretty-print"},
+	{name = "randomModule",path = "random"}}
+}
+]]
+local function getNameAndPath(module)
+	if type(module) == "table" then
+		return module.name,module.path;
+	end
+	return module,module;
+end
+
+local function makeAsyncRequireCode(modules)
+	local t,group,length = {},modules.name,#modules;
+	for _,module in ipairs(modules) do
+		local name,path = getNameAndPath(module);
+		insert(t,("local %s; ---@module \"%s\"\n"):format(name,path));
+	end
+	insert(t,("local %sWaitter = promise.waitter()\n"):format(group));
+	for _,module in ipairs(modules) do
+		local name,path = getNameAndPath(module);
+		insert(t,("%sWaitter:add(asyncRequire(%s));\n"):format(path));
+	end
+	for i,module in ipairs(modules) do
+		local name,path = getNameAndPath(module);
+		insert(t,name);
+		if i == length then
+			insert(t,",");
+		end
+	end
+end
+
+local myXml = require "myXml"; _G.myXml = myXml; -- myXml library
+local cat = require "cat"; _G.cat = cat;
 local timer = require "timer"; _G.timer = timer; -- luvit's timer library that include timeout, sleep, ...
+local readline = require "readline"; _G.readline = readline; -- reading terminal lines
 local thread = require "thread"; _G.thread = thread; -- luvit's thread library
 local fs = require "fs"; _G.fs = fs; -- luvit's fils system library
-local ffi = require "ffi"; _G.ffi = ffi; -- luajit's ffi library
-local utils = require "utils"; _G.utils = utils; -- luvit's utils library
-local adapt = utils.adapt; _G.adapt = adapt; -- adapt function alias
+local json = require "json"; _G.json = json; -- json library
+local prettyPrint = require "pretty-print"; _G.prettyPrint = prettyPrint; -- print many typed object on terminal
+local randomModule = require "random";
+cat.upgradeString();
+
+-- load library
+local corohttp = require "coro-http"; _G.corohttp = corohttp; -- luvit's http library
 local spawn = require "coro-spawn"; _G.spawn = spawn; -- spawn process (child process wrapper)
 local split = require "coro-split"; _G.split = split; -- run splitted coroutines
+local data = require "data"; data:setJson(json); _G.data = data; -- Data system
+local IPC = require "IPC"; _G.IPC = IPC;
+local argsParser = require "libs.argsParser"; _G.argsParser = argsParser;
+local strSplit = require "stringSplit"; _G.strSplit = strSplit; -- string split library
 local sha1 = require "sha1"; _G.sha1 = sha1; -- sha1
-local osTime = os.time; _G.osTime = osTime; -- time
+local urlCode = require "urlCode"; _G.urlCode = urlCode; -- url encoder/decoder library
+local commandHandler = require "class.commandHandler"; _G.commandHandler = commandHandler; -- command decoding-caching-indexing system
+local mutex = require "libs.mutex"; _G.mutex = mutex;
+local posixTime = require "libs.posixTime"; _G.posixTime = posixTime; -- get posixTime library
+local unpackn = require "unpack"; _G.unpackn = unpackn;
 local logger = require "logger"; _G.logger = logger; -- log library
 local dumpTable = require "libs.dumpTable"; _G.dumpTable = dumpTable; -- table dump library, this is auto injecting dump function on global 'table'
 local exitCodes = require("app.exitCodes"); _G.exitCodes = exitCodes; -- get exit codes
-local qDebug = require "app.debug"; _G.qDebug = qDebug; -- my debug system
+
+-- load class/etc
+local random = randomModule.random; _G.random = random; -- LUA random handler
+local makeId = randomModule.makeId; _G.makeId = makeId; -- making id with random library
+local adapt = utils.adapt; _G.adapt = adapt; -- adapt function alias
+local makeSeed = randomModule.makeSeed; _G.makeSeed = makeSeed; -- making seed library, this is used on random llibrary
+local utf8 = utf8 or require "utf8"; _G.utf8 = utf8; -- unicode 8 library
+local uv = require "uv"; _G.uv = uv; -- load uv library
+local ffi = require "ffi"; _G.ffi = ffi; -- luajit's ffi library
 local term = require "app.term"; -- setuping REPL terminal
-local commandHandler = require "class.commandHandler"; _G.commandHandler = commandHandler; -- command decoding-caching-indexing system
-local strSplit = require "stringSplit"; _G.strSplit = strSplit; -- string split library
-local urlCode = require "urlCode"; _G.urlCode = urlCode; -- url encoder/decoder library
-local myXml = require "myXml"; _G.myXml = myXml; -- myXml library
 local userLearn = require "commands.learning.learn"; -- user learning library
-local data = require "data"; data:setJson(json); _G.data = data; -- Data system
 local userData = require "class.userData"; _G.userData = userData; -- Userdata system
 local serverData = require "class.serverData"; _G.serverData = serverData; -- Serverdata system
 local interactionData = require "class.interactionData"; _G.interactionData = interactionData; -- interactiondata system
-local posixTime = require "libs.posixTime"; _G.posixTime = posixTime; -- get posixTime library
-local mutex = require "libs.mutex"; _G.mutex = mutex;
 local commonSlashCommand = require "class.commonSlashCommand"; _G.commonSlashCommand = commonSlashCommand;
-local argsParser = require "libs.argsParser"; _G.argsParser = argsParser;
-local IPC = require "IPC"; _G.IPC = IPC;
-local unpackn = require "unpack"; _G.unpackn = unpackn;
 initProfiler:stop();
 --#endregion : Load modules
 --#region : Get version
@@ -241,7 +286,7 @@ initProfiler:start"Require files";
 logger.info(" |- load commands from commands folder");
 local otherCommands = {} -- read commands from commands folder
 for dir in fs.scandirSync("commands") do
-	dir = string.gsub(dir,"%.lua$","");
+	dir = gsub(dir,"%.lua$","");
 	logger.info(" |  |- load from : commands." .. dir);
 	otherCommands[#otherCommands+1] = require("commands." .. dir);
 end
@@ -553,13 +598,6 @@ local function processCommand(message)
 			logger.errorf("An error occurred on running command function\n - original message : %s\n - error message was :\n%s\n - error traceback was :\n%s\n - more information was saved on log/debug.log",
 				tostring(text),err,traceback
 			);
-			qDebug {
-				title = "an error occurred on running reply function";
-				errorMessage = err;
-				traceback = traceback;
-				originalMsg = text;
-				command = Command;
-			};
 			coroutine.wrap(message.reply)(message,{
 				content = ("커맨드 반응 생성중 오류가 발생했습니다!```log\nError message : %s\n%s```"):format(
 					tostring(err),tostring(traceback)
@@ -608,13 +646,6 @@ local function processCommand(message)
 			logger.errorf("An error occurred on running command function\n - original message : %s\n - error message was :\n%s\n - error traceback was :\n%s\n - more information was saved on log/debug.log",
 				tostring(text),err,traceback
 			);
-			qDebug {
-				title = "an error occurred on running command function";
-				errorMessage = err;
-				traceback = traceback;
-				originalMsg = text;
-				command = Command;
-			};
 			coroutine.wrap(replyMsg.setContent)(replyMsg,
 				("명령어 처리중에 오류가 발생하였습니다```log\nError message : %s\n%s```"):format(err,traceback)
 			);
@@ -652,10 +683,9 @@ commandHandler.onSlash(function ()
 			};
 		};
 		callback = function(interaction, params, cmd)
-			local pass,err = xpcall(processCommand,
+			xpcall(processCommand,
 			function (err)
 					err = tostring(err)
-					local traceback = debug.traceback();
 					logger.errorf(
 						"Error occurred on executing slash command\nError message : %s\nError traceback",
 						err,traceback
