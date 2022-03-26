@@ -13,7 +13,7 @@ use tty instead pipe for python (youtube-dlp)
 # voice.download-rate-limit=INT
 set download rate limit
 
-# voice.disable-server-side-postprocessing
+# voice.disable-server-side-postprocessor
 
 # env.httpHeartbeat
 Enable http heartbeat mode  
