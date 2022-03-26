@@ -24,14 +24,14 @@ local empty = string.char(226,128,139);
 --#endregion --* setup const objects *--
 --#region --* Setup ytdl *--
 
-local isStreamMode,disableServerSidePostprocessing;
+local isStreamMode,disableServerSidePostprocessor;
 local ytHandler; ---@module "class.music.youtubeStream";
 for _,str in ipairs(app.args) do
 	if str == "voice.useStream" then
 		isStreamMode = true;
 		ytHandler = require("class.music.youtubeStream");
-	elseif str == "voice.disable-server-side-postprocessing" then
-		disableServerSidePostprocessing = true;
+	elseif str == "voice.disable-server-side-postprocessor" then
+		disableServerSidePostprocessor = true;
 	end
 end
 ytHandler = ytHandler or require("class.music.youtubeDownload");
@@ -39,7 +39,7 @@ this.ytHandler = ytHandler;
 this.timeoutMessage = ytHandler.timeoutMessage;
 
 -- Insert args on ffmpeg process
-if disableServerSidePostprocessing then
+if disableServerSidePostprocessor then
 	local args = discordia_class.classes.FFmpegProcess.args;
 	if args then
 		insert(args,"-b:a");

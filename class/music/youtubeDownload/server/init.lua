@@ -3,20 +3,20 @@ local server = IPC.new("python",{"class/music/youtubeDownload/server/main.py"},t
 local module = {};
 
 local setup = promise.spawn(function ()
-	local rateLimit,disableServerSidePostprocessing;
+	local rateLimit,disableServerSidePostprocessor;
 	for _,str in ipairs(app.args) do
 		rateLimit = str:match("voice%.download%-rate%-limit=(.-)");
-		if str == "voice.disable-server-side-postprocessing" then
-			disableServerSidePostprocessing = true;
+		if str == "voice.disable-server-side-postprocessor" then
+			disableServerSidePostprocessor = true;
 		end
-		if rateLimit and disableServerSidePostprocessing then break; end
+		if rateLimit and disableServerSidePostprocessor then break; end
 	end
 	if rateLimit then
 		server:request(rateLimit,"setRateLimit");
 		logger.infof("[YTDL] rate limit was changed to %s",tostring(rateLimit));
 	end
-	if disableServerSidePostprocessing then
-		server:request(false,"disableServerSidePostprocessing");
+	if disableServerSidePostprocessor then
+		server:request(false,"setBuiltinPostProcessorEnabled");
 	end
 end);
 
