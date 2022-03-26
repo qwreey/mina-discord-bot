@@ -64,7 +64,7 @@ local randomModule = require "random";
 local random = randomModule.random; _G.random = random; -- LUA random handler
 local makeId = randomModule.makeId; _G.makeId = makeId; -- making id with random library
 local makeSeed = randomModule.makeSeed; _G.makeSeed = makeSeed; -- making seed library, this is used on random llibrary
-local promise = require "promise"; _G.promise = promise;
+local promise = require "promise"; _G.promise,_G.async,_G.await,_G.waitter = promise,promise.async,promise.await,promise.waitter; -- promise library
 local utf8 = utf8 or require "utf8"; _G.utf8 = utf8; -- unicode 8 library
 local uv = require "uv"; _G.uv = uv; -- load uv library
 local prettyPrint = require "pretty-print"; _G.prettyPrint = prettyPrint; -- print many typed object on terminal
