@@ -12,7 +12,11 @@ local encode,decode = json.encode,json.decode;
 
 local _,prettyPrint = pcall(require,"pretty-print");
 local stdout = prettyPrint and prettyPrint.stdout;
-function module:log(str)
+local format = string.format;
+function module:log(str,...)
+	if select("#",...) ~= 0 then
+		str = format(str,...);
+	end
 	local logger = logger;
 	local err = logger and logger.error;
 	if err then
@@ -62,6 +66,10 @@ function module:onbuffer(str)
 	local data = decode(str);
 	if not data then
 		return self:log("failed to decode stdout, stdout was\n%s",str);
+	end
+	local err = data.e;
+	if err then
+		self:log("error code was received from process, stdout was\n%s",str)
 	end
 	local waitter = self.waitter[data.o]; ---@diagnostic disable-line
 	if waitter then

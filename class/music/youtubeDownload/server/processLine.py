@@ -2,7 +2,7 @@ import sys
 import json
 stdout = sys.stdout
 
-from download import download,setRateLimit
+from download import download,setRateLimit,setBuiltinPostProcessorEnabled
 
 def processLine(line):
 	try:
@@ -14,8 +14,12 @@ def processLine(line):
 		data = decoded.get('d')
 
 		# execute function
-		if not func:                 result = download(data)
-		elif func == "setRateLimit": result = setRateLimit(data)
+		if not func:
+			result = download(data)
+		elif func == "setRateLimit":
+			result = setRateLimit(data)
+		elif func == "setBuiltinPostProcessorEnabled":
+			result = setBuiltinPostProcessorEnabled(data)
 		else: result = "ERR:KEYUNDEFINED"
 
 		# write return data

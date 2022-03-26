@@ -4,14 +4,20 @@ server:setName("YTDL");
 local module = {};
 
 promise.spawn(function ()
-	local rateLimit;
+	local rateLimit,disableServerSidePostprocessing;
 	for _,str in ipairs(app.args) do
 		rateLimit = str:match("voice%.download%-rate%-limit=(.-)");
-		if rateLimit then break; end
+		if str == "voice.disableServerSidePostprocessing" then
+			disableServerSidePostprocessing = true;
+		end
+		if rateLimit and disableServerSidePostprocessing then break; end
 	end
 	if rateLimit then
 		server:request(rateLimit,"setRateLimit");
 		logger.infof("[YTDL] rate limit was changed to %s",tostring(rateLimit));
+	end
+	if disableServerSidePostprocessing then
+		server:request(false,"disableServerSidePostprocessing");
 	end
 end)
 

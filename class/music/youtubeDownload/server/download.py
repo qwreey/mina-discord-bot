@@ -1,13 +1,19 @@
 from yt_dlp import YoutubeDL
-
 class Timeout(Exception): pass
+rateLimit = None
 
+# download hook
 def downloadHook(data):
 	if data['status'] == "downloading" and data['elapsed'] >= 60:
 		raise Timeout
 downloadHooks = [downloadHook]
 
-rateLimit = None
+# post process
+postprocessorArgs = {
+	# default field will used for ffmpeg process
+	'default':['-filter:a','loudnorm'] # ffmpeg loadnorm filter
+}
+postprocessEnabled = True
 
 def handleYtdlp(url,noDownload,file):
 	global rateLimit
@@ -19,15 +25,16 @@ def handleYtdlp(url,noDownload,file):
 		'simulate': noDownload,
 		'cachedir': 'data/youtubeCache',
 		'outtmpl': file,
-		'continuedl': True,
-		'progress_hooks': downloadHooks
+		'continuedl': True, # download continue for last session
+		'progress_hooks': downloadHooks, # download progress hooks
 	}
 	if rateLimit: ydl_opts['ratelimit'] = rateLimit
+	if postprocessEnabled: ydl_opts['postprocessor_args'] = postprocessorArgs
 	try:
 		with YoutubeDL(ydl_opts) as ydl:
 			return ydl.extract_info(url,download=(not noDownload))
 	except Timeout: return "ERR:TIMEOUT"
-	except Exception as e: return "ERR:"+str(e)
+	except Exception as e: return "ERR:"+type(e).__name__+":"+str(e)
 
 def download(data):
 	return handleYtdlp(
@@ -44,3 +51,7 @@ def setRateLimit(newRateLimit):
 	except: pass
 	finally:
 		rateLimit = this
+
+def setBuiltinPostProcessorEnabled(enabled):
+	global postprocessEnabled
+	postprocessEnabled = enabled
