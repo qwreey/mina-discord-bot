@@ -13,15 +13,31 @@
 
 --#region : sys setup
 -- Setup require system
-require"libs/upgradeString";
 local jit = _G.jit or require "jit";
 process.env.PATH = process.env.PATH .. ((jit.os == "Windows" and ";.\\bin\\Windows_" or ":./bin/Linux_") .. jit.arch); -- add bin libs path
-package.path = require("app.path")(package.path); -- set require path
-_G.require = require; -- set global require function
+package.path = require"app.path"(package.path); -- set require path
 local profiler = require"profiler"; _G.profiler = profiler;
 local initProfiler = profiler.new"INIT";
 initProfiler:start"MAIN";
 _G.initProfiler = initProfiler;
+
+initProfiler:start"Setup require";
+local require = require"app.require"(require); -- set global require function
+initProfiler:stop();
+
+local requireProfiler = profiler.new("Require Items");
+local originalRequire = require;
+local ploaded = package.loaded;
+local require = function (namespace)
+	local module = ploaded[namespace];
+	if module then return module; end
+	requireProfiler:start(namespace);
+	module = originalRequire(namespace);
+	requireProfiler:stop();
+	return module;
+end
+_G.requireProfiler = requireProfiler;
+_G.require = require;
 
 -- Make app object
 initProfiler:start"Setup terminal / Application";
@@ -60,6 +76,7 @@ initProfiler:start"Load global modules";
 local format = string.format;
 local traceback = debug.traceback;
 local insert = table.insert;
+local cat = require "cat"; _G.cat = cat; cat.upgradeString();
 local randomModule = require "random";
 local random = randomModule.random; _G.random = random; -- LUA random handler
 local makeId = randomModule.makeId; _G.makeId = makeId; -- making id with random library
