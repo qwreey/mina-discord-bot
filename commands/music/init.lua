@@ -316,11 +316,6 @@ local export = {
 					-- debug
 					logger.errorf("Failed to add music '%s' on player:%s",rawArgs,voiceChannelID);
 					logger.errorf("traceback : %s",err)
-					qDebug {
-						title = "music adding failed";
-						arg = rawArgs;
-						voiceChannelID = voiceChannelID;
-					};
 					return;
 				end
 
