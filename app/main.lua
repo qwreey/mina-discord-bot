@@ -85,53 +85,60 @@ local asyncRequire = promise.async(require);
 local utils = require "utils"; _G.utils = utils; -- luvit's utils library
 
 -- must be preloaded
---[[
-{
-	name = "preloadLibrary",
-	"myXml","cat","timer","readline","thread","fs","json",
-	{name = "prettyPrint",path = "pretty-print"},
-	{name = "randomModule",path = "random"}}
-}
-]]
-local function getNameAndPath(module)
-	if type(module) == "table" then
-		return module.name,module.path;
-	end
-	return module,module;
-end
-
-local function makeAsyncRequireCode(modules)
-	local t,group,length = {},modules.name,#modules;
-	for _,module in ipairs(modules) do
-		local name,path = getNameAndPath(module);
-		insert(t,("local %s; ---@module \"%s\"\n"):format(name,path));
-	end
-	insert(t,("local %sWaitter = promise.waitter()\n"):format(group));
-	for _,module in ipairs(modules) do
-		local name,path = getNameAndPath(module);
-		insert(t,("%sWaitter:add(asyncRequire(%s));\n"):format(path));
-	end
-	for i,module in ipairs(modules) do
-		local name,path = getNameAndPath(module);
-		insert(t,name);
-		if i == length then
-			insert(t,",");
-		end
-	end
-end
-
-local myXml = require "myXml"; _G.myXml = myXml; -- myXml library
-local cat = require "cat"; _G.cat = cat;
-local timer = require "timer"; _G.timer = timer; -- luvit's timer library that include timeout, sleep, ...
-local readline = require "readline"; _G.readline = readline; -- reading terminal lines
-local thread = require "thread"; _G.thread = thread; -- luvit's thread library
-local fs = require "fs"; _G.fs = fs; -- luvit's fils system library
-local json = require "json"; _G.json = json; -- json library
-local prettyPrint = require "pretty-print"; _G.prettyPrint = prettyPrint; -- print many typed object on terminal
-local randomModule = require "random";
+--!!AUTOBUILD!!
+	--!!HEAD!!
+		--[[
+			{
+				name = "preloadLibrary",
+				"myXml","cat","timer","readline","thread","fs","json",
+				{name = "prettyPrint",path = "pretty-print"},
+				{name = "randomModule",path = "random"}
+			}
+		]]
+	--!!/HEAD!!
+	--!!BLOCK!!
+		--THIS CODE WAS AUTO-GENERATED!
+		local myXml; ---@module "myXml"
+		local cat; ---@module "cat"
+		local timer; ---@module "timer"
+		local readline; ---@module "readline"
+		local thread; ---@module "thread"
+		local fs; ---@module "fs"
+		local json; ---@module "json"
+		local prettyPrint; ---@module "pretty-print"
+		local randomModule; ---@module "random"
+		local preloadLibraryWaitter = promise.waitter()
+		preloadLibraryWaitter:add(asyncRequire("myXml"));
+		preloadLibraryWaitter:add(asyncRequire("cat"));
+		preloadLibraryWaitter:add(asyncRequire("timer"));
+		preloadLibraryWaitter:add(asyncRequire("readline"));
+		preloadLibraryWaitter:add(asyncRequire("thread"));
+		preloadLibraryWaitter:add(asyncRequire("fs"));
+		preloadLibraryWaitter:add(asyncRequire("json"));
+		preloadLibraryWaitter:add(asyncRequire("pretty-print"));
+		preloadLibraryWaitter:add(asyncRequire("random"));
+		myXml,cat,timer,readline,thread,fs,json,prettyPrint,randomModule = unpack(preloadLibraryWaitter:await())
+		_G.myXml,_G.cat,_G.timer,_G.readline,_G.thread,_G.fs,_G.json,_G.prettyPrint,_G.randomModule = myXml,cat,timer,readline,thread,fs,json,prettyPrint,randomModule;
+	--!!/BLOCK!!
+--!!/AUTOBUILD!!
 cat.upgradeString();
 
 -- load library
+--!!AUTOBUILD!!
+	--!!HEAD!!
+		--[[
+			{
+				name = "library",
+				"myXml","cat","timer","readline","thread","fs","json",
+				{name = "prettyPrint",path = "pretty-print"},
+				{name = "randomModule",path = "random"}
+			}
+		]]
+	--!!/HEAD!!
+	--!!BLOCK!!
+
+	--!!/BLOCK!!
+--!!/AUTOBUILD!!
 local corohttp = require "coro-http"; _G.corohttp = corohttp; -- luvit's http library
 local spawn = require "coro-spawn"; _G.spawn = spawn; -- spawn process (child process wrapper)
 local split = require "coro-split"; _G.split = split; -- run splitted coroutines
