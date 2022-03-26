@@ -6,6 +6,7 @@
 local this = {};
 this.__index = this;
 this.playerForChannels = {};
+_G.playerClass = this;
 
 --#region --* Setup const objects *--
 

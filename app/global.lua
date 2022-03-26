@@ -189,7 +189,9 @@ _G.unknownReply = { -- 반응 없을때 띄움
 -- bot managing functions
 local ctime = os.clock;
 local status = {
-	("미나 버전 `%s`!"):format(_G.app.version);
+	function ()
+		return ("미나 버전 `%s`!"):format(tostring(app.version));
+	end;
 	"'미나야 도움말' 을 이용해 도움말을 얻거나 '미나야 <할말>' 을 이용해 미나와 대화하세요!";
 	function (client)
 		local guildCount = 0;
@@ -200,7 +202,7 @@ local status = {
 		end
 		return ("%d 개의 서버에서 %d 명의 유저들과 소통하는중!"):format(guildCount,memberCount);
 	end;
-	function (client)
+	function ()
 		return ("미나 가동시간 %s!"):format(timeAgo(0,ctime()));
 	end;
 };

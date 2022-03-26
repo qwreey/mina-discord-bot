@@ -12,10 +12,11 @@ local cat = require"cat";
 local utf8Len = utf8.len;
 local utf8Offset = utf8.offset;
 local function strcut(str,targetLen)
+	str = tostring(str);
 	local esp = str:gsub("\27%[.-;",function (this)
 		return "";
 	end);
-	if utf8Len(esp) <= targetLen then
+	if (utf8Len(esp) or 0) <= targetLen then
 		return str;
 	end
 
