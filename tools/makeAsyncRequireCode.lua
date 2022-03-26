@@ -8,7 +8,7 @@ end
 local insert,concat,fs,find,sub,gsub = table.insert,table.concat,require"fs",string.find,string.sub,string.gsub;
 
 local function makeAsyncRequireCode(modules)
-	local t,group,length = {"\t\t--THIS CODE WAS AUTO-GENERATED!\n\t\tdo"},modules.name,#modules;
+	local t,group,length = {"\t\t--THIS CODE WAS AUTO-GENERATED!\n\t\tdo\n"},modules.name,#modules;
 	for _,module in ipairs(modules) do
 		local name,path = getNameAndPath(module);
 		insert(t,("\t\t\tlocal %s; ---@module \"%s\"\n"):format(name,path));
