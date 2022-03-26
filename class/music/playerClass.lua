@@ -833,7 +833,7 @@ function this:listEmbedfiy(page)
 		if song then
 			local timestamp = song.timestamp;
 			insert(fields,{
-				name = (index == 1) and ("현재 재생중 (%s/%s)"):format(formatTime((song.info or {}).duration),formatTime(elapsed)) or (("%d 번째 곡 (%s%s)"):format(index,timestamp and ("%s/"):format(formatTime(timestamp)) or "",formatTime((song.info or {}).duration)));
+				name = (index == 1) and ("현재 재생중 (%s/%s)"):format(formatTime(elapsed),formatTime((song.info or {}).duration)) or (("%d 번째 곡 (%s%s)"):format(index,timestamp and ("%s/"):format(formatTime(timestamp)) or "",formatTime((song.info or {}).duration)));
 				value = ("[%s](%s)\n`신청자 : %s (%s)`"):format(
 					(song.info or {title = "NULL"}).title:gsub("\"","\\\""),
 					song.url,
