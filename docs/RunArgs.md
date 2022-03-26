@@ -1,5 +1,5 @@
 # voice.useStream
-Enable stream to play music  
+Enable stream to play music
 
 # voice.ytdl
 Use youtube-dlp instead youtube-dl for download audios
@@ -12,6 +12,8 @@ use tty instead pipe for python (youtube-dlp)
 
 # voice.download-rate-limit=INT
 set download rate limit
+
+# voice.disable-server-side-postprocessing
 
 # env.httpHeartbeat
 Enable http heartbeat mode  

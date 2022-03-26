@@ -1,13 +1,12 @@
-local server = IPC.new("python",{"class/music/youtubeDownload/server/main.py"},true);
-server:setName("YTDL");
+local server = IPC.new("python",{"class/music/youtubeDownload/server/main.py"},true,"YTDL");
 
 local module = {};
 
-promise.spawn(function ()
+local setup = promise.spawn(function ()
 	local rateLimit,disableServerSidePostprocessing;
 	for _,str in ipairs(app.args) do
 		rateLimit = str:match("voice%.download%-rate%-limit=(.-)");
-		if str == "voice.disableServerSidePostprocessing" then
+		if str == "voice.disable-server-side-postprocessing" then
 			disableServerSidePostprocessing = true;
 		end
 		if rateLimit and disableServerSidePostprocessing then break; end
@@ -19,7 +18,7 @@ promise.spawn(function ()
 	if disableServerSidePostprocessing then
 		server:request(false,"disableServerSidePostprocessing");
 	end
-end)
+end);
 
 local infoCache = {};
 _G.youtubeVideoInfoCache = infoCache;
@@ -28,6 +27,12 @@ local errMessage = "^ERR:(.+)";
 local errTimeout = "^TIMEOUT\n?";
 local mutexs = setmetatable({},{__mode = "v"});
 function module.download(url,vid,lastInfo)
+	-- wait for setup server completed
+	if setup then
+		setup:wait();
+		setup = nil;
+	end
+
 	local file = musicFile:format(vid:gsub("%-","."));
 	local exist = fs.existsSync(file);
 
