@@ -259,24 +259,24 @@ this.voiceChannelLeave = voiceChannelLeave;
 this.voiceChannelLeaveErr = voiceChannelLeaveErr;
 
 -- restore data
+local lastDataPromise = promise.new(fs.readFileSync,"./data/lastMusicStatus.json"):andThen(function (data)
+	if data then return json.decode(data) or false; end
+end);
 client:once("ready", function ()
-	local lastData = fs.readFileSync("./data/lastMusicStatus.json")
-	if lastData and lastData ~= "" then
+	local data = lastDataPromise:await();
+	if data then
 		logger.info("found music backup data! restoring ...");
-		local data = json.decode(lastData);
-		if data then
-			promise.new(this.restore,data):wait();
-			timer.sleep(100);
-			---@type playerClass
-			for _,player in pairs(this.playerForChannels) do
-				local handler = player and player.handler;
-				local channel = handler and handler.channel;
-				if channel then
-					voiceChannelLeave(nil,channel,player);
-				end
+		promise.new(this.restore,data):wait();
+		timer.sleep(100);
+		---@type playerClass
+		for _,player in pairs(this.playerForChannels) do
+			local handler = player and player.handler;
+			local channel = handler and handler.channel;
+			if channel then
+				voiceChannelLeave(nil,channel,player);
 			end
-			logger.info("Restored all song playing data!");
 		end
+		logger.info("Restored all song playing data!");
 	end
 	fs.writeFileSync("./data/lastMusicStatus.json","");
 end);
