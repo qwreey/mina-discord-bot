@@ -11,9 +11,12 @@ local base = "https://youtube.googleapis.com/youtube/v3/playlistItems?part=conte
 local pageFormat = "&pageToken=%s"
 local module = {};
 local insert = table.insert;
+local floor = math.floor;
+local rep = string.rep;
+local empty = string.char(226,128,139);
 local corohttp = corohttp;
 local json = json;
-
+local playerClass = require"class.music.playerClass";
 local maxPlaylistItems = 150;
 
 local playlist = "list=(..................................)"
@@ -68,25 +71,21 @@ function module.getPlaylist(playlistId)
 end
 
 ---make download progress display
-local floor = math.floor;
-local rep = string.rep;
-local progress_block = "█";
-local progress_air   = "░";
-local progress_len   = 23;
-local playlistDisplay = "> 플레이 리스트의 음악을 추가중입니다\n"
-					.. "> \\|%s%s\\|\n"
-					.. "> 추가중인 곡 명 : %s\n"
-					.. "> (%d 개중에 %d개)";
+local seekbar = playerClass.seekbar;
+local playlistDisplay = "%s\n"
+					 .. "추가중인 곡 명 : %s\n"
+					 .. "(%d 개중에 %d개)";
 function module.display(total,index,songName)
-	local per = index/total;
-	local progress_front = floor(progress_len*per);
-	local progress_back = progress_len - progress_front;
-
-	return playlistDisplay:format(
-		rep(progress_block,progress_front),
-		rep(progress_air,progress_back),
-		songName,total,index
-	)
+	return {
+		content = empty;
+		embed = {
+			title = "플레이 리스트의 음악을 추가중입니다";
+			description = playlistDisplay:format(
+				seekbar(index,total,true,19),
+				songName,total,index
+			);
+		};
+	};
 end
 
 return module;

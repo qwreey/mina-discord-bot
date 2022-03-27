@@ -4,7 +4,7 @@ local discordia_enchant_enums = discordia_enchant.enums;
 local insert = table.insert;
 local function combine(self,message)
 	if type(message) == "string" then
-		return {components = {components.actionRow.new{self}},content = message};
+		return {components = {components.actionRow.new{self}},embeds = {title = message}};
 	end
 	local tcomponents = message.components or {components.actionRow.new()};
 	message.components = tcomponents;

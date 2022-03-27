@@ -132,18 +132,30 @@ local midHalf = importEmoji("952445243666628628","progressMidHalf");
 local midHollow = importEmoji("952445243805007902","progressMidHollow");
 local rightHollow = importEmoji("952445243385610241","progressRightHollow");
 local rightFill = importEmoji("952445243754709072","progressRightFill");
-local function seekbar(now,atEnd)
+local function seekbar(now,atEnd,disableDisplayTime,length)
+	length = length or seekbarLen;
 	local per = now / atEnd;
 	local forward = math.floor(seekbarLen * per + 0.5);
 
-	if forward >= seekbarLen then
-		return ("%s %s%s%s %s\n"):format(formatTime(now),leftFill,midFill:rep(seekbarLen-2),rightFill,formatTime(atEnd));
+	local nowFormat = disableDisplayTime and "" or formatTime(now);
+	local atEndFormat = disableDisplayTime and "" or formatTime(atEnd);
+
+	if forward >= length then
+		return ("%s %s%s%s %s\n"):format(
+			nowFormat,leftFill,midFill:rep(length-2),rightFill,atEndFormat
+		);
 	elseif forward == 1 then
-		return ("%s %s%s%s%s %s\n"):format(formatTime(now),leftFill,midHalf,midHollow:rep(seekbarLen-3),rightHollow,formatTime(atEnd));
+		return ("%s %s%s%s%s %s\n"):format(
+			nowFormat,leftFill,midHalf,midHollow:rep(length-3),rightHollow,atEndFormat
+		);
 	elseif forward == 0 then
-		return ("%s %s%s%s %s\n"):format(formatTime(now),leffHollow,midHollow:rep(seekbarLen-2),rightHollow,formatTime(atEnd));
+		return ("%s %s%s%s %s\n"):format(
+			nowFormat,leffHollow,midHollow:rep(length-2),rightHollow,atEndFormat
+		);
 	end
-	return ("%s %s%s%s%s%s %s\n"):format(formatTime(now),leftFill,midFill:rep(forward-1),midHalf,midHollow:rep(seekbarLen-2-forward),rightHollow,formatTime(atEnd));
+	return ("%s %s%s%s%s%s %s\n"):format(
+		nowFormat,leftFill,midFill:rep(forward-1),midHalf,midHollow:rep(length-2-forward),rightHollow,atEndFormat
+	);
 end
 this.seekbar = seekbar;
 
@@ -183,9 +195,8 @@ local function voiceChannelJoinErr(channel,result)
 	);
 	logger.errorf("Error message was : %s",result);
 end
-client:on("voiceChannelJoin",function (...)
-	local channel = select(2,...);
-	promise.new(voiceChannelJoin,...)
+client:on("voiceChannelJoin",function (member,channel)
+	promise.new(voiceChannelJoin,member,channel)
 		:catch(voiceChannelJoinErr,channel);
 end);
 this.voiceChannelJoin = voiceChannelJoin;
@@ -266,9 +277,8 @@ local function voiceChannelLeaveErr(channel,result)
 	);
 	logger.errorf("Error message was : %s",result);
 end
-client:on("voiceChannelLeave",function (...)
-	local channel = select(2,...);
-	promise.new(voiceChannelLeave,...)
+client:on("voiceChannelLeave",function (member,channel)
+	promise.new(voiceChannelLeave,member,channel)
 		:catch(voiceChannelLeaveErr,channel);
 end);
 this.voiceChannelLeave = voiceChannelLeave;
@@ -678,7 +688,7 @@ function this:getStatusText(front,back)
 	local handler = self.handler;
 	local getElapsed = handler and rawget(handler,"getElapsed");
 	local elapsed = getElapsed and (getElapsed() / 1000) or 0;
-	local text = ("총 곡 수 : %d | 총 페이지 수 : %d | 총 길이 : %s"):format(len,this.totalPages(len),formatTime(duration - (elapsed or 0)))
+	local text = ("총 곡 수 : %d • 총 페이지 수 : %d • 총 길이 : %s"):format(len,this.totalPages(len),formatTime(duration - (elapsed or 0)))
 		.. (self.isLooping and "\n플레이리스트 루프중" or "")
 		.. (self.mode24 and "\n24 시간 모드 켜짐" or "")
 		.. (self.isPaused and "\n재생 멈춤" or "");
@@ -765,7 +775,10 @@ function this:songEmbedfiy(index)
 	local duration = info.duration;
 	local like = info.like_count;
 	return {
-		footer = self:getStatusText(("%s • %s | "):format(song.username or "NULL",timeAgo(song.whenAdded)));
+		footer = self:getStatusText(
+			("%s • %s | "):format(song.username or "NULL",timeAgo(song.whenAdded)),
+			"\n팁 : '미나 복구' 를 이용하면 듣던 음악을 복구할 수 있어요. 오류가 나더라도 말이죠"
+		);
 		-- title = info.title;
 		author = {
 			name = info.title;
@@ -887,10 +900,20 @@ function this:listEmbedfiy(page)
 		local song = self[index];
 		if song then
 			local timestamp = song.timestamp;
+			local title = (song.info or {title = "NULL"}).title:gsub("\"","\\\"");
 			insert(fields,{
-				name = (index == 1) and ("현재 재생중 (%s/%s)"):format(formatTime(elapsed),formatTime((song.info or {}).duration)) or (("%d 번째 곡 (%s%s)"):format(index,timestamp and ("%s/"):format(formatTime(timestamp)) or "",formatTime((song.info or {}).duration)));
-				value = ("[%s](%s)\n`신청자 : %s (%s)`"):format(
-					(song.info or {title = "NULL"}).title:gsub("\"","\\\""),
+				name = ((index == 1) and
+					(":arrow_forward: %s (%s/%s)"):format(
+						title,
+						formatTime(elapsed),
+						formatTime((song.info or {}).duration)
+					) or (("%d. %s (%s%s)"):format(
+						index,title,
+						timestamp and ("%s/"):format(formatTime(timestamp)) or
+						"",formatTime((song.info or {}).duration))
+					)
+				);
+				value = ("[영상링크](%s) • 신청자 - %s • %s"):format(
 					song.url,
 					song.username or "NULL",
 					timeAgo(song.whenAdded,now)
@@ -919,9 +942,8 @@ function this:listEmbedfiy(page)
 	end
 
 	return {
-		description = "팁 : **미나 곡정보 [번째]** 를 이용하면 해당 곡에 대한 더 자세한 정보를 얻을 수 있습니다";
 		fields = fields;
-		footer = self:getStatusText();
+		footer = self:getStatusText(nil,"\n팁 : **미나 곡정보 [번째]** 를 이용하면 해당 곡에 대한 더 자세한 정보를 얻을 수 있습니다");
 		title = ("%d 번째 페이지"):format(page);
 		color = 16040191;
 	}
@@ -982,7 +1004,6 @@ function this:showList(page)
 				content = "틀려있는 음악이 없어요!";
 				components = this.pageIndicator();
 				embed = {};
-				embeds = {};
 			};
 		end
 		self = this.playerForChannels[guildConnection.channel:__hash()];
@@ -991,14 +1012,12 @@ function this:showList(page)
 				content = "오류가 발생했어요!\n> 플레이어를 찾을 수 없습니다 (봇을 음성채팅에서 킥한 후 다시 시도해보세요)";
 				components = this.pageIndicator();
 				embed = {};
-				embeds = {};
 			};
 		end
 	end
 	local embed = self:listEmbedfiy(page);
 	return {
 		embed = embed;
-		embeds = {embed};
 		content = "현재 이 서버의 플레이리스트입니다!";
 		components = self:pageIndicator(page);
 	};

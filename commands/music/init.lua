@@ -41,12 +41,14 @@ local youtubePlaylist = require "class.music.youtubePlaylist";
 local playerClass = require "class.music.playerClass";
 local youtubeVideoList = require "class.music.youtubeVideoList";
 local playerForChannels = playerClass.playerForChannels;
+local components = discordia_enchant.components;
 local formatTime = playerClass.formatTime;
 local time = os.time;
 -- local timer = _G.timer;
 local eulaComment_music = _G.eulaComment_music or makeEulaComment("음악");
 local hourInSecond = 60*60;
 local minuteInSecond = 60;
+local empty = string.char(226,128,139);
 -- local client = _G.client;
 local help = [[
 **음악 기능에 대한 도움말입니다**
@@ -98,6 +100,43 @@ local help = [[
 24 시간 모드를 끄거나 켭니다. 켜는데에는 프리미엄이 필요합니다
 이 모드를 활성화 하면 봇이 사람이 없더라도 나가지 않습니다
 ]];
+local noVoiceChannel = {
+	content = empty;
+	embed = {
+		title = ":x: 음성 채팅방에 있지 않아요!";
+		description = "이 명령어를 사용하려면 음성 채팅방에 있어야 합니다";
+	};
+	components = {components.actionRow.new{buttons.action_remove}};
+};
+local otherVoiceChannel = {
+	content = empty;
+	embed = {
+		title = ":x: 다른 음성채팅방에서 봇을 사용중이에요!";
+		description = "각 서버당 한 채널만 이용할 수 있습니다";
+	};
+	components = {components.actionRow.new{buttons.action_remove}};
+};
+local noSongs = {
+	content = empty;
+	embed = {
+		title = ":x: 음악이 없습니다!";
+		description = "음악이 있어야 이 명령어를 사용할 수 있어요";
+	};
+	components = {components.actionRow.new{buttons.action_remove}};
+};
+local noConnection = {
+	content = empty;
+	embed = {
+		title = "봇이 음성채팅방에 있지 않습니다. 봇이 음성채팅방에 있을때 사용해주세요!"
+	};
+};
+local noPlayer = {
+	content = empty;
+	embed = {
+		title = "오류가 발생하였습니다";
+		description = "재생 정보를 찾을 수 없습니다";
+	};
+};
 
 -- 섞기 움직이기(이동)
 --이외에도, 곡을 음악/노래 등으로 바꾸는것 처럼 비슷한 말로 명령어를 사용할 수도 있습니다
@@ -158,7 +197,7 @@ local export = {
 			"음악 가져오기","음악 불러오기","음악가져오기","음악불러오기","음악로드하기","음악 로드하기","음악로드","음악 로드",
 			"music load","song load","music laod","불러오기","로드하기","플리로드","로드"
 		};
-		reply = "로딩중 ⏳";
+		reply = "⏳ 로딩중";
 		disableDm = true;
 		registeredOnly = true;
 		func = function (replyMsg,message,args,Content)
@@ -180,7 +219,7 @@ local export = {
 			"음악 저장하기","음악 기록하기","음악저장하기","음악기록하기","음악저장","음악 저장",
 			"music save","song save","music save","저장하기","기록하기","플리저장","저장"
 		};
-		reply = "로딩중 ⏳";
+		reply = "⏳ 로딩중";
 		disableDm = true;
 		registeredOnly = true;
 		func = function (replyMsg,message,args,Content)
@@ -207,11 +246,9 @@ local export = {
 		};
 		disableDm = true;
 		registeredOnly = eulaComment_music;
-		reply = "로딩중 ⏳";
-		---@param replyMsg Message
 		---@param Content commandContent
-		func = function(replyMsg,message,args,Content)
-			replyMsg:update(youtubeVideoList.display(Content.rawArgs,Content.user.id));
+		reply = function(message,args,Content)
+			return message:reply(youtubeVideoList.display(Content.rawArgs,Content.user.id));
 		end;
 		onSlash = commonSlashCommand {
 			description = "곡을 검색하고 추가할 곡을 선택합니다!";
@@ -240,8 +277,29 @@ local export = {
 			"song add","song 추가","song play","song 재생",
 			"add 음악","add 곡","add 노래"
 		};
-		reply = "로딩중 ⏳";
-		func = function(replyMsg,message,args,Content)
+		reply = empty;
+		embed = {title = "⏳ 로딩중"};
+		missingKeywords = {
+			content = empty;
+			embed = {
+				title = "키워드 또는 url 을 입력해주세요!";
+			};
+		};
+		addingStopped = {
+			content = empty;
+			embed = {
+				title = ":x: 이런 :<";
+				description = "추가하던 도중에 유저가 취소했어요";
+			};
+		};
+		failedYoutubeListLoad = {
+			content = empty;
+			embed = {
+				title = ":x: 이런 :<";
+				description = "유튜브 플레이 리스트를 가져오는데 실패했어요!";
+			};
+		};
+		func = function(replyMsg,message,args,Content,self)
 			local nth,rawArgs; do
 				local contentRaw = Content.rawArgs;
 				rawArgs = contentRaw;
@@ -251,37 +309,34 @@ local export = {
 			end
 
 			if rawArgs == "" then
-				replyMsg:setContent("키워드 또는 url 을 입력해주세요!");
-				return;
+				return replyMsg:update(self.missingKeywords);
 			end
 
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
 			if not voiceChannel then
-				replyMsg:setContent("음성 채팅방에 있지 않아요!\n> 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다.");
-				return;
+				return replyMsg:update(noVoiceChannel);
 			end
 
 			-- get already exist connection
 			local guild = message.guild;
 			local guildConnection = guild.connection;
 			if guildConnection and (guildConnection.channel ~= voiceChannel) then
-				replyMsg:setContent("다른 음성채팅방에서 봇을 사용중이에요!\n> 각 서버당 한 채널만 이용할 수 있습니다!");
+				replyMsg:update(otherVoiceChannel);
 				return;
 			end
 
 			-- get player object from playerClass
-			-- ! 여기에는 해결되지 않은 미지의 오류가 있음
-			-- ? 아마도 클라이언트가 voiceChannelConnection 을 똑바로 수거하지 못하는듯 함
-			-- todo: 이거 고쳐야됨
 			local voiceChannelID = voiceChannel:__hash();
 			local player = playerForChannels[voiceChannelID];
 			if not guildConnection then -- if connections is not exist, create new one
-				local handler,err = voiceChannel:join(); --* 여기서 음챗에 들어감
-				--* 음챗 연결이 성공적으로 나오면 handler 라는게 비어있으면 안됨
-				if not handler then --? 근데 연결이 없다? ㅇㅅㅇ?????? 그대로 끝내버림
-					replyMsg:setContent(("채널에 참가할 수 없습니다, 봇이 유효한 권한을 가지고 있는지 확인해주세요!\n```\n%s\n```"):format(err));
-					return; --? 다시 시도 같은 구현이 하나도 없어서 그냥 나감
+				local handler,err = voiceChannel:join();
+				if not handler then
+					return replyMsg:update{
+						content = empty;
+						title = "채널에 참가할 수 없습니다";
+						description = ("봇이 유효한 권한을 가지고 있는지 확인해주세요!\n```\n%s\n```"):format(err);
+					};
 				end
 				guild.me:deafen(); -- deafen it selfs
 				player = playerClass.new {
@@ -312,21 +367,26 @@ local export = {
 
 				-- when failed to adding song into playlist
 				if (not passed) or (not this.info) then
-					replyMsg:setContent(err:match(": (.+)") or err);
-					-- debug
 					logger.errorf("Failed to add music '%s' on player:%s",rawArgs,voiceChannelID);
 					logger.errorf("traceback : %s",err)
-					return;
+					return replyMsg:update{content = empty; embed = {
+						title = ":x: 오류가 발생했어요!";
+						description = err:match(": (.+)") or err;
+					}};
 				end
 
 				-- when successfully adding song into playlist
 				local info = this.info;
 				if info then
-					replyMsg:setContent(("곡 '%s' 을(를)%s 추가했어요! `(%s)`")
-						:format(info.title,nth and ((" %d 번째에"):format(nth)) or "",formatTime(info.duration))
-					);
+					replyMsg:update{
+						content = empty;
+						embed = {
+							title = (":musical_note: 곡 '%s' 을(를)%s 추가했어요! `(%s)`")
+								:format(info.title,nth and ((" %d 번째에"):format(nth)) or "",formatTime(info.duration))
+						};
+					};
 				else
-					replyMsg:setContent("곡 'NULL' 을(를) 추가했어요! `(0:0)`");
+					replyMsg:update{content = empty; embed = {title = ":musical_note: 곡 'NULL' 을(를) 추가했어요! `(0:0)`"}};
 				end
 			else -- batch add
 				local list;
@@ -335,7 +395,7 @@ local export = {
 					list = youtubePlaylist.getPlaylist(playlist);
 					listLen = list and #list;
 					if (not list) or listLen == 0 then
-						return replyMsg:setContent("유튜브 플레이 리스트를 가져오는데 실패했어요!");
+						return replyMsg:update(self.failedYoutubeListLoad);
 					end
 				else
 					list = {};
@@ -349,7 +409,7 @@ local export = {
 				local duration = 0;
 				for index,item in ipairs(list) do
 					if not guild.connection then -- if it killed user
-						return replyMsg:setConetnt("추가 도중 취소되었어요!");
+						return replyMsg:update(self.addingStopped);
 					end
 					--TODO: 도중 취소 기능 (버튼으로) 구현하기
 					local this = {
@@ -365,16 +425,20 @@ local export = {
 							if info then
 								duration = duration + (info.duration or 0);
 							end
-							replyMsg:setContent(youtubePlaylist.display(listLen,index,info.title));
+							replyMsg:update(youtubePlaylist.display(listLen,index,info.title));
 						end)
 						:catch(function (err)
-							message:reply(("곡 '%s' 를 추가하는데 실패하였습니다\n> %s"):format(tostring(item),err:match(": (.+)")));
+							message:reply{content = empty; embed = {
+								title = (":x: 곡 '%s' 를 추가하는데 실패하였습니다"):format(tostring(item));
+								description = err:match(": (.+)") or err;
+							}};
 						end)
 						:wait();
 				end
-				replyMsg:setContent(("성공적으로 곡 %d 개를 추가하였습니다! `(%s)`")
-					:format(ok,formatTime(duration))
-				);
+				replyMsg:update{content = empty; embed = {
+					title = (":musical_note: 성공적으로 곡 %d 개를 추가하였습니다! `(%s)`")
+						:format(ok,formatTime(duration));
+				}};
 			end
 		end;
 		onSlash = function(self,client)
@@ -436,15 +500,16 @@ local export = {
 			"음악참여","음악참여해","음악참가","음악참가해","음악참가하기","음악참가해라","음악참가해봐","음악참가하자",
 			"음악 참여","음악 참여해","음악 참가","음악 참가해","음악 참가하기","음악 참가해라","음악 참가해봐","음악 참가하자",
 			"곡참여","곡참여해","곡참가","곡참가해","곡참가하기","곡참가해라","곡참가해봐","곡참가하자",
-			"곡 참여","곡 참여해","곡 참가","곡 참가해","곡 참가하기","곡 참가해라","곡 참가해봐","곡 참가하자",			
+			"곡 참여","곡 참여해","곡 참가","곡 참가해","곡 참가하기","곡 참가해라","곡 참가해봐","곡 참가하자",		
 			"음악 join","music join","music 참가","join vc","vc join","join voice","voice join"
 		};
-		reply = "로딩중 ⏳";
+		reply = empty;
+		embed = {title = "⏳ 로딩중"};
 		func = function(replyMsg,message,args,Content,self)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
 			if not voiceChannel then
-				return replyMsg:update(self.joinFailNoChannel);
+				return replyMsg:update(noVoiceChannel);
 			end
 
 			-- get already exist connection
@@ -454,15 +519,14 @@ local export = {
 				if guildConnection.channel ~= voiceChannel then
 					return replyMsg:update(self.joinFailOtherChannel);
 				end
-				return replyMsg:update(self.joinedAlready);
+				return replyMsg:update(otherVoiceChannel);
 			end
 
 			-- get player object from playerClass
 			local voiceChannelID = voiceChannel:__hash();
 			local handler = voiceChannel:join();
 			if not handler then
-				replyMsg:update(self.joinFail);
-				return;
+				return replyMsg:update(self.joinFail);
 			end
 			guild.me:deafen(); -- deafen it selfs
 			playerClass.new {
@@ -477,11 +541,16 @@ local export = {
 			name = "곡참가";
 			noOption = true;
 		};
-		joinFailNoChannel = buttons.action_remove "음성 채팅방에 있지 않습니다! 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다!";
-		joinFailOtherChannel = buttons.action_remove "다른 음성채팅방에서 봇을 사용중입니다, 각 서버당 한 채널만 이용할 수 있습니다!";
 		joinedAlready = buttons.action_remove "이미 음성채팅에 참가했습니다!";
 		joinSuccess = buttons.action_remove "성공적으로 음성채팅에 참가했습니다!";
-		joinFail = buttons.action_remove "채널에 참가할 수 없습니다, 봇이 유효한 권한을 가지고 있는지 확인해주세요!"
+		joinFail = {
+			content = empty;
+			embed = {
+				title = "채널에 참가할 수 없습니다";
+				description = "봇이 유효한 권한을 가지고 있는지 확인해주세요";
+			};
+			components = {components.actionRow.new({buttons.action_remove})};
+		};
 	};
 	["list music"] = {
 		disableDm = true;
@@ -501,11 +570,10 @@ local export = {
 			"song 리스트","music 리스트","song 대기열","song 리스트",
 			"list 곡","list 음악","list 노래"
 		};
-		reply = "로딩중 ⏳";
-		func = function(replyMsg,message,args,Content)
+		reply = function(message,args,Content)
 			local rawArgs = Content.rawArgs;
 			local page = tonumber(rawArgs) or tonumber(rawArgs:match("%d+")) or 1;
-			replyMsg:update(playerClass.showList(Content.guild,page))
+			return message:reply(playerClass.showList(Content.guild,page));
 		end;
 		onSlash = commonSlashCommand {
 			description = "곡 리스트를 봅니다!";
@@ -525,34 +593,45 @@ local export = {
 			"음악24","음악 24","음악 24시","음악24시","음악24시간","음악 24시간",
 			"곡24","곡 24","곡 24시","곡24시","곡24시간","곡 24시간"
 		};
-		reply = "로딩중 ⏳";
-		func = function(replyMsg,message,args,Content)
+		off = {
+			content = empty;
+			embed = {
+				title = "성공적으로 24 시간 모드를 비활성화했습니다!";
+			};
+		};
+		on = {
+			content = empty;
+			embed = {
+				title = "성공적으로 24 시간 모드를 활성화했습니다!";
+			};
+		};
+		notPermitted = {
+			content = empty;
+			embed = {
+				title = ":x: 이런 :<";
+				description = "프리미엄에 가입하지 않아 켤 수 없습니다!";
+			};
+		};
+		reply = function(message,args,Content,self)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
 			if not voiceChannel then
-				replyMsg:setContent("음성 채팅방에 있지 않습니다! 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다.");
-				return;
+				return message:reply(noVoiceChannel);
 			end
 
 			-- get already exist connection
 			local guildConnection = message.guild.connection;
 			if guildConnection and (guildConnection.channel ~= voiceChannel) then
-				replyMsg:setContent("다른 음성채팅방에서 봇을 사용중입니다, 봇이 있는 음성 채팅방에서 사용해주세요!");
-				return;
+				return message:reply(otherVoiceChannel);
 			elseif not guildConnection then
-				replyMsg:setContent("봇이 음성채팅방에 있지 않습니다, 봇이 음성채팅방에 있을때 사용해주세요!");
-				return;
+				return message:reply(noConnection);
 			end
 
 			-- get player object from playerClass
 			local voiceChannelID = voiceChannel:__hash();
 			local player = playerForChannels[voiceChannelID];
 			if not player then
-				replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
-				return;
-			elseif not player.nowPlaying then -- if it is not playing then
-				replyMsg:setContent("실행중인 음악이 없습니다!");
-				return;
+				return message:reply(noPlayer);
 			end
 
 			-- loop!
@@ -566,15 +645,15 @@ local export = {
 
 			if setTo then
 				if Content.isPremium() then
-					replyMsg:setContent("성공적으로 24 시간 모드를 활성화했습니다!");
 					player.mode24 = true;
+					return message:reply(self.on);
 				else
-					replyMsg:setContent("프리미엄에 가입하지 않아 켤 수 없습니다!");
+					return message:reply(self.notPermitted);
 				end
 			else
 				player.mode24 = nil;
-				replyMsg:setContent("성공적으로 24 시간 모드를 비활성화했습니다!");
 				playerClass.voiceChannelLeave(Content.user,voiceChannel); -- check there is no users
+				return message:reply(self.off);
 			end
 		end;
 		onSlash = commonSlashCommand {
@@ -607,26 +686,36 @@ local export = {
 			"음악반복","음악루프","음악반복하기","음악 반복","음악 루프","음악 반복하기",
 			"곡반복","곡루프","곡반복하기","곡 반복","곡 루프","곡 반복하기",
 		};
-		reply = "로딩중 ⏳";
-		func = function(replyMsg,message,args,Content)
+		noVoiceChannel = {
+			content = empty;
+			embed = {
+				title = "채널이 발견되지 않았습니다!";
+			};
+		};
+		on = {
+			content = empty;
+			embed = {title = "성공적으로 플레이리스트 반복을 켰습니다!"};
+		};
+		off = {
+			content = empty;
+			embed = {title = "성공적으로 플레이리스트 반복을 멈췄습니다!"};
+		};
+		reply = function(message,args,Content,self)
 			-- get already exist connection
 			local guildConnection = message.guild.connection;
 			if not guildConnection then
-				replyMsg:setContent("봇이 음성채팅방에 있지 않습니다. 봇이 음성채팅방에 있을때 사용해주세요!");
-				return;
+				return message:reply(noConnection);
 			end
 			local voiceChannel = guildConnection.channel;
 			if not voiceChannel then
-				replyMsg:setContent("채널이 발견되지 않았습니다!");
-				return;
+				return message:reply(self.noVoiceChannel);
 			end
 
 			-- get player object from playerClass
 			local voiceChannelID = voiceChannel:__hash();
 			local player = playerForChannels[voiceChannelID];
 			if not player then
-				replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
-				return;
+				return message:reply(noPlayer);
 			end
 
 			local rawArgs = Content.rawArgs;
@@ -639,10 +728,10 @@ local export = {
 
 			if setTo then
 				player:setLooping(true);
-				replyMsg:setContent("성공적으로 플레이리스트 반복을 켰습니다!");
+				return message:reply(self.on);
 			else
 				player:setLooping(false);
-				replyMsg:setContent("성공적으로 플레이리스트 반복을 멈췄습니다!");
+				return message:reply(self.off);
 			end
 		end;
 		onSlash = commonSlashCommand {
@@ -663,7 +752,11 @@ local export = {
 		};
 	};
 	["음악"] = {
-		reply = "명령어를 처리하지 못했어요!\n> 음악 기능 도움이 필요하면 '미나 음악 도움말' 을 입력해주세요";
+		embed = {
+			title = "명령어를 처리하지 못했어요!";
+			description = "음악 기능 도움이 필요하면 '미나 음악 도움말' 을 입력해주세요";
+		};
+		reply = empty;
 	};
 	["음악 도움말"] = {
 		alias = {"도움말 음악","도움말 음악봇","음악 사용법","음악 사용법 알려줘","음악사용법","음악 도움말 보여줘","음악 help","음악도움말","music help","help music","music 도움말"};
@@ -687,7 +780,7 @@ local export = {
 			"song remove","remove song","remove music","music remove",
 			"remove 음악","remove 곡","remove 노래"
 		};
-		reply = "로딩중 ⏳";
+		reply = "⏳ 로딩중";
 		func = function(replyMsg,message,args,Content)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
@@ -760,7 +853,7 @@ local export = {
 			"skip 음악","skip 곡","skip 노래",
 			"곡 넘어 가기","음악 넘어 가기","노래 넘어 가기"
 		};
-		reply = "로딩중 ⏳";
+		reply = "⏳ 로딩중";
 		func = function(replyMsg,message,args,Content)
 			local rawArgs = Content.rawArgs;
 			rawArgs = tonumber(rawArgs:match("%d+")) or 1;
@@ -854,22 +947,21 @@ local export = {
 			"song pause","pause song","pause music","music pause",
 			"pause 곡","pause 음악","pause 노래"
 		};
-		reply = "로딩중 ⏳";
-		func = function(replyMsg,message,args,Content)
+		reply = function(message,args,Content)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
 			if not voiceChannel then
-				replyMsg:setContent("음성 채팅방에 있지 않습니다! 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다.");
+				message:reply("음성 채팅방에 있지 않습니다! 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다.");
 				return;
 			end
 
 			-- get already exist connection
 			local guildConnection = message.guild.connection;
 			if guildConnection and (guildConnection.channel ~= voiceChannel) then
-				replyMsg:setContent("다른 음성채팅방에서 봇을 사용중입니다, 봇이 있는 음성 채팅방에서 사용해주세요!");
+				message:reply("다른 음성채팅방에서 봇을 사용중입니다, 봇이 있는 음성 채팅방에서 사용해주세요!");
 				return;
 			elseif not guildConnection then
-				replyMsg:setContent("봇이 음성채팅방에 있지 않습니다, 봇이 음성채팅방에 있을때 사용해주세요!");
+				message:reply("봇이 음성채팅방에 있지 않습니다, 봇이 음성채팅방에 있을때 사용해주세요!");
 				return;
 			end
 
@@ -916,7 +1008,7 @@ local export = {
 			"song stop","stop song","stop music","music stop",
 			"stop 음악","stop 곡","stop 노래"
 		};
-		reply = "로딩중 ⏳";
+		reply = "⏳ 로딩중";
 		func = function(replyMsg,message,args,Content)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
@@ -961,7 +1053,7 @@ local export = {
 			"현재곡","현재음악","현재노래","지금곡","지금음악","지금노래","지금재생중",
 			"지금 재생중","now playing","music now","song now","playing now","now play","nowplaying"
 		};
-		reply = "로딩중 ⏳";
+		reply = "⏳ 로딩중";
 		func = function(replyMsg,message,args,Content)
 			replyMsg:update(playerClass.showSong(Content.guild));
 		end;
@@ -978,7 +1070,7 @@ local export = {
 			"곡정보","곡 정보","info song","song info","music info","info music","곡 자세히보기",
 			"곡자세히보기","곡설명","곡 설명","song description","description song"
 		};
-		reply = "로딩중 ⏳";
+		reply = "⏳ 로딩중";
 		func = function(replyMsg,message,args,Content)
 			local this = Content.rawArgs;
 			this = tonumber(this) or tonumber(this:match("%d+")) or 1;
@@ -1008,7 +1100,7 @@ local export = {
 			"song resume","resume song","resume music","music resume",
 			"resume 곡","resume 노래","resume 음악"
 		};
-		reply = "로딩중 ⏳";
+		reply = "⏳ 로딩중";
 		func = function(replyMsg,message,args,Content)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
@@ -1065,7 +1157,7 @@ local export = {
 			"노래위치","노래 위치","노래 시간","노래시간","노래 시간 이동","노래 시간이동","노래시간 이동","노래시간이동","노래 시간 조정","노래 시간조정","노래시간 조정","노래시간조정",
 			"노래타임스템프","노래 타임스템프","노래 타임스템프 조정","노래 타임스템프조정","노래타임스템프 조정","노래타임스템프조정","노래 타임스템프 이동","노래 타임스템프이동","노래타임스템프 이동","노래타임스템프이동"
 		};
-		reply = "로딩중 ⏳";
+		reply = "⏳ 로딩중";
 		func = function(replyMsg,message,args,Content)
 			local rawArgs = Content.rawArgs or "";
 
@@ -1282,7 +1374,7 @@ local export = {
 			"음악 대기열 킵","음악 대기열 킵","곡 대기열 킵","export music","music export","song export","export song",
 			"music 내보내기","song 내보내기","내보내기 song","내보내기 music","export 음악","음악 export","곡 export","export 곡","노래 export","export 노래"
 		};
-		reply = "로딩중 ⏳";
+		reply = "⏳ 로딩중";
 		func = function(replyMsg,message,args,Content)
 			local guildConnection = message.guild.connection;
 			if not guildConnection then

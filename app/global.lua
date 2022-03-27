@@ -334,3 +334,6 @@ end
 
 -- report cooltime
 _G.reportCooltime = 60*60;
+
+-- empty string (zwsp)
+_G.zwsp = string.char(226,128,139);
