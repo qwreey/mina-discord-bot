@@ -917,14 +917,16 @@ local export = {
 			lastOneInfo = tostring(lastOneInfo and lastOneInfo.title);
 			return message:reply{
 				content = empty;
-				title = (rawArgs == 1 and
-					(":white_check_mark: 성공적으로 곡 '%s' 를 스킵하였습니다"):format(lastOneInfo)
-					or (":white_check_mark: 성공적으로 곡 %s 개를 스킵하였습니다!"):format(tostring(rawArgs))
-				);
-				description = new and ("다음으로 재생되는 곡은 '%s' 입니다\n"):format(new) or nil;
-				footer = looping and {
-					text = "루프 모드가 켜져있어 스킵된 곡은 가장 뒤에 다시 추가되었습니다";
-				} or nil;
+				embed = {
+					title = (rawArgs == 1 and
+						(":white_check_mark: 성공적으로 곡 '%s' 를 스킵하였습니다"):format(lastOneInfo)
+						or (":white_check_mark: 성공적으로 곡 %s 개를 스킵하였습니다!"):format(tostring(rawArgs))
+					);
+					description = new and ("다음으로 재생되는 곡은 '%s' 입니다\n"):format(new) or nil;
+					footer = looping and {
+						text = "루프 모드가 켜져있어 스킵된 곡은 가장 뒤에 다시 추가되었습니다";
+					} or nil;
+				};
 			};
 		end;
 		onSlash = commonSlashCommand {
