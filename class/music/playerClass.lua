@@ -250,8 +250,8 @@ local function voiceChannelLeave(member,channel,player)
 				player.isPausedByNoUser = true;
 				player.leaveMessage = sendMessage(player[1] or player.nowPlaying,{
 					embed = {
-						title = ("<#%s> 에 아무도 없어서 음악을 일시 중지했어요!"):format(channelId);
-						description = "누가 올 때 까지 기다리고 있어요 . . .";
+						title = "아무도 없어서 음악을 일시 중지했어요!";
+						description = ("<#%s> 에 누가 올 때 까지 기다리고 있어요 . . ."):format(channelId);
 					};
 				});
 				player:setPaused(true);
