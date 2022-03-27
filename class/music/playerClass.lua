@@ -41,6 +41,7 @@ this.timeoutMessage = ytHandler.timeoutMessage;
 
 -- Insert args on ffmpeg process
 if disableServerSidePostprocessor then
+	local discordia_class = discordia.class;
 	local args = discordia_class.classes.FFmpegProcess.args;
 	if args then
 		insert(args,"-b:a");
@@ -78,6 +79,11 @@ local function sendMessage(thing,msg)
 	end
 
 	if type(message) == "table" then
+		if type(msg) == "table" then
+			msg.reference = {message = message, mention = false};
+			if not msg.content then msg.content = empty; end
+			return message:reply(msg);
+		end
 		return message:reply {
 			content = msg;
 			reference = {message = message, mention = false};
@@ -212,7 +218,12 @@ local function voiceChannelLeave(member,channel,player)
 		if tryKill then -- pause
 			if nowPlaying and (not player.isPaused) then
 				player.isPausedByNoUser = true;
-				player.leaveMessage = sendMessage(player[1] or player.nowPlaying,"음성채팅방에 아무도 없어 음악을 일시 중지했어요! (다시 입장시 자동으로 재개해요)");
+				player.leaveMessage = sendMessage(player[1] or player.nowPlaying,{
+					embed = {
+						title = ("<#%s> 에 아무도 없어서 음악을 일시 중지했어요!"):format(channelId);
+						description = "누가 올 때 까지 기다리고 있어요 . . .";
+					};
+				});
 				player:setPaused(true);
 			elseif nowPlaying == nil and (not player[1]) then
 				pcall(player.kill,player);
@@ -230,7 +241,12 @@ local function voiceChannelLeave(member,channel,player)
 				local leaveMessage = player.leaveMessage;
 				if connection then
 					logger.infof("voice channel timeouted! killing player now [channel:%s]",channelId);
-					sendMessage(player[1] or player.nowPlaying,"5분동안 사람이 없어 음성채팅방에서 나갔어요!");
+					sendMessage(player[1] or player.nowPlaying,{
+						embed = {
+							title = "5분동안 %s 에 아무도 없어서 종료했어요!";
+							description = "`미나 복구` 를 입력하면 듣던 노래를 복구할 수 있어요";
+						};
+					});
 					pcall(player.kill,player);
 					pcall(connection.close,connection);
 					this.playerForChannels[channelId] = nil;
@@ -378,10 +394,14 @@ local function playEnd(args,result,reason)
 		return pcall(self.kill,self);
 	elseif reason and (reason ~= "stream stopped") and (reason ~= "stream exhausted or errored") then -- idk
 		logger.errorf("Play failed : %s",reason);
-		sendMessage(thing,("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```\n%s\n```"):format(
-			tostring((thing.info or {title = "unknown"}).title),
-			tostring(reason)
-		));
+		sendMessage(thing,{
+			embed = {
+				title = (":x: 곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```\n%s\n```"):format(
+					tostring((thing.info or {title = "unknown"}).title),
+					tostring(reason)
+				);
+			};
+		});
 		return;
 	end
 
@@ -410,7 +430,10 @@ local function playEnd(args,result,reason)
 			promise.spawn(self.__play,self,thing,result / 1000); -- adding coroutine on worker
 			return;
 		else
-			sendMessage(thing,("오류가 너무 많아 이 곡을 건너뜁니다! 가장 최근 오류 :```\n%s```"):format(ffmpegError));
+			sendMessage(thing,{embed = {
+				title = ":x: 오류가 너무 많아 이 곡을 건너뜁니다";
+				description = ffmpegError;
+			}});
 		end
 	end
 	self.lastErrorTime = nil;
@@ -442,10 +465,12 @@ local function playEnd(args,result,reason)
 			end
 		end
 		local timestamp = upnext.timestamp;
-		self.lastUpnextMessage = sendMessage(thing,("'%s' 를(을) 재생합니다!%s"):format(
-			tostring((upnext.info or {title = "unknown"}).title),
-			timestamp and ((" (%s)"):format(formatTime(timestamp))) or ""
-		));
+		self.lastUpnextMessage = sendMessage(thing,{embed = {
+			title = (":notes: '%s' 를(을) 재생합니다!%s"):format(
+				tostring((upnext.info or {title = "unknown"}).title),
+				timestamp and ((" (%s)"):format(formatTime(timestamp))) or ""
+			);
+		}});
 	end
 
 	-- when looping is enabled, append this into playlist
@@ -467,10 +492,12 @@ local function playErr(args,err) -- lua error on running
 	local self,thing = args[1],args[2];
 	self.error = err;
 	logger.errorf("Play failed : %s",err);
-	sendMessage(thing,("곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
-		tostring((thing.info or {title = "unknown"}).title),
-		tostring(err)
-	));
+	sendMessage(thing,{embed = {
+		title = (":x: 곡 '%s' 를 재생하던 중 오류가 발생했습니다!\n```log\n%s\n```"):format(
+			tostring((thing.info or {title = "unknown"}).title),
+			tostring(err)
+		);
+	}});
 end
 
 -- play thing
@@ -680,6 +707,33 @@ function this:seek(timestamp)
 	end
 	self.seeking = timestamp;
 	self.handler:stopStream();
+end
+
+---Load array of songs to player message argument is optional
+---@param songs table array of songs to load
+---@param message Message message of where songs added
+function this:loadSongs(songs,message)
+	for _,song in ipairs(songs) do
+		if message then
+			song.message = message;
+			song.channel = message.channel;
+		end
+		self:add(song);
+	end
+end
+
+function this:saveSongs()
+	local t = {};
+	for _,song in ipairs(self) do
+		insert(t,{
+			whenAdded = song.whenAdded;
+			username = song.username;
+			url = song.url;
+			timestamp = song.timestamp;
+			info = song.info;
+		});
+	end
+	return t;
 end
 
 --#endregion --* class methods *--
