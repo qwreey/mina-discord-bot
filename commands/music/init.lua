@@ -850,6 +850,7 @@ local export = {
 		disableDm = true;
 		command = {"넘겨","넘기기","건너뛰기","스킵","sk","skip","s"};
 		alias = {
+			"스킵","넘겨","넘기기","건너뛰기","skip",
 			"곡 넘겨","곡건너뛰기","곡스킵","곡넘어가기","곡넘기기","곡넘겨줘","곡넘어가","곡다음","곡다음으로","곡다음곡",
 			"곡넘겨","곡 건너뛰기","곡 스킵","곡 넘어가기","곡 넘기기","곡 넘겨줘","곡 넘어가","곡 다음","곡 다음으로","곡 다음곡",
 			"음악넘겨","음악건너뛰기","음악스킵","음악넘어가기","음악넘기기","음악넘겨줘","음악넘어가","음악다음","음악다음으로","음악다음곡",
@@ -863,8 +864,7 @@ local export = {
 			"skip 음악","skip 곡","skip 노래",
 			"곡 넘어 가기","음악 넘어 가기","노래 넘어 가기"
 		};
-		reply = "⏳ 로딩중";
-		func = function(message,args,Content,self)
+		reply = function(message,args,Content,self)
 			local rawArgs = Content.rawArgs;
 			rawArgs = tonumber(rawArgs:match("%d+")) or 1;
 
