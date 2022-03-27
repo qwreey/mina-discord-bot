@@ -202,6 +202,25 @@ end);
 this.voiceChannelJoin = voiceChannelJoin;
 this.voiceChannelJoinErr = voiceChannelJoinErr;
 
+local function timeouted(guild,player,channelId)
+	local connection = guild.connection;
+	local leaveMessage = player.leaveMessage;
+	if connection then
+		logger.infof("voice channel timeouted! killing player now [channel:%s]",channelId);
+		sendMessage(player[1] or player.nowPlaying,{
+			embed = {
+				title = "5분동안 아무도 없어서 종료했어요!";
+				description = ("<#%s> 에 아무도 들어오지 않았어요\n`미나 복구` 를 입력하면 듣던 노래를 복구할 수 있어요"):format(channelId);
+			};
+		});
+		pcall(player.kill,player);
+		pcall(connection.close,connection);
+		this.playerForChannels[channelId] = nil;
+	end
+	if leaveMessage then
+		leaveMessage:delete();
+	end
+end
 ---@param member Member
 ---@param channel GuildVoiceChannel
 ---@param player playerClass
@@ -247,25 +266,7 @@ local function voiceChannelLeave(member,channel,player)
 		end
 		if tryKill and (not player.timeout) then -- kill
 			logger.infof("All users left voice channel, queued player to kill list [channel:%s]",channelId);
-			player.timeout = timeout(killTimer,function ()
-				connection = guild.connection;
-				local leaveMessage = player.leaveMessage;
-				if connection then
-					logger.infof("voice channel timeouted! killing player now [channel:%s]",channelId);
-					sendMessage(player[1] or player.nowPlaying,{
-						embed = {
-							title = "5분동안 %s 에 아무도 없어서 종료했어요!";
-							description = "`미나 복구` 를 입력하면 듣던 노래를 복구할 수 있어요";
-						};
-					});
-					pcall(player.kill,player);
-					pcall(connection.close,connection);
-					this.playerForChannels[channelId] = nil;
-				end
-				if leaveMessage then
-					leaveMessage:delete();
-				end
-			end);
+			player.timeout = timeout(killTimer,timeouted,guild,player,channelId);
 		end
 	elseif player then
 		this.playerForChannels[channelId] = nil;
@@ -850,7 +851,6 @@ function this:showSong(index)
 				content = "틀려있는 음악이 없어요!";
 				components = this.songIndicator();
 				embed = {};
-				embeds = {};
 			};
 		end
 		self = this.playerForChannels[guildConnection.channel:__hash()];
@@ -859,15 +859,12 @@ function this:showSong(index)
 				content = "오류가 발생했어요!\n> 플레이어를 찾을 수 없습니다 (봇을 음성채팅에서 킥한 후 다시 시도해보세요)";
 				components = this.songIndicator();
 				embed = {};
-				embeds = {};
 			};
 		end
 	end
 
-	local embed = self:songEmbedfiy(index);
 	return {
-		embeds = {embed};
-		embed = embed;
+		embed = self:songEmbedfiy(index);
 		content = index == 1 and "지금 재생중인 곡입니다!" or (("%d 번째 곡입니다!"):format(index));
 		components = self:songIndicator(index);
 	};

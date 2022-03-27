@@ -947,41 +947,50 @@ local export = {
 			"song pause","pause song","pause music","music pause",
 			"pause 곡","pause 음악","pause 노래"
 		};
-		reply = function(message,args,Content)
+		pausedAlready = {
+			content = empty;
+			embed = {
+				title = ":pause_button: 이미 음악이 멈춰있습니다!";
+				description = "다시 재생하고 싶으면 '미나 재개' 를 입력해주세요";
+			};
+		};
+		paused = {
+			content = empty;
+			embed = {
+				title = ":pause_button: 성공적으로 음악을 멈췄습니다!";
+				description = "다시 재생하고 싶으면 '미나 재개' 를 입력해주세요";
+			};
+		};
+		reply = function(message,args,Content,self)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
 			if not voiceChannel then
-				message:reply("음성 채팅방에 있지 않습니다! 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다.");
+				message:reply(noVoiceChannel);
 				return;
 			end
 
 			-- get already exist connection
 			local guildConnection = message.guild.connection;
 			if guildConnection and (guildConnection.channel ~= voiceChannel) then
-				message:reply("다른 음성채팅방에서 봇을 사용중입니다, 봇이 있는 음성 채팅방에서 사용해주세요!");
-				return;
+				return message:reply(otherVoiceChannel);
 			elseif not guildConnection then
-				message:reply("봇이 음성채팅방에 있지 않습니다, 봇이 음성채팅방에 있을때 사용해주세요!");
-				return;
+				return message:reply(noConnection);
 			end
 
 			-- get player object from playerClass
 			local voiceChannelID = voiceChannel:__hash();
 			local player = playerForChannels[voiceChannelID];
 			if not player then
-				replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
-				return;
+				return message:reply(noPlayer);
 			elseif not player.nowPlaying then -- if it is not playing then
-				replyMsg:setContent("실행중인 음악이 없습니다!");
-				return;
+				return message:reply(noSongs);
 			elseif player.isPaused then -- paused alreadly
-				replyMsg:setContent("이미 음악이 멈춰있습니다!");
-				return;
+				return message:reply(self.pausedAlready);
 			end
 
 			-- pause!
 			player:setPaused(true);
-			replyMsg:setContent("성공적으로 음악을 멈췄습니다!");
+			message:reply(self.paused);
 		end;
 		onSlash = commonSlashCommand {
 			description = "곡을 잠시 멈춥니다! (/곡재개 를 이용해 다시 재개할 수 있어요)";
@@ -1053,9 +1062,8 @@ local export = {
 			"현재곡","현재음악","현재노래","지금곡","지금음악","지금노래","지금재생중",
 			"지금 재생중","now playing","music now","song now","playing now","now play","nowplaying"
 		};
-		reply = "⏳ 로딩중";
-		func = function(replyMsg,message,args,Content)
-			replyMsg:update(playerClass.showSong(Content.guild));
+		reply = function(message,args,Content)
+			message:reply(playerClass.showSong(Content.guild));
 		end;
 		onSlash = commonSlashCommand {
 			description = "현재 재생중인 곡의 정보를 봅니다!";
@@ -1070,11 +1078,10 @@ local export = {
 			"곡정보","곡 정보","info song","song info","music info","info music","곡 자세히보기",
 			"곡자세히보기","곡설명","곡 설명","song description","description song"
 		};
-		reply = "⏳ 로딩중";
-		func = function(replyMsg,message,args,Content)
+		reply = function(message,args,Content)
 			local this = Content.rawArgs;
 			this = tonumber(this) or tonumber(this:match("%d+")) or 1;
-			replyMsg:update(playerClass.showSong(Content.guild,this));
+			message:reply(playerClass.showSong(Content.guild,this));
 		end;
 		onSlash = commonSlashCommand {
 			description = "해당 번째의 곡 정보를 봅니다!";
@@ -1157,25 +1164,38 @@ local export = {
 			"노래위치","노래 위치","노래 시간","노래시간","노래 시간 이동","노래 시간이동","노래시간 이동","노래시간이동","노래 시간 조정","노래 시간조정","노래시간 조정","노래시간조정",
 			"노래타임스템프","노래 타임스템프","노래 타임스템프 조정","노래 타임스템프조정","노래타임스템프 조정","노래타임스템프조정","노래 타임스템프 이동","노래 타임스템프이동","노래타임스템프 이동","노래타임스템프이동"
 		};
-		reply = "⏳ 로딩중";
-		func = function(replyMsg,message,args,Content)
+		noTimestamp = {
+			content = empty;
+			embed = {
+				title = ":x: 이런 :<";
+				description = "시간을 입력하지 않았거나 잘못 입력했어요.\n원하는 시간을 정확히 입력해주세요!";
+				footer = {text = "+1:00 이렇게 앞으로, -1:00 이렇게 뒤로\n1:00 이렇게 원하는 시간으로 갈 수 있어요"}
+			};
+		};
+		underflow = {
+			content = empty;
+			embed = {
+				title = ":x: 이런 :<";
+				description = "가려는 시간은 0초 보다 작을 수 없습니다.\n원하는 시간을 정확히 입력해주세요!";
+				footer = {text = "+1:00 이렇게 앞으로, -1:00 이렇게 뒤로\n1:00 이렇게 원하는 시간으로 갈 수 있어요"}
+			};
+		};
+		footer = {text = "+1:00 이렇게 앞으로, -1:00 이렇게 뒤로\n1:00 이렇게 원하는 시간으로 갈 수 있어요"};
+		reply = function(message,args,Content,self)
 			local rawArgs = Content.rawArgs or "";
 
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
 			if not voiceChannel then
-				replyMsg:setContent("음성 채팅방에 있지 않습니다! 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다.");
-				return;
+				return message:reply(noVoiceChannel);
 			end
 
 			-- get already exist connection
 			local guildConnection = message.guild.connection;
 			if guildConnection and (guildConnection.channel ~= voiceChannel) then
-				replyMsg:setContent("다른 음성채팅방에서 봇을 사용중입니다, 봇이 있는 음성 채팅방에서 사용해주세요!");
-				return;
+				return message:reply(otherVoiceChannel);
 			elseif not guildConnection then
-				replyMsg:setContent("봇이 음성채팅방에 있지 않습니다, 봇이 음성채팅방에 있을때 사용해주세요!");
-				return;
+				return message:reply(noConnection);
 			end
 
 			-- get player object from playerClass
@@ -1183,11 +1203,9 @@ local export = {
 			local player = playerForChannels[voiceChannelID];
 			local nowPlaying = player and player.nowPlaying;
 			if not player then
-				replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
-				return;
+				return message:reply(noPlayer);
 			elseif not nowPlaying then -- if it is not playing then
-				replyMsg:setContent("실행중인 음악이 없습니다!");
-				return;
+				return message:reply(noSongs);
 			end
 
 			-- get time mode and timestamp with to move
@@ -1324,32 +1342,34 @@ local export = {
 			-- checking time
 			local duration;
 			if not timestamp then
-				replyMsg:setContent("원하는 시간을 입력해주세요!");
-				return;
+				return message:reply(self.noTimestamp);
 			elseif timestamp < 0 then
-				replyMsg:setContent("시간은 0 보다 작을 수 없습니다!");
-				return;
+				return message:reply(self.underflow);
 			else
 				local info = nowPlaying.info;
 				duration = tonumber(info.duration);
 				if duration and (duration < timestamp) then
-					replyMsg:setContent(
-						("곡의 길이보다 더 앞으로 갈 수 없습니다\n> 곡 길이는 %s 입니다!")
-							:format(player.formatTime(duration))
-					);
-					return;
+					return message:reply{
+						content = empty;
+						embed = {
+							title = ":x: 이런 :<";
+							description = ("곡의 길이보다 더 앞으로 갈 수 없습니다.\n지금 곡 길이는 %s 입니다!")
+								:format(player.formatTime(duration));
+							footer = self.footer;
+						};
+					};
 				end
 			end
 
 			-- seek!
 			player:seek(timestamp);
-			replyMsg:update {
+			return message:reply {
 				embed = {
 					title = "재생 위치를 이동했습니다!";
 					description = duration and player.seekbar(timestamp,duration);
 					footer = player:getStatusText();
 				};
-				content = ("%s 로 이동!"):format(player.formatTime(timestamp));
+				content = empty;
 			};
 		end;
 		onSlash = commonSlashCommand {
