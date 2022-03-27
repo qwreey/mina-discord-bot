@@ -1,5 +1,10 @@
 local module = {};
-local json = json;
+local json;
+
+function module:setJson(newJson)
+	json = newJson;
+	return self;
+end
 
 function module.load(fileName)
 	return json.decode(fs.readFileSync(fileName));

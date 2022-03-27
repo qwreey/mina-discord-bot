@@ -1,12 +1,7 @@
 return function (originalRequire)
     local requireProfiler = profiler.new("Require Items");
     local loaded = package.loaded;
-    local promise = promise;
-    local waitter = promise.waitter;
-    local requireProfiler = requireProfiler;
-    local unpack = table.unpack;
-
-    local loadModule = function (namespace)
+    local require = function (namespace)
         local module = loaded[namespace];
         if module then return module; end
         requireProfiler:start(namespace);
@@ -14,18 +9,7 @@ return function (originalRequire)
         requireProfiler:stop();
         return module;
     end
-    local loadModuleAsync = promise.async(loadModule);
-
-    local require = function (namespace,...)
-        if select("#",...) == 0 then
-            return loadModule(namespace);
-        end
-        local moduleWaitter = waitter();
-        for _,v in ipairs{namespace,...} do
-            moduleWaitter:add(loadModuleAsync(v));
-        end
-        return unpack(moduleWaitter:await());
-    end
+    _G.requireProfiler = requireProfiler;
     _G.require = require;
     return require;
 end;
