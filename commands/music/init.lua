@@ -127,33 +127,38 @@ local noSongs = {
 local noConnection = {
 	content = empty;
 	embed = {
-		title = "봇이 음성채팅방에 있지 않습니다. 봇이 음성채팅방에 있을때 사용해주세요!"
+		title = ":x: 봇이 음성채팅방에 있지 않습니다!";
+		description = "봇이 음성채팅방에 있을때 사용해주세요";
 	};
+	components = {components.actionRow.new{buttons.action_remove}};
 };
 local noPlayer = {
 	content = empty;
 	embed = {
-		title = "오류가 발생하였습니다";
+		title = ":x: 오류가 발생하였습니다";
 		description = "재생 정보를 찾을 수 없습니다";
 	};
+	components = {components.actionRow.new{buttons.action_remove}};
 };
 
 -- 섞기 움직이기(이동)
 --이외에도, 곡을 음악/노래 등으로 바꾸는것 처럼 비슷한 말로 명령어를 사용할 수도 있습니다
 
 -- remove songs wrapping
-local function removeSong(rawArgs,player,replyMsg)
+local function removeSong(rawArgs,player,message)
 	do -- remove by number of rawArgs
 		local this = tonumber(rawArgs);
 		if this then
 			local pop = player:remove(this);
 			if not pop then
-				replyMsg:setContent(("%d 번째 곡이 존재하지 않습니다!"):format(this));
-				return true;
+				return message:reply{content = empty; embed = {
+					title = (":x: %d 번째 곡이 존재하지 않습니다"):format(this);
+				}} or true;
 			end
 			local info = pop.info;
-			replyMsg:setContent(("%d 번째 곡 '%s' 를 삭제하였습니다"):format(this,info and info.title or "알 수 없음"));
-			return true;
+			return message:reply{content = empty; embed = {
+				title = (":white_check_mark: %d 번째 곡 '%s' 를 삭제하였습니다"):format(this,info and info.title or "알 수 없음");
+			}} or true;
 		end
 	end
 	do -- a~b
@@ -165,8 +170,9 @@ local function removeSong(rawArgs,player,replyMsg)
 			player:remove(
 				min,max
 			);
-			replyMsg:setContent(("성공적으로 %d 번째 곡부터 %d 번째 곡 까지 삭제했습니다!"):format(min,max));
-			return true;
+			return message:reply{content = empty; embed = {
+				title = (":white_check_mark: 성공적으로 %d 번째 곡부터 %d 번째 곡 까지 삭제했습니다"):format(min,max);
+			}} or true;
 		end
 	end
 	do -- index by name
@@ -178,8 +184,10 @@ local function removeSong(rawArgs,player,replyMsg)
 				if title then
 					if title:lower():gsub(" ",""):find(rawArgs:lower():gsub(" ",""),1,true) then
 						player:remove(index);
-						replyMsg:setContent(("%d 번째 곡 '%s' 를 삭제하였습니다"):format(index,info and info.title or "알 수 없음"));
-						return true;
+						return message:reply{content = empty; embed = {
+							title = (":white_check_mark: %d 번째 곡 '%s' 를 삭제하였습니다")
+								:format(index,info and info.title or "알 수 없음");
+						}} or true;
 					end
 				end
 			end
@@ -609,7 +617,7 @@ local export = {
 			content = empty;
 			embed = {
 				title = ":x: 이런 :<";
-				description = "프리미엄에 가입하지 않아 켤 수 없습니다!";
+				description = ":key: 프리미엄에 가입하지 않아 켤 수 없습니다!";
 			};
 		};
 		reply = function(message,args,Content,self)
@@ -780,55 +788,57 @@ local export = {
 			"song remove","remove song","remove music","music remove",
 			"remove 음악","remove 곡","remove 노래"
 		};
-		reply = "⏳ 로딩중";
-		func = function(replyMsg,message,args,Content)
+		reply = function(message,args,Content,self)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
 			if not voiceChannel then
-				replyMsg:setContent("음성 채팅방에 있지 않습니다! 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다.");
-				return;
+				return message:reply(noVoiceChannel);
 			end
 
 			-- get already exist connection
 			local guildConnection = message.guild.connection;
 			if guildConnection and (guildConnection.channel ~= voiceChannel) then
-				replyMsg:setContent("다른 음성채팅방에서 봇을 사용중입니다, 봇이 있는 음성 채팅방에서 사용해주세요!");
-				return;
+				return message:reply(otherVoiceChannel);
 			elseif not guildConnection then
-				replyMsg:setContent("봇이 음성채팅방에 있지 않습니다, 봇이 음성채팅방에 있을때 사용해주세요!");
-				return;
+				return message:reply(noConnection);
 			end
 
 			-- get player object from playerClass
 			local voiceChannelID = voiceChannel:__hash();
 			local player = playerForChannels[voiceChannelID];
 			if not player then
-				replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
-				return;
+				return message:reply(noPlayer);
+			elseif not player.nowPlaying then -- if it is not playing then
+				return message:reply(noSongs);
 			end
 
 			local rawArgs = Content.rawArgs;
 			do  -- remove last one
 				if rawArgs == "" then
 					local pop,index = player:remove();
-					if not pop then
-						replyMsg:setContent("마지막 곡이 없습니다!");
-						return;
-					end
 					local info = pop.info;
-					replyMsg:setContent(("%s 번째 곡 '%s' 를 삭제하였습니다!"):format(tostring(index),info and info.title or "알 수 없음"));
-					return;
+					return message:reply{content = empty; embed = {
+						title = (":white_check_mark: %s 번째 곡 '%s' 를 삭제하였습니다!"):format(tostring(index),info and info.title or "알 수 없음");
+					}};
 				end
 			end
 
 			local removed = false;
 			for songStr in rawArgs:gmatch("[^,]+") do
-				removed = removed or removeSong(songStr,player,replyMsg);
+				removed = removed or removeSong(songStr,player,message);
 			end
 			if not removed then
-				replyMsg:setContent("아무런 곡도 삭제하지 못했습니다!");
+				return message:reply(self.notRemoved);
 			end
+			return removed;
 		end;
+		notRemoved = {
+			content = empty;
+			embed = {
+				title = ":x: 아무런 곡도 삭제하지 못했습니다!";
+				description = "키워드나 번째를 바꿔보세요";
+			};
+		};
 		onSlash = commonSlashCommand {
 			description = "원하는 곡을 제거합니다!";
 			name = "곡제거";
@@ -854,25 +864,22 @@ local export = {
 			"곡 넘어 가기","음악 넘어 가기","노래 넘어 가기"
 		};
 		reply = "⏳ 로딩중";
-		func = function(replyMsg,message,args,Content)
+		func = function(message,args,Content,self)
 			local rawArgs = Content.rawArgs;
 			rawArgs = tonumber(rawArgs:match("%d+")) or 1;
 
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
 			if not voiceChannel then
-				replyMsg:setContent("음성 채팅방에 있지 않습니다! 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다.");
-				return;
+				return message:reply(noVoiceChannel);
 			end
 
 			-- get already exist connection
 			local guildConnection = message.guild.connection;
 			if guildConnection and (guildConnection.channel ~= voiceChannel) then
-				replyMsg:setContent("다른 음성채팅방에서 봇을 사용중입니다, 봇이 있는 음성 채팅방에서 사용해주세요!");
-				return;
+				return message:reply(otherVoiceChannel);
 			elseif not guildConnection then
-				replyMsg:setContent("봇이 음성채팅방에 있지 않습니다, 봇이 음성채팅방에 있을때 사용해주세요!");
-				return;
+				return message:reply(noConnection);
 			end
 
 			-- get player object from playerClass
@@ -880,16 +887,18 @@ local export = {
 			local player = playerForChannels[voiceChannelID];
 			local lenPlayer = #player;
 			if not player then
-				replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
-				return;
+				return message:reply(noPlayer);
 			elseif not player.nowPlaying then -- if it is not playing then
-				replyMsg:setContent("실행중인 음악이 없습니다!");
-				return;
+				return message:reply(noSongs);
 			elseif lenPlayer < rawArgs then
-				replyMsg:setContent(("스킵 하려는 곡 수가 전채 곡 수 보다 많습니다!\n> 참고 : 현재 곡 수는 %d 개 입니다")
-					:format(lenPlayer)
-				);
-				return;
+				return message:reply{
+					content = empty;
+					embed = {
+						title = ":x: 이런 :<";
+						description = "스킵 하려는 곡 수가 전채 곡 수 보다 많습니다!";
+						footer = {text = ("현재 곡 수는 %d 개 입니다"):format(lenPlayer)};
+					};
+				};
 			end
 
 			-- skip!
@@ -900,16 +909,23 @@ local export = {
 					player:add(thing);
 				end
 			end
-			local loopMsg = (looping and "\n(루프 모드가 켜져있어 스킵된 곡은 가장 뒤에 다시 추가되었습니다)" or "");
 			local new = player[1];
 			new = new and new.info;
 			new = new and new.title
-			local nowPlaying = (new and ("다음으로 재생되는 곡은 '%s' 입니다\n"):format(new) or "");
-			replyMsg:setContent( -- !!REVIEW NEEDED!!
-				rawArgs == 1 and
-				(("성공적으로 곡 '%s' 를 스킵하였습니다 %s%s"):format(tostring(lastOne and lastOne.info and lastOne.info.title),nowPlaying,loopMsg)) or
-				(("성공적으로 곡 %s 개를 스킵하였습니다! %s%s"):format(tostring(rawArgs),nowPlaying,loopMsg))
-			);
+			local lastOneInfo = lastOne;
+			lastOneInfo = lastOneInfo and lastOneInfo.info;
+			lastOneInfo = tostring(lastOneInfo and lastOneInfo.title);
+			return message:reply{
+				content = empty;
+				title = (rawArgs == 1 and
+					(":white_check_mark: 성공적으로 곡 '%s' 를 스킵하였습니다"):format(lastOneInfo)
+					or (":white_check_mark: 성공적으로 곡 %s 개를 스킵하였습니다!"):format(tostring(rawArgs))
+				);
+				description = new and ("다음으로 재생되는 곡은 '%s' 입니다\n"):format(new) or nil;
+				footer = looping and {
+					text = "루프 모드가 켜져있어 스킵된 곡은 가장 뒤에 다시 추가되었습니다";
+				} or nil;
+			};
 		end;
 		onSlash = commonSlashCommand {
 			description = "원하는 갯수만큼의 곡을 스킵합니다! (루프모드의 경우 스킵된 곡은 다시 뒤에 추가됩니다, 없에야 하는 경우 /곡제거 를 이용하세요)";
@@ -1017,36 +1033,37 @@ local export = {
 			"song stop","stop song","stop music","music stop",
 			"stop 음악","stop 곡","stop 노래"
 		};
-		reply = "⏳ 로딩중";
-		func = function(replyMsg,message,args,Content)
+		stopped = {
+			content = empty;
+			embed = {
+				title = "성공적으로 음악을 종료하였습니다!";
+			};
+		};
+		reply = function(message,args,Content,self)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
 			if not voiceChannel then
-				replyMsg:setContent("음성 채팅방에 있지 않습니다! 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다.");
-				return;
+				return message:reply(noVoiceChannel);
 			end
 
 			-- get already exist connection
 			local guildConnection = message.guild.connection;
 			if guildConnection and (guildConnection.channel ~= voiceChannel) then
-				replyMsg:setContent("다른 음성채팅방에서 봇을 사용중입니다, 봇이 있는 음성 채팅방에서 사용해주세요!");
-				return;
+				return message:reply(otherVoiceChannel);
 			elseif not guildConnection then
-				replyMsg:setContent("봇이 음성채팅방에 있지 않습니다, 봇이 음성채팅방에 있을때 사용해주세요!");
-				return;
+				return message:reply(noConnection);
 			end
 
 			-- get player object from playerClass
 			local voiceChannelID = voiceChannel:__hash();
 			local player = playerForChannels[voiceChannelID];
 			if not player then
-				replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
-				return;
+				return message:reply(noPlayer);
 			end
 
 			-- pause!
 			player:kill();
-			replyMsg:setContent("성공적으로 음악을 종료하였습니다!");
+			return message:reply(self.stopped);
 		end;
 		onSlash = commonSlashCommand {
 			description = "모든 음악을 종료하고 통화방에서 나갑니다!";
@@ -1107,42 +1124,49 @@ local export = {
 			"song resume","resume song","resume music","music resume",
 			"resume 곡","resume 노래","resume 음악"
 		};
-		reply = "⏳ 로딩중";
-		func = function(replyMsg,message,args,Content)
+		resumedAlready = {
+			content = empty;
+			embed = {
+				title = ":arrow_forward: 이미 음악이 재생중입니다!";
+				description = "멈추고 싶으면 '미나 일시정지' 를 입력해주세요";
+			};
+		};
+		resumed = {
+			content = empty;
+			embed = {
+				title = ":arrow_forward: 성공적으로 음악을 재개했습니다!";
+				description = "멈추고 싶으면 '미나 일시정지' 를 입력해주세요";
+			};
+		};
+		reply = function(message,args,Content,self)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
 			if not voiceChannel then
-				replyMsg:setContent("음성 채팅방에 있지 않습니다! 이 명령어를 사용하려면 음성 채팅방에 있어야 합니다.");
-				return;
+				return message:reply(noVoiceChannel);
 			end
 
 			-- get already exist connection
 			local guildConnection = message.guild.connection;
 			if guildConnection and (guildConnection.channel ~= voiceChannel) then
-				replyMsg:setContent("다른 음성채팅방에서 봇을 사용중입니다, 봇이 있는 음성 채팅방에서 사용해주세요!");
-				return;
+				return message:reply(otherVoiceChannel);
 			elseif not guildConnection then
-				replyMsg:setContent("봇이 음성채팅방에 있지 않습니다, 봇이 음성채팅방에 있을때 사용해주세요!");
-				return;
+				return message:reply(noConnection);
 			end
 
 			-- get player object from playerClass
 			local voiceChannelID = voiceChannel:__hash();
 			local player = playerForChannels[voiceChannelID];
 			if not player then
-				replyMsg:setContent("오류가 발생하였습니다\n> 캐싱된 플레이어 오브젝트를 찾을 수 없음");
-				return;
+				return message:reply(noPlayer);
 			elseif not player.nowPlaying then -- if it is not playing then
-				replyMsg:setContent("실행중인 음악이 없습니다!");
-				return;
+				return message:reply(noSongs);
 			elseif not player.isPaused then -- paused alreadly
-				replyMsg:setContent("이미 음악이 재생중입니다!");
-				return;
+				return message:reply(self.resumedAlready);
 			end
 
 			-- unpause!
 			player:setPaused(false);
-			replyMsg:setContent("성공적으로 음악을 재개했습니다!");
+			return message:reply(self.resumed);
 		end;
 		onSlash = commonSlashCommand {
 			description = "멈춘 곡을 다시 재개합니다!";
@@ -1353,8 +1377,8 @@ local export = {
 						content = empty;
 						embed = {
 							title = ":x: 이런 :<";
-							description = ("곡의 길이보다 더 앞으로 갈 수 없습니다.\n지금 곡 길이는 %s 입니다!")
-								:format(player.formatTime(duration));
+							description = ("곡의 길이보다 더 앞으로 갈 수 없습니다.\n지금 곡 길이는 %s 이고 %s 부분을 듣고있어요!")
+								:format(formatTime(duration),formatTime(elapsed));
 							footer = self.footer;
 						};
 					};

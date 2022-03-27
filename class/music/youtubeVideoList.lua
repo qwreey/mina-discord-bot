@@ -13,6 +13,7 @@ local playerClass = require"class.music.playerClass";
 local playerForChannels = playerClass.playerForChannels;
 local time = os.time;
 local formatUrl = utils.formatUrl;
+local empty = string.char(226,128,139);
 
 local function formatName(str)
     -- return tostring(str):gsub("%[","\\["):gsub("%]","\\]"):gsub("%(","\\("):gsub("%)","\\)");
@@ -23,9 +24,21 @@ function module.display(keyworld,userId)
     userId = userId or "NULL";
     local len = utfLen(keyworld);
     if len < 2 then
-        return {content = ("검색 키워드 '%s' 는 길이가 너무 짧습니다!"):format(keyworld);};
+        return {
+            content = empty;
+            embed = {
+                title = ":x: 이런:<";
+                description = ("검색 키워드 '%s' 는 길이가 너무 짧습니다!"):format(keyworld);
+            };
+        };
     elseif len > 50 then
-        return {content = ("검색 키워드 '%s' 는 길이가 너무 깁니다!"):format(keyworld);};
+        return {
+            content = empty;
+            embed = {
+                title = ":x: 이런:<";
+                description = ("검색 키워드 '%s' 는 길이가 너무 깁니다!"):format(keyworld);
+            };
+        };
     end
 
     local buttonsPart1,buttonsPart2,songs = {},{},"";
@@ -45,7 +58,7 @@ function module.display(keyworld,userId)
     end
 
     return {
-        content = "추가할 곡을 골라주세요!";
+        content = ":mag: 추가할 곡을 골라주세요!";
         embed = {
             description = songs;
             color = 14799100;
