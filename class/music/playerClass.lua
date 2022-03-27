@@ -131,13 +131,13 @@ local function seekbar(now,atEnd)
 	local forward = math.floor(seekbarLen * per + 0.5);
 
 	if forward >= seekbarLen then
-		return ("%s%s%s%s%s\n"):format(formatTime(now),leftFill,midFill:rep(seekbarLen-2),rightFill,formatTime(atEnd));
+		return ("%s %s%s%s %s\n"):format(formatTime(now),leftFill,midFill:rep(seekbarLen-2),rightFill,formatTime(atEnd));
 	elseif forward == 1 then
-		return ("%s%s%s%s%s%s\n"):format(formatTime(now),leftFill,midHalf,midHollow:rep(seekbarLen-3),rightHollow,formatTime(atEnd));
+		return ("%s %s%s%s%s %s\n"):format(formatTime(now),leftFill,midHalf,midHollow:rep(seekbarLen-3),rightHollow,formatTime(atEnd));
 	elseif forward == 0 then
-		return ("%s%s%s%s%s\n"):format(formatTime(now),leffHollow,midHollow:rep(seekbarLen-2),rightHollow,formatTime(atEnd));
+		return ("%s %s%s%s %s\n"):format(formatTime(now),leffHollow,midHollow:rep(seekbarLen-2),rightHollow,formatTime(atEnd));
 	end
-	return ("%s%s%s%s%s%s%s\n"):format(formatTime(now),leftFill,midFill:rep(forward-1),midHalf,midHollow:rep(seekbarLen-2-forward),rightHollow,formatTime(atEnd));
+	return ("%s %s%s%s%s%s %s\n"):format(formatTime(now),leftFill,midFill:rep(forward-1),midHalf,midHollow:rep(seekbarLen-2-forward),rightHollow,formatTime(atEnd));
 end
 this.seekbar = seekbar;
 
