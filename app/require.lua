@@ -1,18 +1,23 @@
-return function (originalRequire)
+return function (originalRequire,originalModule,fenv)
+
+    local luvitRequire = originalRequire("luvitRequire");
+    local newRequire,newModule = luvitRequire(originalModule.path);
+    fenv.module = newModule;
+    originalRequire = newRequire;
+
     local requireProfiler = profiler.new("Require Items");
     local loaded = package.loaded;
     local promise = promise;
     local waitter = promise.waitter;
-    local requireProfiler = requireProfiler;
     local unpack = table.unpack;
 
     local loadModule = function (namespace)
-        local module = loaded[namespace];
-        if module then return module; end
+        local this = loaded[namespace];
+        if this then return this; end
         requireProfiler:start(namespace);
-        module = originalRequire(namespace);
+        this = newRequire(namespace);
         requireProfiler:stop();
-        return module;
+        return this;
     end
     local loadModuleAsync = promise.async(loadModule);
 

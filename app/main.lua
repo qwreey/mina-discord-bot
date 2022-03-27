@@ -23,9 +23,8 @@ local initProfiler = profiler.new"INIT"; _G.initProfiler = initProfiler;
 initProfiler:start"MAIN";
 
 initProfiler:start"Setup require";
-local require = require"app.require"(require); -- set global require function
+local require = require"app.require"(require,module,getfenv()); -- set global require function
 initProfiler:stop();
-
 -- Make app object
 initProfiler:start"Setup terminal / Application";
 local args,options = (require "argsParser").decode(args,{
