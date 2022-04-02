@@ -52,9 +52,9 @@ function module.download(url,vid,lastInfo)
 		downloadMutex:wait();
 	end
 
-	local data = server:request{url=url,file=file};
-	if type(data) == "string" then
-		local err = data:match(errMessage);
+	local data,err = server:request{url=url,file=file};
+	if err then
+		err = err:match(errMessage);
 		if err then
 			if err:match(errTimeout) then
 				fs.unlinkSync(file);

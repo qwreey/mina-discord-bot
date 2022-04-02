@@ -248,7 +248,7 @@ local export = {
 			"song search","search song",
 			"music find","find music",
 			"song find","find song",
-			"곡검색","곡 검색","곡찾기","곡 찾기",
+			"곡검색","곡 검색","곡찾기","곡 찾기","검색",
 			"음악검색","음악 검색","음악찾기","음악 찾기",
 			"노래검색","노래 검색","노래찾기","노래 찾기"
 		};
@@ -394,6 +394,7 @@ local export = {
 						};
 					};
 				else
+					-- what... this this will never happened i think
 					replyMsg:update{content = empty; embed = {title = ":musical_note: 곡 'NULL' 을(를) 추가했어요! `(0:0)`"}};
 				end
 			else -- batch add

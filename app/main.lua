@@ -452,13 +452,6 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 				logger.errorf("An error occurred on running command function\n - original message : %s\n - error message was :\n%s\n - error traceback was :\n%s\n - more information was saved on log/debug.log",
 					tostring(text),err,traceback
 				);
-				qDebug {
-					title = "an error occurred on running reply function";
-					errorMessage = err;
-					traceback = traceback;
-					originalMsg = text;
-					command = Command;
-				};
 				coroutine.wrap(message.reply)(message,{
 					content = ("커맨드 반응 생성중 오류가 발생했습니다!```log\nError message : %s\n%s```"):format(
 						tostring(err),tostring(traceback)
@@ -507,13 +500,6 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 				logger.errorf("An error occurred on running command function\n - original message : %s\n - error message was :\n%s\n - error traceback was :\n%s\n - more information was saved on log/debug.log",
 					tostring(text),err,traceback
 				);
-				qDebug {
-					title = "an error occurred on running command function";
-					errorMessage = err;
-					traceback = traceback;
-					originalMsg = text;
-					command = Command;
-				};
 				coroutine.wrap(replyMsg.setContent)(replyMsg,
 					("명령어 처리중에 오류가 발생하였습니다```log\nError message : %s\n%s```"):format(err,traceback)
 				);

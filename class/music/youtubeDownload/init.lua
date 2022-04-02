@@ -33,6 +33,10 @@ function module.errorFormater(str)
 		return "비공개 동영상입니다";
 	end
 
+	if str:match("Sign in to confirm your age. This video may be inappropriate for some users") then
+		return "나이 제한이 걸린 영상입니다";
+	end
+
 	if str:match("Video unavailable. This video has been removed by the uploader") then
 		return "업로더에 의해 삭제된 동영상입니다"
 	end
@@ -40,6 +44,7 @@ function module.errorFormater(str)
 	if str:match(timeoutMessage) then
 		return "시간초과! 영상을 불러오는데 너무 많은 시간이 걸려 취소되었어요";
 	end
+
 
 	return ("이 영상은 이용이 불가능합니다 (%s)"):format(str);
 end
