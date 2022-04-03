@@ -4,7 +4,7 @@ local gameForUsers = typingGame.gameForUsers;
 ---@type table<string, Command>
 local export = {
 	["타자연습 그만"] = {
-		alias = {"타자연습 그만","타자연습그만","타자연습멈춰","멈춰 타자연습","멈춰타자연습","타자연습 멈춰","그만타자연습","그만 타자연습","끄기 타자연습","타자연습 끄기"};
+		alias = {"타자그만","타자연습 그만","타자연습그만","타자연습멈춰","멈춰 타자연습","멈춰타자연습","타자연습 멈춰","그만타자연습","그만 타자연습","끄기 타자연습","타자연습 끄기"};
 		reply = "잠기만 기달려주세요 . . .";
 		func = function(replyMsg,message,args,Content)
 			local userId = Content.user.id;

@@ -12,6 +12,8 @@ local zeroWidthSpace = utf8.char(tonumber("200B",16));
 local gameForUsers = {};
 
 local stopTypingGame = {
+	["미나 멈춰"] = true;
+	["미나멈춰"] = true;
 	["멈춰"] = true;
 	["끄기"] = true;
 	["그만"] = true;
