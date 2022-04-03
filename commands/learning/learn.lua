@@ -180,7 +180,7 @@ function module.put(name,value,author,when,userData)
 		userData.lenLearned = 0;
 	end
 	if not id then -- write new
-		id = makeId(); -- make new identifier
+		id = makeId(18,true); -- make new identifier
 		indexedCache[hash] = id;
 		fs.appendFileSync(indexedFile,('"%s":"%s",\n'):format(hash,id));
 		path = root:format(id);
