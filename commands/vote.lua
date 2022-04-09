@@ -158,7 +158,7 @@ local function buttonPressed(id,object)
 		interactionData.saveData(voteId);
 	end
 end
-client:on("buttonPressed",buttonPressed);
+client:onSync("buttonPressed",promise.async(buttonPressed));
 
 ---@type table<string, Command>
 local export = {

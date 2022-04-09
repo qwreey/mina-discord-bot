@@ -38,6 +38,6 @@ local function buttonPressed(id,object)
 		object:ack();
 	end
 end
-client:on("buttonPressed",buttonPressed);
+client:onSync("buttonPressed",promise.async(buttonPressed));
 
 return export;

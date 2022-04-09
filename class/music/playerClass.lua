@@ -195,7 +195,7 @@ local function voiceChannelJoinErr(channel,result)
 	);
 	logger.errorf("Error message was : %s",result);
 end
-client:on("voiceChannelJoin",function (member,channel)
+client:onSync("voiceChannelJoin",function (member,channel)
 	promise.new(voiceChannelJoin,member,channel)
 		:catch(voiceChannelJoinErr,channel);
 end);
@@ -278,7 +278,7 @@ local function voiceChannelLeaveErr(channel,result)
 	);
 	logger.errorf("Error message was : %s",result);
 end
-client:on("voiceChannelLeave",function (member,channel)
+client:onSync("voiceChannelLeave",function (member,channel)
 	promise.new(voiceChannelLeave,member,channel)
 		:catch(voiceChannelLeaveErr,channel);
 end);
@@ -308,12 +308,12 @@ client:once("ready", function ()
 	fs.writeFileSync("./data/lastMusicStatus.json","");
 end);
 
-client:on('stoping',function ()
+client:onSync('stoping',promise.async(function ()
 	fs.writeFileSync("./data/lastMusicStatus.json",json.encode(this.save()));
 	logger.info("Saved all song playing data!");
-end);
+end));
 
-client:on("voiceConnectionMove",function (old,new)
+client:onSync("voiceConnectionMove",promise.async(function (old,new)
 	if not (old and new) then
 		return;
 	end
@@ -351,7 +351,7 @@ client:on("voiceConnectionMove",function (old,new)
 	-- logger.info(player[1] ~= nil);
 	voiceChannelJoin(nil,handler.channel);
 	voiceChannelLeave(nil,handler.channel,player);
-end);
+end));
 
 --#endregion --* Client setups *--
 --#region --* Class initialization *--
@@ -878,7 +878,7 @@ local function songIndicatorButtonPressed(id,object)
 	-- logger.infof("index move button pressed '%d'",tostring(index));
 	object:update(this.showSong(object.guild,index));
 end
-client:on("buttonPressed",songIndicatorButtonPressed);
+client:onSync("buttonPressed",promise.async(songIndicatorButtonPressed));
 
 --#endregion --* ShowSong *--
 --#region --* ShowList *--
@@ -1028,7 +1028,7 @@ local function pageIndicatorButtonPressed(id,object)
 	-- logger.infof("page move button pressed '%d'",tostring(page));
 	object:update(this.showList(object.guild,page));
 end
-client:on("buttonPressed",pageIndicatorButtonPressed);
+client:onSync("buttonPressed",promise.async(pageIndicatorButtonPressed));
 
 --#endregion ShowList
 --#region --* Restore *--
