@@ -215,6 +215,9 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 		end
 
 		-- if no permission to send message, ignore it
+		if guild and (not guild.me:hasPermission(channel,'sendMessages')) then
+			return;
+		end
 
 		-- run admin command if exist
 		if admins[user.id] then
