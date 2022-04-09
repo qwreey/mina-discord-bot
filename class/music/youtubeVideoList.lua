@@ -147,7 +147,7 @@ local function buttonPressed(id,object)
 	local passed,err = pcall(player.add,player,song);
 	local info = song.info;
 
-	if passed and err and err ~= "" then
+	if (not passed) and err and err ~= "" then
 		object.channel:send{content = empty; embed = {
 			title = ":x: 오류가 발생했어요!";
 			description = err:match(": (.+)") or err;

@@ -377,10 +377,13 @@ local export = {
 				if (not passed) or (not this.info) then
 					logger.errorf("Failed to add music '%s' on player:%s",rawArgs,voiceChannelID);
 					logger.errorf("traceback : %s",err)
-					return replyMsg:update{content = empty; embed = {
-						title = ":x: 오류가 발생했어요!";
-						description = err:match(": (.+)") or err;
-					}};
+					return replyMsg:update{
+						content = empty;
+						embed = {
+							title = ":x: 오류가 발생했어요!";
+							description = err:match(": (.+)") or err;
+						};
+					};
 				end
 
 				-- when successfully adding song into playlist
