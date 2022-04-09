@@ -1237,7 +1237,7 @@ local export = {
 			elseif not nowPlaying then -- if it is not playing then
 				return message:reply(noSongs);
 			elseif (not rawArgs) or rawArgs:gsub("\n \t","") == "" then
-				message:reply(player:showSong());
+				return message:reply(player:showSong());
 			end
 
 			-- get time mode and timestamp with to move
