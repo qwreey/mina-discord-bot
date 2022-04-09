@@ -550,12 +550,12 @@ local export = {
 			name = "곡참가";
 			noOption = true;
 		};
-		joinedAlready = buttons.action_remove "이미 음성채팅에 참가했습니다!";
-		joinSuccess = buttons.action_remove "성공적으로 음성채팅에 참가했습니다!";
+		joinedAlready = buttons.action_remove ":x: 이미 음성채팅에 참가했습니다!";
+		joinSuccess = buttons.action_remove ":white_check_mark: 성공적으로 음성채팅에 참가했습니다!";
 		joinFail = {
 			content = empty;
 			embed = {
-				title = "채널에 참가할 수 없습니다";
+				title = ":x: 채널에 참가할 수 없습니다";
 				description = "봇이 유효한 권한을 가지고 있는지 확인해주세요";
 			};
 			components = {components.actionRow.new({buttons.action_remove})};
