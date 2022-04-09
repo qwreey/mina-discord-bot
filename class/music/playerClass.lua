@@ -1082,8 +1082,9 @@ function this.save()
 		local timestamp = getElapsed and (getElapsed() / 1000);
 		playerData.timestamp = timestamp;
 		for _,song in ipairs(player) do
+			local channel = song.channel;
 			insert(songs,{
-				channel = song.channel.id;
+				channel = channel and channel.id;
 				whenAdded = song.whenAdded;
 				username = song.username;
 				url = song.url;

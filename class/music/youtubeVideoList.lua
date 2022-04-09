@@ -11,6 +11,7 @@ local insert = table.insert;
 local buttonPrimary = discordia_enchant_enums.buttonStyle.primary;
 local playerClass = require"class.music.playerClass";
 local playerForChannels = playerClass.playerForChannels;
+local formatTime = playerClass.formatTime;
 local time = os.time;
 local formatUrl = utils.formatUrl;
 local empty = string.char(226,128,139);
@@ -139,6 +140,7 @@ local function buttonPressed(id,object)
 	};
 
 	local song = {
+		channel = object.channel;
 		message = object.message;
 		url = videoId;
 		whenAdded = time();
@@ -158,12 +160,15 @@ local function buttonPressed(id,object)
 	object.channel:send{
 		content = empty;
 		embed = {
-			title = (":musical_note: 곡 '%s' 을(를) 추가했어요! `(%s)`"):format(info and info.title or "NULL")
+			title = (":musical_note: 곡 '%s' 을(를) 추가했어요! `(%s)`"):format(
+				info and info.title or "NULL",
+				info and formatTime(info.duration) or "NULL"
+			)
 		};
 	};
 	promise.spawn(object.delete,object);
 end
 module.buttonPressed = buttonPressed;
-client:on("buttonPressed",buttonPressed);
+client:onSync("buttonPressed",promise.async(buttonPressed));
 
 return module;
