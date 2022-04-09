@@ -201,17 +201,20 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 	local function processCommand(message)
 
 		-- get base information from message object
-		local user = message.author;
-		local text = message.content;
-		local channel = message.channel;
-		local guild = message.guild;
+		local user = message.author; ---@type User
+		local text = message.content; ---@type string
+		local channel = message.channel; ---@type GuildTextChannel
+		local guild = message.guild; ---@type Guild
 		local isDm = channel.type == enums.channelType.private; ---@diagnostic disable-line
 		local isSlashCommand = rawget(message,"slashCommand");
+		if (not channel) or (not text) then return; end
 
 		-- check user that is bot; if it is bot, then return (ignore call)
 		if user.bot then
 			return;
 		end
+
+		-- if no permission to send message, ignore it
 
 		-- run admin command if exist
 		if admins[user.id] then
