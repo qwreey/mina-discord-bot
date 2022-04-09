@@ -401,6 +401,8 @@ local function playEnd(args,result,reason)
 		self.reconnect = nil;
 		if tonumber(result) then thing.timestamp = result / 1000; end
 		return;
+	elseif reason == "disconnected" then
+		return;
 	elseif reason == "Connection is not ready" then -- discord connection error
 		return pcall(self.kill,self);
 	elseif reason and (reason ~= "stream stopped") and (reason ~= "stream exhausted or errored") then -- idk
