@@ -1212,7 +1212,7 @@ local export = {
 		};
 		footer = {text = "+1:00 이렇게 앞으로, -1:00 이렇게 뒤로\n1:00 이렇게 원하는 시간으로 갈 수 있어요"};
 		reply = function(message,args,Content,self)
-			local rawArgs = Content.rawArgs or "";
+			local rawArgs = Content.rawArgs;
 
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
@@ -1236,6 +1236,8 @@ local export = {
 				return message:reply(noPlayer);
 			elseif not nowPlaying then -- if it is not playing then
 				return message:reply(noSongs);
+			elseif (not rawArgs) or rawArgs:gsub("\n \t","") == "" then
+				message:reply(player:showSong());
 			end
 
 			-- get time mode and timestamp with to move
