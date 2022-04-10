@@ -342,8 +342,10 @@ local export = {
 				if not handler then
 					return replyMsg:update{
 						content = empty;
-						title = "채널에 참가할 수 없습니다";
-						description = ("봇이 유효한 권한을 가지고 있는지 확인해주세요!\n```\n%s\n```"):format(err);
+						embed = {
+							title = "채널에 참가할 수 없습니다";
+							description = ("봇이 유효한 권한을 가지고 있는지 확인해주세요!\n```\n%s\n```"):format(err);
+						};
 					};
 				end
 				guild.me:deafen(); -- deafen it selfs
