@@ -3,22 +3,22 @@ $loadUserData=userData.loadData
 $saveUserData=userData.saveData
 findlearn (name,value)-->
 	$index = learnIndexedCache[sha1(name)]
-	!index ~ error"LearnDBIndex not found"|
+	!index ~ error"LearnDBIndex not found"
 	$base = root + index + "/"
 	$len = tonumber(fs.readFileSync(base+"index"))
-	!len ~ error"LearnDB length not found"|
+	!len ~ error"LearnDB length not found"
 	for i=1,len do
 		$data = json.decode(fs.readFileSync(base+i))
-		data&&data.content&&data.content:match(value) ~ return index+"/"+i,data|
+		data&&data.content&&data.content:match(value) ~ return index+"/"+i,data
 	|
 |
 
 listlearn (name)-->
 	$index = learnIndexedCache[sha1(name)]
-	!index ~ error"LearnDBIndex not found"|
+	!index ~ error"LearnDBIndex not found"
 	$base = root+index+"/"
 	$len = tonumber(fs.readFileSync(base+"index"))
-	!len ~ error"LearnDB length not found"|
+	!len ~ error"LearnDB length not found"
 	for i=1,len do
 		$data = json.decode(fs.readFileSync(base+i))
 		~data
@@ -29,13 +29,13 @@ listlearn (name)-->
 |
 
 looklearn (file,data)-->
-	!file ~ error"file must be got"|
+	!file ~ error"file must be got"
 	$str = fs.readFileSync(root+file)
-	!data ~ data=json.decode(str)|
-	!data ~ error"cannot get data from file"|
+	!data ~ data=json.decode(str)
+	!data ~ error"cannot get data from file"
 	$userId = data.author
 	$userData = loadUserData(userId)
-	!userData ~ error"cannot load user data"|
+	!userData ~ error"cannot load user data"
 	$name = tostring(fs.readFileSync(root+file:match(".+/")+"name"))
 	return{
 		rawmessage = true,
@@ -58,19 +58,19 @@ looklearn (file,data)-->
 |
 
 rmlearn (file,data)-->
-	(!file)||(!data) ~ error"file and data must be got"|
-	!data ~ data = json.decode(fs.readFileSync(root+file))|
-	!data ~ error"cannot get data from file"|
+	(!file)||(!data) ~ error"file and data must be got"
+	!data ~ data = json.decode(fs.readFileSync(root+file))
+	!data ~ error"cannot get data from file"
 	$userId = data.author
 	$userData = loadUserData(userId)
-	!userData ~ error"cannot load user data"|
+	!userData ~ error"cannot load user data"
 	$userDataLearn = userData.learned
-	!userDataLearn ~ error"learned data was not found from user"|
+	!userDataLearn ~ error"learned data was not found from user"
 	$index
 	for i,v in ipairs(userDataLearn) do
-		v == file ~ index = i break|
+		v == file ~ index = i break
 	|
-	!index ~ error"index not found from learned data"|
+	!index ~ error"index not found from learned data"
 	table.remove(userDataLearn,index)
 	saveUserData(userId)
 	fs.unlinkSync(root + file)
