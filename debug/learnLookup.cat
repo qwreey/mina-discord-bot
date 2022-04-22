@@ -9,7 +9,7 @@ findlearn (name,value)-->
 	!len ~ error"LearnDB length not found"
 	for i=1,len do
 		$data = json.decode(fs.readFileSync(base+i))
-		data&&data.content&&data.content:match(value) ~ return index+"/"+i,data
+		data&&data.content&&data.content:match(value) ~ %index+"/"+i,data
 	|
 |
 
@@ -37,7 +37,7 @@ looklearn (file,data)-->
 	$userData = loadUserData(userId)
 	!userData ~ error"cannot load user data"
 	$name = tostring(fs.readFileSync(root+file:match(".+/")+"name"))
-	return{
+	%{
 		rawmessage = true,
 		embed = {
 			author = {
@@ -75,7 +75,7 @@ rmlearn (file,data)-->
 	saveUserData(userId)
 	fs.unlinkSync(root + file)
 	fs.appendFileSync(root + (file/"^[^/]+") + "/removed",file:match("/(%d+)")+",")
-	return {
+	%{
 		rawmessage = true,
 		embed = {
 			title = "성공적으로 삭제했습니다"
@@ -102,7 +102,7 @@ fixlearn (userId)-->
 	|
 |
 
-return {
+%{
 	rmlearn = rmlearn,
 	looklearn = looklearn,
 	listlearn = listlearn,
