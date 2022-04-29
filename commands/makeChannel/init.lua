@@ -1,42 +1,130 @@
-
+local insert = table.insert;
+local remove = table.remove;
 local unpack = table.unpack;
+local huge = math.huge;
 local permission = discordia.enums.permission;
 local adminPermission = permission.administrator;
-local channelPermissions = {
-    permission.connect;
-    permission.speak;
-    permission.useVoiceActivity;
-    permission.manageChannels;
-    permission.moveMembers;
-    permission.stream;
-};
-local function updateChannel(this,channelMaker,initUser)
-    this:setUserLimit(10); -- init limit
+local channelPermissions = bit.bor(
+    permission.connect,
+    permission.speak,
+    permission.useVoiceActivity,
+    permission.manageChannels,
+    permission.moveMembers,
+    permission.stream
+);
+
+---Make channel data
+---@param channelMaker GuildVoiceChannel
+---@param initUser Member
+---@return table
+local function channelData(channelMaker,initUser)
+    -- this:setUserLimit(10); -- init limit
+    -- local category = channelMaker.category;
+    -- if category then this:setCategory(channelMaker.category); end -- set category to same for maker
+    -- this:moveDown(math.huge); -- make it under positioned
+    -- local permissionOverwriter = channelMaker:getPermissionOverwriteFor(initUser);
+    -- if permissionOverwriter then
+    --     permissionOverwriter:allowPermissions(unpack(channelPermissions));
+    -- else logger.wranf("[ChannelMaker] Couldn't make permissionOverwriter for user generated channel\nguild: %s; channel: %s",this.guild.id,this.id);
+    -- end
+
     local category = channelMaker.category;
-    if category then this:setCategory(channelMaker.category); end -- set category to same for maker
-    this:moveDown(math.huge); -- make it under positioned
-    local permissionOverwriter = channelMaker:getPermissionOverwriteFor(initUser);
-    if permissionOverwriter then
-        permissionOverwriter:allowPermissions(unpack(channelPermissions));
-    else logger.wranf("[ChannelMaker] Couldn't make permissionOverwriter for user generated channel\nguild: %s; channel: %s",this.guild.id,this.id);
-    end
+    return {
+        name = ("%s-님의-개인-채널"):format(initUser.name:gsub(" ","-"));
+        user_limit = 10;
+        parent_id = category and category.id;
+        position = (channelMaker.position or 0);
+        permission_overwrites = {{
+            id = initUser.id;
+            type = 1;
+            allow = tostring(channelPermissions);
+        }};
+    };
 end
 
+---Connect Join event
 ---@param member Member
 ---@param channel GuildVoiceChannel
 client:onSync("voiceChannelJoin",promise.async(function (member, channel)
+    -- get datas
+    local channelId = channel.id;
     local guild = channel.guild;
     if not guild then return; end
-    local data =serverData.loadData(guild.id);
-    local channelMaker = data and data.channelMaker;
-    if channel.id ~= channelMaker then return logger.errorf("[ChannelMaker] Couldn't make channel in guild %s, ignore channelMaker function",guild.id); end
+    local data = serverData.loadData(guild.id);
+    local channelMakerId = data and data.channelMaker;
+    if channelId ~= channelMakerId then
+        -- check user counts
+        local createdChannels = data and data.createdChannels;
+        if createdChannels and createdChannels[channelId] then
+            if channel.connectedMembers:count() > (channel.userLimit or huge) then ---@diagnostic disable-line
+                member:setVoiceChannel(nil);
+            end
+        end
+        return;
+    end
 
-    local this = guild:createVoiceChannel(("%s 님의 개인 채널"):format(member.name));
-    if not this then return; end -- permission missing? idk what happened...
+    -- make new channel
+    local this = guild:createVoiceChannel(channelData(channel,member));
+    if not this then return logger.errorf("[ChannelMaker] Couldn't make channel in guild %s, ignore channelMaker function",guild.id); end -- permission missing? idk what happened...
     member:setVoiceChannel(this);
-    updateChannel(this,channel,member); -- update channel permission, position, category and more...
+
+    -- save this channel
+    local createdChannels = data.createdChannels;
+    if not createdChannels then
+        createdChannels = {};
+        data.createdChannels = createdChannels;
+    end
+    createdChannels[this.id] = true;
+    serverData.saveData(guild.id,data);
+
     logger.infof("[ChannelMaker] Channel %s created for guild %s user %s",this.id,guild.id,member.id);
 end));
+
+---Connect Leave event
+---@param member Member
+---@param channel GuildVoiceChannel
+client:onSync("voiceChannelLeave",promise.async(function (member,channel)
+    local guild = channel.guild;
+    if not guild then return; end
+    local channelId = channel.id;
+
+    -- check should be removed
+    local tryRemove = true;
+    for user in channel.connectedMembers:iter() do
+        if not user.bot then
+            tryRemove = false;
+            break;
+        end
+    end
+
+    -- it should be removed
+    if tryRemove then
+        -- check is generated channel
+        local data = serverData.loadData(guild.id);
+        local createdChannels = data and data.createdChannels;
+        if not createdChannels then return; end
+        if not createdChannels[channelId] then return; end
+
+        -- remove channel and data
+        channel:delete();
+        createdChannels[channelId] = nil;
+        serverData.saveData(guild.id,data);
+        logger.infof("[ChannelMaker] Channel %s destroyed for guild %s",channel.id,guild.id);
+    end
+end));
+
+client:onSync("channelDelete", function(channel)
+    local guild = channel.guild;
+    local channelId = channel.id;
+    if not guild then return; end
+    local data = serverData.loadData(guild.id);
+    local createdChannels = data and data.createdChannels;
+    if not createdChannels then return; end
+    if createdChannels[channelId] then
+        createdChannels[channelId] = nil;
+        serverData.saveData(guild.id,data);
+    end
+end)
 
 ---@type table<string, Command>
 local export = {
