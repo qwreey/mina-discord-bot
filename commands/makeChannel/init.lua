@@ -12,7 +12,8 @@ local channelPermissions = {
 };
 local function updateChannel(this,channelMaker,initUser)
     this:setUserLimit(10); -- init limit
-    this:setCategory(channelMaker.category); -- set category to same for maker
+    local category = channelMaker.category;
+    if category then this:setCategory(channelMaker.category); end -- set category to same for maker
     this:moveDown(math.huge); -- make it under positioned
     local permissionOverwriter = channelMaker:getPermissionOverwriteFor(initUser);
     if permissionOverwriter then
