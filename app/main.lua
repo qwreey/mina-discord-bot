@@ -54,7 +54,7 @@ initProfiler:start"Load global modules"; --#region --** Load modules **--
 	local sha1 = require "sha1"; _G.sha1 = sha1; -- sha1
 	local logger = require "logger"; _G.logger = logger; -- log library
 	local dumpTable = require "dumpTable"; _G.dumpTable = dumpTable; -- table dump library, this is auto injecting dump function on global 'table'
-	local exitCodes = require "exitCodes"; _G.exitCodes = exitCodes; -- get exit codes
+	local exitCodes = require "app.exitCodes"; _G.exitCodes = exitCodes; -- get exit codes
 	local term = require "term"; -- setuping REPL terminal
 	local strSplit = require "strSplit"; _G.strSplit = strSplit; -- string split library
 	local urlCode = require "urlCode"; _G.urlCode = urlCode; -- url encoder/decoder library
@@ -198,6 +198,7 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 	local beforeHook = hook.beforeHook;
 
 	-- making command reader
+	---@param message Message
 	local function processCommand(message)
 
 		-- get base information from message object
@@ -458,7 +459,7 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 				logger.errorf("An error occurred on running command function\n - original message : %s\n - error message was :\n%s\n - error traceback was :\n%s\n - more information was saved on log/debug.log",
 					tostring(text),err,traceback
 				);
-				coroutine.wrap(message.reply)(message,{
+				coroutine.wrap(message.reply)(message,{ ---@diagnostic disable-line
 					content = ("커맨드 반응 생성중 오류가 발생했습니다!```log\nError message : %s\n%s```"):format(
 						tostring(err),tostring(traceback)
 					);
@@ -506,7 +507,7 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 				logger.errorf("An error occurred on running command function\n - original message : %s\n - error message was :\n%s\n - error traceback was :\n%s\n - more information was saved on log/debug.log",
 					tostring(text),err,traceback
 				);
-				coroutine.wrap(replyMsg.setContent)(replyMsg,
+				coroutine.wrap(replyMsg.setContent)(replyMsg, ---@diagnostic disable-line
 					("명령어 처리중에 오류가 발생하였습니다```log\nError message : %s\n%s```"):format(err,traceback)
 				);
 			end,replyMsg,message,args,contents,Command);

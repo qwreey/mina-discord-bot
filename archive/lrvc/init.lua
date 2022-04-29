@@ -1,3 +1,4 @@
+---@diagnostic disable
 
 --if not _G.app.args["event"] then
 --    return {};

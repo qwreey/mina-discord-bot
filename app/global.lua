@@ -51,7 +51,7 @@ do
 			break;
 		end
 	end
-	_G.ACCOUNTData = data.load("data/ACCOUNT.json");
+	_G.ACCOUNTData = data.load("data/ACCOUNT.json"); ---@type table
 	if testing then
 		local testData = data.load("data/ACCOUNT_test.json");
 		for i,v in pairs(testData) do
