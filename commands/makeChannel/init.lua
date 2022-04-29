@@ -1,3 +1,5 @@
+
+
 ---@type table<string, Command>
 local export = {
     ["음성채팅생성"] = {
@@ -10,10 +12,14 @@ local export = {
         command = "채널생성";
         reply = zwsp;
         embed = {title = "잠시만 기다려주세요 . . ."};
+        ---@param message Message
+		---@param args table
+		---@param Content commandContent
         func = function(replyMsg,message,args,Content,self)
-            
+            local guildData = Content.loadServerData() or {};
+            local  guildData.
+            Content.saveServerData(guildData)
             replyMsg:update(self.created);
-            --
         end;
         created = {
             content = zwsp;
