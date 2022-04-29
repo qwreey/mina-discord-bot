@@ -65,9 +65,16 @@ local export = {
             local guild = Content.guild;
             local channelMaker = guildData.channelMaker;
 
-            local new = guild:createVoiceChannel("「🎤」음성채팅-생성");
+            local new,err = guild:createVoiceChannel("「🎤」음성채팅-생성");
             if not new then -- failed to create new channel
-                return replyMsg:update(self.fail);
+                return replyMsg:update({
+                    content = zwsp;
+                    embed = {
+                        title = ":x: 음성 채널 생성방을 만들지 못했습니다";
+                        description = ("채널을 생성할 권한이 없거나, 디스코드의 오류일 수 있습니다.\n권한 확인 후 다시 시도해주세요\n```\n%s\n```"):format(tostring(err));
+                        footer = {text = "미나를 다시 초대하면 원활한 권한 설정을 맞출 수 있어요"};
+                    };
+                });
             end
 
             guildData.channelMaker = new.id; -- update
@@ -96,13 +103,6 @@ local export = {
                 title = ":white_check_mark: 음성 채널 생성방을 만들었습니다!";
                 description = "이전 음성 채널 생성방을 없에고 새로 만들었습니다";
             }
-        };
-        fail = {
-            content = zwsp;
-            embed = {
-                title = ":x: 음성 채널 생성방을 만들지 못했습니다";
-                description = "채널을 생성할 권한이 없거나, 디스코드의 오류일 수 있습니다.\n권한 확인 후 다시 시도해주세요";
-            };
         };
         notPermitted = {
             content = zwsp;
