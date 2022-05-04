@@ -31,7 +31,7 @@ local function channelData(channelMaker,initUser)
     local category = channelMaker.category;
     return {
         name = ("%s-님의-개인-채널"):format(initUser.name:gsub(" ","-"));
-        user_limit = 10;
+        -- user_limit = 10;
         parent_id = category and category.id;
         position = (channelMaker.position or 0);
         permission_overwrites = {{
@@ -57,7 +57,7 @@ client:onSync("voiceChannelJoin",promise.async(function (member, channel)
         local createdChannels = data and data.createdChannels;
         if createdChannels and createdChannels[channelId] then
             if channel.connectedMembers:count() > (channel.userLimit or huge) then ---@diagnostic disable-line
-                member:setVoiceChannel(nil);
+                member:setVoiceChannel(nil); -- kick member from that channel
             end
         end
         return;
@@ -80,7 +80,8 @@ client:onSync("voiceChannelJoin",promise.async(function (member, channel)
     logger.infof("[ChannelMaker] Channel %s created for guild %s user %s",this.id,guild.id,member.id);
 end));
 
----Connect Leave event
+---Connect Leave event, if channel was empty (bot is not user, bot is ignored for this operation)
+---it will destroyed by this function
 ---@param member Member
 ---@param channel GuildVoiceChannel
 client:onSync("voiceChannelLeave",promise.async(function (member,channel)
@@ -113,6 +114,7 @@ client:onSync("voiceChannelLeave",promise.async(function (member,channel)
     end
 end));
 
+-- connect to when channel destroyed, this event can be triggered with administrator's action
 client:onSync("channelDelete", function(channel)
     local guild = channel.guild;
     local channelId = channel.id;
@@ -124,35 +126,57 @@ client:onSync("channelDelete", function(channel)
         createdChannels[channelId] = nil;
         serverData.saveData(guild.id,data);
     end
-end)
+end);
 
 ---@type table<string, Command>
 local export = {
-    ["맴버수"] = {
-        reply = function(message,args,Content,self)
-            return message:reply();
-        end;
-        alias = {
-            -- 유저/맴버/사용자/이용자 + 수
-            "유저수","유저 수",
-            "맴버 수","맴버수",
-            "사용자 수","사용자수",
-            "이용자 수","이용자수",
-            -- 유저/맴버/사용자/이용자 + 제한
-            "유저 제한","유저제한",
-            "맴버 제한","맴버제한",
-            "사용자 제한","사용자제한",
-            "이용자 제한","이용자제한",
-            -- 최대 + 유저/맴버/사용자/이용자
-            "최대 유저","최대유저",
-            "최대 맴버","최대맴버",
-            "최대 사용자","최대사용자",
-            "최대 이용자","최대이용자"
-        };
-        disableDm = true;
-        command = "제한";
-        
-    };
+    -- ["맴버수"] = {
+    --     alias = {
+    --         -- 유저/맴버/사용자/이용자 + 수
+    --         "유저수","유저 수",
+    --         "맴버 수","맴버수",
+    --         "사용자 수","사용자수",
+    --         "이용자 수","이용자수",
+    --         -- 유저/맴버/사용자/이용자 + 제한
+    --         "유저 제한","유저제한",
+    --         "맴버 제한","맴버제한",
+    --         "사용자 제한","사용자제한",
+    --         "이용자 제한","이용자제한",
+    --         -- 최대 + 유저/맴버/사용자/이용자
+    --         "최대 유저","최대유저",
+    --         "최대 맴버","최대맴버",
+    --         "최대 사용자","최대사용자",
+    --         "최대 이용자","최대이용자"
+    --     };
+    --     disableDm = true;
+    --     command = "제한";
+    --     ---@param message Message
+	-- 	---@param args table
+	-- 	---@param Content commandContent
+    --     reply = function (message,args,Content,self)
+    --         local member = Content.member;
+    --         local channel = member.voiceChannel;
+
+    --         if not channel then
+    --             return message:reply(self.noVoiceChannel);
+    --         end
+
+    --         message:reply(self.notOwner);
+
+    --     end;
+    --     noVoiceChannel = {
+    --         content = zwsp;
+    --         embed = {
+    --             title = ":x: 참여중인 채널이 없습니다";
+    --         };
+    --     };
+    --     notOwner = {
+    --         content = zwsp;
+    --         embed = {
+    --             title = ":x: 자신의 채널이 아닙니다";
+    --         };
+    --     };
+    -- };
     ["음성채팅생성"] = {
         alias = {
             "채널생성","채널 생성","채널 생성기","채널생성기",
@@ -178,7 +202,7 @@ local export = {
             local guild = Content.guild;
             local channelMaker = guildData.channelMaker;
 
-            local new,err = guild:createVoiceChannel("「🎤」음성채팅-생성");
+            local new,err = guild:createVoiceChannel("「➕」음성채팅-생성");
             if not new then -- failed to create new channel
                 return replyMsg:update({
                     content = zwsp;
