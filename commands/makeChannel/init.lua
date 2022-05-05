@@ -56,7 +56,8 @@ client:onSync("voiceChannelJoin",promise.async(function (member, channel)
         -- check user counts
         local createdChannels = data and data.createdChannels;
         if createdChannels and createdChannels[channelId] then
-            if channel.connectedMembers:count() > (channel.userLimit or huge) then ---@diagnostic disable-line
+            local limit = channel.userLimit or 0;
+            if (limit ~= 0) and (channel.connectedMembers:count() > limit) then ---@diagnostic disable-line
                 member:setVoiceChannel(nil); -- kick member from that channel
             end
         end
