@@ -266,7 +266,9 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 		local TextLower = lower(text); -- make sure text is lower case
 		for _,nprefix in pairs(prefixs) do
 			if nprefix == TextLower then -- 만약 접두사와 글자가 일치하는경우 반응 달기
-				channel:broadcastTyping();
+				if not isSlashCommand then
+					channel:broadcastTyping(); ---@diagnostic disable-line
+				end
 				message:reply {
 					content = prefixReply[random(1,#prefixReply)];
 					reference = {message = message, mention = false};
@@ -301,10 +303,12 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 		prefix = prefix or "";
 
 		-- for other type channel support
-		---@diagnostic disable-next-line
-		local broadcastTyping = channel.broadcastTyping;
-		if broadcastTyping then
-			broadcastTyping(channel);
+		if not isSlashCommand then
+			---@diagnostic disable-next-line
+			local broadcastTyping = channel.broadcastTyping;
+			if broadcastTyping then
+				broadcastTyping(channel);
+			end
 		end
 
 		-- 커맨드 찾기
@@ -519,9 +523,11 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 				logger.errorf("An error occurred on running command function\n - original message : %s\n - error message was :\n%s\n - error traceback was :\n%s\n - more information was saved on log/debug.log",
 					tostring(text),err,traceback
 				);
-				coroutine.wrap(replyMsg.setContent)(replyMsg, ---@diagnostic disable-line
+				---@diagnostic disable
+				coroutine.wrap(replyMsg.setContent)(replyMsg,
 					("명령어 처리중에 오류가 발생하였습니다```log\nError message : %s\n%s```"):format(err,traceback)
 				);
+				---@diagnostic enable
 			end,replyMsg,message,args,contents,Command);
 		end
 

@@ -9,11 +9,11 @@ local export = {
 			"한강물온도","한강 물 온도","한강 물온도",
 			"한강 각","한강각"
 		};
-		reply = function ()
+		reply = function (message)
 			local header,response = corohttp.request("GET",APIurl);
 			local decoded = json.decode(response); ---@type table
 			if decoded then
-				return {
+				return message:reply{
 					content = zwsp;
 					embed = {
 						title = ("한강 물 온도는 %s 도 입니다!"):format(tostring(decoded.temp));
@@ -21,7 +21,7 @@ local export = {
 					};
 				};
 			else
-				return {
+				return message:reply{
 					content = zwsp;
 					embed = {
 						title = ":x: 오류!";
