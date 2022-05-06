@@ -15,6 +15,10 @@ local export = {
 				content = "한글 명언을 가져왔습니다";
 			};
 		end;
+		onSlash = commonSlashCommand {
+			optionRequired = false;
+			description = "한글 명언을 보여줍니다!";
+		};
 	};
 	["타자연습 한글"] = {
 		alias = {

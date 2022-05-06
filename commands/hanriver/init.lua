@@ -18,6 +18,7 @@ local export = {
 			end
 		end;
 		onSlash = commonSlashCommand {
+			optionRequired = false;
 			description = "한강 물온도를 보여줍니다!";
 		};
 	};

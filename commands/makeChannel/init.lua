@@ -249,6 +249,10 @@ local export = {
                 description = "서버 관리자 권한이 있는 사람만 이 명령어를 실행할 수 있습니다";
             };
         };
+		onSlash = commonSlashCommand {
+			optionRequired = false;
+			description = "음성 채널 생성방을 만듭니다!";
+		};
     };
 };
 

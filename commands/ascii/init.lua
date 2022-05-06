@@ -35,6 +35,10 @@ local export = {
 		func = function(replyMsg,message,args,Content)
 			replyMsg:setContent(("```\n%s```"):format(drawAscii("Soft",Content.rawArgs)));
 		end;
+		onSlash = commonSlashCommand {
+			optionRequired = false;
+			description = "영문 아스키 아트를 그립니다!";
+		};
 	};
 	["열차그리기"] = {
 		alias = {"train"};
@@ -42,6 +46,10 @@ local export = {
 		func = function(replyMsg,message,args,Content)
 			replyMsg:setContent(("```\n%s```"):format(drawAscii("Train",Content.rawArgs)));
 		end;
+		onSlash = commonSlashCommand {
+			optionRequired = false;
+			description = "영문 아스키 아트를 그립니다!";
+		};
 	};
 };
 return export;
