@@ -92,6 +92,24 @@ local export = {
 	---@type Command
 	["설정"] = {
 		disableDm = true;
+		-- onSlash = commonSlashCommand {
+		-- 	name = "서버설정";
+		-- 	description = "서버의 설정을 변경합니다";
+		-- 	options = {
+		-- 		{
+		-- 			name = "작업";
+		-- 			description = "투표 내용입니다! ',' 을 이용해 개별로 구분하세요!";
+		-- 			type = discordia_enchant.enums.optionType.string;
+		-- 			required = true;
+		-- 		};
+		-- 		{
+		-- 			name = "제목";
+		-- 			description = "투표의 제목을 설정합니다! (이 옵션은 비워둘 수 있습니다)";
+		-- 			type = discordia_enchant.enums.optionType.string;
+		-- 			required = false;
+		-- 		};
+		-- 	};
+		-- };
 		---@param message Message
 		---@param args table
 		---@param content commandContent
@@ -122,7 +140,7 @@ local export = {
 					type(description) == "function" and description(setting,data) or description
 				));
 			elseif name == "초기화" then
-				if not message.member:hasPermission(enums.permission.administrator) then
+				if not message.member:hasPermission(enums.permission.administrator) then ---@diagnostic disable-line
 					return reply(message,notPermitted);
 				end
 				if value == "" then
@@ -153,7 +171,7 @@ local export = {
 			end
 
 			-- set value
-			if not message.member:hasPermission(enums.permission.administrator) then
+			if not message.member:hasPermission(enums.permission.administrator) then ---@diagnostic disable-line
 				return reply(message,notPermitted);
 			end
 			local passed;

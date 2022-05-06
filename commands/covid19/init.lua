@@ -18,7 +18,7 @@ local export = {
 			};
 		end;
 		onSlash = commonSlashCommand {
-			optionRequired = false;
+			noOption = true;
 			description = "코로나 현황을 보여줍니다!";
 		};
 	};

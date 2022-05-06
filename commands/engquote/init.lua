@@ -16,7 +16,7 @@ local export = {
 			};
 		end;
 		onSlash = commonSlashCommand {
-			optionRequired = false;
+			noOption = true;
 			description = "영어 명언을 보여줍니다!";
 		};
 	};

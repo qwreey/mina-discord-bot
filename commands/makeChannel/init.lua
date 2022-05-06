@@ -250,7 +250,7 @@ local export = {
             };
         };
 		onSlash = commonSlashCommand {
-			optionRequired = false;
+			noOption = true;
 			description = "음성 채널 생성방을 만듭니다!";
 		};
     };

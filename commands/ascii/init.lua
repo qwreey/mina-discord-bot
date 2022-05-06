@@ -36,7 +36,6 @@ local export = {
 			replyMsg:setContent(("```\n%s```"):format(drawAscii("Soft",Content.rawArgs)));
 		end;
 		onSlash = commonSlashCommand {
-			optionRequired = false;
 			description = "영문 아스키 아트를 그립니다!";
 		};
 	};
@@ -47,7 +46,6 @@ local export = {
 			replyMsg:setContent(("```\n%s```"):format(drawAscii("Train",Content.rawArgs)));
 		end;
 		onSlash = commonSlashCommand {
-			optionRequired = false;
 			description = "영문 아스키 아트를 그립니다!";
 		};
 	};

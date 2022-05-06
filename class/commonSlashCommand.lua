@@ -1,4 +1,7 @@
 
+local insert = table.insert;
+local concat = table.concat;
+
 ---@class commandSlashCommandOptions
 ---@field name string name of this slash command (will used on commit commands
 ---@field description string command decription
@@ -8,7 +11,8 @@
 ---@field optionName string name of option
 ---@field optionChoices table option choices table
 ---@field noOption boolean|nil is no option provided
----@field headerEnabled boolean|nil is interaction header enabled 
+---@field headerEnabled boolean|nil is interaction header enabled
+---@field options boolean|nil you can set options manually
 local defaultOptionName = "내용";
 local defaultOptionDescription = "명령어 사용에 쓰이는 내용입니다";
 
@@ -21,10 +25,11 @@ local function commonSlashCommand(options)
 		local noInteractionHead = not options.headerEnabled;
 		local parentName = self.name;
 		local optionName = options.optionName or defaultOptionName;
+		local commandOptions = options.options;
 		client:slashCommand({ ---@diagnostic disable-line
 			name = options.name or parentName;
 			description = options.description;
-			options = (not options.noOption) and {
+			options = commandOptions or ((not options.noOption) and {
 				{
 					name = optionName;
 					description = options.optionDescription or defaultOptionDescription;
@@ -32,12 +37,22 @@ local function commonSlashCommand(options)
 					required = type(optionRequired) == "nil" or optionRequired;
 					choices = options.optionChoices;
 				};
-			};
+			});
 			callback = function(interaction, params, cmd)
+				local strParams;
+				if commandOptions then
+					local t = {};
+					for _,option in ipairs(commandOptions) do
+						insert(t,params[option.name] or "");
+					end
+					strParams = concat(t," ");
+				else strParams = tostring(params[optionName] or "");
+				end
+
 				local pass,err = pcall(
 					processCommand,
 					userInteractWarpper(
-						("%s %s"):format(parentName,tostring(params[optionName] or "")),
+						("%s %s"):format(parentName,strParams),
 						interaction,noInteractionHead
 					)
 				);
