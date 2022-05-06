@@ -202,13 +202,18 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 	local function processCommand(message)
 
 		-- get base information from message object
+		local isSlashCommand = rawget(message,"slashCommand");
 		local channel = message.channel; ---@type GuildTextChannel
-		if not channel then return; end -- ignore thread
+		if not channel then
+			if isSlashCommand then
+				message:reply("아직 스레드에서 미나 명령을 사용할 수 없습니다!");
+			end return;
+		end -- ignore thread
+
 		local user = message.author; ---@type User
 		local text = message.content; ---@type string
 		local guild = message.guild; ---@type Guild
 		local isDm = channel.type == enums.channelType.private; ---@diagnostic disable-line
-		local isSlashCommand = rawget(message,"slashCommand");
 		if (not channel) or (not text) then return; end
 
 		-- check user that is bot; if it is bot, then return (ignore call)
@@ -295,7 +300,12 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 		end
 		prefix = prefix or "";
 
-		channel:broadcastTyping();
+		-- for other type channel support
+		---@diagnostic disable-next-line
+		local broadcastTyping = channel.broadcastTyping;
+		if broadcastTyping then
+			broadcastTyping(channel);
+		end
 
 		-- 커맨드 찾기
 		-- 단어 분해 후 COMMAND DICT 에 색인시도
