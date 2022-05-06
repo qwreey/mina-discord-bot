@@ -13,8 +13,21 @@ local export = {
 			local header,response = corohttp.request("GET",APIurl);
 			local decoded = json.decode(response); ---@type table
 			if decoded then
-				return ("한강 물 온도는 %s 도 입니다!\n> %s 기준의 자료입니다"):format(tostring(decoded.temp),tostring(decoded.time));
-			else return "한강 물 온도를 불러오지 못했습니다!";
+				return {
+					content = zwsp;
+					embed = {
+						title = ("한강 물 온도는 %s 도 입니다!"):format(tostring(decoded.temp));
+						description = ("%s 기준의 자료입니다"):format(tostring(decoded.time));
+					};
+				};
+			else
+				return {
+					content = zwsp;
+					embed = {
+						title = ":x: 오류!";
+						description = "한강 물 온도를 불러오지 못했습니다";
+					};
+				};
 			end
 		end;
 		onSlash = commonSlashCommand {

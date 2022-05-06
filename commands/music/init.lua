@@ -263,7 +263,7 @@ local export = {
 			name = "곡검색";
 			optionDescription = "검색할 키워드를 입력합니다";
 			optionsType = discordia_enchant.enums.optionType.string;
-			optionRequired = true;
+			optionRequired = false;
 		};
 	};
 	["add music"] = {
