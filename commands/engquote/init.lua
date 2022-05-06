@@ -15,6 +15,9 @@ local export = {
 				content = "영어 명언을 가져왔습니다";
 			};
 		end;
+		onSlash = commonSlashCommand {
+			description = "영어 명언을 보여줍니다!";
+		};
 	};
 	["타자연습 영문"] = {
 		alias = {

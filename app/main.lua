@@ -202,9 +202,10 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 	local function processCommand(message)
 
 		-- get base information from message object
+		local channel = message.channel; ---@type GuildTextChannel
+		if not channel then return; end -- ignore thread
 		local user = message.author; ---@type User
 		local text = message.content; ---@type string
-		local channel = message.channel; ---@type GuildTextChannel
 		local guild = message.guild; ---@type Guild
 		local isDm = channel.type == enums.channelType.private; ---@diagnostic disable-line
 		local isSlashCommand = rawget(message,"slashCommand");
