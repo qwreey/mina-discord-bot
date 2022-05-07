@@ -65,7 +65,7 @@ local export = {
 };
 
 local defaultComponents = {
-    components.actionRow {
+    components.actionRow.new {
         buttons.action_remove;
     };
 };
