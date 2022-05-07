@@ -14,6 +14,20 @@ local export = {
                 description = "관리 권한이 있는 사람만 이 명령을 사용할 수 있습니다";
             };
         };
+        on = {
+            embed = {
+                title = ":white_check_mark: 이모지 확대를 켰습니다!";
+                description = "이제 사용하는 단일 이모지가 확대됩니다";
+            };
+            content = zwsp;
+        };
+        off = {
+            embed = {
+                title = ":white_check_mark: 이모지 확대를 껐습니다!";
+                description = "이제 사용하는 단일 이모지를 확대하지 않습니다";
+            };
+            content = zwsp;
+        };
 		disableDm = true;
 		command = {"이모지확대"};
         ---@param Content commandContent
@@ -34,16 +48,7 @@ local export = {
             serverData[key] = setTo;
 
 			Content.saveServerData(serverData);
-            return message:reply{
-                embed = {
-                    title = (
-                        setTo and ":white_check_mark: 이모지 확대를 켰습니다!"
-                        or ":white_check_mark: 이모지 확대를 껏습니다!"
-                    );
-                    description = "이제 사용하는 단일 이모지가 확대됩니다";
-                };
-                content = zwsp;
-            };
+            return message:reply(setTo and self.on or self.off);
 		end;
 		onSlash = commonSlashCommand {
 			description = "이모지 확대 기능을 켜거나 끕니다, 관리자만 이 기능을 사용할 수 있습니다!";
