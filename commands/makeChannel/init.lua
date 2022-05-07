@@ -2,7 +2,7 @@ local insert = table.insert;
 local remove = table.remove;
 local unpack = table.unpack;
 local huge = math.huge;
-local permission = discordia.enums.permission;
+local permission = discordia.enums.permission; ---@diagnostic disable-line
 local adminPermission = permission.administrator;
 local channelPermissions = bit.bor(
     permission.connect,

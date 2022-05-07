@@ -1,4 +1,5 @@
-
+local permission = discordia.enums.permission; ---@diagnostic disable-line
+local adminPermission = permission.administrator;
 
 ---@class settingsObject
 ---@field public type string Type of this setting
@@ -148,7 +149,7 @@ local export = {
 					type(description) == "function" and description(setting,data) or description
 				));
 			elseif name == "초기화" then
-				if not message.member:hasPermission(enums.permission.administrator) then ---@diagnostic disable-line
+				if not message.member:hasPermission(adminPermission) then ---@diagnostic disable-line
 					return reply(message,notPermitted);
 				end
 				if value == "" then
@@ -179,7 +180,7 @@ local export = {
 			end
 
 			-- set value
-			if not message.member:hasPermission(enums.permission.administrator) then ---@diagnostic disable-line
+			if not message.member:hasPermission(adminPermission) then ---@diagnostic disable-line
 				return reply(message,notPermitted);
 			end
 			local passed;
