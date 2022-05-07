@@ -79,11 +79,11 @@ local export = {
 					newMsg:delete();
 				end);
 			end;
-			onSlash = commonSlashCommand {
-				description = "주사위를 던집니다";
-				name = "주사위";
-				noOption = true;
-			};
+		};
+		onSlash = commonSlashCommand {
+			description = "주사위를 던집니다";
+			name = "주사위";
+			noOption = true;
 		};
 		love = defaultLove;
 	};
