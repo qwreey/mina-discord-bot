@@ -25,6 +25,16 @@ $ 는 설정한 접두사입니다
 24시간   : $24
 ```]];
 
+local function formattingOnOff(value)
+	if onKeywords[value] then
+		return true,true;
+	elseif offKeywords[value] then
+		return true,nil;
+	else
+		return false,"'켜기' 또는 '끄기' 를 입력해주세요";
+	end
+end
+
 local len = utf8.len;
 ---@type table<string, settingsObject>
 local settings = {
@@ -48,21 +58,19 @@ local settings = {
 		short = "딱...히 너를 위해 만든건 아냐!";
 		description = "일부 미나 기능의 말투를 츤데레적으로 바꿉니다! 실험적인 기능이에요";
 		id = "softyMode";
-		formatting = function (value)
-			if onKeywords[value] then
-				return true,true;
-			elseif offKeywords[value] then
-				return true,nil;
-			else
-				return false,"'켜기' 또는 '끄기' 를 입력해주세요";
-			end
-		end;
+		formatting = formattingOnOff;
 		func = function (self,value,content)
 			local guild = content.guild;
 			if not guild then return end;
 			local member = guild:getMember(client.user.id);
 			member:setNickname(value and "츤데레 미나");
 		end;
+	};
+	["이모지확대"] = {
+		short = "이모지 확대 기능";
+		description = "유저가 이용하는 이모지를 확대해서 보여즙니다";
+		id = "emojiMagnify";
+		formatting = formattingOnOff;
 	};
 };
 local settingsHelpFormat = "> %s : `%s`\n"
