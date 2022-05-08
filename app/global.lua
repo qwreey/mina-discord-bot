@@ -319,7 +319,7 @@ do
 		cache[key] = new;
 		return new;
 	end;
-	_G.defaultLove = loveRang(2,8);
+	_G.defaultLove = loveRang(6,18);
 	_G.rmLove = loveRang(-2,-8);
 end
 
