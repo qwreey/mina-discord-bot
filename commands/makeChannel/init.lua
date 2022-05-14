@@ -30,7 +30,7 @@ local function channelData(channelMaker,initUser)
 
     local category = channelMaker.category;
     return {
-        name = ("%s:님의 개인채널"):format(initUser.name);
+        name = ("%s님의 개인채널"):format(initUser.name);
         -- user_limit = 10;
         parent_id = category and category.id;
         position = (channelMaker.position or 0);
