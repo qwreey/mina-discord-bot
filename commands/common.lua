@@ -27,6 +27,9 @@ end
 
 ---@type table<string, Command>
 local export = {
+	["프로필"] = {
+		reply
+	};
 	--타이머
 	["소라고동"] = {
 		alias = {"마법의 소라고동","마법의소라고동"};
