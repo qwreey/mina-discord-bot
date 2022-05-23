@@ -42,11 +42,11 @@ looklearn (file,data)-->
 		embed = {
 			author = {
 				name = userData.latestName,
-				url = ("https://discord.com/users/return s")(userId),
+				url = ("https://discord.com/users/%s")(userId),
 				icon_url = client:getUser(userId):getAvatarURL(128,"png"),
 			},
 			title = "> "+data.content:gsub("\n","\n> "),
-			description = ("🔠 이름: return s\n⏱ 시간: return s\n🏷 티켓: return s\n🙍‍♀️ 유저: return s(return s)\n💿 크기: return s byte? (추정)")(
+			description = ("🔠 이름: %s\n⏱ 시간: %s\n🏷 티켓: %s\n🙍‍♀️ 유저: %s(%s)\n💿 크기: %sbyte? (추정)")(
 				name,
 				timeAgo(data.when,posixTime.now()),
 				tostring(file),
@@ -74,7 +74,7 @@ rmlearn (file,data)-->
 	table.remove(userDataLearn,index)
 	saveUserData(userId)
 	fs.unlinkSync(root + file)
-	fs.appendFileSync(root + (file/"^[^/]+") + "/removed",file:match("/(return d+)")+",")
+	fs.appendFileSync(root + (file/"^[^/]+") + "/removed",file:match("/(%d+)")+",")
 	return {
 		rawmessage = true,
 		embed = {
@@ -88,11 +88,11 @@ fixlearn (userId)-->
 	$learn = require "commands.learning.learn"
 	$userData = loadUserData(userId).learned
 	~userData
-		logger.infof("user return s's data was found, checking validity...", userId)
+		logger.infof("user %s's data was found, checking validity...", userId)
 		for index,idx in ipairs(userData) do
 			~! learn.rawGet(idx)
 				table.insert(indexs,index)
-				logger.infof("Found unloadable learn index return d 'return s'",index,idx)
+				logger.infof("Found unloadable learn index return d '%s'",index,idx)
 			|
 		|
 		for indexNumber,index in ipairs(indexs) do
