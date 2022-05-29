@@ -32,12 +32,20 @@ function module:log(str,...)
 end
 
 ---Make new IPC wrapper with coro spawn
----@param target string target process
+---@param target string|table target process
 ---@param args table|nil arg for child process
 ---@param newlinebuffer boolean|nil if this value is true, using \n as buffer splitter on stdout
 ---@param name string|nil name of this process, it will displayed on console (for debug, this option will help you a lot)
 function module.new(target,args,newlinebuffer,name)
-	local child,err = spawn(target,{args = args,stdio = {true,true,true}});
+	local child,err;
+	if type(target) == "table" then
+		for _,childTarget in ipairs(target) do
+			child,err = spawn(childTarget, {args = args,stdio = {true,true,true}});
+			if child then break; end
+		end
+	else
+		child,err = spawn(target,{args = args,stdio = {true,true,true}});
+	end
 	if not child then
 		error(("Failed to create child process\nError message was: %s"):format(err));
 	end

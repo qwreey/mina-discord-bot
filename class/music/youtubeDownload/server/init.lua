@@ -1,4 +1,4 @@
-local server = IPC.new("python",{"class/music/youtubeDownload/server/main.py"},true,"YTDL");
+local server = IPC.new({"python","python3"},{"class/music/youtubeDownload/server/main.py"},true,"YTDL");
 
 local module = {};
 
