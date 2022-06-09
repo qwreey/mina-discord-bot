@@ -66,6 +66,7 @@ client:onSync("voiceChannelJoin",promise.async(function (member, channel)
 
     -- make new channel
     if member.user.bot then return; end
+    -- data.channelMakerLoggerId
     local this = guild:createVoiceChannel(channelData(channel,member));
     if not this then return logger.errorf("[ChannelMaker] Couldn't make channel in guild %s, ignore channelMaker function",guild.id); end -- permission missing? idk what happened...
     member:setVoiceChannel(this);
