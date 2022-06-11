@@ -1113,6 +1113,7 @@ local export = {
 			name = "곡정보";
 			optionDescription = "곡 번째를 입력하세요";
 			optionsType = discordia_enchant.enums.optionType.integer;
+			optionRequired = false;
 		};
 	};
 	["resume music"] = {
@@ -1409,6 +1410,7 @@ local export = {
 		onSlash = commonSlashCommand {
 			description = "재생 위치를 변경합니다!";
 			name = "곡시간";
+			optionRequired = false;
 			optionDescription = "더하려면 +, 빼려면 - 를 붇이고 다음과 같이 시간을 입력합니다 시간:분:초 (예 +1:10 -1:10 1:10 ...)";
 		};
 	};
