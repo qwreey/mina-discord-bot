@@ -33,13 +33,15 @@ local function chmod(k,v)
 	proc = nil;
 	return passed,passed and results or exitSig,exitCode;
 end
+
 -- Setup binary executables
 if jit.os == "Linux" then -- if this os is linux, adding executing permissions to bin files
 	local binPath = ("./bin/Linux_%s"):format(jit.arch);
 	for _,binFile in ipairs(listOfBinFiles) do
-		chmod("a+x",("%s/%s"):format(binPath,binFile)); -- adding execute permissions on bin files
+		chmod("u+x",("%s/%s"):format(binPath,binFile)); -- adding execute permissions on bin files
 	end
 end
+
 -- Set utf-8 terminal
 if jit.os == "Windows" then
 	local chcpStatus do

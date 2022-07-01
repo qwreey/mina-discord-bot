@@ -37,12 +37,24 @@
 
 -- TODO: Button 으로 Playlist 추가 멈추기
 
-local youtubePlaylist = require "class.music.youtubePlaylist";
-local playerClass = require "class.music.playerClass";
-local youtubeVideoList = require "class.music.youtubeVideoList";
-local playerForChannels = playerClass.playerForChannels;
+-- check music feature disabled
+local featureDisabled;
+for _,str in ipairs(app.args) do
+	local matching = str:match("voice%.disabled=(.*)");
+	if matching then
+		featureDisabled = matching;
+		app.disabledFeature.music = "Disabled by process argument flag"
+		break;
+	end
+end
+
+local youtubePlaylist =   featureDisabled or require "class.music.youtubePlaylist";
+local playerClass =       featureDisabled or require "class.music.playerClass";
+local youtubeVideoList =  featureDisabled or require "class.music.youtubeVideoList";
+local playerForChannels = featureDisabled or playerClass.playerForChannels;
+local formatTime =        featureDisabled or playerClass.formatTime;
+
 local components = discordia_enchant.components;
-local formatTime = playerClass.formatTime;
 local time = os.time;
 -- local timer = _G.timer;
 local eulaComment_music = _G.eulaComment_music or makeEulaComment("음악");
@@ -205,11 +217,11 @@ local export = {
 			"음악 가져오기","음악 불러오기","음악가져오기","음악불러오기","음악로드하기","음악 로드하기","음악로드","음악 로드",
 			"music load","song load","music laod","불러오기","로드하기","플리로드","로드"
 		};
-		reply = "⏳ 로딩중";
+		reply = featureDisabled or "⏳ 로딩중";
 		disableDm = true;
 		registeredOnly = true;
 		func = function (replyMsg,message,args,Content)
-
+			if featureDisabled then return; end
 		end;
 		onSlash = commonSlashCommand {
 			description = "저장해둔 곡들을 불러옵니다";
@@ -227,11 +239,11 @@ local export = {
 			"음악 저장하기","음악 기록하기","음악저장하기","음악기록하기","음악저장","음악 저장",
 			"music save","song save","music save","저장하기","기록하기","플리저장","저장"
 		};
-		reply = "⏳ 로딩중";
+		reply = featureDisabled or "⏳ 로딩중";
 		disableDm = true;
 		registeredOnly = true;
 		func = function (replyMsg,message,args,Content)
-
+			if featureDisabled then return; end
 		end;
 		onSlash = commonSlashCommand {
 			description = "현재 재생중인 곡을 자신의 플레이 리스트에 저장합니다";
@@ -255,7 +267,7 @@ local export = {
 		disableDm = true;
 		registeredOnly = eulaComment_music;
 		---@param Content commandContent
-		reply = function(message,args,Content)
+		reply = featureDisabled or function(message,args,Content)
 			return message:reply(youtubeVideoList.display(Content.rawArgs,Content.user.id));
 		end;
 		onSlash = commonSlashCommand {
@@ -285,8 +297,8 @@ local export = {
 			"song add","song 추가","song play","song 재생",
 			"add 음악","add 곡","add 노래"
 		};
-		reply = empty;
-		embed = {title = "⏳ 로딩중"};
+		reply = featureDisabled or empty;
+		embed = (not featureDisabled) and {title = "⏳ 로딩중"} or nil;
 		missingKeywords = {
 			content = empty;
 			embed = {
@@ -308,6 +320,8 @@ local export = {
 			};
 		};
 		func = function(replyMsg,message,args,Content,self)
+			if featureDisabled then return; end
+
 			local nth,rawArgs; do
 				local contentRaw = Content.rawArgs;
 				rawArgs = contentRaw;
@@ -517,9 +531,11 @@ local export = {
 			"곡 참여","곡 참여해","곡 참가","곡 참가해","곡 참가하기","곡 참가해라","곡 참가해봐","곡 참가하자",		
 			"음악 join","music join","music 참가","join vc","vc join","join voice","voice join"
 		};
-		reply = empty;
-		embed = {title = "⏳ 로딩중"};
+		reply = featureDisabled or empty;
+		embed = (not featureDisabled) and {title = "⏳ 로딩중"} or nil;
 		func = function(replyMsg,message,args,Content,self)
+			if featureDisabled then return; end
+
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
 			if not voiceChannel then
@@ -584,7 +600,7 @@ local export = {
 			"song 리스트","music 리스트","song 대기열","song 리스트",
 			"list 곡","list 음악","list 노래"
 		};
-		reply = function(message,args,Content)
+		reply = featureDisabled or function(message,args,Content)
 			local rawArgs = Content.rawArgs;
 			local page = tonumber(rawArgs) or tonumber(rawArgs:match("%d+")) or 1;
 			return message:reply(playerClass.showList(Content.guild,page));
@@ -626,7 +642,7 @@ local export = {
 				description = ":key: 프리미엄에 가입하지 않아 켤 수 없습니다!";
 			};
 		};
-		reply = function(message,args,Content,self)
+		reply = featureDisabled or function(message,args,Content,self)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
 			if not voiceChannel then
@@ -714,7 +730,7 @@ local export = {
 			content = empty;
 			embed = {title = "성공적으로 플레이리스트 반복을 멈췄습니다!"};
 		};
-		reply = function(message,args,Content,self)
+		reply = featureDisabled or function(message,args,Content,self)
 			-- get already exist connection
 			local guildConnection = message.guild.connection;
 			if not guildConnection then
@@ -770,11 +786,11 @@ local export = {
 			title = "명령어를 처리하지 못했어요!";
 			description = "음악 기능 도움이 필요하면 '미나 음악 도움말' 을 입력해주세요";
 		};
-		reply = empty;
+		reply = featureDisabled or empty;
 	};
 	["음악 도움말"] = {
 		alias = {"도움말 음악","도움말 음악봇","음악 사용법","음악 사용법 알려줘","음악사용법","음악 도움말 보여줘","음악 help","음악도움말","music help","help music","music 도움말"};
-		reply = help;
+		reply = featureDisabled or help;
 		sendToDm = "개인 메시지로 도움말이 전송되었습니다!";
 	};
 	["remove music"] = {
@@ -794,7 +810,7 @@ local export = {
 			"song remove","remove song","remove music","music remove",
 			"remove 음악","remove 곡","remove 노래"
 		};
-		reply = function(message,args,Content,self)
+		reply = featureDisabled or function(message,args,Content,self)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
 			if not voiceChannel then
@@ -870,7 +886,7 @@ local export = {
 			"skip 음악","skip 곡","skip 노래",
 			"곡 넘어 가기","음악 넘어 가기","노래 넘어 가기"
 		};
-		reply = function(message,args,Content,self)
+		reply = featureDisabled or function(message,args,Content,self)
 			local rawArgs = Content.rawArgs;
 			rawArgs = tonumber(rawArgs:match("%d+")) or 1;
 
@@ -985,7 +1001,7 @@ local export = {
 				description = "다시 재생하고 싶으면 '미나 재개' 를 입력해주세요";
 			};
 		};
-		reply = function(message,args,Content,self)
+		reply = featureDisabled or function(message,args,Content,self)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
 			if not voiceChannel then
@@ -1047,7 +1063,7 @@ local export = {
 				title = "성공적으로 음악을 종료하였습니다!";
 			};
 		};
-		reply = function(message,args,Content,self)
+		reply = featureDisabled or function(message,args,Content,self)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
 			if not voiceChannel then
@@ -1087,7 +1103,7 @@ local export = {
 			"현재곡","현재음악","현재노래","지금곡","지금음악","지금노래","지금재생중",
 			"지금 재생중","now playing","music now","song now","playing now","now play","nowplaying"
 		};
-		reply = function(message,args,Content)
+		reply = featureDisabled or function(message,args,Content)
 			message:reply(playerClass.showSong(Content.guild));
 		end;
 		onSlash = commonSlashCommand {
@@ -1103,7 +1119,7 @@ local export = {
 			"곡정보","곡 정보","info song","song info","music info","info music","곡 자세히보기",
 			"곡자세히보기","곡설명","곡 설명","song description","description song"
 		};
-		reply = function(message,args,Content)
+		reply = featureDisabled or function(message,args,Content)
 			local this = Content.rawArgs;
 			this = tonumber(this) or tonumber(this:match("%d+")) or 1;
 			message:reply(playerClass.showSong(Content.guild,this));
@@ -1147,7 +1163,7 @@ local export = {
 				description = "멈추고 싶으면 '미나 일시정지' 를 입력해주세요";
 			};
 		};
-		reply = function(message,args,Content,self)
+		reply = featureDisabled or function(message,args,Content,self)
 			-- check users voice channel
 			local voiceChannel = message.member.voiceChannel;
 			if not voiceChannel then
@@ -1214,7 +1230,7 @@ local export = {
 			};
 		};
 		footer = {text = "+1:00 이렇게 앞으로, -1:00 이렇게 뒤로\n1:00 이렇게 원하는 시간으로 갈 수 있어요"};
-		reply = function(message,args,Content,self)
+		reply = featureDisabled or function(message,args,Content,self)
 			local rawArgs = Content.rawArgs;
 
 			-- check users voice channel
@@ -1435,8 +1451,10 @@ local export = {
 			"음악 대기열 킵","음악 대기열 킵","곡 대기열 킵","export music","music export","song export","export song",
 			"music 내보내기","song 내보내기","내보내기 song","내보내기 music","export 음악","음악 export","곡 export","export 곡","노래 export","export 노래"
 		};
-		reply = "⏳ 로딩중";
+		reply = featureDisabled or "⏳ 로딩중";
 		func = function(replyMsg,message,args,Content)
+			if featureDisabled then return; end
+
 			local guildConnection = message.guild.connection;
 			if not guildConnection then
 				return replyMsg:setContent("현재 이 서버에서는 음악 기능을 사용하고 있지 않습니다\n> 음악 실행중이 아님");

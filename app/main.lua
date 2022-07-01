@@ -13,9 +13,22 @@
 
 --#region : sys setup
 -- Setup require system
+
+-- setup os env / lua env
 local jit = jit or require "jit";
-process.env.PATH = process.env.PATH .. ((jit.os == "Windows" and ";.\\bin\\Windows_" or ":./bin/Linux_") .. jit.arch); -- add bin libs path
+local procEnv = process.env;
+local osName = jit.os;
+local osArch = jit.arch;
+procEnv.PATH = procEnv.PATH .. ((osName == "Windows" and ";.\\bin\\Windows_" or ":./bin/Linux_") .. osArch); -- add bin libs path
 package.path = require"app.path"(package.path); -- set require path
+if osName == "Linux" then -- os file searching
+	local libpath = ("%s/bin/Linux_%s"):format(process.cwd(),osArch);
+	process.env.LD_LIBRARY_PATH = ("%s:%s"):format((process.env.LD_LIBRARY_PATH or ""),libpath);
+	-- require("proctime")(libpath .. "/libptimelua.os",require "ffi"); -- fix the lua's os clock on linux
+	require("proctime")(libpath .. "/libptimelua.so",require "ffi"); -- fix the lua's os clock on linux
+end
+
+-- require essential modules
 local profiler = require"profiler"; _G.profiler = profiler;
 local promise = require "promise"; _G.promise,_G.async,_G.await,_G.waitter = promise,promise.async,promise.await,promise.waitter; -- promise library
 local require = require"app.require"(require); -- set global require function
@@ -31,6 +44,7 @@ _G.app = {
 	args = args;
 	options = options;
 	changelog = require "app.changelog";
+	disabledFeature = {};
 };
 
 --#endregion sys setup
@@ -189,6 +203,14 @@ initProfiler:start"Load bot environments"; --#region --** Load bot environments 
 			_G.noPrefix = noPrefix;
 			logger.info(" |- command indexing end!");
 		initProfiler:stop();
+
+		local disabledFeature = app.disabledFeature;
+		if next(disabledFeature) then
+			logger.warn("Some feature was disabled when loading commands");
+		end
+		for index,reason in pairs(app.disabledFeature) do
+			logger.warnf(" |- %s: %s",tostring(index),tostring(index));
+		end
 	initProfiler:stop();
 initProfiler:stop(); --#endregion --** Load bot environments **--
 initProfiler:start"Setup bot Logic"; --#region --** Main logic **--

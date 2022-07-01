@@ -20,3 +20,8 @@ Enable http heartbeat mode
 
 # env.testing || test || testing
 Enable testing mode
+
+# "voice.disabled=STR"
+disable music feature, the STR is reason of why this feature can't be use
+if STR have space or other rule-breaker char, you need to escape all with "
+* STR is json object, you can add content, embed, and more
