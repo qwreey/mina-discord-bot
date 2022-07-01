@@ -25,3 +25,6 @@ Enable testing mode
 disable music feature, the STR is reason of why this feature can't be use
 if STR have space or other rule-breaker char, you need to escape all with "
 * STR is json object, you can add content, embed, and more
+
+# "os.flag=STR"
+set os flag, this will used for searching bin files
