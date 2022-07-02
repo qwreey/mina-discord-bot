@@ -16,7 +16,7 @@ args[1] = "app/main";
 -- set os flag
 local osFlag = "";
 for i,v in pairs(args) do
-    local matching = v:match"os%.flag=(.*)";
+    local matching = v:match"^os%.flag=(.*)";
     if matching then
         osFlag = "_" .. matching;
         break;
