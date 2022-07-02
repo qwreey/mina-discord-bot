@@ -12,12 +12,20 @@ local prettyPrint = require("pretty-print");
 local jit = require("jit");
 args[0] = nil;
 args[1] = "app/main";
+
+-- set os flag
+local osFlag = "";
+for i,v in pairs(args) do
+    local matching = v:match"os%.flag=(.*)";
+    if matching then
+        osFlag = matching;
+        break;
+    end
+end
+
 local bin = {
 	Windows = "./bin/Windows_%s/luvit.exe";
 	Linux = "./bin/Linux_%s/luvit";
-};
-local listOfBinFiles = {
-	"lit","luvi","luvit","yt-dlp"
 };
 
 ---Change mode of file, it will only works on linux
@@ -34,6 +42,9 @@ local function chmod(k,v)
 	return passed,passed and results or exitSig,exitCode;
 end
 
+local listOfBinFiles = {
+	"lit","luvi","luvit","yt-dlp"
+};
 -- Setup binary executables
 if jit.os == "Linux" then -- if this os is linux, adding executing permissions to bin files
 	local binPath = ("./bin/Linux_%s"):format(jit.arch);
