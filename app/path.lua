@@ -1,5 +1,5 @@
 local jit = require "jit";
-return function (path)
+return function (path,binPath)
 	local jitos = jit.os;
 	local function add(newPath)
 		if string.find(path,newPath .. ";",0,true) then
@@ -11,7 +11,6 @@ return function (path)
 		path = path .. newPath .. ";";
 	end
 
-	local jitarch = jit.arc
 	add("?.lua");
 	add("?/init.lua");
 	add("./?.lua");
@@ -22,7 +21,7 @@ return function (path)
 	add("./deps/?/init.lua");
 	add("./app/?.lua");
 	add("./app/?/init.lua");
-	add(("./bin/%s_%s"):format(jitos,jitarch) .. "/?.lua");
-	add(("./bin/%s_%s"):format(jitos,jitarch) .. "/?/init.lua");
+	add(binPath .. "/?.lua");
+	add(binPath.. "/?/init.lua");
 	return path;
 end;

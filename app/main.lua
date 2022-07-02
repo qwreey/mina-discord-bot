@@ -19,12 +19,24 @@ local jit = jit or require "jit";
 local procEnv = process.env;
 local osName = jit.os;
 local osArch = jit.arch;
-procEnv.PATH = procEnv.PATH .. ((osName == "Windows" and ";.\\bin\\Windows_" or ":./bin/Linux_") .. osArch); -- add bin libs path
-package.path = require"app.path"(package.path); -- set require path
+local binPath;
+for _,v in pairs(args) do
+	local matching = v:match("^binPath=(.*)");
+	if matching then
+		binPath = matching;
+		break;
+	end
+end
+if not binPath then
+	binPath = ("./bin/%s_%s"):format(osName,osArch);
+end
+procEnv.PATH = procEnv.PATH .. ( -- add bin libs path
+	(osName == "Windows" and (";"..binPath:gsub("/","\\"))) or (":"..binPath)
+);
+package.path = require"app.path"(package.path,binPath); -- set require path
 if osName == "Linux" then -- os file searching
-	local libpath = ("%s/bin/Linux_%s"):format(process.cwd(),osArch);
+	local libpath = ("%s/%s"):format(process.cwd(),binPath:gsub("^%./",""));
 	process.env.LD_LIBRARY_PATH = ("%s:%s"):format((process.env.LD_LIBRARY_PATH or ""),libpath);
-	-- require("proctime")(libpath .. "/libptimelua.os",require "ffi"); -- fix the lua's os clock on linux
 	require("proctime")(libpath .. "/libptimelua.so",require "ffi"); -- fix the lua's os clock on linux
 end
 
@@ -97,8 +109,10 @@ initProfiler:start"Load global modules"; --#region --** Load modules **--
 	cat.upgradeString();
 initProfiler:stop(); --#endregion --** Load modules **--
 initProfiler:start"Load discordia"; --#region --** Discordia Module **--
-	logger.info("------------------------ [CLEAN  UP] ------------------------");
-	logger.info("wait for discordia ...");
+	logger.info("-------------------------- [INIT ] --------------------------");
+	logger.info("global modules was loaded");
+	logger.infof("binPath setted to %s",binPath);
+	logger.info("load discordia ...");
 
 	require("app.jsonErrorWrapper"); -- enable pcall wrapped json en-decoder
 

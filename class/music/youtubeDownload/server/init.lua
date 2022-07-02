@@ -5,7 +5,7 @@ local module = {};
 local setup = promise.spawn(function ()
 	local rateLimit,disableServerSidePostprocessor;
 	for _,str in ipairs(app.args) do
-		rateLimit = str:match("voice%.download%-rate%-limit=(.-)");
+		rateLimit = str:match("^voice%.download%-rate%-limit=(.-)");
 		if str == "voice.disable-server-side-postprocessor" then
 			disableServerSidePostprocessor = true;
 		end

@@ -40,7 +40,7 @@
 -- check music feature disabled
 local featureDisabled;
 for _,str in ipairs(app.args) do
-	local matching = str:match("voice%.disabled=(.*)");
+	local matching = str:match("^voice%.disabled=(.*)");
 	if matching then
 		featureDisabled = matching;
 		app.disabledFeature.music = "Disabled by process argument flag"

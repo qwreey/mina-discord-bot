@@ -18,43 +18,63 @@ local osFlag = "";
 for i,v in pairs(args) do
     local matching = v:match"os%.flag=(.*)";
     if matching then
-        osFlag = matching;
+        osFlag = "_" .. matching;
         break;
     end
 end
 
-local bin = {
-	Windows = "./bin/Windows_%s/luvit.exe";
-	Linux = "./bin/Linux_%s/luvit";
-};
-
----Change mode of file, it will only works on linux
----@param k string the mode to change or add or remove (like chmod command)
----@param v string the file to change
----@return boolean passed is passed successfully
----@return string resultsOrErrors if it was passed successfully, this value is result of command (stdout) or it was failed, this value is error of command (stderr or stdout)
----@return number exitCode the process exit code (in number)
-local function chmod(k,v)
-	local proc = io.popen(("chmod %s %s"):format(k,v));
-	local results = proc:read();
-	local passed,exitSig,exitCode = proc:close();
-	proc = nil;
-	return passed,passed and results or exitSig,exitCode;
+-- set bin file for each os
+local binPath;
+local osName = jit.os;
+local archName = jit.arch;
+if osName == "Windows" then
+	binPath = ("./bin/Windows_%s%s"):format(archName,osFlag);
+elseif osName == "Linux" then
+	binPath = ("./bin/Linux_%s%s"):format(archName,osFlag);
+else
+	return prettyPrint.stdout:write(("\27[2K\r\27[95m[EXIT  %s]\27[0m Unsupported os '%s'\n"):format(osName));
 end
 
-local listOfBinFiles = {
-	"lit","luvi","luvit","yt-dlp"
-};
+---Concat paths
+local function concatPath(...)
+	local items = {...};
+	local str;
+	for _,v in ipairs(items) do
+		if not str then
+			str = v;
+		else
+			str = ("%s/%s"):format(str,v);
+		end
+	end
+	return str;
+end
+
 -- Setup binary executables
-if jit.os == "Linux" then -- if this os is linux, adding executing permissions to bin files
-	local binPath = ("./bin/Linux_%s"):format(jit.arch);
+if osName == "Linux" then -- if this os is linux, adding executing permissions to bin files
+	---Change mode of file, it will only works on linux
+	---@param k string the mode to change or add or remove (like chmod command)
+	---@param v string the file to change
+	---@return boolean passed is passed successfully
+	---@return string resultsOrErrors if it was passed successfully, this value is result of command (stdout) or it was failed, this value is error of command (stderr or stdout)
+	---@return number exitCode the process exit code (in number)
+	local function chmod(k,v)
+		local proc = io.popen(("chmod %s %s"):format(k,v));
+		local results = proc:read();
+		local passed,exitSig,exitCode = proc:close();
+		proc = nil;
+		return passed,passed and results or exitSig,exitCode;
+	end
+
+	local listOfBinFiles = {
+		"lit","luvi","luvit","yt-dlp"
+	};
 	for _,binFile in ipairs(listOfBinFiles) do
-		chmod("u+x",("%s/%s"):format(binPath,binFile)); -- adding execute permissions on bin files
+		chmod("u+x",concatPath(binPath,binFile)); -- adding execute permissions on bin files
 	end
 end
 
--- Set utf-8 terminal
-if jit.os == "Windows" then
+-- Set utf-8 terminal if os is window
+if osName == "Windows" then
 	local chcpStatus do
 		local file = io.popen("chcp");
 		chcpStatus = file:read("*a");
@@ -67,6 +87,7 @@ if jit.os == "Windows" then
 	end
 end
 
+-- spawn process function (with support adding more args)
 local function spawnProcess(path,thisArgs)
 	local newArgs = {};
 	for i,v in pairs(args) do
@@ -81,7 +102,7 @@ local function spawnProcess(path,thisArgs)
 		end
 	end
 
-	local newProcess = spawn(bin[jit.os]:format(jit.arch),{
+	local newProcess = spawn(concatPath(binPath,osName == "Windows" and "luvit.exe" or "luvit"),{
 		stdio = {0,1,2};
 		args = newArgs;
 		cwd = "./";
@@ -89,6 +110,7 @@ local function spawnProcess(path,thisArgs)
 	return newProcess.waitExit();
 end
 
+-- loop spawn process, if dead
 local function loopProcess(name,path,thisArgs)
 	while true do
 		local exitCode = spawnProcess(path,thisArgs);
@@ -113,7 +135,9 @@ local function loopProcess(name,path,thisArgs)
 end
 loopProcess = coroutine.wrap(loopProcess);
 
+-- run main server
 loopProcess("main","app/main",{
 	"--logger_prefix","main";
+	("binPath=%s"):format(binPath);
 });
 -- loopProcess("data","app/data");
