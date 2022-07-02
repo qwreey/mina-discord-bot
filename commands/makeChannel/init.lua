@@ -34,11 +34,11 @@ local function channelData(channelMaker,initUser)
         -- user_limit = 10;
         parent_id = category and category.id;
         position = (channelMaker.position or 0);
-        permission_overwrites = {{
-            id = initUser.id;
-            type = 1;
-            allow = tostring(channelPermissions);
-        }};
+        -- permission_overwrites = {{
+        --     id = initUser.id;
+        --     type = 1;
+        --     allow = tostring(channelPermissions);
+        -- }};
     };
 end
 
