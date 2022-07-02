@@ -19,7 +19,21 @@ local function getRawPermissionOverwrites(channel)
     if not permissionOverwrites then return {} end
     local raw = {};
     for item in permissionOverwrites:iter() do
-        insert(raw,{id = item.id,type = typesOfPermissionOverwrite[item._type],deny = item._deny,allow=item._allow});
+        local this = {
+            id = tostring(item.id);
+            type = typesOfPermissionOverwrite[item._type];
+        };
+        local deny = item._deny;
+        local allow = item._allow;
+
+        if deny then
+            this.deny = tostring(deny);
+        end
+        if allow then
+            this.allow = tostring(allow);
+        end
+
+        insert(raw,this);
     end
     return raw;
 end
@@ -54,7 +68,7 @@ local function channelData(channelMaker,initUser)
         userPermission.type = 1;
     end
 
-    userPermission.allow = channelPermissions;
+    userPermission.allow = tostring(channelPermissions);
 
     local category = channelMaker.category;
     return {
