@@ -10,6 +10,7 @@ local exitCodes = require("app.exitCodes");
 local spawn = require("coro-spawn");
 local prettyPrint = require("pretty-print");
 local jit = require("jit");
+local fs = require("fs");
 args[0] = nil;
 args[1] = "app/main";
 
@@ -89,6 +90,9 @@ end
 
 -- spawn process function (with support adding more args)
 local function spawnProcess(path,thisArgs)
+	if type(thisArgs) == "function" then
+		thisArgs = thisArgs();
+	end
 	local newArgs = {};
 	for i,v in pairs(args) do
 		newArgs[i] = v;
@@ -136,8 +140,20 @@ end
 loopProcess = coroutine.wrap(loopProcess);
 
 -- run main server
-loopProcess("main","app/main",{
-	"--logger_prefix","main";
-	("binPath=%s"):format(binPath);
-});
+loopProcess("main","app/main",function ()
+	local default = {
+		"--logger_prefix","main";
+		("binPath=%s"):format(binPath);
+	};
+
+	local flags = fs.readFileSync(".flags");
+	if flags then
+		for str in flags:gmatch("(.-);\n") do
+			local replaced = str:gsub("\\n","\n");
+			insert(default,replaced);
+		end
+		insert(default,"env.flagfile");
+	end
+	return default;
+end);
 -- loopProcess("data","app/data");

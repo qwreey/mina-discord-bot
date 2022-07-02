@@ -112,6 +112,12 @@ initProfiler:start"Load discordia"; --#region --** Discordia Module **--
 	logger.info("-------------------------- [INIT ] --------------------------");
 	logger.info("global modules was loaded");
 	logger.infof("binPath setted to %s",binPath);
+	for _,v in ipairs(args) do
+		if v == "env.flagfile" then
+			logger.info("flag file loaded (.flags)");
+			break;
+		end
+	end
 	logger.info("load discordia ...");
 
 	require("app.jsonErrorWrapper"); -- enable pcall wrapped json en-decoder
