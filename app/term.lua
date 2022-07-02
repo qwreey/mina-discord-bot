@@ -127,7 +127,19 @@ local function readPipe(pipe,msgEnv)
 	end
 end
 local remove = table.remove;
+
+-- local execStdinSmulaterBinding;
+-- local function makeBindingExecStdinSmulater()
+-- 	execStdinSmulaterBinding = hook.new {
+		
+-- 	};
+-- end
+
 function runEnv.exec(command,sendf) -- process open
+	-- if not execStdinSmulaterBinding then
+	-- 	makeBindingExecStdinSmulater();
+	-- end
+
 	local send = send or sendf;
 	local split = argsParser.split(command);
 	local proc = remove(split,1);

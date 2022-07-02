@@ -38,3 +38,6 @@ node_modules/**
 # run file
 run.bat
 run.sh
+
+# .flags
+.flags
