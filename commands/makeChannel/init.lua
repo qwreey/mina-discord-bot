@@ -13,6 +13,17 @@ local channelPermissions = bit.bor(
     permission.stream
 );
 
+local typesOfPermissionOverwrite = {member = 1,role = 0};
+local function getRawPermissionOverwrites(channel)
+    local permissionOverwrites = channel.permissionOverwrites;
+    if not permissionOverwrites then return {} end
+    local raw = {};
+    for item in permissionOverwrites:iter() do
+        insert(raw,{id = item.id,type = typesOfPermissionOverwrite[item._type],deny = item._deny,allow=item._allow});
+    end
+    return raw;
+end
+
 ---Make channel data
 ---@param channelMaker GuildVoiceChannel
 ---@param initUser Member
@@ -28,18 +39,39 @@ local function channelData(channelMaker,initUser)
     -- else logger.wranf("[ChannelMaker] Couldn't make permissionOverwriter for user generated channel\nguild: %s; channel: %s",this.guild.id,this.id);
     -- end
 
+    local userId = initUser.id;
+    local rawPermissionOverwrites = getRawPermissionOverwrites(channelMaker);
+    local userPermission;
+    for _,v in ipairs(rawPermissionOverwrites) do
+        if v.id == userId then
+            userPermission = v;
+        end
+    end
+    if not userPermission then
+        userPermission = {};
+        insert(rawPermissionOverwrites,userPermission);
+        userPermission.id = initUser.id;
+        userPermission.type = 1;
+    end
+
+    userPermission.allow = channelPermissions;
+
     local category = channelMaker.category;
     return {
         name = ("%s님의 개인채널"):format(initUser.name);
         -- user_limit = 10;
         parent_id = category and category.id;
         position = (channelMaker.position or 0);
-        -- permission_overwrites = {{
-        --     id = initUser.id;
-        --     type = 1;
-        --     allow = tostring(channelPermissions);
-        -- }};
+        permission_overwrites = userPermission;
     };
+end
+
+local function setPermission(channel,initUser)
+    local permissionOverwriter = channelMaker:getPermissionOverwriteFor(initUser);
+    if permissionOverwriter then
+        permissionOverwriter:allowPermissions(unpack(channelPermissions));
+    else logger.wranf("[ChannelMaker] Couldn't make permissionOverwriter for user generated channel\nguild: %s; channel: %s",this.guild.id,this.id);
+    end
 end
 
 ---Connect Join event
