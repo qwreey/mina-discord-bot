@@ -20,17 +20,17 @@ local function getRawPermissionOverwrites(channel)
     local raw = {};
     for item in permissionOverwrites:iter() do
         local this = {
-            id = tostring(item.id);
+            id = item.id;
             type = typesOfPermissionOverwrite[item._type];
         };
         local deny = item._deny;
         local allow = item._allow;
 
         if deny then
-            this.deny = tostring(deny);
+            this.deny = deny;
         end
         if allow then
-            this.allow = tostring(allow);
+            this.allow = allow;
         end
 
         insert(raw,this);
@@ -68,7 +68,7 @@ local function channelData(channelMaker,initUser)
         userPermission.type = 1;
     end
 
-    userPermission.allow = tostring(channelPermissions);
+    userPermission.allow = channelPermissions;
 
     local category = channelMaker.category;
     return {
@@ -76,16 +76,8 @@ local function channelData(channelMaker,initUser)
         -- user_limit = 10;
         parent_id = category and category.id;
         position = (channelMaker.position or 0);
-        permission_overwrites = userPermission;
+        permission_overwrites = rawPermissionOverwrites;
     };
-end
-
-local function setPermission(channel,initUser)
-    local permissionOverwriter = channelMaker:getPermissionOverwriteFor(initUser);
-    if permissionOverwriter then
-        permissionOverwriter:allowPermissions(unpack(channelPermissions));
-    else logger.wranf("[ChannelMaker] Couldn't make permissionOverwriter for user generated channel\nguild: %s; channel: %s",this.guild.id,this.id);
-    end
 end
 
 ---Connect Join event
