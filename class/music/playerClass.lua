@@ -163,7 +163,7 @@ this.seekbar = seekbar;
 --#region --* Client setups *--
 
 --- make auto leave for none-using channels
----@param member Member
+---@param member Member|nil
 ---@param channel GuildVoiceChannel
 local function voiceChannelJoin(member,channel)
 	if member and member.bot then ---@diagnostic disable-line
@@ -221,7 +221,7 @@ local function timeouted(guild,player,channelId)
 		leaveMessage:delete();
 	end
 end
----@param member Member
+---@param member Member|nil
 ---@param channel GuildVoiceChannel
 ---@param player playerClass
 local function voiceChannelLeave(member,channel,player)
@@ -811,7 +811,12 @@ local noSong = {components.actionRow.new{
 	};
 	buttons.action_remove;
 }};
-function this:songIndicator(index)
+
+---Create song indicator (including buttons)
+---@param self nil|playerClass
+---@param index nil|number
+---@return table components List of components
+function this.songIndicator(self,index)
 	if (not index) or (not self) or (#self == 0) then
 		return noSong;
 	end

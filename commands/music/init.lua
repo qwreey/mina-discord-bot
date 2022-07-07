@@ -112,13 +112,14 @@ local help = [[
 24 시간 모드를 끄거나 켭니다. 켜는데에는 프리미엄이 필요합니다
 이 모드를 활성화 하면 봇이 사람이 없더라도 나가지 않습니다
 ]];
+local components_remove = {components.actionRow.new{buttons.action_remove}};
 local noVoiceChannel = {
 	content = empty;
 	embed = {
 		title = ":x: 음성 채팅방에 있지 않아요!";
 		description = "이 명령어를 사용하려면 음성 채팅방에 있어야 합니다";
 	};
-	components = {components.actionRow.new{buttons.action_remove}};
+	components = components_remove;
 };
 local otherVoiceChannel = {
 	content = empty;
@@ -126,7 +127,7 @@ local otherVoiceChannel = {
 		title = ":x: 다른 음성채팅방에서 봇을 사용중이에요!";
 		description = "각 서버당 한 채널만 이용할 수 있습니다";
 	};
-	components = {components.actionRow.new{buttons.action_remove}};
+	components = components_remove;
 };
 local noSongs = {
 	content = empty;
@@ -134,7 +135,7 @@ local noSongs = {
 		title = ":x: 음악이 없습니다!";
 		description = "음악이 있어야 이 명령어를 사용할 수 있어요";
 	};
-	components = {components.actionRow.new{buttons.action_remove}};
+	components = components_remove;
 };
 local noConnection = {
 	content = empty;
@@ -142,7 +143,7 @@ local noConnection = {
 		title = ":x: 봇이 음성채팅방에 있지 않습니다!";
 		description = "봇이 음성채팅방에 있을때 사용해주세요";
 	};
-	components = {components.actionRow.new{buttons.action_remove}};
+	components = components_remove;
 };
 local noPlayer = {
 	content = empty;
@@ -150,7 +151,7 @@ local noPlayer = {
 		title = ":x: 오류가 발생하였습니다";
 		description = "재생 정보를 찾을 수 없습니다";
 	};
-	components = {components.actionRow.new{buttons.action_remove}};
+	components = components_remove;
 };
 
 -- 섞기 움직이기(이동)
@@ -579,7 +580,7 @@ local export = {
 				title = ":x: 채널에 참가할 수 없습니다";
 				description = "봇이 유효한 권한을 가지고 있는지 확인해주세요";
 			};
-			components = {components.actionRow.new({buttons.action_remove})};
+			components = components_remove;
 		};
 	};
 	["list music"] = {

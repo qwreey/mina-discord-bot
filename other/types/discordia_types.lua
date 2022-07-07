@@ -1898,7 +1898,7 @@ function Client:on(name, fn) end
 function Client:once(name, fn) end
 ---Subscribes a callback to be called every time the named event is emitted. Callbacks registered with this method are not automatically wrapped as a coroutine. Returns the original callback for convenience.
 ---@param name clientEvents
----@param fn function
+---@param fn function|table
 ---@return function
 ---@overload fun(name: 'ready', fn: fun()): function
 ---@overload fun(name: 'shardReady', fn: fun(shardId: number)): function

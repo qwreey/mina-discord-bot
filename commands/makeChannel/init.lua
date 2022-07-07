@@ -115,7 +115,7 @@ client:onSync("voiceChannelJoin",promise.async(function (member, channel)
         createdChannels = {};
         data.createdChannels = createdChannels;
     end
-    createdChannels[this.id] = true;
+    createdChannels[this.id] = member.id;
     serverData.saveData(guild.id,data);
 
     logger.infof("[ChannelMaker] Channel %s created for guild %s user %s",this.id,guild.id,member.id);
@@ -218,6 +218,123 @@ local export = {
     --         };
     --     };
     -- };
+    ["채널이름"] = {
+        alias = {"채널 이름","채널이름변경","채널 이름 변경","채널 이름변경","채널이름 변경"};
+        disableDm = true;
+        command = "채널이름";
+        channelNameSetted = {
+            content = zwsp;
+            embed = {
+                title = ":white_check_mark: 채널 이름을 설정했습니다";
+                description = "다음번 생성되는 채널도 이 이름을 가집니다";
+            };
+        };
+        channelNotFound = {
+            content = zwsp;
+            embed = {
+                title = ":x: 참여한 채널이 없습니다";
+                description = "이름을 바꾸고 싶은 자신의 채널에 참여하세요";
+            };
+        };
+        channelNotOwn = {
+            content = zwsp;
+            embed = {
+                title = ":x: 이 채널은 자신의 것이 아니에요";
+                description = "관리 권한이 있다면 자신의 채널이 아니여도 이름을 바꿀 수 있어요";
+            };
+        };
+        channelIsNotGenerated = {
+            content = zwsp;
+            embed = {
+                title = ":x: 생성된 채널이 아닙니다";
+                description = "봇이 생성한 채널만 이름을 바꿀 수 있어요";
+            };
+        };
+        channelNameSettedByForce = {
+            content = zwsp;
+            embed = {
+                title = ":white_check_mark: 채널 이름을 강제로 설정했습니다";
+                description = "관리 권한을 이용해 강제로 채널 이름을 설정했습니다. 다음에 생성하는 자신의 채널의 이름에는 영향을 주지 않습니다";
+            };
+        };
+        nameNeeded = {
+            content = zwsp;
+            embed = {
+                title = ":x: 이름을 비워둘 수 없습니다";
+                description = "이름을 설정해주세요";
+            };
+        };
+        ---@param message Message
+        ---@param Content commandContent
+        reply = function (message,args,Content,self)
+            local channelName = Content.rawArgs;
+            if not channelName then
+                return message:reply(self.nameNeeded);
+            end
+
+            local member = message.member; ---@type Member
+            local channel = member.voiceChannel;
+            if not channel then -- check member's channel
+                return message:reply(self.channelNotFound);
+            end
+
+            -- check server data
+            local serverData = Content.loadServerData();
+            local createdChannels = serverData and serverData.createdChannels;
+            if not createdChannels then -- if can't find created channel data, just ignore this command
+                return message:reply(self.channelIsNotGenerated);
+            end
+
+            -- check ownership
+            local owner = createdChannels[channel.id];
+            local byForce; -- is forced, by admin permission
+            if not owner then
+                return message:reply(self.channelIsNotGenerated);
+            elseif owner ~= member.id then
+                if member:hasPermission(adminPermission) then
+                    byForce = true;
+                else
+                    return message:reply(self.channelNotOwn);
+                end
+            end
+
+            -- set channel Name and check error
+            local ok,err = channel:setName(channelName);
+            if not ok then
+                return message:reply{
+                    content = zwsp;
+                    embed = {
+                        title = ":x: 채널 이름 변경에 실패했습니다";
+                        description = ("디스코드가 잘못된 결과를 주었습니다\n```%s```"):format(tostring(err));
+                    };
+                };
+            end
+
+            -- if forced
+            if byForce then
+                return message:reply(self.channelNameSettedByForce);
+            end
+
+            -- save to user data file
+            local userData = Content.loadUserData();
+            local userDefaults = userData.channelMakerDefaultNameByServers;
+            if not userDefaults then
+                userDefaults = {};
+                userData.channelMakerDefaultNameByServers = userDefaults;
+            end
+            userDefaults[message.guild.id] = Content.rawArgs;
+            Content.saveUserData();
+
+            return message:reply(self.channelNameSetted);
+        end;
+        onSlash = commonSlashCommand {
+            optionName = "이름";
+            optionRequired = true;
+            optionsType = discordia_enchant.enums.optionType.string;
+            optionDescription = "현재 자신이 있는 음성 채널의 변경할 이름을 입력하세요";
+			description = "자신이 있는 생성된 음성 채널의 이름을 변경합니다. 오직 자신이 만든 음챗만 가능합니다!";
+		};
+    };
     ["음성채팅생성"] = {
         alias = {
             "채널생성","채널 생성","채널 생성기","채널생성기",
@@ -242,8 +359,12 @@ local export = {
             local guildData = Content.loadServerData() or {};
             local guild = Content.guild;
             local channelMaker = guildData.channelMaker;
+            local channelName = Content.rawArgs;
+            if #channelName == 0 then -- if channel name was not defined, set as default name
+                channelName = "「➕」음성채팅-생성";
+            end
 
-            local new,err = guild:createVoiceChannel("「➕」음성채팅-생성");
+            local new,err = guild:createVoiceChannel(channelName);
             if not new then -- failed to create new channel
                 return replyMsg:update({
                     content = zwsp;
@@ -290,8 +411,10 @@ local export = {
             };
         };
 		onSlash = commonSlashCommand {
-			noOption = true;
-			description = "음성 채널 생성방을 만듭니다!";
+			description = "음성 채널 생성방을 만듭니다. 만들어진 채널의 이름은 디스코드 채널 설정에서 변경할 수 있습니다";
+            optionName = "채널이름";
+            optionDescription = "음성 채팅방을 생성하는 채널의 이름을 지정합니다. 비워두면 자동으로 기본값을 사용합니다. 나중에 디스코드 채널 설정으로 직접 편집할 수 있습니다";
+            optionsType = discordia_enchant.enums.optionType.string;
 		};
     };
 };

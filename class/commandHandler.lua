@@ -76,8 +76,9 @@ local function indexingReact(indexTable,cmds,noPrefix,commandName,reactInfo)
 end
 
 ---encoding commands into one table
----@return table reactionMap maped reactions
----@return table commandMap maped commands
+---@return table reactionMap mapped reactions
+---@return table commandMap mapped commands
+---@return table noPrefix mapped no prefixed commands
 ---@return number len len of reactions (map length)
 function module.encodeCommands(...)
 	local this,cmds,noPrefix = {},{},{};
