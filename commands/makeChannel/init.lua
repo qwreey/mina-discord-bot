@@ -69,10 +69,13 @@ local function channelData(channelMaker,initUser)
     end
 
     userPermission.allow = channelPermissions;
+    local initUserData = userData.loadData(initUser.id);
+    local defaultNames = initUserData and initUserData.channelMakerDefaultNameByServers;
+    local name = defaultNames and defaultNames[channelMaker.guild.id];
 
     local category = channelMaker.category;
     return {
-        name = ("%s님의 개인채널"):format(initUser.name);
+        name = name or ("%s님의 개인채널"):format(initUser.name);
         -- user_limit = 10;
         parent_id = category and category.id;
         position = (channelMaker.position or 0);
