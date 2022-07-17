@@ -7,7 +7,6 @@ function module.drawPerbar(per,size)
 	local cutPoint = #tostring(cut%1);
 	local perText = tostring(cut) .. (cutPoint == 1 and ".00" or cutPoint == 3 and "0" or "");
 	return table.concat{
-		string.rep(" ",6 - #perText),perText,"% ",
 		string.rep("█",math.floor(barsize)),
 		(barsizePoint == 0 and "") or
 		(barsizePoint > (7/8) and "▉") or
@@ -18,6 +17,7 @@ function module.drawPerbar(per,size)
 		(barsizePoint > (1/4) and "▎") or
 		(barsizePoint > (1/8) and "▏") or " ",
 		barsize == size and "" or (string.rep(" ",math.floor(size-barsize-8)))
+		string.rep(" ",6 - #perText),perText,"% ",
 	};
 end
 function module.drawPerbarWithBackground(per,size)
