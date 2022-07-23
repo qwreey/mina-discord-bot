@@ -71,12 +71,12 @@ local export = {
 
 local defaultComponents = {
     components.actionRow.new {
-        buttons.action_remove;
+        buttons.action_remove_noreferenced;
     };
 };
 
 local match = string.match;
-local this = hook.new{
+local this = hook.new{ -- 후크로 구현
     type = hook.types.before;
     destroy = function (self) -- this function never be called, should never happen
         self:detach();

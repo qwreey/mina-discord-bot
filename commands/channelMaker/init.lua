@@ -271,7 +271,7 @@ local export = {
         ---@param Content commandContent
         reply = function (message,args,Content,self)
             local channelName = Content.rawArgs;
-            if not channelName then
+            if (not channelName) or (#channelName == 0) then
                 return message:reply(self.nameNeeded);
             end
 

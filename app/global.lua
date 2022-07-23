@@ -306,7 +306,7 @@ local function timeout(delay,func,...)
 end
 _G.timeout = timeout;
 
--- normal love range
+-- 일반적인 love 범위들
 do
 	local cache = {};
 	_G.loveRang = function (min,max)
@@ -323,7 +323,7 @@ do
 	_G.rmLove = loveRang(-2,-8);
 end
 
---format traceback
+--traceback 포멧터
 function _G.formatTraceback(msg)
 	msg = tostring(msg);
 	return msg:gsub(" -%a:[/\\]Users[/\\].-[/\\][Dd]esktop[/\\].-[/\\]","")
@@ -332,8 +332,14 @@ function _G.formatTraceback(msg)
 		:gsub("	","    ");
 end
 
--- report cooltime
+-- 재보 쿨타임
 _G.reportCooltime = 60*60;
 
--- empty string (zwsp)
+-- 넓이 없는 띄어쓰기 (zwsp)
 _G.zwsp = string.char(226,128,139);
+
+-- 최대 경고수
+_G.maxWarns = 100;
+
+-- 코드블럭 이스캐이프
+_G.codeblockEscape = ("`%s`%s`"):format(zwsp,zwsp);

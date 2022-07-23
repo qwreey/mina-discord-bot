@@ -12,7 +12,7 @@ local concat = table.concat;
 ---@field optionChoices table option choices table
 ---@field noOption boolean|nil is no option provided
 ---@field headerEnabled boolean|nil is interaction header enabled
----@field options boolean|nil you can set options manually
+---@field options table|nil you can set options manually
 local defaultOptionName = "내용";
 local defaultOptionDescription = "명령어 사용에 쓰이는 내용입니다";
 

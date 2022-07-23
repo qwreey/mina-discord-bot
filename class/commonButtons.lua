@@ -12,6 +12,22 @@ local function combine(self,message)
 	return message;
 end
 
+-- remove owner only function
+---@param id string
+---@param object interaction
+local function removeOwnerOnly(id,object)
+	local ownerId = id:match("action_remove_owner_(%d+)");
+	if ownerId then
+		local member = object.member;
+		local message = object.message;
+		if (not member) or (not message) or (member.id ~= ownerId) then ---@diagnostic disable-line
+			return;
+		end
+		pcall(message.delete);
+	end
+end
+client:onSync("buttonPressed",promise.async(removeOwnerOnly));
+
 return {
 	action_remove = setmetatable(components.button.new{
 		custom_id = "action_remove";
@@ -34,4 +50,25 @@ return {
 			end
 		end;
 	},{__call = combine});
+	action_remove_noreferenced = setmetatable(components.button.new{
+		custom_id = "action_remove_noref";
+		style = discordia_enchant_enums.buttonStyle.danger;
+		label = "메시지 삭제";
+		emoji = components.emoji.new "✖";
+		---@param object interaction
+		func = function(object)
+			local message = object.message;
+			if message then
+				pcall(message.delete,message);
+			end
+		end;
+	},{__call = combine});
+	action_remove_owneronly = function(owner)
+		return components.button.new{
+			custom_id = ("action_remove_owner_%s"):format(owner);
+			style = discordia_enchant_enums.buttonStyle.danger;
+			label = "메시지 삭제";
+			emoji = components.emoji.new "✖";
+		};
+	end;
 };
