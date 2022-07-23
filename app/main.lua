@@ -125,13 +125,13 @@ initProfiler:start"Load discordia"; --#region --** Discordia Module **--
 	local discordia = require "discordia"; _G.discordia = discordia; ---@type discordia -- 디스코드 lua 봇 모듈 불러오기
 	local discordia_enchant = require "discordia_enchant"; _G.discordia_enchant = discordia_enchant;
 	local userInteractWarpper = require("class.userInteractWarpper"); _G.userInteractWarpper = userInteractWarpper;
-	local commonButtons = require "class.commonButtons"; _G.buttons = commonButtons;
-
+	
 	local discordia_class = discordia.class; ---@type class -- 디스코드 클레스 가져오기
 	local discordia_Logger = discordia_class.classes.Logger; ---@type Logger -- 로거부분 가져오기 (통합을 위해 수정)
 	local enums = discordia.enums; _G.enums = enums; ---@type enums -- 디스코드 enums 가져오기
 	local client = discordia.Client(require("class.clientSettings")); _G.client = client; ---@type Client -- 디스코드 클라이언트 만들기
 	local Date = discordia.Date; _G.Date = Date; ---@type Date
+	local commonButtons = require "class.commonButtons"; _G.buttons = commonButtons;
 
 	-- inject logger
 	function discordia_Logger:log(level, msg, ...)

@@ -69,12 +69,6 @@ local export = {
 	};
 };
 
-local defaultComponents = {
-    components.actionRow.new {
-        buttons.action_remove_noreferenced;
-    };
-};
-
 local match = string.match;
 local this = hook.new{ -- 후크로 구현
     type = hook.types.before;
@@ -108,7 +102,11 @@ local this = hook.new{ -- 후크로 구현
                         url = ("https://cdn.discordapp.com/emojis/%s"):format(emojiId);
                     };
                 };
-                components = defaultComponents;
+                components = {
+                    components.actionRow.new {
+                        buttons.action_remove_owneronly(member.id); ---@diagnostic disable-line
+                    };
+                };
                 reference = {message = message, mention = false};
             };
             return true;

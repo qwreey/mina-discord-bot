@@ -13,6 +13,12 @@ local function combine(self,message)
 end
 
 -- remove owner only function
+local notOwner = {
+	content = zwsp;
+	embed = {
+		title = ":x: 메시지 주인만 이 명령을 사용할 수 있습니다";
+	};
+};
 ---@param id string
 ---@param object interaction
 local function removeOwnerOnly(id,object)
@@ -20,10 +26,13 @@ local function removeOwnerOnly(id,object)
 	if ownerId then
 		local member = object.member;
 		local message = object.message;
-		if (not member) or (not message) or (member.id ~= ownerId) then ---@diagnostic disable-line
+		if (not member) or (not message) then
+			return;
+		elseif tostring(member.id) ~= ownerId then ---@diagnostic disable-line
+			object:reply(notOwner,true);
 			return;
 		end
-		pcall(message.delete);
+		pcall(message.delete,message);
 	end
 end
 client:onSync("buttonPressed",promise.async(removeOwnerOnly));
