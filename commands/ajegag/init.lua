@@ -39,7 +39,7 @@ local export = {
 		end;
 		onSlash = commonSlashCommand {
 			noOption = true;
-			description = "한강 물온도를 보여줍니다!";
+			description = "꺌꺌ㄲㄲ꺌 ㅋㅋㅋㅋ아이 너무즐겁다 ㅋㅋ캬컄ㅋ";
 		};
 	};
 };
