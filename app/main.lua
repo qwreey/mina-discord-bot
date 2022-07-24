@@ -629,6 +629,13 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 
 	client:on("slashCommandsCommited",function ()
 		logger.info("[Slash] All slash command loaded");
+		-- execute scripts
+		for _,str in ipairs(args) do
+			local match = str:match("^execute=(.*)");
+			if match then
+				pcall(require,match);
+			end
+		end
 	end);
 	-- enable terminal features and live reload system
 initProfiler:stop(); --#endregion --** Main logic **--

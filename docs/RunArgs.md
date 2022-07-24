@@ -28,3 +28,6 @@ if STR have space or other rule-breaker char, you need to escape all with "
 
 # "os.flag=STR"
 set os flag, this will used for searching bin files
+
+# "execute=FILE"
+execute lua file (require)  
