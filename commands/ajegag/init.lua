@@ -23,7 +23,7 @@ local export = {
 		alias = {
 			"개그","부장님개그","부장님 개그",
 			"아재 개그","아제개그","아제 개그",
-			"꺄르륵"
+			"꺄르륵","조크","쪼크"
 		};
 		reply = function (message)
 			local ajegag = getRandomAjegag();
