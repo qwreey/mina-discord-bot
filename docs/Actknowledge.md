@@ -91,3 +91,6 @@ promise 의 luvit 구현채입니다
 
 > Figlet  
 아스키아트 기능을 위해 사용된 npm 라이브러리입니다  
+
+> [아재개그](https://github.com/Team-WAVE-x/Stop-uncle)
+뭐.... 재미있더라구요 ㅋㅋㅋㅋ
