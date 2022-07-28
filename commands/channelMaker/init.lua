@@ -222,7 +222,67 @@ local export = {
     --     };
     -- };
     ["채널주인"] = {
-        alias = {"채널방장","음챗방장","음챗주인","채널워너","음챗워너","채널"}
+        alias = {
+            "채널방장","음챗방장","음챗주인","채널워너","음챗워너","채널오너","음챗오너",
+            "채널 방장","음챗 방장","음챗 주인","채널 워너","음챗 워너","채널 오너","음챗 오너","채널 주인"
+        };
+        channelIsNotGenerated = {
+            content = zwsp;
+            embed = {
+                title = ":x: 생성된 채널이 아닙니다";
+                description = "봇이 생성한 채널만 이름을 바꿀 수 있어요";
+            };
+        };
+        channelNotFound = {
+            content = zwsp;
+            embed = {
+                title = ":x: 참여한 채널이 없습니다";
+                description = "이름을 바꾸고 싶은 자신의 채널에 참여하세요";
+            };
+        };
+        ---@param message Message
+        ---@param Content commandContent
+        reply = function (message,args,Content,self)
+            local channelName = Content.rawArgs;
+            if (not channelName) or (#channelName == 0) then
+                return message:reply(self.nameNeeded);
+            end
+
+            local guild = message.guild;
+            local member = message.member; ---@type Member
+            if (not guild) or (not member) then return end
+            local channel = member.voiceChannel;
+            if not channel then -- check member's channel
+                return message:reply(self.channelNotFound);
+            end
+
+            -- check server data
+            local serverData = Content.loadServerData();
+            local createdChannels = serverData and serverData.createdChannels;
+            if not createdChannels then -- if can't find created channel data, just ignore this command
+                return message:reply(self.channelIsNotGenerated);
+            end
+
+            -- check ownership
+            local owner = createdChannels[channel.id];
+            if not owner then
+                return message:reply(self.channelIsNotGenerated);
+            end
+            local ownerMember = guild:getMember(owner);
+            local ownerName = ownerMember and ownerMember.name
+
+            return message:reply{
+                content = zwsp;
+                embed = {
+                    title = ownerName;
+                    description = ("채널의 주인은 <@%s> 입니다"):format(owner)
+                };
+            };
+        end;
+        onSlash = commonSlashCommand {
+            noOption = true;
+            description = "자신이 있는 생성된 음성 채널의 주인을 확인합니다.";
+		};
     };
     ["채널이름"] = {
         alias = {"채널 이름","채널이름변경","채널 이름 변경","채널 이름변경","채널이름 변경"};
