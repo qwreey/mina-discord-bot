@@ -223,8 +223,8 @@ local export = {
     -- };
     ["채널주인"] = {
         alias = {
-            "채널방장","음챗방장","음챗주인","채널워너","음챗워너","채널오너","음챗오너",
-            "채널 방장","음챗 방장","음챗 주인","채널 워너","음챗 워너","채널 오너","음챗 오너","채널 주인"
+            "채널방장","음챗방장","음챗주인","채널워너","음챗워너","채널오너","채널유저","음챗유저","음챗오너",
+            "채널 방장","음챗 방장","음챗 주인","채널 워너","음챗 워너","채널 오너","음챗 오너","채널 유저","음챗 유저","채널 주인"
         };
         channelIsNotGenerated = {
             content = zwsp;
@@ -243,11 +243,6 @@ local export = {
         ---@param message Message
         ---@param Content commandContent
         reply = function (message,args,Content,self)
-            local channelName = Content.rawArgs;
-            if (not channelName) or (#channelName == 0) then
-                return message:reply(self.nameNeeded);
-            end
-
             local guild = message.guild;
             local member = message.member; ---@type Member
             if (not guild) or (not member) then return end
