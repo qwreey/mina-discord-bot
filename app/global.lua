@@ -62,7 +62,7 @@ do
 end
 
 -- EULA text
-_G.EULA = data.loadRaw("EULA.txt");
+_G.EULA = data.loadRaw("data/EULA.txt");
 
 -- the leaderstatus data that will save on server storage
 local loveLeaderstatusPath = "data/loveLeaderstatus.json";
