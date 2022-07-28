@@ -243,11 +243,6 @@ local export = {
         ---@param message Message
         ---@param Content commandContent
         reply = function (message,args,Content,self)
-            local channelName = Content.rawArgs;
-            if (not channelName) or (#channelName == 0) then
-                return message:reply(self.nameNeeded);
-            end
-
             local guild = message.guild;
             local member = message.member; ---@type Member
             if (not guild) or (not member) then return end
