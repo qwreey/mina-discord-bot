@@ -200,7 +200,7 @@ local export = {
 			description = "기억을 잊습니다!";
 			optionName = "지울것";
 			optionDescription = "기억의 번째를 입력하세요!";
-			optionsType = discordia_enchant.enums.optionType.integer;
+			optionsType = discordia_enchant.enums.optionType.string;
 			optionRequired = true;
 		};
 	};
