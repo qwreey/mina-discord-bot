@@ -267,6 +267,13 @@ local export = {
                 description = "이름을 설정해주세요";
             };
         };
+        noUserData = {
+            content = zwsp;
+            embed = {
+                title = ":white_check_mark: 채널 이름을 설정했습니다";
+                description = "그러나 약관 동의가 없어 기본값으로 설정하진 못했습니다";
+            };
+        };
         ---@param message Message
         ---@param Content commandContent
         reply = function (message,args,Content,self)
@@ -320,6 +327,9 @@ local export = {
 
             -- save to user data file
             local userData = Content.loadUserData();
+            if not userData then
+                return message:reply(self.noUserData);
+            end
             local userDefaults = userData.channelMakerDefaultNameByServers;
             if not userDefaults then
                 userDefaults = {};

@@ -114,25 +114,13 @@ local export = {
 		end;
 	};
 	["호감도"] = {
+		alias = {"호감도순위"};
+		---@param content commandContent
 		reply = function (message,args,content)
 			local rawArgs = content.rawArgs;
 			rawArgs = rawArgs:gsub("^ +",""):gsub(" +$","");
-			if rawArgs == "" then -- 내 호감도 불러오기
-				local this = content.loadUserData();
-				if this == nil then -- 약관 동의하지 않았으면 리턴
-					return eulaComment_love;
-				end
-				local numLove = tonumber(this.love);
-				if numLove == nil then
-					return "미나는 **{#:UserName:#}** 님을 **NULL (nil)** 만큼 좋아해요!\n\n오류가 발생하였습니다...\n```json : Userdata / love ? NULL```";	
-				elseif numLove > 0 then
-					return ("미나는 **{#:UserName:#}** 님을 **%d** 만큼 좋아해요!"):format(numLove);
-				elseif numLove < 0 then
-					return ("미나는 **{#:UserName:#}** 님을 **%d** 만큼 싫어해요;"):format(math.abs(numLove));
-				elseif numLove == 0 then
-					return "미나는 아직 **{#:UserName:#}** 님을 몰라요!";
-				end
-			elseif leaderstatusWords[rawArgs] then
+			-- 순위 불러오기
+			if leaderstatusWords[rawArgs] or content.rawCommandName == "호감도순위" then
 				local fields = {};
 				local now = posixTime.now();
 				for nth,this in ipairs(loveLeaderstatus) do
@@ -149,6 +137,21 @@ local export = {
 					};
 				};
 				return;
+			elseif rawArgs == "" then -- 내 호감도 불러오기
+				local this = content.loadUserData();
+				if this == nil then -- 약관 동의하지 않았으면 리턴
+					return eulaComment_love;
+				end
+				local numLove = tonumber(this.love);
+				if numLove == nil then
+					return "미나는 **{#:UserName:#}** 님을 **NULL (nil)** 만큼 좋아해요!\n\n오류가 발생하였습니다...\n```json : Userdata / love ? NULL```";	
+				elseif numLove > 0 then
+					return ("미나는 **{#:UserName:#}** 님을 **%d** 만큼 좋아해요!"):format(numLove);
+				elseif numLove < 0 then
+					return ("미나는 **{#:UserName:#}** 님을 **%d** 만큼 싫어해요;"):format(math.abs(numLove));
+				elseif numLove == 0 then
+					return "미나는 아직 **{#:UserName:#}** 님을 몰라요!";
+				end
 			else
 				local id = rawArgs:match("%d+");
 				if id and id ~= "" then
