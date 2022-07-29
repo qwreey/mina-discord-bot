@@ -132,7 +132,8 @@ function module.findCommandFrom(reacts,text,splitCommandText)
 	do
 		local this = text;
 		while true do
-			sleep(1);
+			local new = profiler.new"commandHandler"
+			new:start"index"
 			local command = findReaction(reacts,this,reactsType);
 			command = command or findReaction(reacts,gsub(this," ",""),reactsType);
 			if command then
@@ -142,6 +143,7 @@ function module.findCommandFrom(reacts,text,splitCommandText)
 			if not this then
 				break;
 			end
+			new:stop()
 		end
 	end
 
