@@ -19,6 +19,11 @@ Cpu 에 더 좋다 그래서 이렇게 나눠놓는거
 
 local module = {};
 
+local insert = table.insert;
+local concat = table.concat;
+local match = string.match;
+local gsub = string.gsub;
+local sleep = timer.sleep;
 function module.onSlash(onSlash,client,reactInfo,commandName)
 	_G.client:on("slashCommandsReady",function ()
 		onSlash(reactInfo,client);
@@ -102,8 +107,8 @@ function module.encodeCommands(...)
 end
 
 -- indexing command/reaction from command/reaction map
-local function findReaction(reacts,text)
-	if type(reacts) == "function" then
+local function findReaction(reacts,text,reactsType)
+	if (reactsType or type(reacts)) == "function" then
 		return reacts(text);
 	end
 	return reacts[text];
@@ -123,16 +128,17 @@ function module.findCommandFrom(reacts,text,splitCommandText)
 	-- indexing( "find thing like" )
 	-- indexing( "find thing" )
 	-- indexing( "find" )
+	local reactsType = type(reacts);
 	do
 		local this = text;
 		while true do
-			timer.sleep(1);
-			local command = findReaction(reacts,this);
-			command = command or findReaction(reacts,this:gsub(" ",""));
+			sleep(0);
+			local command = findReaction(reacts,this,reactsType);
+			command = command or findReaction(reacts,gsub(this," ",""),reactsType);
 			if command then
 				return command,this,this;
 			end
-			this = this:match("(.+) ");
+			this = match(this,"(.+) ");
 			if not this then
 				break;
 			end
@@ -162,15 +168,11 @@ function module.findCommandFrom(reacts,text,splitCommandText)
 	-- indexing( "thing" )
 	-- indexing( "like" )
 	-- indexing( "this" )
-	for findPos,textn in pairs(splitCommandText) do
-		timer.sleep(1);
-		local command = findReaction(reacts,textn);
+	for findPos,textn in ipairs(splitCommandText) do
+		sleep(0);
+		local command = findReaction(reacts,textn,reactsType);
 		if command then
-			local rawCommand = "";
-			for Index = 1,findPos do
-				rawCommand = rawCommand .. splitCommandText[Index] .. (Index == findPos and "" or " ");
-			end
-			return command,textn,rawCommand;
+			return command,textn,concat(splitCommandText," ",1,findPos);
 		end
 	end
 end
