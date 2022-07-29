@@ -210,6 +210,83 @@ end
 
 ---@type table<string, Command>
 local export = {
+	-- ["restore"] = {
+	-- 	registeredOnly = eulaComment_music;
+	-- 	disableDm = true;
+	-- 	command = {"복구","restore"
+	-- 	};
+	-- 	alias = {
+	-- 		"복구","뮤직복구",
+	-- 		"음악 복구","음악복구",
+	-- 		"곡 복구","곡복구",
+	-- 		"노래 복구","노래복구",
+	-- 		"restore music","music restore",
+	-- 		"restore songs","songs restore",
+	-- 		"restore song","restore song"
+	-- 	};
+	-- 	reply = featureDisabled or empty;
+	-- 	embed = (not featureDisabled) and {title = "⏳ 로딩중"} or nil;
+	-- 	func = function(replyMsg,message,args,Content,self)
+	-- 		if featureDisabled then return; end
+
+	-- 		-- check users voice channel
+	-- 		local voiceChannel = message.member.voiceChannel;
+	-- 		if not voiceChannel then
+	-- 			return replyMsg:update(noVoiceChannel);
+	-- 		end
+
+	-- 		-- get already exist connection
+	-- 		local guild = message.guild;
+	-- 		local guildConnection = guild.connection;
+	-- 		local voiceChannelID = voiceChannel:__hash();
+	-- 		if guildConnection then
+	-- 			if guildConnection.channel ~= voiceChannel then
+	-- 				return replyMsg:update(self.otherChannel);
+	-- 			end
+	-- 			local player = playerForChannels[voiceChannelID];
+	-- 			if (not player) or player then
+	-- 			return replyMsg:update(self.otherChannel);
+	-- 		end
+
+	-- 		-- get player object from playerClass
+	-- 		local handler = voiceChannel:join();
+	-- 		if not handler then
+	-- 			return replyMsg:update(self.joinFail);
+	-- 		end
+	-- 		guild.me:deafen(); -- deafen it selfs
+	-- 		playerClass.new {
+	-- 			voiceChannel = voiceChannel;
+	-- 			voiceChannelID = voiceChannelID;
+	-- 			handler = handler;
+	-- 		};
+	-- 		return replyMsg:update(self.joinSuccess);
+	-- 	end;
+	-- 	onSlash = commonSlashCommand {
+	-- 		description = "가장 최근의 오류로 인해 사라진 곡들을 복구합니다";
+	-- 		name = "곡복구";
+	-- 		noOption = true;
+	-- 	};
+	-- 	otherChannel = {
+	-- 		content = zwsp;
+	-- 		embed = {
+	-- 			title = ":x: 다른 채널에서 사용중입니다";
+	-- 			description = "미나를 대려 오거나 직접 그 채널로 이동후 시도해보세요";
+	-- 		};
+	-- 		components = components_remove;
+	-- 	};
+
+
+	-- 	joinedAlready = buttons.action_remove ":x: 이미 다른 음악이 실행중입니다";
+	-- 	joinSuccess = buttons.action_remove ":white_check_mark: 성공적으로 음성채팅에 참가했습니다!";
+	-- 	joinFail = {
+	-- 		content = empty;
+	-- 		embed = {
+	-- 			title = ":x: 채널에 참가할 수 없습니다";
+	-- 			description = "봇이 유효한 권한을 가지고 있는지 확인해주세요";
+	-- 		};
+	-- 		components = components_remove;
+	-- 	};
+	-- };
 	["load music"] = {
 		commands = {"load","로드","불러오기","가져오기"};
 		alias = {
