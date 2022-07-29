@@ -19,7 +19,7 @@ Cpu 에 더 좋다 그래서 이렇게 나눠놓는거
 
 local module = {};
 
-local insert = table.insert;
+local lower = string.lower;
 local concat = table.concat;
 local match = string.match;
 local gsub = string.gsub;
@@ -121,7 +121,7 @@ end
 ---@return string | nil CommandName Name of command
 ---@return string | nil CommandRawName full of user inputed string
 function module.findCommandFrom(reacts,text,splitCommandText)
-	splitCommandText = splitCommandText or ((type(text) == "table") and text or strSplit(text:lower(),"\32\n"));
+	splitCommandText = splitCommandText or ((type(text) == "table") and text or strSplit(lower(text),"\32\n"));
 
 	-- rawText = "find thing like this"
 	-- indexing( "find thing like this" )
