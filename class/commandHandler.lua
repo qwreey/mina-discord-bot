@@ -126,7 +126,7 @@ function module.findCommandFrom(reacts,text,splitCommandText)
 	do
 		local this = text;
 		while true do
-			timer.sleep(0);
+			timer.sleep(1);
 			local command = findReaction(reacts,this);
 			command = command or findReaction(reacts,this:gsub(" ",""));
 			if command then
@@ -163,11 +163,11 @@ function module.findCommandFrom(reacts,text,splitCommandText)
 	-- indexing( "like" )
 	-- indexing( "this" )
 	for findPos,textn in pairs(splitCommandText) do
+		timer.sleep(1);
 		local command = findReaction(reacts,textn);
 		if command then
 			local rawCommand = "";
 			for Index = 1,findPos do
-				timer.sleep(0);
 				rawCommand = rawCommand .. splitCommandText[Index] .. (Index == findPos and "" or " ");
 			end
 			return command,textn,rawCommand;
