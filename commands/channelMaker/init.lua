@@ -221,11 +221,32 @@ local export = {
     --         };
     --     };
     -- };
-    ["채널주인"] = {
+    ["채널삭제모드"] = {
+        disableDm = true;
+        command = "채널모드";
         alias = {
-            "채널방장","음챗방장","음챗주인","채널워너","음챗워너","채널오너","채널유저","음챗유저","음챗오너",
-            "채널 방장","음챗 방장","음챗 주인","채널 워너","음챗 워너","채널 오너","음챗 오너","채널 유저","음챗 유저","채널 주인"
+            "채널모드","채널 모드","음챗모드","음챗 모드",
+            "음챗삭제모드","음챗 삭제모드","음챗삭제 모드","음챗 삭제모드",
+            "채널 삭제모드","채널 삭제 모드","채널삭제 모드", --[[오타까지]] "채널삭재모드","채널 삭재모드","채널 삭재 모드","채널삭재 모드",
         };
+        onSlash = commonSlashCommand {
+            optionRequired = false;
+            optionChoices = {
+                {
+					name = "봇보호(봇만 있어도 채널이 유지됨)";
+					value = "봇";
+				};
+                {
+					name = "유저보호(유저가 있어야 채널이 유지됨)";
+					value = "유저";
+				};
+                -- {
+                --     name = "안함(삭제를 하지 않고 유지합니다. 단 )";
+                --     value = "안함";
+                -- };
+            };
+            description = "자신이 있는 생성된 음성 채널모드를 변경하거나 확인합니다.";
+		};
         channelIsNotGenerated = {
             content = zwsp;
             embed = {
@@ -237,9 +258,35 @@ local export = {
             content = zwsp;
             embed = {
                 title = ":x: 참여한 채널이 없습니다";
-                description = "이름을 바꾸고 싶은 자신의 채널에 참여하세요";
+                description = "삭제 모드를 변경할 채널에 참가하세요";
             };
         };
+        ---@param message Message
+        ---@param Content commandContent
+        reply = function (message,args,Content,self)
+
+        end;
+    };
+    ["채널주인"] = {
+        alias = {
+            "채널방장","음챗방장","음챗주인","채널워너","음챗워너","채널오너","채널유저","음챗유저","음챗오너",
+            "채널 방장","음챗 방장","음챗 주인","채널 워너","음챗 워너","채널 오너","음챗 오너","채널 유저","음챗 유저","채널 주인"
+        };
+        channelIsNotGenerated = {
+            content = zwsp;
+            embed = {
+                title = ":x: 생성된 채널이 아닙니다";
+                description = "유저가 생성한 채널만 주인이 있어요";
+            };
+        };
+        channelNotFound = {
+            content = zwsp;
+            embed = {
+                title = ":x: 참여한 채널이 없습니다";
+                description = "주인을 알고 싶은 채널에 참여하세요";
+            };
+        };
+        command = "채널주인";
         ---@param message Message
         ---@param Content commandContent
         reply = function (message,args,Content,self)
