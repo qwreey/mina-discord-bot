@@ -36,8 +36,23 @@ procEnv.PATH = procEnv.PATH .. ( -- add bin libs path
 package.path = require"app.path"(package.path,binPath); -- set require path
 if osName == "Linux" then -- os file searching
 	local libpath = ("%s/%s"):format(process.cwd(),binPath:gsub("^%./",""));
-	process.env.LD_LIBRARY_PATH = ("%s:%s"):format((process.env.LD_LIBRARY_PATH or ""),libpath);
-	require("proctime")(libpath .. "/libptimelua.so",require "ffi"); -- fix the lua's os clock on linux
+	-- print(libpath)
+	-- process.env.LD_LIBRARY_PATH = libpath
+	-- process.env.PATH = process.env.PATH .. ":" .. libpath
+	-- process.env.LD_LIBRARY_PATH = ("%s:%s"):format((process.env.LD_LIBRARY_PATH or ""),libpath);
+	local ffi = require "ffi"
+	local lastFFILOAD = ffi.load;
+	ffi.load = function (file,...)
+		print(("%s/%s"):format(libpath,file))
+		local loaded, lib = pcall(lastFFILOAD,file,...);
+		if loaded then return lib end
+
+		loaded, lib = pcall(lastFFILOAD,("%s/lib%s.so"):format(libpath,file),...);
+		if not loaded then error(lib) end
+
+		return lib
+	end;
+	require("proctime")(libpath .. "/libptimelua.so",ffi); -- fix the lua's os clock on linux
 end
 
 -- require essential modules
