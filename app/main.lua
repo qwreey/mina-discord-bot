@@ -43,7 +43,6 @@ if osName == "Linux" then -- os file searching
 	local ffi = require "ffi"
 	local lastFFILOAD = ffi.load;
 	ffi.load = function (file,...)
-		print(("%s/%s"):format(libpath,file))
 		local loaded, lib = pcall(lastFFILOAD,file,...);
 		if loaded then return lib end
 
