@@ -47,3 +47,4 @@ goorm.manifest
 
 # ignore roblox content
 commands/rblx/**
+commands/rblx/

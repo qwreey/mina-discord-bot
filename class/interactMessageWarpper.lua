@@ -22,7 +22,9 @@ function interactMessageWarpper:__edit(d,private)
 			embeds = {};
 			d.embeds = embeds;
 		end
-		insert(embeds,embed);
+		if next(embed) then
+			insert(embeds,embed);
+		end
 	end
 
 	local content = d.content;
