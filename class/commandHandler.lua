@@ -25,6 +25,9 @@ local match = string.match;
 local gsub = string.gsub;
 local sleep = timer.sleep;
 function module.onSlash(onSlash,client,reactInfo,commandName)
+	if commandHandler.slashInited then
+		return onSlash(reactInfo,client);
+	end
 	_G.client:on("slashCommandsReady",function ()
 		onSlash(reactInfo,client);
 	end);

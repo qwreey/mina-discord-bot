@@ -1,4 +1,4 @@
-local APIurl = "http://hangang.dkserver.wo.tc";
+local APIurl = "https://api.hangang.msub.kr/";
 
 ---@type table<string, Command>
 local export = {
@@ -16,8 +16,8 @@ local export = {
 				return message:reply{
 					content = zwsp;
 					embed = {
-						title = ("한강 물 온도는 %s 도 입니다!"):format(tostring(decoded.temp));
-						description = ("%s 기준의 자료입니다"):format(tostring(decoded.time));
+						title = ("한강 물온도는 %s 도 입니다"):format(tostring(decoded.temp));
+						description = ("%s 의 %s 기준"):format(tostring(decoded.station),tostring(decoded.time));
 					};
 				};
 			else

@@ -43,7 +43,6 @@ if osName == "Linux" then -- os file searching
 	local ffi = require "ffi"
 	local lastFFILOAD = ffi.load;
 	ffi.load = function (file,...)
-		print(("%s/%s"):format(libpath,file))
 		local loaded, lib = pcall(lastFFILOAD,file,...);
 		if loaded then return lib end
 
@@ -181,7 +180,7 @@ initProfiler:start"Load bot environments"; --#region --** Load bot environments 
 		local formatTraceback = _G.formatTraceback;
 		local admins = _G.admins;
 		local testingMode = ACCOUNTData.testing;
-		startBot(ACCOUNTData.botToken,testingMode); -- init bot (init discordia)
+		-- startBot(ACCOUNTData.botToken,testingMode); -- init bot (init discordia)
 	initProfiler:stop();
 
 	-- Load commands
@@ -607,6 +606,7 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 
 	-- making slash command
 	commandHandler.onSlash(function ()
+		commandHandler.slashInited = true;
 		client:slashCommand({ ---@diagnostic disable-line
 			name = "미나";
 			description = "미나와 대화합니다!";
@@ -652,6 +652,8 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 			end
 		end
 	end);
+
+	startBot(ACCOUNTData.botToken,testingMode); -- init bot (init discordia)
 	-- enable terminal features and live reload system
 initProfiler:stop(); --#endregion --** Main logic **--
 initProfiler:start"Init Terminal / Dev features"; --#region --** Init Terminal / Dev features **--
