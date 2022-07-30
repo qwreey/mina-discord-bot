@@ -33,6 +33,7 @@ local function removeOwnerOnly(id,object)
 			return;
 		end
 		pcall(message.delete,message);
+		-- logger.info(select(2,object.delete,delete)); logger.info("?")
 	end
 end
 client:onSync("buttonPressed",promise.async(removeOwnerOnly));
@@ -49,13 +50,10 @@ return {
 			local channel = object.channel; ---@type GuildTextChannel
 			if message then
 				local referencedMessage = message.referencedMessage;
+				pcall(message.delete,message);
 				if referencedMessage then
-					if channel then
-						pcall(channel.bulkDelete,channel,{referencedMessage,message});
-					end
 					pcall(referencedMessage.delete,referencedMessage);
 				end
-				pcall(message.delete,message);
 			end
 		end;
 	},{__call = combine});

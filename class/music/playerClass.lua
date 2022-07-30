@@ -855,17 +855,20 @@ function this:showSong(index)
 		local guildConnection = self.connection;
 		if not guildConnection then
 			return {
-				content = "틀려있는 음악이 없어요!";
+				content = zwsp;
 				components = this.songIndicator();
-				embed = {};
+				embed = {title = ":x: 틀려있는 음악이 없어요!"};
 			};
 		end
 		self = this.playerForChannels[guildConnection.channel:__hash()];
 		if not self then
 			return {
-				content = "오류가 발생했어요!\n> 플레이어를 찾을 수 없습니다 (봇을 음성채팅에서 킥한 후 다시 시도해보세요)";
+				content = zwsp;
 				components = this.songIndicator();
-				embed = {};
+				embed = {
+					title = "오류가 발생했어요!";
+					description = "플레이어를 찾을 수 없습니다 (봇을 음성채팅에서 킥한 후 다시 시도해보세요)";
+				};
 			};
 		end
 	end
@@ -1005,17 +1008,20 @@ function this:showList(page)
 		local guildConnection = self.connection;
 		if not guildConnection then
 			return {
-				content = "틀려있는 음악이 없어요!";
+				content = zwsp;
 				components = this.pageIndicator();
-				embed = {};
+				embed = {title = ":x: 틀려있는 음악이 없어요!"};
 			};
 		end
 		self = this.playerForChannels[guildConnection.channel:__hash()];
 		if not self then
 			return {
-				content = "오류가 발생했어요!\n> 플레이어를 찾을 수 없습니다 (봇을 음성채팅에서 킥한 후 다시 시도해보세요)";
+				content = zwsp;
 				components = this.pageIndicator();
-				embed = {};
+				embed = {
+					title = "오류가 발생했어요!";
+					description = "플레이어를 찾을 수 없습니다 (봇을 음성채팅에서 킥한 후 다시 시도해보세요)";
+				};
 			};
 		end
 	end
