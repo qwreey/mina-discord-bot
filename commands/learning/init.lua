@@ -7,6 +7,7 @@ local discordia_enchant = _G.discordia_enchant;
 local commonSlashCommand = _G.commonSlashCommand;
 local components = discordia_enchant.components;
 local discordia_enchant_enums = discordia_enchant.enums;
+local floor = math.floor;
 
 local help = [[
 **가르치기 기능에 대한 도움말입니다**
@@ -30,8 +31,160 @@ local remove = table.remove;
 local time = posixTime.now;
 local ceil = math.ceil;
 local timeAgo = _G.timeAgo;
+local concat = table.concat;
 
 local itemsPerPage = 10;
+local noNegative = {
+	content = zwsp;
+	embed = {
+		title = ":x: 페이지에 마이너스는 없는것 같아요!";
+	};
+};
+local noData = {
+	content = zwsp;
+	embed = {
+		title = ":x: 유저 데이터가 존재하지 않습니다!\n유저 데이터는 약관 동의 후 부터 저장될 수 있어요!";
+	};
+};
+
+---@param user User
+local function listifyLearn(user,page)
+	-- 마이너스인 경우
+	if page < 1 then
+		return noNegative;
+	end
+	local userId = user.id
+
+	-- 데이터가 없는 경우
+	local data = userData.loadData(userId);
+	if not data then
+		return noData;
+	end
+
+	-- 가르친게 없는 경우
+	local learned = data.learned;
+	if (not learned) or (#learned == 0) then
+		return {
+			content = zwsp;
+			embed = {
+				title = ("**%s** 님이 가르친건 하나도 없어요 :cry:"):format(user.name);
+			};
+		};
+	end
+
+	local title = ("**%s** 님의 기억 - **%d** 페이지"):format(user.name,page);
+	local fields = {};
+	local startAt,endAt = ((page-1)*itemsPerPage),page*itemsPerPage-1;
+	local lenLearned = #learned;
+	for index = startAt,endAt do
+		local thisId = learned[lenLearned - index];
+		if not thisId then
+			break;
+		end
+		local this,name = learn.rawGet(thisId);
+		if this then
+			local when = this.when;
+			insert(fields, {
+				name = ("%d 번째 : %s"):format(index + 1,tostring(name));
+				value = ("%s%s"):format(
+					tostring(this.content):gsub("`","\\`"),
+					when and (("\n> %s"):format(timeAgo(when,time()))) or ""
+				);
+			});
+		else
+			insert(fields,{
+				name = ("%d 번째 : (손상됨)"):format(index + 1);
+				value = "`값이 손상되었습니다 (파일 시스템 오류일 수 있습니다)`";
+			});
+		end
+	end
+
+	if #fields == 0 then
+		return {
+			content = zwsp;
+			embed = {
+				title = title;
+				description = "이 페이지에는 기억이 없어요!";
+				footer = {
+					text = ("총 기억 갯수 : %d | 총 페이지수 : %d"):format(lenLearned,ceil(lenLearned / itemsPerPage));
+				};
+				-- components = {
+				-- 	components.actionRow.new{
+				-- 		components.button.new{
+				-- 			emoji =  components.emoji.new "🔄";
+				-- 			label = 
+				-- 		};
+				-- 	};
+				-- };
+			};
+		};
+	elseif learned[endAt+1] then
+		insert(fields, {
+			name = "다음 페이지가 있어요!";
+			value = ("**`미나 기억 %d`** 를 입력해서 다음 페이지를 볼 수 있어요!"):format(page + 1);
+		});
+	end
+
+	return {
+		content = zwsp;
+		embed = {
+			title = title;
+			fields = fields;
+			color = 8520189;
+			footer = {
+				text = ("총 기억 갯수 : %d | 총 페이지수 : %d"):format(lenLearned,ceil(lenLearned / itemsPerPage));
+			};
+		};
+		components = {components.actionRow.new{
+            components.button.new{
+                custom_id = ("learn_page_%s_%d"):format(userId,page);
+                style = discordia_enchant_enums.buttonStyle.success;
+                emoji = components.emoji.new "🔄";
+                label = "새로고침";
+            };
+            components.button.new{
+                custom_id = ("learn_page_%s_%d"):format(userId,page-1);
+                style = discordia_enchant_enums.buttonStyle.primary;
+                label = "이전 페이지";
+                emoji = components.emoji.new "⬅";
+                disabled = page <= 1;
+            };
+            components.button.new{
+                custom_id = ("learn_page_%s_%d"):format(userId,page+1);
+                style = discordia_enchant_enums.buttonStyle.primary;
+                label = "다음 페이지";
+                emoji = components.emoji.new "➡";
+                disabled = page >= floor(lenLearned/itemsPerPage);
+            };
+        }};
+	};
+end
+
+---@param id string
+---@param interaction interaction
+local function buttonPressed(id,interaction)
+	local user,page = id:match("learn_page_(%d+)_(%d+)");
+	page = tonumber(page);
+	if (not user) or (not page) then
+		return;
+	end
+
+	local interact_user = interaction.user; ---@type User
+	if (not interact_user) then return; end
+	if interact_user.id ~= user then
+		interaction:reply {
+			content = zwsp;
+			embed = {
+				title = ":x: 메시지 주인만 이 명령을 사용할 수 있습니다";
+				description = ("이 메시지의 주인은 %s 입니다"):format(user);
+			};
+		};
+		return;
+	end
+
+	interaction:reply(listifyLearn(interact_user,page));
+end
+client:on("buttonPressed",buttonPressed);
 
 ---@type table<string, Command>
 local export = {
@@ -206,90 +359,10 @@ local export = {
 	};
 	["기억"] = {
 		alias = {"지식","가르침"};
-		reply = "잠깐만 기다려!";
-		func = function (replyMsg,message,args,Content)
+		reply = function(message,args,Content,self)
 			local rawArgs = Content.rawArgs;
 			rawArgs = tonumber(rawArgs:match("%d+")) or 1;
-			if rawArgs < 1 then
-				replyMsg:setContent("페이지에 마이너스는 없는것 같아요!");
-				return;
-			end
-			local userData = Content.loadUserData();
-			if not userData then
-				return replyMsg:setContent("유저 데이터가 존재하지 않습니다!\n유저 데이터는 약관 동의 후 부터 저장될 수 있어요!");
-			end
-			local learned = userData.learned;
-			if (not learned) or (#learned == 0) then
-				return replyMsg:setContent(("**%s** 님이 가르친건 하나도 없어요 :cry:"):format(Content.user.name));
-			end
-			local content = ("**%s** 의 기억"):format(Content.user.name);
-			local title = ("**%d** 페이지"):format(rawArgs);
-
-			local fields = {};
-			local startAt,endAt = ((rawArgs-1)*itemsPerPage),rawArgs*itemsPerPage-1;
-			local lenLearned = #learned;
-			for index = startAt,endAt do
-				-- logger.infof("index %d, length %d",lenLearned - index,lenLearned);
-				local thisId = learned[lenLearned - index];
-				if not thisId then
-					break;
-				end
-				local this,name = learn.rawGet(thisId);
-				if this then
-					local when = this.when;
-					insert(fields, {
-						name = ("%d 번째 : %s"):format(index + 1,tostring(name));
-						value = ("%s%s"):format(
-							tostring(this.content):gsub("`","\\`"),
-							when and (("\n> %s"):format(timeAgo(when,time()))) or ""
-						);
-					});
-				else
-					insert(fields,{
-						name = ("%d 번째 : (손상됨)"):format(index + 1);
-						value = "`값이 손상되었습니다 (파일 시스템 오류일 수 있습니다)`";
-					});
-				end
-			end
-
-			if #fields == 0 then
-				replyMsg:update{
-					content = content;
-					embed = {
-						title = title;
-						description = "이 페이지에는 기억이 없어요!";
-						footer = {
-							text = ("총 기억 갯수 : %d | 총 페이지수 : %d"):format(lenLearned,ceil(lenLearned / itemsPerPage));
-						};
-						-- components = {
-						-- 	components.actionRow.new{
-						-- 		components.button.new{
-						-- 			emoji =  components.emoji.new "🔄";
-						-- 			label = 
-						-- 		};
-						-- 	};
-						-- };
-					};
-				};
-				return;
-			elseif learned[endAt+1] then
-				insert(fields, {
-					name = "다음 페이지가 있어요!";
-					value = ("**`미나 기억 %d`** 를 입력해서 다음 페이지를 볼 수 있어요!"):format(rawArgs + 1);
-				});
-			end
-
-			replyMsg:update{
-				content = title;
-				embed = {
-					title = title;
-					fields = fields;
-					color = 8520189;
-					footer = {
-						text = ("총 기억 갯수 : %d | 총 페이지수 : %d"):format(lenLearned,ceil(lenLearned / itemsPerPage));
-					};
-				};
-			};
+			return message:reply(listifyLearn(Content.user,rawArgs));
 		end;
 		onSlash = commonSlashCommand {
 			description = "내가 가르친 기억들을 봅니다!";
