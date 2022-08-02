@@ -85,10 +85,13 @@ local function listifyLearn(user,page)
 		if this then
 			local when = this.when;
 			insert(fields, {
-				name = ("%d 번째 : %s"):format(index + 1,tostring(name));
+				name = ("%d 번째 : %s%s"):format(
+					index + 1,
+					tostring(name),
+					when and ((" (%s)"):format(timeAgo(when,time()))) or ""
+				);
 				value = ("%s%s"):format(
-					tostring(this.content):gsub("`","\\`"),
-					when and (("\n> %s"):format(timeAgo(when,time()))) or ""
+					tostring(this.content):gsub("`","\\`")
 				);
 			});
 		else
