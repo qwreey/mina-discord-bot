@@ -175,17 +175,17 @@ local function buttonPressed(id,interaction)
 	local interact_user = interaction.user; ---@type User
 	if (not interact_user) then return; end
 	if interact_user.id ~= user then
-		interaction:reply {
+		interaction:reply({
 			content = zwsp;
 			embed = {
 				title = ":x: 메시지 주인만 이 명령을 사용할 수 있습니다";
 				description = ("이 메시지의 주인은 %s 입니다"):format(user);
 			};
-		};
+		},true);
 		return;
 	end
 
-	interaction:reply(listifyLearn(interact_user,page));
+	interaction:update(listifyLearn(interact_user,page));
 end
 client:on("buttonPressed",buttonPressed);
 
