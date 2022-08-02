@@ -1552,8 +1552,8 @@ local export = {
 			);
 		end;
 		onSlash = commonSlashCommand {
-			description = "곡을 저장합니다!";
-			name = "곡저장";
+			description = "곡들을 일렬로 나열합니다";
+			name = "곡나열";
 			noOption = true;
 		};
 	};
