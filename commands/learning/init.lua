@@ -91,7 +91,7 @@ local function listifyLearn(user,page)
 					when and ((" (%s)"):format(timeAgo(when,time()))) or ""
 				);
 				value = ("%s%s"):format(
-					tostring(this.content):gsub("`","\\`"),
+					tostring(this.content):gsub("`","\\`")
 				);
 			});
 		else
