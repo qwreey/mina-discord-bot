@@ -90,9 +90,7 @@ local function listifyLearn(user,page)
 					tostring(name),
 					when and ((" (%s)"):format(timeAgo(when,time()))) or ""
 				);
-				value = ("%s%s"):format(
-					tostring(this.content):gsub("`","\\`")
-				);
+				value = tostring(this.content):gsub("`","\\`")
 			});
 		else
 			insert(fields,{
