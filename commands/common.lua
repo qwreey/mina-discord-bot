@@ -31,6 +31,58 @@ local export = {
 	-- 	reply
 	-- };
 	--타이머
+	["계정"] = {
+		alias = {
+			"계정 정보","계정 확인","계정정보","계정확인",
+			"유저 정보","유저 확인","유저정보","유저확인",
+			"사용자 정보","사용자 확인","사용자정보","사용자확인",
+			"id lookup","id look","lookup id","id look up","look up id","lookupid","idlookup",
+			"아이디정보","아이디확인","아이디 정보","아이디 확인",
+			"유저 아이디 정보","유저 아이디 확인","유저아이디 정보","유저아이디 확인","유저 아이디정보","유저 아이디확인","유저아이디정보","유저아이디확인",
+			"userid lookup","user id lookup","lookup userid","lookup user id",
+			"user id look up","userid look up","look up userid","look up user id"
+		};
+		notFound = {
+			content = zwsp;
+			embed = {
+				title = ":x: 해당 유저를 찾지 못했습니다";
+				description = "유효한 유저 아이디를 입력해주세요";
+				color = embedColors.success;
+			};
+		};
+		reply = function (message,args,content,self)
+			local user = client:getUser(content.rawArgs:match("%d+"));
+			if not user then
+				return message:reply(self.notFound);
+			end
+
+			return message:reply {
+				content = zwsp;
+				embed = {
+					color = embedColors.success;
+					image = {
+						url = user:getAvatarURL(2048,"png");
+					};
+					author = {
+						name = user.name;
+					};
+					description = ("봇 여부 : %s\n생성일 : %s\n이름 : %s\n기본아바타 : %s"):format(
+						user.bot and "예" or "아니요",
+						timeAgo(user.createdAt,posixTime.now()),
+						user.tag,user.defaultAvatarURL
+					);
+				};
+			};
+		end;
+		onSlash = commonSlashCommand {
+			name = "계정정보";
+			description = "해당 유저의 계정 정보를 봅니다 (e. 프로필)";
+			optionRequired = true;
+			optionsType = discordia_enchant.enums.optionType.string;
+			optionName = "맨션";
+			optionDescription = "정보를 볼 유저의 맨션 또는 아이디를 입력하세요";
+		};
+	};
 	["소라고동"] = {
 		alias = {"마법의 소라고동","마법의소라고동"};
 		reply = {"그럴껄","아냐","물론","아니겠지","아마도","아닐껄","당연히","절대","맞아","그럴리가","그래","아니야","그럼","아니","그렇치","안 돼.","다시한번 물어봐요","언젠가는"};
@@ -375,35 +427,6 @@ local export = {
 			description = "렌덤으로 아무거나 뽑습니다!";
 			optionDescription = "뽑을 내용입니다! ',' 을 이용해 개별로 구분하세요!";
 		};
-		-- onSlash = function(self,client)
-		-- 	client:slashCommand({ --@diagnostic disable-line
-		-- 		name = "뽑기";
-		-- 		description = "렌덤으로 아무거나 뽑습니다!";
-		-- 		options = {
-		-- 			{
-		-- 				name = "내용";
-		-- 				description = "뽑을 내용입니다! ',' 을 이용해 개별로 구분하세요!";
-		-- 				type = discordia_enchant.enums.optionType.string;
-		-- 				required = true;
-		-- 			};
-		-- 		};
-		-- 		callback = function(interaction, params, cmd)
-		-- 			local items = {};
-		-- 			for str in params["내용"]:gmatch("[^,]+") do
-		-- 				insert(items,str);
-		-- 			end
-		-- 			if #items < 2 then
-		-- 				return interaction:reply("뽑을 선택지는 최소한 2개는 있어야해요!");
-		-- 			end
-		-- 			interaction:reply("결과는?! **(두구두구두구두구)**");
-		-- 			timeout(2000,function ()
-		-- 				interaction:update(("%s (이)가 뽑혔어요!"):format(
-		-- 					tostring(items[random(1,#items)])):gsub("@",""):gsub("#","")
-		-- 				);
-		-- 			end);
-		-- 		end;
-		-- 	});
-		-- end;
 	};
 	["시간"] = {
 		alias = {
@@ -468,6 +491,12 @@ local export = {
 			Content.saveUserData();
 			replyMsg:setContent("문의가 발송되었습니다!");
 		end;
+		onSlash = commonSlashCommand {
+			description = "문의를 보냅니다. 버그나 필요사항을 입력해주세요";
+			optionDescription = "문의할 내용입니다. 필요에 맞게 작성해주세요";
+			optionRequired = true;
+			optionName = "내용";
+		};
 	};
 };
 return export;
