@@ -41,7 +41,7 @@ local export = {
 			local raw = content.rawArgs;
 			local user;
 			if (not raw) or #raw == 0 then
-				user = message.user;
+				user = message.author;
 			else
 				user = client:getUser(content.rawArgs:match("%d+"));
 				if not user then
@@ -100,11 +100,12 @@ local export = {
 				color = embedColors.success;
 			};
 		};
+		---@param message Message
 		reply = function (message,args,content,self)
 			local raw = content.rawArgs;
 			local user;
 			if (not raw) or #raw == 0 then
-				user = message.user;
+				user = message.author;
 			else
 				user = client:getUser(content.rawArgs:match("%d+"));
 				if not user then
