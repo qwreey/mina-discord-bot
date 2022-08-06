@@ -332,7 +332,9 @@ local export = {
 	};
 	["버전"] = {
 		alias = "version";
-		reply = ("미나의 현재버전은 `%s` 이에요 (From last git commit time)"):format(app.version);
+		reply = function ()
+			return ("미나의 현재버전은 `%s` 이에요 (From last git commit time)"):format(app.version);
+		end;
 		love = defaultLove;
 	};
 	["지워"] = {

@@ -231,6 +231,7 @@ local export = {
         };
         onSlash = commonSlashCommand {
             optionRequired = false;
+            optionDescription = "설정할 모드입니다. 비워두면 모드를 확인합니다.";
             optionChoices = {
                 {
 					name = "봇보호(봇만 있어도 채널이 유지됨)";
@@ -240,10 +241,10 @@ local export = {
 					name = "유저보호(유저가 있어야 채널이 유지됨)";
 					value = "유저";
 				};
-                -- {
-                --     name = "안함(삭제를 하지 않고 유지합니다. 단 )";
-                --     value = "안함";
-                -- };
+                {
+                    name = "안함(삭제를 하지 않고 유지합니다. 단 )";
+                    value = "안함";
+                };
             };
             description = "자신이 있는 생성된 음성 채널모드를 변경하거나 확인합니다.";
 		};
@@ -264,7 +265,8 @@ local export = {
         ---@param message Message
         ---@param Content commandContent
         reply = function (message,args,Content,self)
-
+            local arg = Content.rawArgs;
+            
         end;
     };
     ["채널주인"] = {

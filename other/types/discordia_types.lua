@@ -2,7 +2,7 @@
 -- Generated on Tue Jan 26 15:33:14 2021
 
 ---Represents a Discord guild member. Though one user may be a member in more than one guild, each presence is represented by a different member object associated with that guild. Note that any method or property that exists for the User class is also available in the Member class.
----@class Member: UserPresence
+---@class Member: User
 ---@field public roles ArrayIterable An iterable array of guild roles that the member has. This does not explicitly include the default everyone role. Object order is not guaranteed.
 ---@field public name string If the member has a nickname, then this will be equivalent to that nickname. Otherwise, this is equivalent to `Member.user.username`.
 ---@field public nickname string | nil The member's nickname, if one is set.
