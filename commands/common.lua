@@ -38,9 +38,15 @@ local export = {
 			"계정 프로필 보기","계정 프로필보기","계정프로필 보기","계정 프로필","계정프로필"
 		};
 		reply = function (message,args,content,self)
-			local user = client:getUser(content.rawArgs:match("%d+"));
-			if not user then
-				return message:reply(self.notFound);
+			local raw = content.rawArgs;
+			local user;
+			if (not raw) or #raw == 0 then
+				user = message.user;
+			else
+				user = client:getUser(content.rawArgs:match("%d+"));
+				if not user then
+					return message:reply(self.notFound);
+				end
 			end
 
 			return message:reply {
@@ -95,9 +101,15 @@ local export = {
 			};
 		};
 		reply = function (message,args,content,self)
-			local user = client:getUser(content.rawArgs:match("%d+"));
-			if not user then
-				return message:reply(self.notFound);
+			local raw = content.rawArgs;
+			local user;
+			if (not raw) or #raw == 0 then
+				user = message.user;
+			else
+				user = client:getUser(content.rawArgs:match("%d+"));
+				if not user then
+					return message:reply(self.notFound);
+				end
 			end
 
 			return message:reply {
@@ -121,7 +133,7 @@ local export = {
 		end;
 		onSlash = commonSlashCommand {
 			name = "계정정보";
-			description = "해당 유저의 계정 정보를 봅니다 (e. 프로필)";
+			description = "해당 유저의 계정 정보를 봅니다 (e. 프로필, 생성일)";
 			optionRequired = true;
 			optionsType = discordia_enchant.enums.optionType.string;
 			optionName = "맨션";
