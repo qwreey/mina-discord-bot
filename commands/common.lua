@@ -27,9 +27,53 @@ end
 
 ---@type table<string, Command>
 local export = {
-	-- ["프로필"] = {
-	-- 	reply
-	-- };
+	["프로필"] = {
+		alias = {
+			"유저프로필","유저 프로필",
+			"유저 프로필 보기","유저프로필 보기","유저 프로필보기",
+			"유저 프로필 확인","유저프로필 확인","유저 프로필확인",
+			"유저 프로필 확대","유저프로필 확대","유저 프로필확대",
+			"프로필 보기","프로필 확인","프로필 확대","프로필보기","프로필확인","프로필확대",
+			"아바타 확인","아바타 보기","아바타 확대","아바타확인","아바타보기","아바타확대",
+			"계정 프로필 보기","계정 프로필보기","계정프로필 보기","계정 프로필","계정프로필"
+		};
+		reply = function (message,args,content,self)
+			local user = client:getUser(content.rawArgs:match("%d+"));
+			if not user then
+				return message:reply(self.notFound);
+			end
+
+			return message:reply {
+				content = zwsp;
+				embed = {
+					color = embedColors.success;
+					image = {
+						url = user:getAvatarURL(2048,"png");
+					};
+					author = {
+						name = user.name;
+					};
+					title = "유저의 프로필을 확대하였습니다";
+				};
+			};
+		end;
+		notFound = {
+			content = zwsp;
+			embed = {
+				title = ":x: 해당 유저를 찾지 못했습니다";
+				description = "유효한 유저 아이디를 입력해주세요";
+				color = embedColors.success;
+			};
+		};
+		onSlash = commonSlashCommand {
+			name = "프로필확대";
+			description = "해당 유저의 프로필을 확대합니다 (e. 프로필)";
+			optionRequired = true;
+			optionsType = discordia_enchant.enums.optionType.string;
+			optionName = "맨션 혹은 아이디";
+			optionDescription = "프로필을 확대할 유저의 맨션 또는 아이디를 입력하세요";
+		};
+	};
 	--타이머
 	["계정"] = {
 		alias = {
@@ -66,9 +110,10 @@ local export = {
 					author = {
 						name = user.name;
 					};
-					description = ("봇 여부 : %s\n생성일 : %s\n이름 : %s\n기본아바타 : %s"):format(
+					description = ("봇 여부 : %s\n생성일 :\n%s\n이름 : %s\n기본아바타 : %s"):format(
 						user.bot and "예" or "아니요",
-						timeAgo(user.createdAt,posixTime.now()),
+						formatIDTime(user.id),
+						-- timeAgo(user.createdAt,posixTime.now()),
 						user.tag,user.defaultAvatarURL
 					);
 				};
