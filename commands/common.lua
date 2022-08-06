@@ -70,7 +70,7 @@ local export = {
 			description = "해당 유저의 프로필을 확대합니다 (e. 프로필)";
 			optionRequired = true;
 			optionsType = discordia_enchant.enums.optionType.string;
-			optionName = "맨션 혹은 아이디";
+			optionName = "맨션";
 			optionDescription = "프로필을 확대할 유저의 맨션 또는 아이디를 입력하세요";
 		};
 	};
