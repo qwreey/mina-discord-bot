@@ -2,6 +2,18 @@
 This code will injects environments into _G
 ]]
 
+_G.ignore = {
+	ignore = true;
+}
+
+-- embed color
+_G.embedColors = {
+	error = 12779520;
+	success = 8311585;
+	warn = 16774144;
+	info = 4886754;
+};
+
 -- get indexs of table
 local insert = table.insert;
 local function indexs(t)
