@@ -1,7 +1,6 @@
-
-
+local discordia_enchant = _G.discordia_enchant;
+local components = discordia_enchant.components;
 local tvidURL = "https://twitter.com/.-/status/(%d+)";
-
 
 local maxFileSize = 8000000;
 
@@ -42,6 +41,7 @@ local export = {
         };
         reply = zwsp;
         embed = { title = "⏳ 다운로드 받는중"; };
+        ---@param replyMsg Message
         func = function(replyMsg,message,args,Content,self)
             local url = Content.rawArgs;
             local vid = url:match(tvidURL);
@@ -51,7 +51,7 @@ local export = {
 
             local proc = spawn("yt-dlp",{args = {"--print","%(filesize,filesize_approx)s",url}});
             if not proc then error("yt-dlp not found"); end
-            local sizeVideo = tonumber(proc.stdout.read():match("%d+"));
+            local sizeVideo = tonumber((proc.stdout.read() or ""):match("%d+"));
             if not sizeVideo then
                 return replyMsg:update(self.urlWorng);
             end
@@ -66,10 +66,17 @@ local export = {
             proc.waitExit();
 
             if fs.existsSync(file) then
-                return replyMsg:update({
-                    content = zwsp;
-                    embed = { title = ":white_check_mark: 받기 성공!"; };
-                    file = file
+                local channel = message.channel;
+                local user = message.author;
+                promise.spawn(replyMsg.delete,replyMsg);
+                channel:send({
+                    content = ":white_check_mark: 받기 성공!";
+                    file = file;
+                    components = {
+                        components.actionRow.new {
+                            buttons.action_remove_owneronly(user.id); ---@diagnostic disable-line
+                        };
+                    };
                 });
             else
                 return replyMsg:update(self.failed);
