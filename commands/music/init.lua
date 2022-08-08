@@ -343,7 +343,7 @@ local export = {
 			"노래검색","노래 검색","노래찾기","노래 찾기"
 		};
 		disableDm = true;
-		registeredOnly = eulaComment_music;
+		-- registeredOnly = eulaComment_music;
 		---@param Content commandContent
 		reply = featureDisabled or function(message,args,Content)
 			return message:reply(youtubeVideoList.display(Content.rawArgs,Content.user.id));
@@ -357,7 +357,7 @@ local export = {
 		};
 	};
 	["add music"] = {
-		registeredOnly = eulaComment_music;
+		-- registeredOnly = eulaComment_music;
 		disableDm = true;
 		command = {"add","p","play","추가","재생","곡추가"};
 		alias = {
@@ -578,7 +578,7 @@ local export = {
 		end;
 	};
 	["join music"] = {
-		registeredOnly = eulaComment_music;
+		-- registeredOnly = eulaComment_music;
 		disableDm = true;
 		command = {"참가","조인","j","join","참여","참가"};
 		alias = {
@@ -782,7 +782,7 @@ local export = {
 		};
 	};
 	["loop"] = {
-		registeredOnly = eulaComment_music;
+		-- registeredOnly = eulaComment_music;
 		disableDm = true;
 		command = {"루프","loop","looping","lp","lop"};
 		alias = {
@@ -869,10 +869,10 @@ local export = {
 	["음악 도움말"] = {
 		alias = {"도움말 음악","도움말 음악봇","음악 사용법","음악 사용법 알려줘","음악사용법","음악 도움말 보여줘","음악 help","음악도움말","music help","help music","music 도움말"};
 		reply = featureDisabled or help;
-		sendToDm = "개인 메시지로 도움말이 전송되었습니다!";
+		-- sendToDm = "개인 메시지로 도움말이 전송되었습니다!";
 	};
 	["remove music"] = {
-		registeredOnly = eulaComment_music;
+		-- registeredOnly = eulaComment_music;
 		disableDm = true;
 		command = {"지워","지워기","없에기","없에","제거","재거","빼기","rm","remove","r"};
 		alias = {
