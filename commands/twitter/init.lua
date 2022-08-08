@@ -13,7 +13,7 @@ local export = {
             name = "트위터영상";
             description = "트위터 영상을 올립니다. 8 메가바이트 이상의 영상은 올릴 수 없습니다";
             optionRequired = true;
-            optionName = "URL";
+            optionName = "url";
             optionDescription = "영상이 포함된 트위터 링크입니다";
         };
         urlWorng = {
