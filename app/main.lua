@@ -434,6 +434,7 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 			and (replyText[random(1,#replyText)])
 			or replyText
 		);
+		local sendToDm = Command.sendToDm;
 
 		-- Make love prompt
 		if love then
@@ -550,7 +551,7 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 			local embed = Command.embed;
 			local components = Command.components;
 			if replyTextType == "string" then -- if is string, making new message
-				replyMsg = message:reply({
+				local messageContent = {
 					components = components;
 					embed = embed;
 					content = commandHandler.formatReply(replyText .. loveText,{
@@ -559,7 +560,17 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 						channel = channel;
 					});
 					reference = {message = message, mention = false};
-				});
+				};
+
+				if sendToDm then
+					if type(sendToDm) == "boolean" then
+						sendToDm = {content = zwsp; embed = { title = "개인 메시지로 전송되었습니다!" }};
+					end
+					message:reply(sendToDm);
+					message.author:getPrivateChannel():send(messageContent);
+				else
+					replyMsg = message:reply(messageContent);
+				end
 			elseif replyTextType == "table" then -- if is message (if func returned), set replyMsg to it
 				replyMsg = replyText;
 			end
