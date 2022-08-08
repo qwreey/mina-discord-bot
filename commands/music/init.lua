@@ -869,6 +869,7 @@ local export = {
 	["음악 도움말"] = {
 		alias = {"도움말 음악","도움말 음악봇","음악 사용법","음악 사용법 알려줘","음악사용법","음악 도움말 보여줘","음악 help","음악도움말","music help","help music","music 도움말"};
 		reply = featureDisabled or help;
+		sendToDm = true;
 		-- sendToDm = "개인 메시지로 도움말이 전송되었습니다!";
 	};
 	["remove music"] = {
