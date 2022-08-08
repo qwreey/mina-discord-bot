@@ -231,7 +231,7 @@ local export = {
         };
         onSlash = commonSlashCommand {
             optionRequired = false;
-            optionDescription = "설정할 모드입니다. 비워두면 모드를 확인합니다.";
+            optionDescription = "설정할 모드입니다. 비워두면 모드를 확인합니다. 기본값은 유저 보호입니다.";
             optionChoices = {
                 {
 					name = "봇보호(봇만 있어도 채널이 유지됨)";
@@ -242,7 +242,7 @@ local export = {
 					value = "유저";
 				};
                 {
-                    name = "안함(삭제를 하지 않고 유지합니다. 단 )";
+                    name = "안함(삭제를 하지 않고 유지합니다. 단 관리자만 이 설정을 사용할 수 있습니다)";
                     value = "안함";
                 };
             };
@@ -253,6 +253,7 @@ local export = {
             embed = {
                 title = ":x: 생성된 채널이 아닙니다";
                 description = "봇이 생성한 채널만 이름을 바꿀 수 있어요";
+                color = embedColors.error;
             };
         };
         channelNotFound = {
@@ -260,13 +261,67 @@ local export = {
             embed = {
                 title = ":x: 참여한 채널이 없습니다";
                 description = "삭제 모드를 변경할 채널에 참가하세요";
+                color = embedColors.error;
+            };
+        };
+        channelNotOwn = {
+            content = zwsp;
+            embed = {
+                title = ":x: 자신의 채널이 아닙니다";
+                description = "관리자는 삭제 모드를 강제로 변경할 수 있습니다";
+                color = embedColors.error;
             };
         };
         ---@param message Message
         ---@param Content commandContent
         reply = function (message,args,Content,self)
             local arg = Content.rawArgs;
-            
+
+            local member = message.member; ---@type Member
+            local channel = member.voiceChannel;
+            if not channel then -- check member's channel
+                return message:reply(self.channelNotFound);
+            end
+
+            -- check server data
+            local serverData = Content.loadServerData();
+            local createdChannels = serverData and serverData.createdChannels;
+            if not createdChannels then -- if can't find created channel data, just ignore this command
+                return message:reply(self.channelIsNotGenerated);
+            end
+
+            -- check ownership
+            local owner = createdChannels[channel.id];
+            local byForce; -- is forced, by admin permission
+            if not owner then
+                return message:reply(self.channelIsNotGenerated);
+            elseif owner ~= member.id then
+                if member:hasPermission(adminPermission) then
+                    byForce = true;
+                else
+                    return message:reply(self.channelNotOwn);
+                end
+            end
+
+            -- if forced
+            if byForce then
+                return message:reply(self.channelNameSettedByForce);
+            end
+
+            -- save to user data file
+            local userData = Content.loadUserData();
+            if not userData then
+                return message:reply(self.noUserData);
+            end
+            local userDefaults = userData.channelMakerDefaultNameByServers;
+            if not userDefaults then
+                userDefaults = {};
+                userData.channelMakerDefaultNameByServers = userDefaults;
+            end
+            userDefaults[message.guild.id] = Content.rawArgs;
+            Content.saveUserData();
+
+            return message:reply(self.channelNameSetted);
         end;
     };
     ["채널주인"] = {
@@ -279,6 +334,7 @@ local export = {
             embed = {
                 title = ":x: 생성된 채널이 아닙니다";
                 description = "유저가 생성한 채널만 주인이 있어요";
+                color = embedColors.error;
             };
         };
         channelNotFound = {
@@ -286,6 +342,7 @@ local export = {
             embed = {
                 title = ":x: 참여한 채널이 없습니다";
                 description = "주인을 알고 싶은 채널에 참여하세요";
+                color = embedColors.error;
             };
         };
         command = "채널주인";
@@ -319,7 +376,8 @@ local export = {
                 content = zwsp;
                 embed = {
                     title = ownerName;
-                    description = ("채널의 주인은 <@%s> 입니다"):format(owner)
+                    description = ("채널의 주인은 <@%s> 입니다"):format(owner);
+                    color = embedColors.success;
                 };
             };
         end;
@@ -337,6 +395,7 @@ local export = {
             embed = {
                 title = ":white_check_mark: 채널 이름을 설정했습니다";
                 description = "다음번 생성되는 채널도 이 이름을 가집니다";
+                color = embedColors.success;
             };
         };
         channelNotFound = {
@@ -344,6 +403,7 @@ local export = {
             embed = {
                 title = ":x: 참여한 채널이 없습니다";
                 description = "이름을 바꾸고 싶은 자신의 채널에 참여하세요";
+                color = embedColors.error;
             };
         };
         channelNotOwn = {
@@ -351,6 +411,7 @@ local export = {
             embed = {
                 title = ":x: 이 채널은 자신의 것이 아니에요";
                 description = "관리 권한이 있다면 자신의 채널이 아니여도 이름을 바꿀 수 있어요";
+                color = embedColors.error;
             };
         };
         channelIsNotGenerated = {
@@ -358,6 +419,7 @@ local export = {
             embed = {
                 title = ":x: 생성된 채널이 아닙니다";
                 description = "봇이 생성한 채널만 이름을 바꿀 수 있어요";
+                color = embedColors.error;
             };
         };
         channelNameSettedByForce = {
@@ -365,6 +427,7 @@ local export = {
             embed = {
                 title = ":white_check_mark: 채널 이름을 강제로 설정했습니다";
                 description = "관리 권한을 이용해 강제로 채널 이름을 설정했습니다. 다음에 생성하는 자신의 채널의 이름에는 영향을 주지 않습니다";
+                color = embedColors.info;
             };
         };
         nameNeeded = {
@@ -372,13 +435,15 @@ local export = {
             embed = {
                 title = ":x: 이름을 비워둘 수 없습니다";
                 description = "이름을 설정해주세요";
+                color = embedColors.error;
             };
         };
         noUserData = {
             content = zwsp;
             embed = {
                 title = ":white_check_mark: 채널 이름을 설정했습니다";
-                description = "그러나 약관 동의가 없어 기본값으로 설정하진 못했습니다";
+                description = "그러나 약관 미동의로 기본값으로 설정하진 못했습니다 (데이터 저장 불가)";
+                color = embedColors.warn;
             };
         };
         ---@param message Message
@@ -423,6 +488,7 @@ local export = {
                     embed = {
                         title = ":x: 채널 이름 변경에 실패했습니다";
                         description = ("디스코드가 잘못된 결과를 주었습니다\n```%s```"):format(tostring(err));
+                        color = embedColors.error;
                     };
                 };
             end
@@ -489,6 +555,7 @@ local export = {
                 return replyMsg:update({
                     content = zwsp;
                     embed = {
+                        color = embedColors.error;
                         title = ":x: 음성 채널 생성방을 만들지 못했습니다";
                         description = ("채널을 생성할 권한이 없거나, 디스코드의 오류일 수 있습니다.\n권한 확인 후 다시 시도해주세요\n```\n%s\n```"):format(tostring(err));
                         footer = {text = "미나를 다시 초대하면 원활한 권한 설정을 맞출 수 있어요"};
@@ -514,20 +581,23 @@ local export = {
             content = zwsp;
             embed = {
                 title = ":white_check_mark: 음성 채널 생성방을 만들었습니다!";
-            }
+                color = embedColors.success;
+            };
         };
         replaced = {
             content = zwsp;
             embed = {
                 title = ":white_check_mark: 음성 채널 생성방을 만들었습니다!";
                 description = "이전 음성 채널 생성방을 없에고 새로 만들었습니다";
-            }
+                color = embedColors.success;
+            };
         };
         notPermitted = {
             content = zwsp;
             embed = {
                 title = ":x: 명령어를 실행할 권한이 부족합니다";
                 description = "서버 관리자 권한이 있는 사람만 이 명령어를 실행할 수 있습니다";
+                color = embedColors.error;
             };
         };
 		onSlash = commonSlashCommand {
