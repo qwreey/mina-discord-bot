@@ -8,6 +8,7 @@ local maxFileSize = 8000000;
 ---@type table<string,Command>
 local export = {
     ["twittervideo"] = {
+        alias = {"트위터 영상","트위터영상","twitter video","트윗 영상","트윗영상"};
         onSlash = commonSlashCommand {
             name = "트위터영상";
             description = "트위터 영상을 올립니다. 8 메가바이트 이상의 영상은 올릴 수 없습니다";
