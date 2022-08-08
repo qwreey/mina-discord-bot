@@ -566,6 +566,7 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 					if type(sendToDm) == "boolean" then
 						sendToDm = {content = zwsp; embed = { title = "개인 메시지로 전송되었습니다!" }};
 					end
+					messageContent.reference = nil;
 					message:reply(sendToDm);
 					message.author:getPrivateChannel():send(messageContent);
 				else
