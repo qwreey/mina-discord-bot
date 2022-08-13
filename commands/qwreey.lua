@@ -390,13 +390,6 @@ local export = {
 		};
 		love = defaultLove;
 	};
-	["프사"] = {
-		alias = {"프사ㄴㄱ"};
-		reply = {
-			"상아리라는 친구가 그려줬어요"
-		};
-		love = defaultLove;
-	};
 	-- ["상아리"] = {
 	-- 	reply = "프사를 그려준 착한 친구";
 	-- 	love = defaultLove;
