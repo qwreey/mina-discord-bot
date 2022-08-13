@@ -28,6 +28,7 @@ local customLogger = setmetatable({__last = ""},{
 });
 
 local function executeMessage(message,args,mode)
+	args = args:gsub("^ *```",""):gsub("``` *$",""):gsub("^lua","");
 	if mode == "lua" then
 	else args = cat.compile(args);
 	end
