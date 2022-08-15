@@ -387,7 +387,7 @@ local export = {
 		};
     };
     ["채널이름"] = {
-        alias = {"채널 이름","채널이름변경","채널 이름 변경","채널 이름변경","채널이름 변경"};
+        alias = {"channel name","채널 이름","채널이름변경","채널 이름 변경","채널 이름변경","채널이름 변경"};
         disableDm = true;
         command = "채널이름";
         channelNameSetted = {
