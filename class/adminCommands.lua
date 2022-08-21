@@ -28,9 +28,17 @@ local customLogger = setmetatable({__last = ""},{
 });
 
 local function executeMessage(message,args,mode)
-	args = args:gsub("^ *```",""):gsub("``` *$",""):gsub("^lua","");
+	args = args:gsub("^[ \n]*```%w*",""):gsub("``` *$","");
+	local catok;
 	if mode == "lua" then
-	else args = cat.compile(args);
+	else catok,args = pcall(cat.compile,args);
+	end
+	if not catok then
+		message:reply(("[ERROR] Error occured on catlang compiling\n```%s```"):format(tostring(args)));
+	end
+	if mode == "cat" then
+		message:reply(("```%s```"):format(args));
+		return;
 	end
 
 	-- load string to function
@@ -235,8 +243,9 @@ local function adminCmd(Text,message) -- 봇 관리 커맨드 실행 함수
 		);
 		return true;
 	elseif (cmd == "!!!exe" or cmd == "!!!exec" or cmd == "!!!execute" or cmd == "!!!loadstring" or cmd =="!!!e") then
-		executeMessage(message,args:gsub("^lua ?",""),
-			args:match("^lua") and "lua"
+		executeMessage(message,
+			args:gsub("^lua ?",""):gsub("^cat ?",""),
+			(args:match("^lua") and "lua") or (args:match("^cat") and "cat")
 		)
 	elseif (cmd == "!!!sh" or cmd == "proc") then
 		loadstringEnv.exec(args,function (str)
