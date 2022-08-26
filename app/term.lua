@@ -316,9 +316,14 @@ return function ()
 			end
 
 			-- first, decoding lua
-			local func,err = loadstring("return " .. line);
-			if not func then
-				func,err = loadstring(line);
+			local func,err;
+			local compilePassed,compiled = pcall(cat.compile,line);
+			if compilePassed then
+				local func,err = loadstring("return " .. compiled);
+				if not func then
+					func,err = loadstring(compiled);
+				end
+			else err = compiled;
 			end
 
 			-- lua wants more line, bypass running

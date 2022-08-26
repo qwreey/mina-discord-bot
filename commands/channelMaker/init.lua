@@ -272,6 +272,14 @@ local export = {
                 color = embedColors.error;
             };
         };
+        optionNotPermitted = {
+            content = zwsp;
+            embed = {
+                title = ":x: 권한이 부족합니다";
+                description = "선택한 모드가 관리자 권한을 필요로 합니다";
+                color = embedColors.error;
+            };
+        };
         ---@param message Message
         ---@param Content commandContent
         reply = function (message,args,Content,self)
@@ -601,12 +609,21 @@ local export = {
             };
         };
 		onSlash = commonSlashCommand {
+            name = "채널생성";
 			description = "음성 채널 생성방을 만듭니다. 만들어진 채널의 이름은 디스코드 채널 설정에서 변경할 수 있습니다";
             optionName = "채널이름";
             optionDescription = "음성 채팅방을 생성하는 채널의 이름을 지정합니다. 비워두면 자동으로 기본값을 사용합니다. 나중에 디스코드 채널 설정으로 직접 편집할 수 있습니다";
             optionsType = discordia_enchant.enums.optionType.string;
 		};
     };
+    -- ["채널양도"] = {
+    --     alias = {
+    --         "채널소유권이전","채널 소유권 이전","채널소유권 이전","채널 소유권이전",
+    --         "음챗소유권이전","음챗 소유권 이전","음챗소유권 이전","음챗 소유권이전",
+    --         "음성채팅소유권이전","음성",
+    --         "채널 양도","음챗양도","음챗 양도"
+    --     };
+    -- };
 };
 
 return export;
