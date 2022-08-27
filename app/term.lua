@@ -319,7 +319,7 @@ return function ()
 			local func,err;
 			local compilePassed,compiled = pcall(cat.compile,line);
 			if compilePassed then
-				local func,err = loadstring("return " .. compiled);
+				func,err = loadstring("return " .. compiled);
 				if not func then
 					func,err = loadstring(compiled);
 				end

@@ -31,3 +31,6 @@
 [submodule "libs/random"]
 	path = libs/random
 	url = https://github.com/qwreey75/random.lua
+[submodule "commands/rblx"]
+	path = commands/rblx
+	url = https://github.com/qwreey75/rblxConnection
