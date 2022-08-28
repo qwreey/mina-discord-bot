@@ -4,7 +4,7 @@ local function makeError()
 	return {
 		title = ":/ 아직 통계가 없어요!";
 		description = "혹시 새벽 시간인가요? 새벽 시간에는 데이터가 아직 모이지 않아서 불러올 수 없어요!\n또는 알 수 없는 오류가 발생했을수도 있어요!\n";
-		color = 16711680;
+		color = embedColors.error;
 		footer = {
 			text = ":cry:";
 		};
@@ -56,7 +56,7 @@ function module:embed(today,yesterday)
 	end
 
 	return {
-		color = 11143690;
+		color = embedColors.success;
 		footer = {
 			text = "오늘 기준의 정보입니다";
 		};

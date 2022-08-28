@@ -280,10 +280,24 @@ local export = {
                 color = embedColors.error;
             };
         };
+        modes = {
+            ['봇'] = "bot";
+            ['유저'] = "user";
+            ['안함'] = "none";
+        };
+        modeNotFound = {
+            content = zwsp;
+            embed = {
+                title = ":x: 해당 모드가 없습니다";
+                description = "유효한 모드는 봇, 유저, 안함 입니다";
+                color = embedColors.error;
+            };
+        };
         ---@param message Message
         ---@param Content commandContent
         reply = function (message,args,Content,self)
             local arg = Content.rawArgs;
+            
 
             local member = message.member; ---@type Member
             local channel = member.voiceChannel;
