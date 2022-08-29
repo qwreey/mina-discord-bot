@@ -513,7 +513,15 @@ local export = {
             end
 
             -- set channel Name and check error
-            local ok,err = channel:setName(channelName);
+            local resolvedChannelName
+            if reset then
+                local ownerMember = message.guild:getMember(owner) or client:getUser(owner);
+                resolvedChannelName = ("%s님의 개인채널"):format(
+                    ownerMember and ownerMember.name or "알수없음"
+                );
+            else resolvedChannelName = channelName;
+            end
+            local ok,err = channel:setName(resolvedChannelName);
             if not ok then
                 return message:reply{
                     content = zwsp;
