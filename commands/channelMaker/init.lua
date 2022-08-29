@@ -134,28 +134,38 @@ client:onSync("voiceChannelLeave",promise.async(function (member,channel)
     local channelId = channel.id;
 
     -- check should be removed
-    local tryRemove = true;
+    local botInHere;
+    local userInHere;
     for user in channel.connectedMembers:iter() do
-        if not user.bot then
-            tryRemove = false;
-            break;
+        if user.bot then
+            botInHere = true;
+        else
+            userInHere = true;
         end
+        if botInHere and userInHere then break; end
     end
 
-    -- it should be removed
-    if tryRemove then
-        -- check is generated channel
-        local data = serverData.loadData(guild.id);
-        local createdChannels = data and data.createdChannels;
-        if not createdChannels then return; end
-        if not createdChannels[channelId] then return; end
-
-        -- remove channel and data
-        channel:delete();
-        createdChannels[channelId] = nil;
-        serverData.saveData(guild.id,data);
-        logger.infof("[ChannelMaker] Channel %s destroyed for guild %s",channel.id,guild.id);
+    -- check is generated channel
+    local data = serverData.loadData(guild.id);
+    local createdChannels = data and data.createdChannels;
+    local channelModes = data and data.channelModes;
+    if not createdChannels then return; end
+    if not createdChannels[channelId] then return; end
+    local thisMode = channelModes and channelModes[channelId] or "user";
+    if  (thisMode == "user" and userInHere) or
+        (thisMode == "bot"  and botInHere)  or
+        (thisMode == "none") then
+        return
     end
+
+    -- remove channel and data
+    channel:delete();
+    createdChannels[channelId] = nil;
+    if channelModes then
+        channelModes[channelId] = nil;
+    end
+    serverData.saveData(guild.id,data);
+    logger.infof("[ChannelMaker] Channel %s destroyed for guild %s",channel.id,guild.id);
 end));
 
 -- connect to when channel destroyed, this event can be triggered with administrator's action
@@ -165,9 +175,13 @@ client:onSync("channelDelete", function(channel)
     if not guild then return; end
     local data = serverData.loadData(guild.id);
     local createdChannels = data and data.createdChannels;
+    local channelModes = data and data.channelModes;
     if not createdChannels then return; end
     if createdChannels[channelId] then
         createdChannels[channelId] = nil;
+        if channelModes then
+            channelModes[channelId] = nil;
+        end
         serverData.saveData(guild.id,data);
     end
 end);
@@ -284,20 +298,41 @@ local export = {
             ['봇'] = "bot";
             ['유저'] = "user";
             ['안함'] = "none";
+            ['삭제안함'] = "none";
+            ['삭제 안함'] = "none";
+            ['제거안함'] = "none";
+            ['제거 안함'] = "none";
+            ['소거안함'] = "none";
+            ['소거 안함'] = "none";
+        };
+        modeNames = {
+            ['bot'] = "봇보호";
+            ['user'] = "유저보호";
+            ['none'] = "삭제안함";
+        };
+        adminPermissionRequiredMode = {
+            ['none'] = true;
         };
         modeNotFound = {
             content = zwsp;
             embed = {
-                title = ":x: 해당 모드가 없습니다";
-                description = "유효한 모드는 봇, 유저, 안함 입니다";
                 color = embedColors.error;
+                title = ":x: 잘못된 모드를 입력했습니다!";
+                description = "사용 할 수 있는 모드는 봇, 유저, 안함 입니다"
+            };
+        };
+        channelModeSetted = {
+            content = zwsp;
+            embed = {
+                title = ":white_check_mark: 성공적으로 모드를 설정했습니다";
+                color = embedColors.success;
             };
         };
         ---@param message Message
         ---@param Content commandContent
         reply = function (message,args,Content,self)
             local arg = Content.rawArgs;
-            
+            local mode = self.modes[arg];
 
             local member = message.member; ---@type Member
             local channel = member.voiceChannel;
@@ -307,10 +342,33 @@ local export = {
 
             -- check server data
             local serverData = Content.loadServerData();
+            local channelModes = serverData and serverData.channelModes;
             local createdChannels = serverData and serverData.createdChannels;
             if not createdChannels then -- if can't find created channel data, just ignore this command
                 return message:reply(self.channelIsNotGenerated);
             end
+
+            -- check mode
+            if not mode then
+                -- no args match
+                if arg and #arg ~= 0 then
+                    return message:reply(self.modeNotFound)
+                end
+
+                -- check mode
+                return message:reply{
+                    content = zwsp;
+                    embed = {
+                        title = "이 채널의 모드는";
+                        description = ("%s 입니다"):format(
+                            self.modeNames[channelModes and channelModes[channel.id] or "user"] or "알 수 없음"
+                        );
+                    };
+                };
+            end
+
+            -- check has power
+            local hasPower = member:hasPermission(adminPermission);
 
             -- check ownership
             local owner = createdChannels[channel.id];
@@ -318,32 +376,23 @@ local export = {
             if not owner then
                 return message:reply(self.channelIsNotGenerated);
             elseif owner ~= member.id then
-                if member:hasPermission(adminPermission) then
+                if hasPower then
                     byForce = true;
                 else
                     return message:reply(self.channelNotOwn);
                 end
             end
 
-            -- if forced
-            if byForce then
-                return message:reply(self.channelNameSettedByForce);
-            end
-
             -- save to user data file
-            local userData = Content.loadUserData();
-            if not userData then
-                return message:reply(self.noUserData);
+            if not channelModes then
+                channelModes = {}
+                serverData.channelModes = channelModes;
             end
-            local userDefaults = userData.channelMakerDefaultNameByServers;
-            if not userDefaults then
-                userDefaults = {};
-                userData.channelMakerDefaultNameByServers = userDefaults;
-            end
-            userDefaults[message.guild.id] = Content.rawArgs;
-            Content.saveUserData();
+            channelModes[channel.id] = mode;
+            logger.info("채널모드 %s",mode);
+            Content.saveServerData(serverData);
 
-            return message:reply(self.channelNameSetted);
+            return message:reply(self.channelModeSetted);
         end;
     };
     ["채널주인"] = {
