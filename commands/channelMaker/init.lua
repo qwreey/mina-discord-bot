@@ -550,7 +550,7 @@ local export = {
         end;
         onSlash = commonSlashCommand {
             optionName = "이름";
-            optionRequired = true;
+            optionRequired = false;
             optionsType = discordia_enchant.enums.optionType.string;
             optionDescription = "현재 자신이 있는 음성 채널의 변경할 이름을 입력하세요";
 			description = "자신이 있는 생성된 음성 채널의 이름을 변경합니다. 오직 자신이 만든 음챗만 가능합니다!";
