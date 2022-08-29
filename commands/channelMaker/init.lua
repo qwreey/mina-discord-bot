@@ -244,6 +244,7 @@ local export = {
             "채널 삭제모드","채널 삭제 모드","채널삭제 모드", --[[오타까지]] "채널삭재모드","채널 삭재모드","채널 삭재 모드","채널삭재 모드",
         };
         onSlash = commonSlashCommand {
+            name = "채널모드",
             optionRequired = false;
             optionDescription = "설정할 모드입니다. 비워두면 모드를 확인합니다. 기본값은 유저 보호입니다.";
             optionChoices = {
@@ -260,7 +261,7 @@ local export = {
                     value = "안함";
                 };
             };
-            description = "자신이 있는 생성된 음성 채널모드를 변경하거나 확인합니다.";
+            description = "자신이 있는 생성된 음성 채널 삭제 모드를 변경하거나 확인합니다.";
 		};
         channelIsNotGenerated = {
             content = zwsp;
@@ -321,6 +322,14 @@ local export = {
                 description = "사용 할 수 있는 모드는 봇, 유저, 안함 입니다"
             };
         };
+        notPermittedMode = {
+            content = zwsp;
+            embed = {
+                color = embedColors.error;
+                title = ":x: 이 모드는 관리자만 사용할 수 있습니다";
+                description = "서버에 영향을 주는 모드는 관리자만 사용할 수 있습니다";
+            };
+        };
         channelModeSetted = {
             content = zwsp;
             embed = {
@@ -372,15 +381,12 @@ local export = {
 
             -- check ownership
             local owner = createdChannels[channel.id];
-            local byForce; -- is forced, by admin permission
             if not owner then
                 return message:reply(self.channelIsNotGenerated);
-            elseif owner ~= member.id then
-                if hasPower then
-                    byForce = true;
-                else
-                    return message:reply(self.channelNotOwn);
-                end
+            elseif owner ~= member.id and (not hasPower) then
+                return message:reply(self.channelNotOwn);
+            elseif mode == "none" and (not hasPower) then
+                return message:reply(self.notPermittedMode)
             end
 
             -- save to user data file
