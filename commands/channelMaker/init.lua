@@ -452,12 +452,20 @@ local export = {
                 color = embedColors.info;
             };
         };
-        nameNeeded = {
+        -- nameNeeded = {
+        --     content = zwsp;
+        --     embed = {
+        --         title = ":x: 이름을 비워둘 수 없습니다";
+        --         description = "이름을 설정해주세요";
+        --         color = embedColors.error;
+        --     };
+        -- };
+        reset = {
             content = zwsp;
             embed = {
-                title = ":x: 이름을 비워둘 수 없습니다";
-                description = "이름을 설정해주세요";
-                color = embedColors.error;
+                title = ":white_check_mark: 채널 이름을 초기화 했습니다";
+                description = "다음에 생성하는 자신의 채널 이름도 기본값이 사용됩니다";
+                color = embedColors.success;
             };
         };
         noUserData = {
@@ -471,6 +479,7 @@ local export = {
         ---@param message Message
         ---@param Content commandContent
         reply = function (message,args,Content,self)
+            --TODO: 초기화
             local channelName = Content.rawArgs;
             if (not channelName) or (#channelName == 0) then
                 return message:reply(self.nameNeeded);
@@ -628,6 +637,7 @@ local export = {
             optionName = "채널이름";
             optionDescription = "음성 채팅방을 생성하는 채널의 이름을 지정합니다. 비워두면 자동으로 기본값을 사용합니다. 나중에 디스코드 채널 설정으로 직접 편집할 수 있습니다";
             optionsType = discordia_enchant.enums.optionType.string;
+            optionRequired = false;
 		};
     };
     -- ["채널양도"] = {
