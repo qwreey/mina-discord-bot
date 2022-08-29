@@ -368,6 +368,7 @@ local export = {
                 return message:reply{
                     content = zwsp;
                     embed = {
+                        color = embedColors.info;
                         title = "이 채널의 모드는";
                         description = ("%s 입니다"):format(
                             self.modeNames[channelModes and channelModes[channel.id] or "user"] or "알 수 없음"
