@@ -481,8 +481,9 @@ local export = {
         reply = function (message,args,Content,self)
             --TODO: 초기화
             local channelName = Content.rawArgs;
+            local reset;
             if (not channelName) or (#channelName == 0) then
-                return message:reply(self.nameNeeded);
+                reset = true;
             end
 
             local member = message.member; ---@type Member
@@ -539,10 +540,13 @@ local export = {
                 userDefaults = {};
                 userData.channelMakerDefaultNameByServers = userDefaults;
             end
-            userDefaults[message.guild.id] = Content.rawArgs;
+            if reset then
+                userDefaults[message.guild.id] = nil;
+            else userDefaults[message.guild.id] = Content.rawArgs;
+            end
             Content.saveUserData();
 
-            return message:reply(self.channelNameSetted);
+            return message:reply(reset and self.reset or self.channelNameSetted);
         end;
         onSlash = commonSlashCommand {
             optionName = "이름";
