@@ -153,7 +153,7 @@ client:onSync("voiceChannelLeave",promise.async(function (member,channel)
     if not createdChannels[channelId] then return; end
     local thisMode = channelModes and channelModes[channelId] or "user";
     if  (thisMode == "user" and userInHere) or
-        (thisMode == "bot"  and botInHere)  or
+        (thisMode == "bot"  and (botInHere or userInHere))  or
         (thisMode == "none") then
         return
     end
@@ -395,7 +395,6 @@ local export = {
                 serverData.channelModes = channelModes;
             end
             channelModes[channel.id] = mode;
-            logger.info("채널모드 %s",mode);
             Content.saveServerData(serverData);
 
             return message:reply(self.channelModeSetted);
