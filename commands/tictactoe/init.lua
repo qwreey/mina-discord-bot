@@ -51,7 +51,20 @@ local function buildMessage(id,data)
     local targetUser = data.targetUser;
     local startedUser = data.startedUser;
     local turn = data.turn;
+    local isDraw = true;
     local msgComponents = {};
+
+    if not winPlayer then
+        for x = 1,3 do
+            for y = 1,3 do
+                if blocks[x][y] == 0 then
+                    isDraw = false;
+                    break;
+                end
+            end
+            if not isDraw then break; end
+        end
+    end
 
     if targetUser then
         for x = 1,3 do
@@ -69,12 +82,12 @@ local function buildMessage(id,data)
                     end
                 end
                 insert(row,components.button.new{
-                    disabled = (winPlayer and true) or stat ~= 0 or false;
+                    disabled = isDraw or (winPlayer and true) or stat ~= 0 or false;
                     label = (stat == 0 and "🟦") or
                             (stat == 1 and "⬜️") or
                             (stat == 2 and "⬛️") or nil;
                     custom_id = ("tictactoe_%s_%d_%d"):format(id,x,y);
-                    style = winLine and enums.buttonStyle.success or enums.buttonStyle.primary;
+                    style = (isDraw and enums.buttonStyle.secondary) or (isWinline and enums.buttonStyle.success) or enums.buttonStyle.primary;
                 });
             end
             insert(msgComponents,components.actionRow.new(row));
@@ -104,7 +117,7 @@ local function buildMessage(id,data)
             description = ("👤 참여자: ⬜️<@%s>%s\n%s%s"):format(
                 startedUser,
                 targetUser and (" / ⬛️<@%s>"):format(targetUser) or "",
-                (
+                (isDraw and "무승부!") or (
                     (winPlayer == 1 and ("<@%s> 승!"):format(startedUser)) or
                     (winPlayer == 2 and ("<@%s> 승!"):format(targetUser))
                 ) or
