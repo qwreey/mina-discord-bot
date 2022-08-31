@@ -51,7 +51,7 @@ local function buildMessage(id,data)
     local targetUser = data.targetUser;
     local startedUser = data.startedUser;
     local turn = data.turn;
-    local isDraw = true;
+    local isDraw = not winPlayer;
     local msgComponents = {};
 
     if not winPlayer then
