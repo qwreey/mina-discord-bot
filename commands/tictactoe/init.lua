@@ -122,7 +122,7 @@ local function buildMessage(id,data)
                     (winPlayer == 2 and ("<@%s> 승!"):format(targetUser))
                 ) or
                 (targetUser and "🕑 게임이 진행중이에요" or "❕ 아무나 참여하세요!"),
-                (targetUser and (not winPlayer) and turn) and (
+                (isDraw and "") or (targetUser and (not winPlayer) and turn) and (
                     (turn == 1 and ("\n⬜️<@%s> 의 턴"):format(startedUser)) or
                     (turn == 2 and ("\n⬛️<@%s> 의 턴"):format(targetUser))
                 ) or ""
