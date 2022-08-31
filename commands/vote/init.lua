@@ -164,7 +164,7 @@ client:onSync("buttonPressed",promise.async(buttonPressed));
 local export = {
 	["투표"] = {
 		alias = "선거";
-		reply = "잠시만 기다려주세요!";
+		reply = "⏳ 잠시만 기다려주세요!";
 		command = {"vote","v","투표"};
 		func = function (replyMsg,message,args,Content)
 			replyMsg:update(

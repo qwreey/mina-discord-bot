@@ -19,7 +19,7 @@ local time = os.time;
 local floor = math.floor;
 local timeAgo = _G.timeAgo;
 local promise = _G.promise;
-local killTimer = 60 * 5 * 1000;
+local killTimer = 60 * 60 * 1000;
 local empty = string.char(226,128,139);
 
 --#endregion --* setup const objects *--
@@ -205,11 +205,11 @@ this.voiceChannelJoinErr = voiceChannelJoinErr;
 local function timeouted(guild,player,channelId)
 	local connection = guild.connection;
 	local leaveMessage = player.leaveMessage;
-	if connection then
+	if connection and connection.channel and guild:getChannel(connection.channel.id) then
 		logger.infof("voice channel timeouted! killing player now [channel:%s]",channelId);
 		sendMessage(player[1] or player.nowPlaying,{
 			embed = {
-				title = "5분동안 아무도 없어서 종료했어요!";
+				title = "1 시간동안 아무도 없어서 종료했어요!";
 				description = ("<#%s> 에 아무도 들어오지 않았어요\n`미나 복구` 를 입력하면 듣던 노래를 복구할 수 있어요"):format(channelId);
 			};
 		});
