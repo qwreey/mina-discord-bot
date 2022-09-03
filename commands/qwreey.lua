@@ -62,11 +62,6 @@ local export = {
 		reply = "```lua\ntry(main):catch(function(err)\n\tlocal file = io.open(\"log/error.log\",\"w\");\n\tfile:write(err);\n\tfile:close();\n\treturn true;\nend);\n```";
 		love = defaultLove;
 	};
-	["약관"] = {
-		alias = {"EULA","사용계약"};
-		reply = EULA;
-		sendToDm = "개인 메시지로 도움말이 전송되었습니다!";
-	};
 	["몸무계"] = {
 		alias = {"무계","얼마나무거워"};
 		reply = "33.6MB";

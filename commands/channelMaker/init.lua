@@ -527,7 +527,7 @@ local export = {
             content = zwsp;
             embed = {
                 title = ":white_check_mark: 채널 이름을 설정했습니다";
-                description = "그러나 약관 미동의로 기본값으로 설정하진 못했습니다 (데이터 저장 불가)";
+                description = "등록된 유저가 아니기 때문에 기본값을 설정하지 못했습니다\n채널 이름 기본값을 설정하려면 `유저 등록` 을 이용하세요";
                 color = embedColors.warn;
             };
         };

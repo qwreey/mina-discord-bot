@@ -201,23 +201,55 @@ initProfiler:start"Load bot environments"; --#region --** Load bot environments 
 			local reacts,commands,noPrefix,commandsLen;
 			reacts,commands,noPrefix,commandsLen = commandHandler.encodeCommands({
 				-- 특수기능
-				["약관동의"] = {
-					alias = {"EULA동의","약관 동의","사용계약 동의"};
-					reply = function (message,args,content)
-						local this = content.loadUserData(); -- 내 호감도 불러오기
-						if this then -- 약관 동의하지 않았으면 리턴
-							return "**{#:UserName:#}** 님은 이미 약관을 동의하셨어요!";
-						end
+				["유저등록"] = {
+					alias = {"등록","약관동의","EULA동의","약관 동의","사용계약 동의"};
+					reply = function (message,args,content,self)
+						local this = content.loadUserData();
 						local author = message.author;
 						local id = author.id;
 						local name = author.name;
+						if this then
+							return message:reply{
+								content = zwsp;
+								embed = {
+									title = (":x: **%s** 님은 이미 등록되어 있어요!"):format(
+										name:gsub("%*","\\*")
+									);
+									color = embedColors.error;
+								};
+							};
+						end
+
 						userData.saveData(id,{
 							latestName = name;
 							lastName = {name};
 							lastCommand = {};
 							love = 20;
 						});
-						return "안녕하세요 {#:UserName:#} 님!\n사용 약관에 동의해주셔서 감사합니다!\n사용 약관을 동의하였기 때문에 다음 기능을 사용 할 수 있게 되었습니다!\n\n> 미나 배워\n> 미나 호감도\n> ...\n";
+
+						return message:reply{
+							content = zwsp;
+							embed = {
+								title = ":white_check_mark: 등록되었습니다!";
+								description = ("> 안녕하세요 %s 님!\n이 봇을 사용해 주셔서 감사합니다!\n이제 이 기능들을 사용할 수 있습니다\n`미나 배워` `미나 호감도` . . .\n더 많은 기능을 탐색하려면 `미나 도움말` 을 참조하세요!")
+								:format(name:gsub("%*","\\*"));
+							};
+						};
+					end;
+				};
+				["등록정보"] = {
+					alias = {"등록 도움말","등록도움말","약관","등록정보","EULA","사용계약"};
+					-- reply = EULA;
+					---@param message Message
+					reply = function (message)
+						message:reply{
+							content = zwsp;
+							embed = {
+								color = embedColors.success;
+								title = ":white_check_mark: DM 으로 전송되었습니다!";
+							};
+						};
+						return message.author:getPrivateChannel():send(EULA);
 					end;
 				};
 				["미나"] = {
@@ -632,7 +664,7 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 			};
 			callback = function(interaction, params, cmd)
 				local pass,err = xpcall(processCommand,
-				function (err)
+					function (err)
 						err = tostring(err)
 						local traceback = debug.traceback();
 						logger.errorf(

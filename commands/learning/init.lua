@@ -43,7 +43,7 @@ local noNegative = {
 local noData = {
 	content = zwsp;
 	embed = {
-		title = ":x: 유저 데이터가 존재하지 않습니다!\n유저 데이터는 약관 동의 후 부터 저장될 수 있어요!";
+		title = ":x: 등록된 유저가 아닙니다!\n데이터를 저장하려면 등록이 필요합니다 `미나 등록` 을 이용하세요";
 	};
 };
 
@@ -214,29 +214,101 @@ local export = {
 			local result = learn.put(what,react,user.id,time(),userData);
 			if result then
 				if result == errorType.noData then
-					return replyMsg:setContent("약관에 동의하지 않아 데이터를 저장할 수 없습니다!");
+					return replyMsg:update{
+						content = zwsp;
+						embed = {
+							color = embedColors.error;
+							":x: 등록된 유저만 미나를 가르칠 수 있습니다! `미나 등록` 을 이용하세요";
+						};
+					};
 				elseif result == errorType.onCooltime then
-					return replyMsg:setContent("너무 빠르게 가르치고 있어요! 조금만 쉬엄쉬엄 가르켜 주세요!\n> 하나를 가르칠 때 마다 5초의 쿨타임이 있습니다!");
+					return replyMsg:update{
+						content = zwsp;
+						embed = {
+							color = embedColors.error;
+							":x: 너무 빠르게 가르치고 있어요! 조금만 쉬엄쉬엄 가르켜 주세요!\n> 하나를 가르칠 때 마다 5초의 쿨타임이 있습니다!";
+						};
+					};
 				elseif result == errorType.alreadlyLearnByYou then
-					return replyMsg:setContent("이미 그 내용은 가르치셨어요!");
+					return replyMsg:update{
+						content = zwsp;
+						embed = {
+							color = embedColors.error;
+							":x: 이미 그 내용은 가르치셨어요!";
+						};
+					};
 				elseif result == errorType.mentionDetected then
-					return replyMsg:setContent("유저 언급을 포함한 내용은 가르칠 수 없어요!");
+					return replyMsg:update{
+						content = zwsp;
+						embed = {
+							color = embedColors.error;
+							":x: 유저 언급을 포함한 내용은 가르칠 수 없어요!";
+						};
+					};
 				elseif result == errorType.channelDetected then
-					return replyMsg:setContent("채널 언급을 포함한 내용은 가르칠 수 없어요!");
+					return replyMsg:update{
+						content = zwsp;
+						embed = {
+							color = embedColors.error;
+							":x: 채널 언급을 포함한 내용은 가르칠 수 없어요!";
+						};
+					};
 				elseif result == errorType.linkDetected then
-					return replyMsg:setContent("링크를 포함한 반응은 가르칠 수 없어요!");
+					return replyMsg:update{
+						content = zwsp;
+						embed = {
+							color = embedColors.error;
+							":x: 링크를 포함한 반응은 가르칠 수 없어요!";
+						};
+					};
 				elseif result == errorType.devDefined then
-					return replyMsg:setContent("개발자가 이미 가르친 내용이에요!");
+					return replyMsg:update{
+						content = zwsp;
+						embed = {
+							color = embedColors.error;
+							":x: 개발자가 이미 가르친 내용이에요!";
+						};
+					};
 				elseif result == errorType.nullName then
-					return replyMsg:setContent("가르치려는 이름이 비어 있으면 안돼요!\n> 사용법 : `미나 배워 이름=내용`");
+					return replyMsg:update{
+						content = zwsp;
+						embed = {
+							color = embedColors.error;
+							":x: 가르치려는 이름이 비어 있으면 안돼요!\n> 사용법 : `미나 배워 이름=내용`";
+						};
+					};
 				elseif result == errorType.nullValue then
-					return replyMsg:setContent("가르치려는 내용이 비어 있으면 안돼요!\n> 사용법 : `미나 배워 이름=내용`");
+					return replyMsg:update{
+						content = zwsp;
+						embed = {
+							color = embedColors.error;
+							":x: 가르치려는 내용이 비어 있으면 안돼요!\n> 사용법 : `미나 배워 이름=내용`";
+						};
+					};
 				elseif result == errorType.tooLongName then
-					return replyMsg:setContent(("'%s' 는 너무 길어요! 가르치려는 이름은 100 자보다 길면 안돼요!"):format(what));
+					return replyMsg:update{
+						content = zwsp;
+						embed = {
+							color = embedColors.error;
+							(":x: '%s' 는 너무 길어요! 가르치려는 이름은 100 자보다 길면 안돼요!"):format(what);
+						};
+					};
 				elseif result == errorType.tooLongValue then
-					return replyMsg:setContent(("'%s' 는 너무 길어요! 가르치려는 내용은 200 자보다 길면 안돼요!"):format(react));
+					return replyMsg:update{
+						content = zwsp;
+						embed = {
+							color = embedColors.error;
+							(":x: '%s' 는 너무 길어요! 가르치려는 내용은 200 자보다 길면 안돼요!"):format(react);
+						};
+					};
 				elseif result == errorType.notEnoughLove then
-					return replyMsg:setContent(("호감도가 부족해요! 미나에게 가르치려면 20 의 호감도가 필요해요!\n(현재 호감도는 %d 이에요)"):format(userData.love));
+					return replyMsg:update{
+						content = zwsp;
+						color = embedColors.error;
+						embed = {
+							title = (":x: 호감도가 부족해요! 미나에게 가르치려면 20 의 호감도가 필요해요!\n(현재 호감도는 %d 이에요)"):format(userData.love);
+						};
+					};
 				end
 				local nameIs;
 				for i,v in pairs(errorType) do
@@ -305,7 +377,7 @@ local export = {
 			-- get user data
 			local userData = Content.loadUserData();
 			if not userData then
-				return replyMsg:setContent("유저 데이터를 찾지 못했습니다!\n> 약관 동의가 되어 있는지 확인하세요!");
+				return replyMsg:setContent("유저 데이터를 찾지 못했습니다!\n> 등록된 유저가 아닐 수 있습니다 `미나 등록` 을 이용하세요");
 			end
 			local learned = userData.learned;
 			if not learned then

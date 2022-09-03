@@ -75,6 +75,12 @@ end
 
 -- EULA text
 _G.EULA = data.loadRaw("data/EULA.txt");
+do
+	local parsed = json.decode(_G.EULA);
+	if parsed then
+		_G.EULA = parsed;
+	end
+end
 
 -- the leaderstatus data that will save on server storage
 local loveLeaderstatusPath = "data/loveLeaderstatus.json";
@@ -136,8 +142,8 @@ _G.loveCooltime = 3600;
 _G.disableDm = "이 반응은 DM 에서 사용 할 수 없어요! 서버에서 이용해 주세요";
 local eulaComment = (
 	"\n> %s 기능을 사용할 수 없어요!" ..
-	"\n> %s 기능을 사용하려면 **`미나야 약관 동의`** 를 입력해주세요!" ..
-	"\n> (약관의 세부정보를 보려면 **`미나야 약관`** 을 입력해주세요)"
+	"\n> 유저 등록이 필요한 기능입니다 `미나 등록` 를 통해 가입해주세요" ..
+	"\n> 세부정보를 보려면 `미나 등록도움말`를 입력해주세요"
 );
 _G.eulaComment = eulaComment;
 local function makeEulaComment(feature)

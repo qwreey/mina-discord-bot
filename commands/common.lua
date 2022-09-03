@@ -525,7 +525,7 @@ local export = {
 
 			local userData = Content.loadUserData();
 			if not userData then
-				replyMsg:setContent("약관 동의가 없어 문의를 요청할 수 없습니다!");
+				replyMsg:setContent("등록된 유저가 아니면 문의를 이용할 수 없습니다!");
 				return;
 			end
 

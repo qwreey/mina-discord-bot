@@ -9,6 +9,6 @@ _G.clientSettings = {
 	logFile = nil;
 	wssProps = {
 		['$browser'] = "Discord iOS";
-	}
+	};
 };
 return _G.clientSettings;
