@@ -55,7 +55,7 @@ local export = {
 					};
 					components.textInput.new{
 						custom_id = "testingTextInput2";
-						label = "이건 진짜 아무것도 아님";
+						label = "아무것도 아님";
 						style = compEnums.textInputStyle.short;
 						placeholder = "아무거나 적지마세요";
 					};
