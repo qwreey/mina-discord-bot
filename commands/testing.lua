@@ -44,22 +44,26 @@ local export = {
 			---@param object interaction
 			local function buttonPressed(id,object)
 				if id ~= "testingModal" then return; end
-				object:modal("testingModalCommit","우와왕",{components.actionRow.new{
-					components.textInput.new{
-						custom_id = "testingTextInput";
-						label = "실험적인 무언가";
-						style = compEnums.textInputStyle.paragraph;
-						max_length = 1000;
-						required = true;
-						placeholder = "아무거나 적어보세요";
+				object:modal("testingModalCommit","우와왕",{
+					components.actionRow.new{
+						components.textInput.new{
+							custom_id = "testingTextInput";
+							label = "실험적인 무언가";
+							style = compEnums.textInputStyle.paragraph;
+							max_length = 1000;
+							required = true;
+							placeholder = "아무거나 적어보세요";
+						};
 					};
-					components.textInput.new{
-						custom_id = "testingTextInput2";
-						label = "아무것도 아님";
-						style = compEnums.textInputStyle.short;
-						placeholder = "아무거나 적지마세요";
+					components.actionRow.new{
+						components.textInput.new{
+							custom_id = "testingTextInput2";
+							label = "아무것도 아님";
+							style = compEnums.textInputStyle.short;
+							placeholder = "아무거나 적지마세요";
+						};
 					};
-				}});
+				});
 			end
 			client:onSync("buttonPressed",promise.async(buttonPressed));
 
