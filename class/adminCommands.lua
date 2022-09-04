@@ -8,6 +8,9 @@ local remove = table.remove;
 local concat = table.concat;
 local ologger = logger;
 local customLogger = setmetatable({__last = ""},{
+	__call = function (self,...)
+		return self.info(...);
+	end;
 	__index = function (self,index)
 		local object = ologger[index];
 		local objectType = type(object);

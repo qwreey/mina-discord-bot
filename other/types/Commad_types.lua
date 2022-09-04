@@ -25,3 +25,9 @@ function Command.reply(message,args,content) end
 ---@return nil
 function Command.func(replyMsg,message,args,Content) end
 
+---Slash command handler, executed when slash command can be loaded
+---@param client Client
+function Command:onSlash(client) end
+
+---Initialize command function, can be nil
+function Command:init() end

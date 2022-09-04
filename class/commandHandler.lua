@@ -80,6 +80,11 @@ local function indexingReact(indexTable,cmds,noPrefix,commandName,reactInfo)
 		module.onSlash(onSlash,client,reactInfo,commandName);
 	end
 
+	local init = reactInfo.init;
+	if init then
+		init(reactInfo);
+	end
+
 	return len;
 end
 
