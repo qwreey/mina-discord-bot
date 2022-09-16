@@ -266,6 +266,13 @@ local function startBot(botToken,isTesting) -- 봇 시작시키는 함수
 	end
 	client:once("ready",nextStatus);
 
+	-- add mention to call bot
+	client:once("ready",function ()
+		local id = client.user.id;
+		insert(_G.prefixs,("<@!%s>"):format(id));
+		insert(_G.prefixs,("<@%s>"):format(id));
+	end);
+
 	for _,v in ipairs(app.args) do
 		if v == "env.httpHeartbeat" then
 			logger.info("HTTP Heartbeat mode enabled");
