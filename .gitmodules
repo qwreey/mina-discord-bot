@@ -22,12 +22,6 @@
 [submodule "libs/discordia"]
 	path = libs/discordia
 	url = https://github.com/SinisterRectus/Discordia
-[submodule "libs/wmic"]
-	path = libs/wmic
-	url = https://github.com/qwreey75/wmic.lua
-[submodule "libs/unpack"]
-	path = libs/unpack
-	url = https://github.com/qwreey75/unpack.lua
 [submodule "libs/random"]
 	path = libs/random
 	url = https://github.com/qwreey75/random.lua
