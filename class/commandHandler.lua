@@ -155,7 +155,7 @@ function module.findCommandFrom(reacts,text,splitCommandText)
 			local command = findReaction(reacts,subtext,reactsType);
 			command = command or findReaction(reacts,gsub(subtext," ",""),reactsType);
 			if command then
-				return command,subtext,maintext;
+				return command,subtext,subtext;
 			end
 			subtext = match(subtext,"(.+) +");
 			if not subtext then break; end

@@ -614,7 +614,7 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 			-- 커맨드 함수 실행
 			rawArgs = rawArgs or rawCommandText:sub(#CommandName+2,-1);
 			contents.rawArgs = rawArgs;
-			args = strSplit(rawArgs,"\32");
+			args = args or strSplit(rawArgs,"\32");
 			xpcall(func,function (err)
 				err = tostring(err);
 				local traceback = formatTraceback(debug.traceback());
