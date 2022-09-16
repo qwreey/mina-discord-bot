@@ -354,7 +354,7 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 		for _,nprefix in pairs(prefixs) do
 			if nprefix == TextLower then -- 만약 접두사와 글자가 일치하는경우 반응 달기
 				if not isSlashCommand then
-					channel:broadcastTyping(); ---@diagnostic disable-line
+					promise.spawn(channel.broadcastTyping,channel); ---@diagnostic disable-line
 				end
 				message:reply {
 					content = prefixReply[random(1,#prefixReply)];
