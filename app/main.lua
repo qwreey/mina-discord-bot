@@ -362,7 +362,7 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 				};
 				return;
 			end
-			nprefix = nprefix .. "\32"; -- 맨 앞 실행 접두사
+			-- 맨 앞 실행 접두사
 			if TextLower:sub(1,#nprefix) == nprefix then -- 만약에 접두가사 일치하면
 				prefix = nprefix;
 				break;
@@ -402,7 +402,7 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 		-- 단어 분해 후 COMMAND DICT 에 색인시도
 		-- 못찾으면 다시 넘겨서 뒷단어로 넘김
 		-- 찾으면 넘겨서 COMMAND RUN 에 TRY 던짐
-		local rawCommandText = text:sub(#prefix+1,-1); -- 접두사 뺀 글자
+		local rawCommandText = text:sub(#prefix,-1):gsub("^ +",""); -- 접두사 뺀 글자
 		local splited = strSplit(rawCommandText:lower(),"\32\n");
 		local Command,CommandName,rawCommandName = findCommandFrom(guildCommandMode and commands or reacts,rawCommandText,splited);
 		if not Command then
