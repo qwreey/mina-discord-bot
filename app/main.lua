@@ -105,7 +105,6 @@ initProfiler:start"Load global modules"; --#region --** Load modules **--
 	local mutex = require "mutex"; _G.mutex = mutex;
 	local argsParser = require "argsParser"; _G.argsParser = argsParser;
 	local IPC = require "IPC"; _G.IPC = IPC;
-	local unpackn = require "unpack"; _G.unpackn = unpackn;
 	local data = require "data"; _G.data = data; -- Data system
 	local commandHandler = require "class.commandHandler"; _G.commandHandler = commandHandler; -- command decoding-caching-indexing system
 	local serverData = require "class.serverData"; _G.serverData = serverData; -- Serverdata system
