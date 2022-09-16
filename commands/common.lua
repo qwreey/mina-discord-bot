@@ -231,7 +231,7 @@ local export = {
 			local rawArgs = content.rawArgs;
 			rawArgs = rawArgs:gsub("^ +",""):gsub(" +$","");
 			-- 순위 불러오기
-			if leaderstatusWords[rawArgs] or content.rawCommandName == "호감도순위" then
+			if leaderstatusWords[rawArgs] or content.rawCommandName:gsub(" ","") == "호감도순위" then
 				local fields = {};
 				local now = posixTime.now();
 				for nth,this in ipairs(loveLeaderstatus) do

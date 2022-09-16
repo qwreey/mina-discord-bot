@@ -206,6 +206,9 @@ local export = {
 			local rawArgs = Content.rawArgs;
 
 			local what,react = rawArgs:match("(.+)=(.+)");
+			if not what then
+				what,react = rawArgs:match("([^ ]+) (.+)");
+			end
 			what = (what or ""):gsub("^ +",""):gsub(" +$","");
 			react = (react or ""):gsub("^ +",""):gsub(" +$","");
 
@@ -368,8 +371,8 @@ local export = {
 
 			-- checking arg
 			local rawArgs = Content.rawArgs;
-			local id = learn.getId(rawArgs)
 			local index = tonumber(rawArgs:match("%d+"));
+			local id = (not index) and learn.getId(rawArgs)
 			if (not index) and (not id) then
 				return replyMsg:setContent("지울 반응의 번째 또는 이름를 입력해주세요!\n> 가르친 반응 목록은 `미나 기억` 으로 확인할 수 있습니다");
 			end

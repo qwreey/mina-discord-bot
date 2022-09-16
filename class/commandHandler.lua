@@ -3,10 +3,10 @@
 작성 : qwreey
 2021y 04m 07d
 6:00 (PM)
+TODO: 나중에 더 CPU 친화적으로 방법을 바꾸자
 
 커맨드 테이블을 핸들링함 (렘과 CPU 에 가장 적절한 방법으로 변형 후 실행/피드백까지 관여하는 모듈)
 
-TODO: 나중에 더 CPU 친화적으로 방법을 바꾸자
 
 어차피 Table 은 숫자와 같은 자료형이 아니라 주소가 있는 (위치가 있는) 오브젝트이다
 그렇기에 그냥 막 복 떠도 쉐도우 카피 아니면 램 안먹는다 (그냥 하나 있는것 처럼)
@@ -106,7 +106,14 @@ function module.encodeCommands(...)
 		end
 		for commandName,commandInfo in pairs(commandPackage) do
 			if type(commandInfo) == "table" then
-				len = len + indexingReact(this,cmds,noPrefix,commandName,commandInfo);
+				local pass,result = pcall(indexingReact,this,cmds,noPrefix,commandName,commandInfo);
+				if pass then
+					len = len + result;
+				else
+					logger.error(result);
+					logger.error("Error occurred on loading command");
+					logger.error(commandInfo);
+				end
 			end
 		end
 	end
@@ -129,7 +136,11 @@ end
 ---@return string | nil CommandName Name of command
 ---@return string | nil CommandRawName full of user inputed string
 function module.findCommandFrom(reacts,text,splitCommandText)
-	splitCommandText = splitCommandText or ((type(text) == "table") and text or strSplit(lower(text),"\32\n"));
+	if type(text) == "table" then
+		splitCommandText = text;
+	else
+		splitCommandText = strSplit(lower(text),"\32\n\t");
+	end
 
 	-- rawText = "find thing like this"
 	-- indexing( "find thing like this" )
@@ -137,22 +148,21 @@ function module.findCommandFrom(reacts,text,splitCommandText)
 	-- indexing( "find thing" )
 	-- indexing( "find" )
 	local reactsType = type(reacts);
-	do
-		local this = text;
+	local maintext = text;
+	while true do
+		local subtext = maintext;
 		while true do
-			local new = profiler.new"commandHandler"
-			new:start"index"
-			local command = findReaction(reacts,this,reactsType);
-			command = command or findReaction(reacts,gsub(this," ",""),reactsType);
+			local command = findReaction(reacts,subtext,reactsType);
+			command = command or findReaction(reacts,gsub(subtext," ",""),reactsType);
 			if command then
-				return command,this,this;
+				return command,subtext,maintext;
 			end
-			this = match(this,"(.+) ");
-			if not this then
-				break;
-			end
-			new:stop()
+			subtext = match(subtext,"(.+) +");
+			if not subtext then break; end
 		end
+		maintext = match(maintext,"^.- +(.+)");
+		if not maintext then break; end
+		sleep(1);
 	end
 
 	-- do
