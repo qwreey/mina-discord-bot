@@ -9,6 +9,8 @@ local exports = {
         reply = "";
         -- "<@&(%d+)>"
         func = function ()
+            
+        end;
         onSlash = commonSlashCommand {
             name = "역할주기";
             description = "버튼을 누르면 역할을 주는 메시지를 만듭니다!";

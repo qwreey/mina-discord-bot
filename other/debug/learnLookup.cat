@@ -17,7 +17,7 @@ listlearn (name)-->
 	$index = learnIndexedCache[sha1(name)]
 	!index ~ error"LearnDBIndex not found"
 	$base = root+index+"/"
-	$len = tonumber(fs.readFileSync(base+"index"))
+	$len = tonumber(fs.readFileSync(base+"index"):match("%d+"))
 	!len ~ error"LearnDB length not found"
 	for i=1,len do
 		$data = json.decode(fs.readFileSync(base+i))
