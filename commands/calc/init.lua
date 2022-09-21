@@ -84,7 +84,7 @@ local export = {
         onSlash = commonSlashCommand {
             name = "계산기";
             optionName = "계산식";
-            optionRequired = false;
+            optionRequired = true;
             optionsType = discordia_enchant.enums.optionType.string;
             optionDescription = "f(x)=x+2;y=sin(f(12));(y+12)*2 와 같이 함수, 변수를 사용할 수 있습니다";
 			description = "미나미나에게 수식을 풀도록 만들어요!";
