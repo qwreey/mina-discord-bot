@@ -1,6 +1,6 @@
 local worker = require "worker";
 local calcHandler
-promise.spawn(function ()
+local task = promise.new(function ()
     calcHandler = worker.new("strCalcWorker",
         ---@param handler workerChildHandler
         function (handler)
@@ -27,6 +27,17 @@ promise.spawn(function ()
                 mod = math.fmod;
                 frexp = math.frexp;
                 modf = math.modf;
+                pow = math.pow;
+                ldexp = math.ldexp;
+                log = math.log;
+                log10 = math.log10;
+                max = math.max;
+                min = math.min;
+                rad = math.rad;
+                tan = math.tan;
+                sqrt = math.sqrt;
+                sinh = math.sinh;
+                tanh = math.tanh;
             };
             local values = {
                 pi = math.pi;
@@ -52,6 +63,8 @@ local export = {
         alias = {"계산기","계산해","암산해","암산","calc","calculator","calculate","산수","수학"};
         tooLong = "흐아... 너무 복잡한거 같아요! 나도 모르겠어!";
         reply = function (message,args,Content,self)
+            if task then task:wait() end
+
             local str = Content.rawArgs;
             if #str > 400 then
                 return message:reply(self.tooLong);
