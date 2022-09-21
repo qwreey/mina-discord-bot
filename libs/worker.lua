@@ -158,6 +158,9 @@ function worker.__inner(dumped,bundles,path,cpath,read_fd,write_fd,thread_name,.
     handler.args = table.pack(...)
     fn_env.handler = handler
 
+    local READY = '{"id":"READY"}'
+    local KILL = '{"id":"KILL"}'
+    local killed
     local function onRead(err, chunk)
         if err then
             printerr(("error occurred on reading pipe : %s"):format(tostring(err)))
@@ -168,15 +171,21 @@ function worker.__inner(dumped,bundles,path,cpath,read_fd,write_fd,thread_name,.
         end
 
         -- handshake
-        if chunk == '{"id":"READY"}' then
+        if chunk == READY then
             local waitter = handler.__waiting_ready
             if waitter then
-                local pass,resumeErr = pcall(coroutine.resume,waitter)
+                local pass,resumeErr = coroutine.resume(waitter)
                 if not pass then printerr(("error occurred on resume READY routine\n%s"):format(tostring(resumeErr))) end
             else
                 printerr("received READY before waitter setted")
             end
             write_pipe:write('{"id":"START"}')
+            return
+        elseif chunk == KILL then
+            read_pipe:read_stop()
+            read_pipe:close()
+            write_pipe:close()
+            pcall(uv.stop)
             return
         end
 
@@ -214,7 +223,7 @@ function worker.__inner(dumped,bundles,path,cpath,read_fd,write_fd,thread_name,.
             local derr = data.e
             local ddata = data.d
             local hasError = derr and true or false
-            local pass,errResume = pcall(coroutine.resume,routine,hasError,hasError and derr or ddata)
+            local pass,errResume = coroutine.resume(routine,hasError,hasError and derr or ddata)
             if not pass then
                 printerr(("got request result from main thread, but error occurred on callback routine\n%s\nchunk : %s"):format(tostring(errResume),tostring(chunk)))
             end
@@ -267,6 +276,7 @@ end
 ---@param func function set Callback function, return value is sent into child thread. if alreadly setted, will overwrite last function
 function worker:onRequest(func)
     self.__func = func
+    return self
 end
 
 function worker:request(data)
@@ -286,10 +296,45 @@ function worker:request(data)
     return result
 end
 
+function worker:protectedRequest(data)
+    local routine = coroutine.running()
+    if not routine then
+        error("handler.protectedRequest must be called on coroutine")
+    end
+
+    local id = self.__request_ids
+    self[id] = routine
+    self.__request_ids = id+1
+
+    self.__write_pipe:write(json.encode({r=0; d=data; i=id}))
+    local hasError,result = coroutine.yield()
+    return not hasError,result
+end
+
+local KILL = '{"id":"KILL"}'
+function worker:kill()
+    self.__write_pipe:write(KILL)
+    self.__read_pipe:read_stop()
+    self.__read_pipe:close()
+    self.__write_pipe:close()
+    uv.thread_join(self.__thread)
+    self.__thread = nil
+    self.__read_pipe = nil
+    self.__write_pipe = nil
+    self.__pipeOut = nil
+    self.__pipeIn = nil
+    self.__name = nil
+    self.__func = nil
+    self.__print = nil
+    self.__printerr = nil
+    self.__request_ids = nil
+    setmetatable(self,nil)
+end
+
 ---Set this worker thread ready and make handshake with main child
 ---YOU SHOULD CALL THIS FUNCTION AFTER ALL HANDLER FUNCTION BINDED
 function worker:ready(...)
-    local dumped = self.dumped; self.dumped = nil
+    local dumped = self.__dumped; self.__dumped = nil
     self.__waiting_start = coroutine.running()
     local thread = uv.new_thread(
         worker.__inner,
@@ -304,7 +349,7 @@ function worker:ready(...)
     )
     self.__thread = thread
     coroutine.yield()
-    return thread
+    return self
 end
 
 ---A print function, if logger library exist, use logger library. or using process.stdout or io.write or lua's default print function
@@ -317,15 +362,33 @@ function worker:printerr(...)
     self.__printerr(...)
 end
 
+---Set child thread work handler function, this function can be called when only ready was not called
+function worker:setWorkHandler(workHandler)
+    if type(workHandler) ~= "function" then
+        error(("worker:setWorkHandler argument #1 'workHandler' must be function, but got %s"):format(workHandler))
+    end
+    local dumped = type(workHandler)=='function'
+        and string.dump(workHandler) or workHandler
+    self.__dumped = dumped
+end
+
 local START = '{"id":"START"}'
 local READY = '{"id":"READY"}'
 function worker.new(name,workHandler)
+    if type(name) ~= "string" then
+        error(("worker.new argument #1 'name' must be string, but got %s"):format(name))
+    elseif workHandler ~= nil and type(workHandler) ~= "function" then
+        error(("worker.new argument #2 'workHandler' must be function or nil, but got %s"):format(workHandler))
+    end
+
     ---@type worker
     local this = {__request_ids=0,__name = name}
 
-    local dumped = type(workHandler)=='function'
-        and string.dump(workHandler) or workHandler
-    this.dumped = dumped
+    if workHandler then
+        local dumped = type(workHandler)=='function'
+            and string.dump(workHandler) or workHandler
+        this.__dumped = dumped
+    end
 
     local pipeIn = uv.pipe({nonblock=true}, {nonblock=true})
     local pipeOut = uv.pipe({nonblock=true}, {nonblock=true})
@@ -432,7 +495,9 @@ function worker.new(name,workHandler)
                 return
             end
             this.__waiting_start = nil
-            coroutine.resume(waittingStart)
+
+            local pass,resumeErr = coroutine.resume(waittingStart)
+            if not pass then this:printerr(("error occurred on resume READY routine\n%s"):format(tostring(resumeErr))) end
             return
         end
 
@@ -487,7 +552,7 @@ function worker.new(name,workHandler)
             local derr = data.e
             local ddata = data.d
             local hasError = derr and true or false
-            local pass,errResume = pcall(coroutine.resume,routine,hasError,hasError and derr or ddata)
+            local pass,errResume = coroutine.resume(routine,hasError,hasError and derr or ddata)
             if not pass then
                 this:printerr(("got request result from child thread, but error occurred on callback routine\n%s\nchunk : %s"):format(tostring(errResume),tostring(chunk)))
             end
@@ -520,5 +585,9 @@ end
 -- work:ready()
 -- print("준비됨")
 -- print(work:request(32))
+-- print(work:request(99))
+-- print(work:request(123123))
+-- work:kill()
+-- require"logger".info(work)
 
 return worker
