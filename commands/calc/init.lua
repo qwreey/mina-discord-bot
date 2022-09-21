@@ -63,7 +63,7 @@ local export = {
         alias = {"계산기","계산해","암산해","암산","calc","calculator","calculate","산수","수학"};
         tooLong = "흐아... 너무 복잡한거 같아요! 나도 모르겠어!";
         reply = function (message,args,Content,self)
-            if task then task:wait() end
+            if task then task:wait(); task = nil; end
 
             local str = Content.rawArgs;
             if #str > 400 then
