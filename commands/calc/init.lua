@@ -64,7 +64,7 @@ local export = {
                     embed = {
                         title = ":x: 계산에 실패했어요";
                         color = embedColors.error;
-                        description = ("ERROR: %s"):format(tostring(result));
+                        description = ("수식 `%s` 를 계산하지 못했어요\nERROR: %s"):format(str:gsub("`","\\`"),tostring(result));
                     };
                 });
             end
