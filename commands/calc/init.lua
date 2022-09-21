@@ -58,13 +58,17 @@ local export = {
             end
 
             local passed,result = calcHandler:protectedRequest(str);
+            if type(result) == "number" then
+                result = ("%f"):format(result);
+            else result = tostring(result);
+            end
             if not passed then
                 return message:reply({
                     content = zwsp;
                     embed = {
                         title = ":x: 계산에 실패했어요";
                         color = embedColors.error;
-                        description = ("수식 `%s` 를 계산하지 못했어요\nERROR: %s"):format(str:gsub("`","\\`"),tostring(result));
+                        description = ("수식 `%s` 를 계산하지 못했어요\nERROR: %s"):format(str:gsub("`","\\`"),result);
                     };
                 });
             end
