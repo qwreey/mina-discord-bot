@@ -190,6 +190,10 @@ _G.prefixs = {
 	"미나갸 ";
 	"ㅁㄴ ";
 };
+_G.prefixsWithoutSpace = {};
+for i,v in ipairs(_G.prefixs) do
+	prefixsWithoutSpace[i] = v:gsub(" +$","");
+end
 
 -- this is used on display when user messaged only perfixs
 _G.prefixReply = { -- 그냥 미나야 하면 답
@@ -245,6 +249,7 @@ local function startBot(botToken,isTesting) -- 봇 시작시키는 함수
 		for i,v in pairs(prefixs) do
 			-- for testing mode, adding ! on prefixs to prevent two bot are crashing!
 			prefixs[i] = "!" .. v;
+			prefixsWithoutSpace[i] = "!" .. prefixsWithoutSpace[i];
 		end
 		logger.warn("Testing mode enabled! you should use prefix with !");
 		logger.warn("Enabled live reload system for testing!");

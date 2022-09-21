@@ -293,7 +293,7 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 		local channel = message.channel; ---@type GuildTextChannel
 		if not channel then
 			if isSlashCommand then
-				message:reply("아직 스레드에서 미나 명령을 사용할 수 없습니다!");
+				message:reply("아직 스레드 혹은 포스트에서 미나 명령을 사용할 수 없습니다!");
 			end return;
 		end -- ignore thread
 
@@ -351,8 +351,8 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 		-- 접두사 구문 분석하기
 		local prefix;
 		local TextLower = lower(text); -- make sure text is lower case
-		for _,nprefix in pairs(prefixs) do
-			if nprefix == TextLower then -- 만약 접두사와 글자가 일치하는경우 반응 달기
+		for index,nprefix in ipairs(prefixs) do
+			if prefixsWithoutSpace[index] == TextLower then -- 만약 접두사와 글자가 일치하는경우 반응 달기
 				if not isSlashCommand then
 					promise.spawn(channel.broadcastTyping,channel); ---@diagnostic disable-line
 				end
