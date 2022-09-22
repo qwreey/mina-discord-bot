@@ -102,7 +102,13 @@ fixlearn (userId)-->
 	|
 |
 
-scanlearn ()-->
+$each(t,fn,mode)-->
+	for i,v in (mode and ipairs or pairs)(t) do
+		fn(v,i);
+	|
+|
+
+scanlearn (log)-->
 	let insert=table.insert
 	let path='data/userLearn'
 	each(fs.readdirSync(path),=>
@@ -128,10 +134,11 @@ scanlearn ()-->
 	|)
 |
 
-scanfixlearn ()-->
+scanfixlearn (log)-->
 	let insert=table.insert
 	let path='data/userLearn'
 	each(fs.readdirSync(path),=>
+		@=="index"~return
 		let index = fs.readFileSync`${path}/${@}/index`
 		~!index
 			log.errorf("Fail read index: %s",@)
@@ -140,6 +147,7 @@ scanfixlearn ()-->
 				tonumber(name)&&tonumber(name)>max~max=tnumber(name)
 			|
 			fs.writeFileSync(`${path}/${@}/index`,tostring(max))
+			index=tostring(max)
 		|
 		let removes={}
 		for i=1,tonumber(index:match"%d+") do
@@ -160,7 +168,7 @@ scanfixlearn ()-->
 			!checked[v]~log.errorf("%d not removed: %s",v,@);shouldfix=true
 		|
 		~shouldfix
-			let content=`[${table.concat(removes,",")},]`
+			let content=table.concat(removes,',')+','
 			log.infof("%s fixed as '%s'",@,content)
 			fs.writeFileSync(`${path}/${@}/removed`,content)
 		|
@@ -174,4 +182,5 @@ return {
 	findlearn = findlearn,
 	fixlearn = fixlearn,
 	scanlearn = scanlearn,
+	scanfixlearn = scanfixlearn,
 }

@@ -224,7 +224,7 @@ function runEnv.portcat(file)
 	if not file then
 		error("File not found");
 	end
-	local compiled = cat.compile(file);
+	local compiled = cat.compile(file)
 	local func,err = loadstring(compiled);
 	if func and not err then
 		return func();
