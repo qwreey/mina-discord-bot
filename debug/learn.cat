@@ -74,7 +74,7 @@ rmlearn (file,data)-->
 	table.remove(userDataLearn,index)
 	saveUserData(userId)
 	fs.unlinkSync(root + file)
-	fs.appendFileSync(root + (file/"^[^/]+") + "/removed",file:match("/(%d+)")+",")
+	fs.appendFileSync(root + (file/"^[^/]+") + "/removed",file:match("(%d+)$")+",")
 	return {
 		rawmessage = true,
 		embed = {
@@ -102,10 +102,76 @@ fixlearn (userId)-->
 	|
 |
 
+scanlearn ()-->
+	let insert=table.insert
+	let path='data/userLearn'
+	each(fs.readdirSync(path),=>
+		let index = fs.readFileSync`${path}/${@}/index`
+		!index~log.errorf("Fail read index: %s",path);return
+		let removes={}
+		for i=1,tonumber(index:match"%d+") do
+			!fs.existsSync(path+'/'+@+'/'+i)~insert(removes,i)
+		|
+		#removes==0~return
+		let rm = fs.readFileSync`${path}/${@}/removed`
+		!rm~log.errorf("Fail read removed: %s",@);return
+		let data,err=json.decode(("[%s]"):format(rm))
+		!data~log.errorf("decode error: %s",err);return
+		let checked={}
+		for _,v in ipairs(data) do
+			checked[v]~log.errorf("%d already removed: %s",v,@)
+			checked[v]=true
+		|
+		for _,v in ipairs(removes) do
+			!checked[v]~log.errorf("%d not removed: %s",v,@)
+		|
+	|)
+|
+
+scanfixlearn ()-->
+	let insert=table.insert
+	let path='data/userLearn'
+	each(fs.readdirSync(path),=>
+		let index = fs.readFileSync`${path}/${@}/index`
+		~!index
+			log.errorf("Fail read index: %s",@)
+			let max=1
+			for _,name in ipairs(fs.readdirSync`${path}/${@}`) do
+				tonumber(name)&&tonumber(name)>max~max=tnumber(name)
+			|
+			fs.writeFileSync(`${path}/${@}/index`,tostring(max))
+		|
+		let removes={}
+		for i=1,tonumber(index:match"%d+") do
+			!fs.existsSync(path+'/'+@+'/'+i)~insert(removes,i)
+		|
+		#removes==0~return
+		let rm = fs.readFileSync`${path}/${@}/removed`
+		!rm~log.errorf("Fail read removed: %s",@);return
+		let data,err=json.decode("[%s]":format(rm))
+		!data~log.errorf("decode error: %s",err);return
+		let checked={}
+		let shouldfix
+		for _,v in ipairs(data) do
+			checked[v]~log.errorf("%d already removed: %s",v,@);shouldfix=true
+			checked[v]=true
+		|
+		for _,v in ipairs(removes) do
+			!checked[v]~log.errorf("%d not removed: %s",v,@);shouldfix=true
+		|
+		~shouldfix
+			let content=`[${table.concat(removes,",")},]`
+			log.infof("%s fixed as '%s'",@,content)
+			fs.writeFileSync(`${path}/${@}/removed`,content)
+		|
+	|)
+|
+
 return {
 	rmlearn = rmlearn,
 	looklearn = looklearn,
 	listlearn = listlearn,
 	findlearn = findlearn,
 	fixlearn = fixlearn,
+	scanlearn = scanlearn,
 }

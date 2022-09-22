@@ -221,7 +221,7 @@ local export = {
 						content = zwsp;
 						embed = {
 							color = embedColors.error;
-							":x: 등록된 유저만 미나를 가르칠 수 있습니다! `미나 등록` 을 이용하세요";
+							title = ":x: 등록된 유저만 미나를 가르칠 수 있습니다! `미나 등록` 을 이용하세요";
 						};
 					};
 				elseif result == errorType.onCooltime then
@@ -229,7 +229,7 @@ local export = {
 						content = zwsp;
 						embed = {
 							color = embedColors.error;
-							":x: 너무 빠르게 가르치고 있어요! 조금만 쉬엄쉬엄 가르켜 주세요!\n> 하나를 가르칠 때 마다 5초의 쿨타임이 있습니다!";
+							title = ":x: 너무 빠르게 가르치고 있어요! 조금만 쉬엄쉬엄 가르켜 주세요!\n> 하나를 가르칠 때 마다 5초의 쿨타임이 있습니다!";
 						};
 					};
 				elseif result == errorType.alreadlyLearnByYou then
@@ -237,7 +237,7 @@ local export = {
 						content = zwsp;
 						embed = {
 							color = embedColors.error;
-							":x: 이미 그 내용은 가르치셨어요!";
+							title = ":x: 이미 그 내용은 가르치셨어요!";
 						};
 					};
 				elseif result == errorType.mentionDetected then
@@ -245,7 +245,7 @@ local export = {
 						content = zwsp;
 						embed = {
 							color = embedColors.error;
-							":x: 유저 언급을 포함한 내용은 가르칠 수 없어요!";
+							title = ":x: 유저 언급을 포함한 내용은 가르칠 수 없어요!";
 						};
 					};
 				elseif result == errorType.channelDetected then
@@ -253,7 +253,7 @@ local export = {
 						content = zwsp;
 						embed = {
 							color = embedColors.error;
-							":x: 채널 언급을 포함한 내용은 가르칠 수 없어요!";
+							title = ":x: 채널 언급을 포함한 내용은 가르칠 수 없어요!";
 						};
 					};
 				elseif result == errorType.linkDetected then
@@ -261,7 +261,7 @@ local export = {
 						content = zwsp;
 						embed = {
 							color = embedColors.error;
-							":x: 링크를 포함한 반응은 가르칠 수 없어요!";
+							title = ":x: 링크를 포함한 반응은 가르칠 수 없어요!";
 						};
 					};
 				elseif result == errorType.devDefined then
@@ -269,7 +269,7 @@ local export = {
 						content = zwsp;
 						embed = {
 							color = embedColors.error;
-							":x: 개발자가 이미 가르친 내용이에요!";
+							title = ":x: 개발자가 이미 가르친 내용이에요!";
 						};
 					};
 				elseif result == errorType.nullName then
@@ -277,7 +277,7 @@ local export = {
 						content = zwsp;
 						embed = {
 							color = embedColors.error;
-							":x: 가르치려는 이름이 비어 있으면 안돼요!\n> 사용법 : `미나 배워 이름=내용`";
+							title = ":x: 가르치려는 이름이 비어 있으면 안돼요!\n> 사용법 : `미나 배워 이름=내용`";
 						};
 					};
 				elseif result == errorType.nullValue then
@@ -285,7 +285,7 @@ local export = {
 						content = zwsp;
 						embed = {
 							color = embedColors.error;
-							":x: 가르치려는 내용이 비어 있으면 안돼요!\n> 사용법 : `미나 배워 이름=내용`";
+							title = ":x: 가르치려는 내용이 비어 있으면 안돼요!\n> 사용법 : `미나 배워 이름=내용`";
 						};
 					};
 				elseif result == errorType.tooLongName then
@@ -293,7 +293,7 @@ local export = {
 						content = zwsp;
 						embed = {
 							color = embedColors.error;
-							(":x: '%s' 는 너무 길어요! 가르치려는 이름은 100 자보다 길면 안돼요!"):format(what);
+							title = (":x: '%s' 는 너무 길어요! 가르치려는 이름은 100 자보다 길면 안돼요!"):format(what);
 						};
 					};
 				elseif result == errorType.tooLongValue then
@@ -301,7 +301,7 @@ local export = {
 						content = zwsp;
 						embed = {
 							color = embedColors.error;
-							(":x: '%s' 는 너무 길어요! 가르치려는 내용은 200 자보다 길면 안돼요!"):format(react);
+							title = (":x: '%s' 는 너무 길어요! 가르치려는 내용은 200 자보다 길면 안돼요!"):format(react);
 						};
 					};
 				elseif result == errorType.notEnoughLove then

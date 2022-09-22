@@ -129,6 +129,21 @@ local function findReaction(reacts,text,reactsType)
 	return reacts[text];
 end
 
+local postposition;
+local function postpositionRemover (str)
+	if not postposition then
+		postposition = _G.postposition;
+		table.sort(postposition,function (a,b)
+			return #a>#b;
+		end);
+	end
+	local new;
+	for _,pat in ipairs(postposition) do
+		new = gsub(str,pat,"");
+		if new ~= str then return new; end
+	end
+end
+
 ---find command from reacts array/function object
 ---@param reacts function | table
 ---@param text string
@@ -153,7 +168,8 @@ function module.findCommandFrom(reacts,text,splitCommandText)
 		local subtext = maintext;
 		while true do
 			local command = findReaction(reacts,subtext,reactsType);
-			command = command or findReaction(reacts,gsub(subtext," ",""),reactsType);
+			-- logger(postpositionRemover(gsub(subtext," ","")))
+			command = command or findReaction(reacts,postpositionRemover(gsub(subtext," ","")),reactsType);
 			if command then
 				return command,subtext,subtext;
 			end

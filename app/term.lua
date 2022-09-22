@@ -218,9 +218,14 @@ function runEnv.help() -- 도움말
 		saveUserData = "save user data table";
 	};
 end
-function runEnv.imporcat(file)
-	local compiled = cat.compile(fs.readFileSync(file));
-	local func,err = loadstring(compiled)
+function runEnv.catport(file)
+	if not file:match"/" then file = file:gsub("%.","/"); end
+	file = fs.readFileSync(file) or fs.readFileSync(file+".cat") or fs.readFileSync(file+".lua");
+	if not file then
+		error("File not found");
+	end
+	local compiled = cat.compile(file);
+	local func,err = loadstring(compiled);
 	if func and not err then
 		return func();
 	end
