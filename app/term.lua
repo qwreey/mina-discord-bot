@@ -218,7 +218,7 @@ function runEnv.help() -- 도움말
 		saveUserData = "save user data table";
 	};
 end
-function runEnv.catport(file)
+function runEnv.portcat(file)
 	if not file:match"/" then file = file:gsub("%.","/"); end
 	file = fs.readFileSync(file) or fs.readFileSync(file+".cat") or fs.readFileSync(file+".lua");
 	if not file then
