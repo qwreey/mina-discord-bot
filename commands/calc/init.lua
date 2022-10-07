@@ -55,7 +55,7 @@ local task = promise.new(function ()
             handler.ready();
         end
     ):onRequest(function()end):ready();
-end)
+end);
 
 ---@type table<string,Command>
 local export = {

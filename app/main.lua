@@ -125,12 +125,15 @@ initProfiler:start"Load discordia"; --#region --** Discordia Module **--
 	logger.info("-------------------------- [INIT ] --------------------------");
 	logger.info("global modules was loaded");
 	logger.infof("binPath setted to %s",binPath);
+	local file;
 	for _,v in ipairs(args) do
-		if v == "env.flagfile" then
-			logger.info("flag file loaded (.flags)");
+		local matched = v:match"env.flagfile=(.+)" or v:match"flag=(.+)";
+		if matched then
+			file = matched;
 			break;
 		end
 	end
+	--TODO: implement for flag file
 	logger.info("load discordia ...");
 
 	require("app.jsonErrorWrapper"); -- enable pcall wrapped json en-decoder
@@ -703,9 +706,9 @@ initProfiler:start"Init Terminal / Dev features"; --#region --** Init Terminal /
 		local terminalInputDisabled;
 		local livereload = false;
 		for _,v in pairs(app.args) do
-			if v == "disable_terminal" then
+			if v == "disable_terminal" or v == "env.disable_terminal" then
 				terminalInputDisabled = true;
-			elseif v == "enable_livereload" then
+			elseif v == "livereload" or v == "env.livereload" or v == "reload" then
 				livereload = true;
 			end
 			if terminalInputDisabled and livereload then

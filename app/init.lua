@@ -111,7 +111,11 @@ local function spawnProcess(path,thisArgs)
 		args = newArgs;
 		cwd = "./";
 	});
-	return newProcess.waitExit();
+	local errcode,errstr = newProcess.waitExit();
+
+	-- TODO: set input mode to 0 for removing child process's readline state
+
+	return errcode,errstr;
 end
 
 -- loop spawn process, if dead
@@ -137,10 +141,9 @@ local function loopProcess(name,path,thisArgs)
 		-- prettyPrint.stdout:write(("\27[2K\r\27[93m[SETUP %s] \27[0m----------------------------------------------------------------------------\n"):format(os.date("%H:%M")));
 	end
 end
-loopProcess = coroutine.wrap(loopProcess);
 
 -- run main server
-loopProcess("main","app/main",function ()
+coroutine.wrap(loopProcess)("main","app/main",function ()
 	local default = {
 		"--logger_prefix","main";
 		("binPath=%s"):format(binPath);
