@@ -1,7 +1,7 @@
-types/** linguist-vendored
-deps/** linguist-vendored
-archive/** linguist-vendored
-test/** linguist-vendored
-libs/** linguist-vendored
+types/* linguist-vendored
+deps/* linguist-vendored
+archive/* linguist-vendored
+test/* linguist-vendored
+libs/* linguist-vendored
 
 *.cat linguist-language=LuaDebugLanguage
