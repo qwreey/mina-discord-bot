@@ -2,28 +2,36 @@ local module = {};
 local searchURLTemp = "https://www.googleapis.com/youtube/v3/search?type=video&key=%s&part=snippet&maxResults=%d&q=%s";
 local apikeyIdx = 0
 
-local maxApikeyIdx = 3
+local maxApikeyIdx = #ACCOUNTData.GoogleAPIKeyFailback
+
+function module.getAPIKey()
+	return apikeyIdx == 0 and ACCOUNTData.GoogleAPIKey or ACCOUNTData.GoogleAPIKeyFailback[apikeyIdx];
+end
+local getAPIKey = module.getAPIKey;
+
+function module.nextAPIKey(recurseCount)
+	local nextKey = (apikeyIdx + 1)%(maxApikeyIdx + 1)
+	logger.infof(
+		"Error occurred on YoutubeApi key. recurse with using failback key instead for resolve limit issue\n |- Used key: %d%s\n |- Next key: %s\n |- Header dump: %s |- Body dump: %s",
+		apikeyIdx,apikeyIdx == 0 and " (Default)" or "",
+		nextKey,
+		json.encode(header),json.encode(body)
+	)
+	apikeyIdx = nextKey
+	if (recurseCount or 0) > maxApikeyIdx then return end
+	return (recurseCount or 0) + 1
+end
+local nextAPIKey = module.nextAPIKey
 
 function module.searchVideo(url,recurseCount)
 	local header,body = corohttp.request("GET",
 		searchURLTemp:format(
-			apikeyIdx == 0 and ACCOUNTData.GoogleAPIKey or ACCOUNTData.GoogleAPIKeyFailback[apikeyIdx],
-			1,urlCode.urlEncode(url)
+			getAPIKey(),1,urlCode.urlEncode(url)
 		)
 	);
 
 	if header and header.code == 403 then
-		local nextKey = (apikeyIdx + 1)%(maxApikeyIdx + 1)
-		logger.infof(
-			"Error occurred on YoutubeSearchApi key. recurse with using failback key instead for resolve limit issue\n |- Used key: %d%s\n |- Next key: %s\n |- Header dump: %s |- Body dump: %s",
-			apikeyIdx,apikeyIdx == 0 and " (Default)" or "",
-			nextKey,
-			json.encode(header),json.encode(body)
-		)
-		apikeyIdx = nextKey
-		if (recurseCount or 0) > maxApikeyIdx then return end
-		recurseCount = (recurseCount or 0) + 1
-		return module.searchVideo(url,recurseCount)
+		return module.searchVideo(url,nextAPIKey(recurseCount))
 	end
 
 	-- logger.infof("Youtube search request: %s",url)
@@ -45,23 +53,13 @@ local insert = table.insert;
 local toLuaStr = myXml.toLuaStr;
 function module.searchVideos(url,maxResults,withData,recurseCount)
 	local header,Body = corohttp.request("GET",
-		searchURLTemp:format(apikeyIdx == 0 and ACCOUNTData.GoogleAPIKey or ACCOUNTData.GoogleAPIKeyFailback[apikeyIdx],
-			maxResults or 10,urlCode.urlEncode(url)
+		searchURLTemp:format(
+			getAPIKey(),maxResults or 10,urlCode.urlEncode(url)
 		)
 	);
 
 	if header and header.code == 403 then
-		local nextKey = (apikeyIdx + 1)%(maxApikeyIdx + 1)
-		logger.infof(
-			"Error occurred on YoutubeSearchApi key. recurse with using failback key instead for resolve limit issue\n |- Used key: %d%s\n |- Next key: %s\n |- Header dump: %s |- Body dump: %s",
-			apikeyIdx,apikeyIdx == 0 and " (Default)" or "",
-			nextKey,
-			json.encode(header),json.encode(body)
-		)
-		apikeyIdx = nextKey
-		if (recurseCount or 0) > maxApikeyIdx then return end
-		recurseCount = (recurseCount or 0) + 1
-		return module.searchVideos(url,maxResults,withData,recurseCount)
+		return module.searchVideos(url,maxResults,withData,nextAPIKey(recurseCount))
 	end
 
 	if not Body then return end
