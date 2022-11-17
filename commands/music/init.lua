@@ -562,10 +562,18 @@ local export = {
 						};
 					};
 				end
-				replyMsg:update{content = empty; embed = {
-					title = (":musical_note: 성공적으로 곡 %d 개를 추가하였습니다! `(%s)`")
-						:format(ok,formatTime(duration));
-				}};
+				replyMsg:update{
+					content = empty;
+					embed = {
+						title = (":musical_note: 성공적으로 곡 %d 개를 추가하였습니다! `(%s)`")
+							:format(ok,formatTime(duration));
+					};
+					components = {
+						components.actionRow.new{
+							buttons.action_remove_owneronly(member.id); ---@diagnostic disable-line
+						};
+					};
+				};
 			end
 		end;
 		onSlash = function(self,client)
