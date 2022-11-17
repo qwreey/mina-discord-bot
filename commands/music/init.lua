@@ -513,6 +513,8 @@ local export = {
 				local ok = 0;
 				local whenAdded = time();
 				local duration = 0;
+				local killed;
+				local cancelButtonId = youtubePlaylist.getCancelId(member.id)
 				for index,item in ipairs(list) do
 					if not guild.connection then -- if it killed user
 						return replyMsg:update(self.addingStopped);
@@ -531,7 +533,7 @@ local export = {
 							if info then
 								duration = duration + (info.duration or 0);
 							end
-							replyMsg:update(youtubePlaylist.display(listLen,index,info.title));
+							replyMsg:update(youtubePlaylist.display(listLen,index,info.title,cancelButtonId));
 						end)
 						:catch(function (err)
 							message:reply{content = empty; embed = {
@@ -540,6 +542,25 @@ local export = {
 							}};
 						end)
 						:wait();
+					if youtubePlaylist.canceled[cancelButtonId] then
+						youtubePlaylist.canceled[cancelButtonId] = nil;
+						killed = true;
+						break;
+					end
+				end
+				if killed then
+					return replyMsg:update{
+						content = empty;
+						embed = {
+							title = (":musical_note: 곡 %d 개를 추가했지만. 도중에 취소되었습니다 `(%s)`")
+								:format(ok,formatTime(duration));
+						};
+						components = {
+							components.actionRow.new{
+								buttons.action_remove_owneronly(member.id); ---@diagnostic disable-line
+							};
+						};
+					};
 				end
 				replyMsg:update{content = empty; embed = {
 					title = (":musical_note: 성공적으로 곡 %d 개를 추가하였습니다! `(%s)`")
