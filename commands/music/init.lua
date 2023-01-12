@@ -519,7 +519,6 @@ local export = {
 					if not guild.connection then -- if it killed user
 						return replyMsg:update(self.addingStopped);
 					end
-					--TODO: 도중 취소 기능 (버튼으로) 구현하기
 					local this = {
 						message = message;
 						url = item;
