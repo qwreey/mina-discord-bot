@@ -6,7 +6,7 @@ _G.clientSettings = {
 	cacheAllMembers = false;
 	compress = true;
 	bitrate = 64000;
-	logFile = nil;
+	logFile = "";
 	wssProps = {
 		['$browser'] = "Discord iOS";
 	};

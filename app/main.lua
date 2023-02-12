@@ -168,6 +168,10 @@ initProfiler:start"Load discordia"; --#region --** Discordia Module **--
 
 	---@diagnostic disable-next-line
 	discordia_enchant.inject(client);
+	---@diagnostic disable-next-line
+	client:setIntents(3243773)
+	client:enableIntents(enums.gatewayIntent.messageContent);
+	-- client:setIntents(bit.bor(3243773,enums.gatewayIntent.messageContent))
 initProfiler:stop(); --#endregion --** Discordia Module **--
 initProfiler:start"Load bot environments"; --#region --** Load bot environments **--
 	logger.info("---------------------- [LOAD SETTINGS] ----------------------");
