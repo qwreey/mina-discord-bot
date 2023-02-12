@@ -315,7 +315,7 @@ local function startBot(botToken,isTesting) -- 봇 시작시키는 함수
 		if type(this) == "function" then
 			this = this(client);
 		end
-		client:setGame(this);
+		client:setActivity(this);
 		if statusPos == statusLen then
 			statusPos = 1;
 		else
