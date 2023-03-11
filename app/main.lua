@@ -697,7 +697,11 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 		for _,str in ipairs(args) do
 			local match = str:match("^execute=(.*)");
 			if match then
-				pcall(require,match);
+				logger.infof("Require user script '%s'",match);
+				local passed,err = pcall(require,match);
+				if not passed then
+					logger.errorf("Error occurred while loading user script '%s'\n%s",match,tostring(err));
+				end
 			end
 		end
 	end);

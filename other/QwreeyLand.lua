@@ -3,8 +3,6 @@ local enums = discordia_enchant.enums;
 
 local roleId = "1083995422080639017";
 local guildId = "943167410209439805";
-local guild = client:getGuild(guildId);
-local role = guild:getRole(roleId);
 
 _G.QwreeyLand = function (channel)
     channel:send{
@@ -32,8 +30,8 @@ end;
 local function buttonPressed(id,object)
     if id ~= "action_qwreeyland_role_subscribe" then return; end
     if object.guild.id ~= guildId then return; end
-    if object.member:hasRole(role) then
-        object.member:removeRole(role);
+    if object.member:hasRole(guildId) then
+        object.member:removeRole(guildId);
         object:reply({
             content = zwsp;
             embed = {
@@ -41,7 +39,7 @@ local function buttonPressed(id,object)
             };
         },true);
     else
-        object.member:addRole(role);
+        object.member:addRole(guildId);
         object:reply({
             content = zwsp;
             embed = {
@@ -51,3 +49,5 @@ local function buttonPressed(id,object)
     end
 end
 client:onSync("buttonPressed",promise.async(buttonPressed));
+
+logger.info("QwreeyLand script loaded");
