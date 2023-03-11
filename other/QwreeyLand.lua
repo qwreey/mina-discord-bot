@@ -30,8 +30,8 @@ end;
 local function buttonPressed(id,object)
     if id ~= "action_qwreeyland_role_subscribe" then return; end
     if object.guild.id ~= guildId then return; end
-    if object.member:hasRole(guildId) then
-        object.member:removeRole(guildId);
+    if object.member:hasRole(roleId) then
+        object.member:removeRole(roleId);
         object:reply({
             content = zwsp;
             embed = {
@@ -39,7 +39,7 @@ local function buttonPressed(id,object)
             };
         },true);
     else
-        object.member:addRole(guildId);
+        object.member:addRole(roleId);
         object:reply({
             content = zwsp;
             embed = {
