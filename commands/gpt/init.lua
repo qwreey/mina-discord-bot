@@ -9,11 +9,11 @@ local commandHandler = require "class.commandHandler";
 ---     error?: string;
 --- }
 local function formatOutput(gptOutput)
-	if gptOutput.error or (not gptOutput.result) then
+	if gptOutput.error or (not gptOutput.content) then
 		return ("오류가 발생했습니다!\n%s"):format(tostring(gptOutput.error))
 	end
 
-	return ("GPT 의 응답:\n%s"):format(gptOutput.result)
+	return ("GPT 의 응답:\n%s"):format(gptOutput.content)
 end
 
 ---@return nil|table|any
@@ -47,8 +47,9 @@ commandHandler.onSlash(function()
 			};
 		};
 		callback = function(interaction, params, cmd)
+			local result = executeGPT(params["내용"])
 			interaction:reply(
-				executeGPT(params["내용"])
+				result
 			);
 		end;
 	});
