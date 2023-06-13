@@ -9,7 +9,7 @@ _G.QwreeyLand = function (channel)
         content = zwsp;
         embed = {
             title = "쿼리 뻘짓 구독하기";
-            description = ("쿼리까 뻘짓 하는걸 맨션으로 알림받고 싶다면 <#&%s> 를 받아봐요")
+            description = ("쿼리까 뻘짓 하는걸 맨션으로 알림받고 싶다면 <@&%s> 를 받아봐요")
                 :format(roleId)
         };
         components = {

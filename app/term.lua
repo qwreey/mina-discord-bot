@@ -135,15 +135,61 @@ local remove = table.remove;
 -- 	};
 -- end
 
+
+-- 취소(죽이기) 와 stdin 넣기를 구현
+local executions = {}
+local lastExecutionId = 0
+
+local executeion = {}
+executeion.__index = executeion
+
+function executeion.new(command,sendf)
+	local self = {}
+	lastExecutionId = lastExecutionId + 1
+	self.command = command
+	self.sendf = sendf
+	self.id = lastExecutionId
+	executions[lastExecutionId] = self
+	setmetatable(self,executeion)
+	self:init()
+	return self
+end
+
+-- 프로세스에게 rip 를 걸자
+function executeion:kill()
+	if not self.process then
+		error(("Execution %d was killed already"):format(self.id))
+	end
+	-- self.process
+end
+
+-- 기록 제거
+function executeion:deinit()
+	executions[self.id] = nil
+end
+
+-- 초기화
+function executeion:init()
+
+end
+
+
 function runEnv.exec(command,sendf) -- process open
 	-- if not execStdinSmulaterBinding then
 	-- 	makeBindingExecStdinSmulater();
 	-- end
 
 	local send = send or sendf;
-	local split = argsParser.split(command);
-	local proc = remove(split,1);
-	local cproc,err = spawn(proc,{args = split,stdio = {true,true,true}});
+	local cproc,err;
+
+	if jit.os == "Linux" then
+		-- 리눅스면 bash 로 명령을 알아서 분석하게 그냥 던져주자
+		cproc,err = spawn("bash",{args = {"-c",command},stdio = {true,true,true}})
+	else
+		local split = argsParser.split(command);
+		local proc = remove(split,1);
+		cproc,err = spawn(proc,{args = split,stdio = {true,true,true}});
+	end
 
 	if not cproc then
 		return "ERR : "..err;
