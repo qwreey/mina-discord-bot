@@ -46,11 +46,11 @@ commandHandler.onSlash(function()
 				required = true;
 			};
 		};
+		---@param interaction interaction
 		callback = function(interaction, params, cmd)
+			interaction:reply("⏳ 잠시만 기다려주세요!");
 			local result = executeGPT(params["내용"])
-			interaction:reply(
-				result
-			);
+			interaction:update(result);
 		end;
 	});
 end,nil,nil,"GPT");
