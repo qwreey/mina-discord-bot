@@ -415,7 +415,7 @@ initProfiler:start"Setup bot Logic"; --#region --** Main logic **--
 			-- is guild command mode
 			if guildCommandMode then
 				message:reply {
-					content = ("커맨드 **'%s'** 는 존재하지 않습니다!"):format(rawCommandText);
+					content = ("커맨드 **'%s'** 는 존재하지 않습니다!"):format(rawCommandText:gsub("@everyone","everyone"):gsub("@here","here"):gsub("<@.+>",""));
 					reference = {message = message, mention = false};
 				};
 				return;

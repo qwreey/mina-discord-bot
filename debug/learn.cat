@@ -58,7 +58,7 @@ looklearn (file,data)-->
 |
 
 rmlearn (file,data)-->
-	(!file)||(!data) ~ error"file and data must be got"
+	!file~error"file must be got"
 	!data ~ data = json.decode(fs.readFileSync(root+file))
 	!data ~ error"cannot get data from file"
 	$userId = data.author
